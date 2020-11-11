@@ -1,0 +1,7 @@
+.pytest_cache
+*__pycache__
+.vscode
+build
+cbc/dist
+cbc.egg-info
+docs/build
