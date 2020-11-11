@@ -167,7 +167,7 @@ class AnalogSystem(object):
     def __str__(self):
         return (
             f"The analog system is defined as:\nA: {self.a},\nB: {self.b},\n"
-            f"C: {self.c},\n and\nGamma: {self.gamma}"
+            f"C: {self.c},\n and\nGamma: {self.gamma}",
         )
 
 

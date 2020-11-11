@@ -86,8 +86,8 @@ class DigitalControl(object):
         if len(vector.shape) > 1:
             raise Exception(
                 (
-                    f"vector mush be a flat numpy array. you inserted %{vector}"
-                    f"with shape ${vector.shape}"
+                    f"vector mush be a flat numpy array. you inserted %{vector}",
+                    f"with shape ${vector.shape}",
                 )
             )
         # ensure referenceThresholds and vector are of same dimension
