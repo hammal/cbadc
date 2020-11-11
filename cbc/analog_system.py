@@ -7,16 +7,16 @@ import numpy as np
 
 
 class AnalogSystem(object):
-    """The AnalogSystem class holds the analog system data parameters as well as provides
-    related utility functions.
+    """The AnalogSystem class holds the analog system data parameters as well as
+    provides related utility functions.
 
-    :param a: the system matrix 
+    :param a: the system matrix
     :type a: ndarray
         N x N dimensional numpy array of dtype numpy.float
     :param b: the input matrix
     :type b: ndarray
         N X L dimensional numpy array of dtype numpy.float
-    :param c: the signal observation matrix 
+    :param c: the signal observation matrix
     :type c: ndarray
         N_tilde x N dimensional numpy array of dtype numpy.float
     :param gamma: the control input matrix
@@ -38,17 +38,18 @@ class AnalogSystem(object):
     def __init__(self, A, B, C, Gamma, Gamma_tilde):
         """Initialize an analog system.
 
-        :param A: the system matrix 
+        :param A: the system matrix
         :type A: ndarray
         :param B: the input matrix
         :type B: ndarray
-        :param C: the signal observation matrix 
+        :param C: the signal observation matrix
         :type C: ndarray
         :param Gamma: the control input matrix
         :type Gamma: ndarray
         :param Gamma_tilde: the control observation matrix
         :type Gamma_tilde: ndarray
-        :raises InvalidAnalogSystemError: indicating errors in analog system matrices
+        :raises InvalidAnalogSystemError: indicating errors in analog system
+        matrices
         """
         self.a = np.array(A, dtype=np.float)
         self.b = np.array(B, dtype=np.float)
@@ -59,7 +60,7 @@ class AnalogSystem(object):
         self.n = self.a.shape[0]
 
         if self.a.shape[0] != self.a.shape[1]:
-            raise InvalidAnalogSystemError(self, 'system matrix not square')
+            raise InvalidAnalogSystemError(self, "system matrix not square")
 
         # ensure matrices
         if len(self.b.shape) == 1:
@@ -68,28 +69,36 @@ class AnalogSystem(object):
             self.c = self.c.reshape((1, self.n))
 
         self.m = self.gamma.shape[1]
-        self.l = self.b.shape[1]
+        self._l = self.b.shape[1]
         self.n_tilde = self.c.shape[0]
 
         if self.b.shape[0] != self.a.shape[0]:
             raise InvalidAnalogSystemError(
-                self, 'N does not agree with input matrix B.')
+                self, "N does not agree with input matrix B."
+            )
 
         if self.c.shape[1] != self.a.shape[0]:
             raise InvalidAnalogSystemError(
-                self, 'N does not agree with signal observation matrix C.')
+                self, "N does not agree with signal observation matrix C."
+            )
 
         if self.gamma.shape[0] != self.a.shape[0]:
             raise InvalidAnalogSystemError(
-                self, 'N does not agree with control input matrix Gamma.')
+                self, "N does not agree with control input matrix Gamma."
+            )
 
         if self.gamma_tilde.shape[1] != self.a.shape[0]:
             raise InvalidAnalogSystemError(
-                self, 'N does not agree with control observation matrix Gamma_tilde.')
+                self,
+                "N does not agree with control observation matrix Gamma_tilde.",
+            )
 
         if self.gamma.shape[1] != self.gamma_tilde.shape[0]:
             raise InvalidAnalogSystemError(
-                self, 'M in control input matrix and control observation matrix do not agree.')
+                self,
+                """M in control input matrix and control observation matrix do not
+                agree.""",
+            )
 
     def derivative(self, x, t, u, s):
         """produces the state derivative :math:`\dot{\mathbf{x}}(t)` as a
@@ -103,15 +112,21 @@ class AnalogSystem(object):
         :type t: float
         :param u: input signal
         :type t: (float)=> ndarray
-            function resulting in a L dimensional numpy array for each float argument.
+            function resulting in a L dimensional numpy array for each float
+            argument.
         :param s: control contribution
         :type t: (float) => ndarray
-            function resulting in a M dimensional numpy array for each float argument.
+            function resulting in a M dimensional numpy array for each float
+            argument.
         :return: state derivative
         :rtype: ndarray
             N dimensional numpy array of dtype numpy.float
         """
-        return np.array(np.dot(self.a, x) + np.dot(self.b, u(t)) + np.dot(self.gamma, s(t)), dtype=np.float)
+
+        return np.array(
+            np.dot(self.a, x) + np.dot(self.b, u(t)) + np.dot(self.gamma, s(t)),
+            dtype=np.float,
+        )
 
     def analog_transfer_function_matrix(self, omega):
         """produces the analog transfer function (ATF) matrix of the the analog system
@@ -125,9 +140,12 @@ class AnalogSystem(object):
         """
 
         def atf(_omega):
-            response = np.dot(np.linalg.inv(np.complex(
-                0, _omega) * np.eye(self.n) - self.a), self.b)
+            response = np.dot(
+                np.linalg.inv(np.complex(0, _omega) * np.eye(self.n) - self.a),
+                self.b,
+            )
             return response
+
         result = np.zeros((self.n, self.n, omega.size), dtype=np.complex)
         for index, o in enumerate(omega):
             result[:, :, index] = atf(o)
@@ -147,7 +165,8 @@ class AnalogSystem(object):
         return resp
 
     def __str__(self):
-        return f'The analog system is defined as:\nA: {self.a},\nB: {self.b},\nC: {self.c},\n and\nGamma: {self.gamma}'
+        return f"""The analog system is defined as:\nA: {self.a},\nB:
+        {self.b},\nC: {self.c},\n and\nGamma: {self.gamma}"""
 
 
 class InvalidAnalogSystemError(Exception):

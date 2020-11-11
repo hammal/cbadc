@@ -2,7 +2,6 @@ import numpy as np
 
 
 class Input(object):
-
     def __init__(self, constant=0):
         self._c = constant
 
@@ -15,7 +14,6 @@ class Input(object):
 
 
 class Sinusodial(Input):
-
     def __init__(self, amplitude, frequency, phase=0, offset=0):
         self.amplitude = amplitude
         self.frequency = frequency
@@ -28,11 +26,13 @@ class Sinusodial(Input):
         return "sinusodial"
 
     def eval(self, t):
-        return self.amplitude * np.sin(self.angluarFrequency * t + self.phase) + self.offset
+        return (
+            self.amplitude * np.sin(self.angluarFrequency * t + self.phase)
+            + self.offset
+        )
 
 
 class GaussianNoise(Input):
-
     def __init__(self, mean, variance):
         self.mean = mean
         self.variance = variance
@@ -47,7 +47,6 @@ class GaussianNoise(Input):
 
 
 class FirstOrderHold(Input):
-
     def __init__(self, t, samples):
         self.samples = samples
         self.t = t

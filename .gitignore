@@ -2,6 +2,6 @@
 *__pycache__
 .vscode
 build
-cbc/dist
+dist
 cbc.egg-info
 docs/build
