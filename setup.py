@@ -3,6 +3,9 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+# this grabs the requirements from requirements.txt
+REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
+
 setuptools.setup(
     name="cbc",  # Replace with your own username
     version="0.0.1",
@@ -19,4 +22,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.5",
+    install_requires=REQUIREMENTS,
 )
+
+setuptools.install_required
