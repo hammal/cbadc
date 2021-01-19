@@ -1,4 +1,5 @@
 import setuptools
+from Cython.Build import cythonize
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -23,6 +24,8 @@ setuptools.setup(
     ],
     python_requires=">=3.5",
     install_requires=REQUIREMENTS,
+    ext_modules=cythonize("cbc/*.pyx"),
+    zip_safe=False,
 )
 
-setuptools.install_required
+# setuptools.install_required
