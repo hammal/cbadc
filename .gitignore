@@ -6,3 +6,6 @@ dist
 cbc.egg-info
 docs/build
 .coverage
+cbc/**/*.c
+cbc/**/*.html
+src/**/*.so

@@ -1,0 +1,4 @@
+include src/cbc/analog_signal/*.pxd
+include src/cbc/analog_system/*.pxd
+include src/cbc/digital_control/*.pxd
+

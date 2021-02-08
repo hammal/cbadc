@@ -5,9 +5,9 @@ Welcome to Control-Bounded Converter Toolbox's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   analogSystem
-   digitalControl
-   digitalEstimator
+   overview/overview
+   examples/examples
+   api
    
 
 
