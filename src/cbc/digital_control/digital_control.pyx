@@ -33,7 +33,7 @@ cdef class DigitalControl:
     cpdef double Ts(self):
         return self._Ts
 
-    cpdef double [:] impulse_response(self, m, t):
+    cdef double [:] impulse_response(self, m, t):
         temp = np.zeros(self._order, dtype=np.double)
         temp[m] = 1
         return temp

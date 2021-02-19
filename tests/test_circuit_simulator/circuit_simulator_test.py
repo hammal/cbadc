@@ -29,7 +29,7 @@ def test_iterator(chain_of_integrators):
     analogSignals = [AnalogSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
     circuitSimulator = CircuitSimulator(
-        chain_of_integrators["system"], digitalControl, analogSignals, t_stop=1.)
+        chain_of_integrators["system"], digitalControl, analogSignals, t_stop=Ts * 1000)
     for control_signal in circuitSimulator:
         pass
 

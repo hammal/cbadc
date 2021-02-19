@@ -1,5 +1,5 @@
 from cbc.circuit_simulator import CircuitSimulator
-from cbc.digital_estimator.digital_estimator import DigitalEstimator
+from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator
 from cbc.analog_signal import AnalogSignal, Sinusodial
 from cbc.analog_system import AnalogSystem
 from cbc.digital_control import DigitalControl
@@ -31,6 +31,33 @@ def test_initialization(chain_of_integrators):
     K2 = 0
     DigitalEstimator(controlSequence(
     ), chain_of_integrators['system'], digitalControl, eta2, K1, K2)
+    # assert(False)
+
+
+def test_estimation_empty():
+    digitalControl = DigitalControl(Ts, M)
+    eta2 = 100.0
+    K1 = 100
+    K2 = 10
+
+    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+
+    estimator = DigitalEstimator(
+        controlSequence(), analogSystem, digitalControl, eta2, K1, K2, stop_after_number_of_iterations=25)
+    assert(estimator.empty() == True)
+
+
+def test_estimation_full():
+    digitalControl = DigitalControl(Ts, M)
+    eta2 = 100.0
+    K1 = 100
+    K2 = 10
+
+    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+
+    estimator = DigitalEstimator(
+        controlSequence(), analogSystem, digitalControl, eta2, K1, K2, stop_after_number_of_iterations=25)
+    assert(estimator.full() == False)
 
 
 def test_estimation():
@@ -68,12 +95,42 @@ def test_estimation_with_circuit_simulator():
 
     analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
     # analogSignals = [Sinusodial(0.5, 10)]
-    analogSignals = [AnalogSignal(0.25)]
+    analogSignals = [AnalogSignal(0.)]
+    digitalControl = DigitalControl(Ts, M)
+    circuitSimulator = CircuitSimulator(
+        analogSystem, digitalControl, analogSignals, t_stop=Ts * 1001)
+    estimator = DigitalEstimator(
+        circuitSimulator, analogSystem, digitalControl, eta2, K1, K2)
+    for est in estimator:
+        print('Est from python: ', est[0])
+
+
+def test_performance():
+    digitalControl = DigitalControl(Ts, M)
+    eta2 = 100.0
+    K1 = 25
+    K2 = 1000
+
+    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+    estimator = DigitalEstimator(controlSequence(
+    ), analogSystem, digitalControl, eta2, K1, K2=K2, stop_after_number_of_iterations=10000)
+    for est in estimator:
+        pass
+
+
+def test_batch_computation():
+    eta2 = 1e12
+    K1 = 3
+    K2 = 100
+
+    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+    analogSignals = [Sinusodial(0.5, 10)]
+    # analogSignals = [AnalogSignal(0.)]
     digitalControl = DigitalControl(Ts, M)
     circuitSimulator = CircuitSimulator(
         analogSystem, digitalControl, analogSignals, t_stop=Ts * 1000)
     estimator = DigitalEstimator(
         circuitSimulator, analogSystem, digitalControl, eta2, K1, K2)
     for est in estimator:
-        print(est)
-    # raise "Temp"
+        print('Est from python: ', est[0])
+    # assert(False)
