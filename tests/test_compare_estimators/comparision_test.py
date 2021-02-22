@@ -4,6 +4,7 @@ from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator as
 from cbc.analog_signal import AnalogSignal, Sinusodial
 from cbc.analog_system import AnalogSystem
 from cbc.digital_control import DigitalControl
+from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
 import numpy as np
 
 beta = 6250.0
@@ -18,6 +19,10 @@ C = np.eye(N)
 Gamma_tilde = np.eye(M)
 Gamma = Gamma_tilde * (-beta)
 Ts = 1/(2 * beta)
+
+amplitude = 1.0
+frequency = 10.
+phase = 0.
 
 
 def test_estimation_with_circuit_simulator():
@@ -40,9 +45,23 @@ def test_estimation_with_circuit_simulator():
         analogSystem, digitalControl2, analogSignals)
     estimator2 = ParallelDigitalEstimator(
         circuitSimulator2, analogSystem, digitalControl1, eta2, K1, K2)
+
+    # Old Python Framework
+    input = Sin(Ts, amplitude, frequency, phase, B.flatten())
+    system = System(A, C)
+    ctrl = Control(Gamma, size)
+    simulator = Simulator(system, control=ctrl,
+                          initalState=np.ones(N), options={})
+    t = np.linspace(0, Ts * (size - 1), size)
+    result = simulator.simulate(t, (input,))
+    filter = WienerFilter(t, system, (input,))
+    e3 = filter.filter(ctrl)[0]
+    #
+
     model_error = 0
     e1_error = 0
     e2_error = 0
+    e3_error = 0
     for index in range(size):
         e1 = estimator1.__next__()
         e2 = estimator2.__next__()
@@ -54,11 +73,14 @@ def test_estimation_with_circuit_simulator():
         model_error += np.abs(e1 - e2)**2
         e1_error += np.abs(e1 - u)**2
         e2_error += np.abs(e2 - u)**2
+        e3_error += np.abs(e3[index] - u)**2
     model_error /= size
     e1_error /= size
     e2_error /= size
+    e3_error /= size
     print("Model Error:                 ", model_error)
     print("Quadratic estimator error:   ", e1_error)
     print("Linear estimator error:      ", e2_error)
+    print("Python estimator error:      ", e3_error)
     # assert(np.allclose(e1-e2))
-    raise "Temp"
+    # raise "Temp"

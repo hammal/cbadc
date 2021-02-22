@@ -4,6 +4,7 @@ from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator as
 from cbc.analog_signal import AnalogSignal, Sinusodial
 from cbc.analog_system import AnalogSystem
 from cbc.digital_control import DigitalControl
+from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
 import numpy as np
 
 beta = 6250.0
@@ -18,14 +19,22 @@ Gamma_tilde = np.eye(N)
 Gamma = Gamma_tilde * (-beta)
 Ts = 1/(2 * beta)
 
+amplitude = 1.0
+frequency = 10.
+phase = 0.
 
 eta2 = 1e12
-K1 = 10
-K2 = 1000
-size = 10000
+K1 = 10000
+K2 = 0
+size = K1 + K2
 analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
 digitalControl = DigitalControl(Ts, N)
-analogSignals = [Sinusodial(0.5, 1)]
+analogSignals = [Sinusodial(amplitude, frequency, phase)]
+
+# Old parameters
+input = Sin(Ts, amplitude, frequency, phase, B.flatten())
+system = System(A, C)
+t = np.linspace(0, Ts * (size - 1), size)
 
 
 def controlSequence():
@@ -59,4 +68,30 @@ def test_benchmark_circuit_simulation_algorithm(benchmark):
     est = CircuitSimulator(
         analogSystem, digitalControl, analogSignals)
     result = benchmark(iterate_through, est)
+    assert(result == size)
+
+
+def test_benchmark_old_python_simulation(benchmark):
+    def temp():
+        ctrl = Control(Gamma, size)
+        simulator = Simulator(system, control=ctrl,
+                              initalState=np.ones(N), options={})
+        s = simulator.simulate(t, (input,))['output']
+        return s.shape[0]
+    result = benchmark(temp)
+    assert(result == size)
+
+
+def test_benchmark_old_python_filtering(benchmark):
+    ctrl = Control(Gamma, size)
+    simulator = Simulator(system, control=ctrl,
+                          initalState=np.ones(N), options={})
+    t = np.linspace(0, Ts * (size - 1), size)
+    simulator = simulator.simulate(t, (input,))
+    recon = WienerFilter(t, system, (input,))
+
+    def temp():
+        t = recon.filter(ctrl)[0]
+        return t.size
+    result = benchmark(temp)
     assert(result == size)
