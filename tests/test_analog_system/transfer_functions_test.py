@@ -17,7 +17,7 @@ def test_analog_transfer_function_matrix(chain_of_integrators):
     tf = analogSystem.analog_transfer_function_matrix(omega)
     assert tf.shape[2] == length
     assert tf.shape[0] == analogSystem.N()
-    assert tf.shape[1] == analogSystem.N()
+    assert tf.shape[1] == analogSystem.L()
 
 
 def test_transfer_function(chain_of_integrators):
@@ -25,8 +25,9 @@ def test_transfer_function(chain_of_integrators):
     omega = np.arange(length) * 2 * np.pi * 2 / chain_of_integrators["beta"]
     analogSystem = chain_of_integrators["system"]
     tf = analogSystem.transfer_function(omega)
+    print(tf, tf.shape)
     assert tf.shape[2] == length
     assert tf.shape[0] == analogSystem.N_tilde()
-    assert tf.shape[1] == analogSystem.N()
+    assert tf.shape[1] == analogSystem.L()
     assert isinstance(tf, (np.ndarray, np.generic))
     assert tf.dtype == np.complex

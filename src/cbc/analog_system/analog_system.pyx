@@ -54,9 +54,9 @@ cdef class AnalogSystem:
         """
         self._A = np.array(A, dtype=np.double)    
         self._B = np.array(B, dtype=np.double)
-        self._C = np.array(C, dtype=np.double)
+        self._CT = np.array(C, dtype=np.double).transpose()
         self._Gamma = np.array(Gamma, dtype=np.double)
-        self._Gamma_tilde = np.array(Gamma_tilde, dtype=np.double)
+        self._Gamma_tildeT = np.array(Gamma_tilde, dtype=np.double)
 
         self._N = self._A.shape[0]    
 
@@ -66,13 +66,13 @@ cdef class AnalogSystem:
         # ensure matrices
         if len(self._B.shape) == 1:
             self._B = self._B.reshape((self._N, 1))
-        if len(self._C.shape) == 1:
-            self._C = self._C.reshape((1, self._N))
+        if len(self._CT.shape) == 1:
+            self._CT = self._CT.reshape((1, self._N))
 
         self._M = self._Gamma.shape[1]
-        self._M_tilde = self._Gamma_tilde.shape[0]
+        self._M_tilde = self._Gamma_tildeT.shape[0]
         self._L = self._B.shape[1]
-        self._N_tilde = self._C.shape[0]
+        self._N_tilde = self._CT.shape[0]
 
         self.temp_derivative = np.zeros(self._N,dtype=np.double)
         self.temp_y = np.zeros(self._N_tilde, dtype=np.double)
@@ -84,7 +84,7 @@ cdef class AnalogSystem:
                 self, "N does not agree with input matrix B."
             )
 
-        if self._C.shape[1] != self._A.shape[0]:
+        if self._CT.shape[1] != self._A.shape[0]:
             raise InvalidAnalogSystemError(
                 self, "N does not agree with signal observation matrix C."
             )
@@ -94,7 +94,7 @@ cdef class AnalogSystem:
                 self, "N does not agree with control input matrix Gamma."
             )
 
-        if self._Gamma_tilde.shape[1] != self._A.shape[0]:
+        if self._Gamma_tildeT.shape[1] != self._A.shape[0]:
             raise InvalidAnalogSystemError(
                 self,
                 "N does not agree with control observation matrix Gamma_tilde.",
@@ -139,7 +139,7 @@ cdef class AnalogSystem:
         for n_tilde in range(self._N_tilde):
             self.temp_y[n_tilde] = 0
             for n in range(self._N):
-                self.temp_y[n_tilde] += self._C[n_tilde, n] * x[n]
+                self.temp_y[n_tilde] += self._CT[n_tilde, n] * x[n]
         return self.temp_y
     
     cpdef double [:] control_output(self, double [:] x):
@@ -147,7 +147,7 @@ cdef class AnalogSystem:
         for m_tilde in range(self._M_tilde):
             self.temp_s_tilde[m_tilde] = 0
             for n in range(self._N):
-                self.temp_s_tilde[m_tilde] = self._Gamma_tilde[m_tilde, n] * x[n]
+                self.temp_s_tilde[m_tilde] = self._Gamma_tildeT[m_tilde, n] * x[n]
         return self.tem_s_tilde
 
     cdef complex [:,:] _atf(self, double _omega):
@@ -164,13 +164,13 @@ cdef class AnalogSystem:
             K dimensional numpy array of angular frequencies to be computed
         :return: ATF matrix evaluated at the elements of omega
         :rtype: ndarray
-            N X N X K dimensional numpy array of dtype numpy.complex
+            N X L X K dimensional numpy array of dtype numpy.complex
         """
         cdef int size = omega.size
-        cdef complex [:,:,:,:] result =  np.zeros((self._N, self._N, size, self._L), dtype=np.complex)
+        cdef complex [:,:,:] result =  np.zeros((self._N, self._L, size), dtype=np.complex)
         cdef int index
         for index in range(size):
-            result[:, :, index, :] = self._atf(omega[index])
+            result[:, :, index] = self._atf(omega[index])
         return result
 
     def transfer_function(self, omega):
@@ -183,7 +183,7 @@ cdef class AnalogSystem:
         :rtype: ndarray
             N_tilde x N x K dimensional numpy array of dtype numpy.complex
         """
-        resp = np.einsum('ij,jklm', self._C, self.analog_transfer_function_matrix(omega))
+        resp = np.einsum('ij,jkl', self._CT, self.analog_transfer_function_matrix(omega))
         return np.asarray(resp)
 
     def __str__(self):
@@ -196,13 +196,13 @@ cdef class AnalogSystem:
         return np.asarray(self._B)
 
     def C(self):
-        return np.asarray(self._C)
+        return np.asarray(self._CT).transpose()
     
     def Gamma(self):
         return np.asarray(self._Gamma)
     
     def Gamma_tilde(self):
-        return np.asarray(self._Gamma_tilde)
+        return np.asarray(self._Gamma_tildeT).transpose()
     
     def N(self):
         return self._N

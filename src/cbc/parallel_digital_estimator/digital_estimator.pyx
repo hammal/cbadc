@@ -2,7 +2,7 @@
 from cbc.digital_estimator.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
-from numpy import dot as dot_product, eye, zeros, int8, double, roll, array
+from numpy import dot as dot_product, eye, zeros, int8, double, roll, array, abs
 from numpy.linalg import eig, inv
 from cbc.parallel_digital_estimator.c_digital_estimator import C_Digital_Estimator
 
@@ -18,7 +18,20 @@ class DigitalEstimator(C_Digital_Estimator):
         if (K2 < 0):
             raise "K2 must be a non negative integer"
         self._s = controlSignalSequence
+        self._analog_system = analogSystem
+        self._eta2 = eta2
         super().__init__(analogSystem, digitalControl, eta2, K1, K2)
+    
+    def transfer_function(self, double [:] omega):
+        result = zeros((self._analog_system.L(), omega.size))
+        eta2Matrix = eye(self._analog_system.C().shape[0]) * self._eta2
+        for index, o in enumerate(omega):
+            G = self._analog_system.transfer_function(array([o]))
+            G = G.reshape((self._analog_system.N_tilde(), self._analog_system.L()))
+            GH = G.transpose().conjugate()
+            GGH = dot_product(G, GH)
+            result[:, index] = abs(dot_product(GH, dot_product(inv(GGH + eta2Matrix), G)))
+        return result
 
     def __iter__(self):
         return self

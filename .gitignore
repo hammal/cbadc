@@ -9,3 +9,5 @@ docs/build
 cbc/**/*.c
 cbc/**/*.html
 src/**/*.so
+*.DS_Store
+src/cbc/**/*.html

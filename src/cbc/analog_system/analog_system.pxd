@@ -2,9 +2,9 @@
 cdef class AnalogSystem:
     cdef double [:,:] _A
     cdef double [:,:] _B
-    cdef double [:,:] _C
+    cdef double [:,:] _CT
     cdef double [:,:] _Gamma
-    cdef double [:,:] _Gamma_tilde
+    cdef double [:,:] _Gamma_tildeT
     cdef double [:] temp_derivative
     cdef double [:] temp_y
     cdef double [:] temp_s_tilde

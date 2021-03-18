@@ -24,7 +24,7 @@ frequency = 10.
 phase = 0.
 
 eta2 = 1e12
-K1 = 10000
+K1 = 100
 K2 = 0
 size = K1 + K2
 analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)

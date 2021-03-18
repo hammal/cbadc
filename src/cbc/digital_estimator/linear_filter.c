@@ -1028,9 +1028,9 @@ struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem {
   struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_vtab;
   __Pyx_memviewslice _A;
   __Pyx_memviewslice _B;
-  __Pyx_memviewslice _C;
+  __Pyx_memviewslice _CT;
   __Pyx_memviewslice _Gamma;
-  __Pyx_memviewslice _Gamma_tilde;
+  __Pyx_memviewslice _Gamma_tildeT;
   __Pyx_memviewslice temp_derivative;
   __Pyx_memviewslice temp_y;
   __Pyx_memviewslice temp_s_tilde;
@@ -1636,6 +1636,28 @@ static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* k
 #define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
 #endif
 
+/* PyObjectFormatSimple.proto */
+#if CYTHON_COMPILING_IN_PYPY
+    #define __Pyx_PyObject_FormatSimple(s, f) (\
+        likely(PyUnicode_CheckExact(s)) ? (Py_INCREF(s), s) :\
+        PyObject_Format(s, f))
+#elif PY_MAJOR_VERSION < 3
+    #define __Pyx_PyObject_FormatSimple(s, f) (\
+        likely(PyUnicode_CheckExact(s)) ? (Py_INCREF(s), s) :\
+        likely(PyString_CheckExact(s)) ? PyUnicode_FromEncodedObject(s, NULL, "strict") :\
+        PyObject_Format(s, f))
+#elif CYTHON_USE_TYPE_SLOTS
+    #define __Pyx_PyObject_FormatSimple(s, f) (\
+        likely(PyUnicode_CheckExact(s)) ? (Py_INCREF(s), s) :\
+        likely(PyLong_CheckExact(s)) ? PyLong_Type.tp_str(s) :\
+        likely(PyFloat_CheckExact(s)) ? PyFloat_Type.tp_str(s) :\
+        PyObject_Format(s, f))
+#else
+    #define __Pyx_PyObject_FormatSimple(s, f) (\
+        likely(PyUnicode_CheckExact(s)) ? (Py_INCREF(s), s) :\
+        PyObject_Format(s, f))
+#endif
+
 /* IncludeStringH.proto */
 #include <string.h>
 
@@ -2126,6 +2148,7 @@ int __pyx_module_is_main_cbc__digital_estimator__linear_filter = 0;
 
 /* Implementation of 'cbc.digital_estimator.linear_filter' */
 static PyObject *__pyx_builtin_range;
+static PyObject *__pyx_builtin_print;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_MemoryError;
@@ -2145,6 +2168,7 @@ static const char __pyx_k_dot[] = "dot";
 static const char __pyx_k_eye[] = "eye";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
+static const char __pyx_k_atol[] = "atol";
 static const char __pyx_k_axis[] = "axis";
 static const char __pyx_k_base[] = "base";
 static const char __pyx_k_care[] = "care";
@@ -2158,6 +2182,7 @@ static const char __pyx_k_name[] = "name";
 static const char __pyx_k_ndim[] = "ndim";
 static const char __pyx_k_pack[] = "pack";
 static const char __pyx_k_roll[] = "roll";
+static const char __pyx_k_rtol[] = "rtol";
 static const char __pyx_k_size[] = "size";
 static const char __pyx_k_step[] = "step";
 static const char __pyx_k_stop[] = "stop";
@@ -2169,11 +2194,14 @@ static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_error[] = "error";
 static const char __pyx_k_flags[] = "flags";
 static const char __pyx_k_numpy[] = "numpy";
+static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_solve[] = "solve";
 static const char __pyx_k_start[] = "start";
 static const char __pyx_k_zeros[] = "zeros";
+static const char __pyx_k_New_Bb[] = "New Bb: ";
+static const char __pyx_k_New_Bf[] = "New Bf: ";
 static const char __pyx_k_double[] = "double";
 static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_format[] = "format";
@@ -2182,7 +2210,6 @@ static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_struct[] = "struct";
-static const char __pyx_k_t_eval[] = "t_eval";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_fortran[] = "fortran";
@@ -2190,6 +2217,7 @@ static const char __pyx_k_memview[] = "memview";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_itemsize[] = "itemsize";
+static const char __pyx_k_max_step[] = "max_step";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
 static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_TypeError[] = "TypeError";
@@ -2277,6 +2305,8 @@ static PyObject *__pyx_n_s_LinearFilter_compute_filter_coef;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_kp_s_MemoryView_of_r_at_0x_x;
 static PyObject *__pyx_kp_s_MemoryView_of_r_object;
+static PyObject *__pyx_kp_u_New_Bb;
+static PyObject *__pyx_kp_u_New_Bf;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
 static PyObject *__pyx_n_s_PickleError;
@@ -2287,6 +2317,7 @@ static PyObject *__pyx_n_s_View_MemoryView;
 static PyObject *__pyx_n_s_allocate_buffer;
 static PyObject *__pyx_n_s_analogSystem;
 static PyObject *__pyx_n_s_array;
+static PyObject *__pyx_n_s_atol;
 static PyObject *__pyx_n_s_axis;
 static PyObject *__pyx_n_s_base;
 static PyObject *__pyx_n_s_batch_size;
@@ -2326,6 +2357,7 @@ static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_s_lookahead;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_n_s_max_step;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_mode;
 static PyObject *__pyx_n_s_name;
@@ -2338,6 +2370,7 @@ static PyObject *__pyx_n_s_obj;
 static PyObject *__pyx_n_s_offline_computations;
 static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_pickle;
+static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_pyx_PickleError;
 static PyObject *__pyx_n_s_pyx_checksum;
 static PyObject *__pyx_n_s_pyx_getbuffer;
@@ -2351,6 +2384,7 @@ static PyObject *__pyx_n_s_reduce;
 static PyObject *__pyx_n_s_reduce_cython;
 static PyObject *__pyx_n_s_reduce_ex;
 static PyObject *__pyx_n_s_roll;
+static PyObject *__pyx_n_s_rtol;
 static PyObject *__pyx_n_s_scipy_integrate;
 static PyObject *__pyx_n_s_scipy_linalg;
 static PyObject *__pyx_n_s_setstate;
@@ -2368,7 +2402,6 @@ static PyObject *__pyx_kp_s_strided_and_indirect;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_struct;
 static PyObject *__pyx_n_s_t;
-static PyObject *__pyx_n_s_t_eval;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_transpose;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
@@ -3899,12 +3932,12 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":92
- *         self._Bb = zeros((self._N, self._M))
+/* "cbc/digital_estimator/linear_filter.pyx":96
+ *         max_step = T/1000.0
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  */
 
 /* Python wrapper */
@@ -3942,11 +3975,11 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilte
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, 1); __PYX_ERR(0, 92, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, 1); __PYX_ERR(0, 96, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda") < 0)) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda") < 0)) __PYX_ERR(0, 96, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3959,7 +3992,7 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 92, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 96, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbc.digital_estimator.linear_filter.LinearFilter.compute_filter_coefficients.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3992,9 +4025,9 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   __pyx_outer_scope = (struct __pyx_obj_3cbc_17digital_estimator_13linear_filter___pyx_scope_struct__compute_filter_coefficients *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_tempAf)) { __Pyx_RaiseClosureNameError("tempAf"); __PYX_ERR(0, 92, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_tempAf)) { __Pyx_RaiseClosureNameError("tempAf"); __PYX_ERR(0, 96, __pyx_L1_error) }
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -4010,7 +4043,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_tempAf, __pyx_v_x};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -4018,13 +4051,13 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_tempAf, __pyx_v_x};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -4035,20 +4068,20 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
     __Pyx_INCREF(__pyx_v_x);
     __Pyx_GIVEREF(__pyx_v_x);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_x);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_Gamma)) { __Pyx_RaiseClosureNameError("Gamma"); __PYX_ERR(0, 92, __pyx_L1_error) }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 92, __pyx_L1_error) }
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_Gamma)) { __Pyx_RaiseClosureNameError("Gamma"); __PYX_ERR(0, 96, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 96, __pyx_L1_error) }
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __pyx_t_6.memview = NULL;
@@ -4068,7 +4101,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_5)) {
     PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_cur_scope->__pyx_v_Gamma, __pyx_t_3};
-    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -4077,14 +4110,14 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
     PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_cur_scope->__pyx_v_Gamma, __pyx_t_3};
-    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (__pyx_t_7) {
       __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -4095,12 +4128,12 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_4, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_5 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4125,11 +4158,11 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":94
+/* "cbc/digital_estimator/linear_filter.pyx":98
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
- *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
+ *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):
  */
 
@@ -4168,11 +4201,11 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilte
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, 1); __PYX_ERR(0, 94, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, 1); __PYX_ERR(0, 98, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda1") < 0)) __PYX_ERR(0, 94, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda1") < 0)) __PYX_ERR(0, 98, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4185,7 +4218,7 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 94, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 98, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbc.digital_estimator.linear_filter.LinearFilter.compute_filter_coefficients.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4218,9 +4251,9 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   __pyx_outer_scope = (struct __pyx_obj_3cbc_17digital_estimator_13linear_filter___pyx_scope_struct__compute_filter_coefficients *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_tempAb)) { __Pyx_RaiseClosureNameError("tempAb"); __PYX_ERR(0, 94, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_tempAb)) { __Pyx_RaiseClosureNameError("tempAb"); __PYX_ERR(0, 98, __pyx_L1_error) }
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -4236,7 +4269,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_tempAb, __pyx_v_x};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -4244,13 +4277,13 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_tempAb, __pyx_v_x};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -4261,20 +4294,23 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
     __Pyx_INCREF(__pyx_v_x);
     __Pyx_GIVEREF(__pyx_v_x);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_x);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Negative(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_Gamma)) { __Pyx_RaiseClosureNameError("Gamma"); __PYX_ERR(0, 94, __pyx_L1_error) }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 94, __pyx_L1_error) }
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_Gamma)) { __Pyx_RaiseClosureNameError("Gamma"); __PYX_ERR(0, 98, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 98, __pyx_L1_error) }
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __pyx_t_6.memview = NULL;
@@ -4294,23 +4330,23 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_5)) {
     PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_cur_scope->__pyx_v_Gamma, __pyx_t_3};
-    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
     PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_cur_scope->__pyx_v_Gamma, __pyx_t_3};
-    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 94, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (__pyx_t_7) {
       __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -4321,15 +4357,15 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_4, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_5 = PyNumber_Add(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
@@ -4369,6 +4405,9 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   PyObject *__pyx_v_Vb = NULL;
   double __pyx_v_T;
   PyObject *__pyx_v_CCT = NULL;
+  double __pyx_v_atol;
+  double __pyx_v_rtol;
+  double __pyx_v_max_step;
   PyObject *__pyx_v_derivative = NULL;
   PyObject *__pyx_v_solBf = NULL;
   PyObject *__pyx_v_solBb = NULL;
@@ -4414,7 +4453,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
  *     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):
  *         # Compute filter coefficients
  *         A = array(analogSystem._A).transpose()             # <<<<<<<<<<<<<<
- *         B = array(analogSystem._C).transpose()
+ *         B = array(analogSystem._CT).transpose()
  *         Q = dot_product(array(analogSystem._B), array(analogSystem._B).transpose())
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
@@ -4462,14 +4501,14 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   /* "cbc/digital_estimator/linear_filter.pyx":76
  *         # Compute filter coefficients
  *         A = array(analogSystem._A).transpose()
- *         B = array(analogSystem._C).transpose()             # <<<<<<<<<<<<<<
+ *         B = array(analogSystem._CT).transpose()             # <<<<<<<<<<<<<<
  *         Q = dot_product(array(analogSystem._B), array(analogSystem._B).transpose())
  *         R = eta2 * eye(analogSystem._N_tilde)
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_v_analogSystem->_C.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 76, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_C, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (unlikely(!__pyx_v_analogSystem->_CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 76, __pyx_L1_error)}
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -4510,7 +4549,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
 
   /* "cbc/digital_estimator/linear_filter.pyx":77
  *         A = array(analogSystem._A).transpose()
- *         B = array(analogSystem._C).transpose()
+ *         B = array(analogSystem._CT).transpose()
  *         Q = dot_product(array(analogSystem._B), array(analogSystem._B).transpose())             # <<<<<<<<<<<<<<
  *         R = eta2 * eye(analogSystem._N_tilde)
  *         # Solve care
@@ -4630,7 +4669,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   __pyx_t_1 = 0;
 
   /* "cbc/digital_estimator/linear_filter.pyx":78
- *         B = array(analogSystem._C).transpose()
+ *         B = array(analogSystem._CT).transpose()
  *         Q = dot_product(array(analogSystem._B), array(analogSystem._B).transpose())
  *         R = eta2 * eye(analogSystem._N_tilde)             # <<<<<<<<<<<<<<
  *         # Solve care
@@ -4670,7 +4709,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
  *         # Solve care
  *         Vf, Vb = care(A, B, Q, R)             # <<<<<<<<<<<<<<
  *         cdef double T = digitalControl._Ts
- *         CCT = dot_product(array(analogSystem._C).transpose(), array(analogSystem._C))
+ *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_care); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -4780,7 +4819,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
  *         # Solve care
  *         Vf, Vb = care(A, B, Q, R)
  *         cdef double T = digitalControl._Ts             # <<<<<<<<<<<<<<
- *         CCT = dot_product(array(analogSystem._C).transpose(), array(analogSystem._C))
+ *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
  *         tempAf = analogSystem._A - dot_product(Vf,CCT) / eta2
  */
   __pyx_t_11 = __pyx_cur_scope->__pyx_v_digitalControl->_Ts;
@@ -4789,7 +4828,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   /* "cbc/digital_estimator/linear_filter.pyx":82
  *         Vf, Vb = care(A, B, Q, R)
  *         cdef double T = digitalControl._Ts
- *         CCT = dot_product(array(analogSystem._C).transpose(), array(analogSystem._C))             # <<<<<<<<<<<<<<
+ *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))             # <<<<<<<<<<<<<<
  *         tempAf = analogSystem._A - dot_product(Vf,CCT) / eta2
  *         tempAb = analogSystem._A + dot_product(Vb,CCT) / eta2
  */
@@ -4797,8 +4836,8 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_analogSystem->_C.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 82, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_C, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (unlikely(!__pyx_v_analogSystem->_CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 82, __pyx_L1_error)}
+  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4836,8 +4875,8 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (unlikely(!__pyx_v_analogSystem->_C.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 82, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_C, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (unlikely(!__pyx_v_analogSystem->_CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 82, __pyx_L1_error)}
+  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -4909,7 +4948,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
 
   /* "cbc/digital_estimator/linear_filter.pyx":83
  *         cdef double T = digitalControl._Ts
- *         CCT = dot_product(array(analogSystem._C).transpose(), array(analogSystem._C))
+ *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
  *         tempAf = analogSystem._A - dot_product(Vf,CCT) / eta2             # <<<<<<<<<<<<<<
  *         tempAb = analogSystem._A + dot_product(Vb,CCT) / eta2
  *         self._Af = expm(tempAf * T)
@@ -4979,7 +5018,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   __pyx_t_6 = 0;
 
   /* "cbc/digital_estimator/linear_filter.pyx":84
- *         CCT = dot_product(array(analogSystem._C).transpose(), array(analogSystem._C))
+ *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
  *         tempAf = analogSystem._A - dot_product(Vf,CCT) / eta2
  *         tempAb = analogSystem._A + dot_product(Vb,CCT) / eta2             # <<<<<<<<<<<<<<
  *         self._Af = expm(tempAf * T)
@@ -5163,7 +5202,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
  *         # Solve IVPs
  *         self._Bf = zeros((self._N, self._M))             # <<<<<<<<<<<<<<
  *         self._Bb = zeros((self._N, self._M))
- *         for m in range(self._M):
+ * 
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -5206,8 +5245,8 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
  *         # Solve IVPs
  *         self._Bf = zeros((self._N, self._M))
  *         self._Bb = zeros((self._N, self._M))             # <<<<<<<<<<<<<<
- *         for m in range(self._M):
- *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ * 
+ *         atol = 1e-200
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -5246,42 +5285,69 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":91
- *         self._Bf = zeros((self._N, self._M))
+  /* "cbc/digital_estimator/linear_filter.pyx":92
  *         self._Bb = zeros((self._N, self._M))
+ * 
+ *         atol = 1e-200             # <<<<<<<<<<<<<<
+ *         rtol = 1e-10
+ *         max_step = T/1000.0
+ */
+  __pyx_v_atol = 1e-200;
+
+  /* "cbc/digital_estimator/linear_filter.pyx":93
+ * 
+ *         atol = 1e-200
+ *         rtol = 1e-10             # <<<<<<<<<<<<<<
+ *         max_step = T/1000.0
+ *         for m in range(self._M):
+ */
+  __pyx_v_rtol = 1e-10;
+
+  /* "cbc/digital_estimator/linear_filter.pyx":94
+ *         atol = 1e-200
+ *         rtol = 1e-10
+ *         max_step = T/1000.0             # <<<<<<<<<<<<<<
+ *         for m in range(self._M):
+ *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ */
+  __pyx_v_max_step = (__pyx_v_T / 1000.0);
+
+  /* "cbc/digital_estimator/linear_filter.pyx":95
+ *         rtol = 1e-10
+ *         max_step = T/1000.0
  *         for m in range(self._M):             # <<<<<<<<<<<<<<
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  */
   __pyx_t_9 = __pyx_v_self->_M;
   __pyx_t_13 = __pyx_t_9;
   for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
     __pyx_cur_scope->__pyx_v_m = __pyx_t_14;
 
-    /* "cbc/digital_estimator/linear_filter.pyx":92
- *         self._Bb = zeros((self._N, self._M))
+    /* "cbc/digital_estimator/linear_filter.pyx":96
+ *         max_step = T/1000.0
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  */
-    __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17digital_estimator_13linear_filter_12LinearFilter_27compute_filter_coefficients_lambda, 0, __pyx_n_s_LinearFilter_compute_filter_coef, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_digital_estimator_linear_fil, __pyx_d, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17digital_estimator_13linear_filter_12LinearFilter_27compute_filter_coefficients_lambda, 0, __pyx_n_s_LinearFilter_compute_filter_coef, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_digital_estimator_linear_fil, __pyx_d, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v_derivative, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "cbc/digital_estimator/linear_filter.pyx":93
+    /* "cbc/digital_estimator/linear_filter.pyx":97
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]             # <<<<<<<<<<<<<<
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]             # <<<<<<<<<<<<<<
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_solve_ivp); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_solve_ivp); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_T); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_T); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
@@ -5289,9 +5355,9 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
     __pyx_t_3 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_zeros); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_zeros); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->_N); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->_N); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
@@ -5306,10 +5372,10 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
     __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_2);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_derivative);
     __Pyx_GIVEREF(__pyx_v_derivative);
@@ -5320,55 +5386,58 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
     PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_3);
     __pyx_t_4 = 0;
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_T); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_atol); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
-    __pyx_t_4 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_t_eval, __pyx_t_2) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_6, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_atol, __pyx_t_4) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_rtol); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_rtol, __pyx_t_4) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = PyFloat_FromDouble(__pyx_v_max_step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_max_step, __pyx_t_4) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_6, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_t_3, __pyx_tuple__2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_3, __pyx_tuple__2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_solBf, __pyx_t_2);
-    __pyx_t_2 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_solBf, __pyx_t_4);
+    __pyx_t_4 = 0;
 
-    /* "cbc/digital_estimator/linear_filter.pyx":94
+    /* "cbc/digital_estimator/linear_filter.pyx":98
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
- *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
+ *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):
  */
-    __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17digital_estimator_13linear_filter_12LinearFilter_27compute_filter_coefficients_1lambda1, 0, __pyx_n_s_LinearFilter_compute_filter_coef, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_digital_estimator_linear_fil, __pyx_d, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF_SET(__pyx_v_derivative, __pyx_t_2);
-    __pyx_t_2 = 0;
+    __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17digital_estimator_13linear_filter_12LinearFilter_27compute_filter_coefficients_1lambda1, 0, __pyx_n_s_LinearFilter_compute_filter_coef, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_digital_estimator_linear_fil, __pyx_d, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 98, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF_SET(__pyx_v_derivative, __pyx_t_4);
+    __pyx_t_4 = 0;
 
-    /* "cbc/digital_estimator/linear_filter.pyx":95
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]             # <<<<<<<<<<<<<<
+    /* "cbc/digital_estimator/linear_filter.pyx":99
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]             # <<<<<<<<<<<<<<
  *             for n in range (self._N):
  *                 self._Bf[n, m] = solBf[n]
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_solve_ivp); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_T); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_solve_ivp); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_T); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_GIVEREF(__pyx_int_0);
@@ -5376,10 +5445,10 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_3);
     __pyx_t_3 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->_N); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->_N); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
       __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_5);
@@ -5390,13 +5459,13 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
         __Pyx_DECREF_SET(__pyx_t_5, function);
       }
     }
-    __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_1, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
+    __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_1, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_INCREF(__pyx_v_derivative);
     __Pyx_GIVEREF(__pyx_v_derivative);
@@ -5407,37 +5476,40 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
     PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_t_3);
     __pyx_t_6 = 0;
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_T); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_atol); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
-    __pyx_t_6 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_t_eval, __pyx_t_4) < 0) __PYX_ERR(0, 95, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_atol, __pyx_t_6) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_rtol); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_rtol, __pyx_t_6) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_max_step); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_max_step, __pyx_t_6) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_3, __pyx_tuple__2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 95, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_3, __pyx_tuple__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_Negative(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Negative(__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_solBb, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "cbc/digital_estimator/linear_filter.pyx":96
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+    /* "cbc/digital_estimator/linear_filter.pyx":100
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):             # <<<<<<<<<<<<<<
  *                 self._Bf[n, m] = solBf[n]
  *                 self._Bb[n, m] = solBb[n]
@@ -5447,18 +5519,18 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_n = __pyx_t_17;
 
-      /* "cbc/digital_estimator/linear_filter.pyx":97
- *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+      /* "cbc/digital_estimator/linear_filter.pyx":101
+ *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):
  *                 self._Bf[n, m] = solBf[n]             # <<<<<<<<<<<<<<
  *                 self._Bb[n, m] = solBb[n]
  * 
  */
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_solBf, __pyx_v_n, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_solBf, __pyx_v_n, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 97, __pyx_L1_error)
+      __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_v_self->_Bf.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 97, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->_Bf.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 101, __pyx_L1_error)}
       __pyx_t_18 = __pyx_v_n;
       __pyx_t_19 = __pyx_cur_scope->__pyx_v_m;
       __pyx_t_20 = -1;
@@ -5472,22 +5544,22 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
       } else if (unlikely(__pyx_t_19 >= __pyx_v_self->_Bf.shape[1])) __pyx_t_20 = 1;
       if (unlikely(__pyx_t_20 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_20);
-        __PYX_ERR(0, 97, __pyx_L1_error)
+        __PYX_ERR(0, 101, __pyx_L1_error)
       }
       *((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->_Bf.data + __pyx_t_18 * __pyx_v_self->_Bf.strides[0]) ) + __pyx_t_19 * __pyx_v_self->_Bf.strides[1]) )) = __pyx_t_11;
 
-      /* "cbc/digital_estimator/linear_filter.pyx":98
+      /* "cbc/digital_estimator/linear_filter.pyx":102
  *             for n in range (self._N):
  *                 self._Bf[n, m] = solBf[n]
  *                 self._Bb[n, m] = solBb[n]             # <<<<<<<<<<<<<<
  * 
  *         # Solve linear system of equations
  */
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_solBb, __pyx_v_n, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_solBb, __pyx_v_n, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 98, __pyx_L1_error)
+      __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 102, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_v_self->_Bb.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 98, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->_Bb.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 102, __pyx_L1_error)}
       __pyx_t_19 = __pyx_v_n;
       __pyx_t_18 = __pyx_cur_scope->__pyx_v_m;
       __pyx_t_20 = -1;
@@ -5501,26 +5573,104 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
       } else if (unlikely(__pyx_t_18 >= __pyx_v_self->_Bb.shape[1])) __pyx_t_20 = 1;
       if (unlikely(__pyx_t_20 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_20);
-        __PYX_ERR(0, 98, __pyx_L1_error)
+        __PYX_ERR(0, 102, __pyx_L1_error)
       }
       *((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->_Bb.data + __pyx_t_19 * __pyx_v_self->_Bb.strides[0]) ) + __pyx_t_18 * __pyx_v_self->_Bb.strides[1]) )) = __pyx_t_11;
     }
   }
 
-  /* "cbc/digital_estimator/linear_filter.pyx":101
+  /* "cbc/digital_estimator/linear_filter.pyx":105
  * 
  *         # Solve linear system of equations
+ *         print(f"New Bf: {array(self._Bf)}")             # <<<<<<<<<<<<<<
+ *         print(f"New Bb: {array(self._Bb)}")
+ *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  if (unlikely(!__pyx_v_self->_Bf.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 105, __pyx_L1_error)}
+  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->_Bf, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_6);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_6, function);
+    }
+  }
+  __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_New_Bf, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "cbc/digital_estimator/linear_filter.pyx":106
+ *         # Solve linear system of equations
+ *         print(f"New Bf: {array(self._Bf)}")
+ *         print(f"New Bb: {array(self._Bb)}")             # <<<<<<<<<<<<<<
+ *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()
+ * 
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (unlikely(!__pyx_v_self->_Bb.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 106, __pyx_L1_error)}
+  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->_Bb, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_6 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_New_Bb, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "cbc/digital_estimator/linear_filter.pyx":107
+ *         print(f"New Bf: {array(self._Bf)}")
+ *         print(f"New Bb: {array(self._Bb)}")
  *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()             # <<<<<<<<<<<<<<
  * 
  *     cdef void allocate_memory_buffers(self):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_solve); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_solve); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = PyNumber_Add(__pyx_v_Vf, __pyx_v_Vb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_4 = PyNumber_Add(__pyx_v_Vf, __pyx_v_Vb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (unlikely(!__pyx_v_analogSystem->_B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 107, __pyx_L1_error)}
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_v_analogSystem->_B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 101, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 101, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_1 = NULL;
   __pyx_t_9 = 0;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -5535,60 +5685,60 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_5)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_2, __pyx_t_6};
-    __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_4, __pyx_t_2};
+    __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 107, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_2, __pyx_t_6};
-    __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_4, __pyx_t_2};
+    __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 107, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_1) {
       __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_1); __pyx_t_1 = NULL;
     }
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_9, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_9, __pyx_t_2);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_9, __pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_9, __pyx_t_2);
+    __pyx_t_4 = 0;
     __pyx_t_2 = 0;
-    __pyx_t_6 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_transpose); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_transpose); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
-    if (likely(__pyx_t_4)) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_6)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_6);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_5, function);
     }
   }
-  __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_WT, 0);
   __pyx_v_self->_WT = __pyx_t_12;
@@ -5631,7 +5781,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_comp
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":103
+/* "cbc/digital_estimator/linear_filter.pyx":109
  *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()
  * 
  *     cdef void allocate_memory_buffers(self):             # <<<<<<<<<<<<<<
@@ -5652,20 +5802,20 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_allo
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("allocate_memory_buffers", 0);
 
-  /* "cbc/digital_estimator/linear_filter.pyx":105
+  /* "cbc/digital_estimator/linear_filter.pyx":111
  *     cdef void allocate_memory_buffers(self):
  *         # Allocate memory buffers
  *         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)             # <<<<<<<<<<<<<<
  *         self._estimate = zeros((self._K1, self._L), dtype=double)
  *         self._control_signal_in_buffer = 0
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_long((__pyx_v_self->_K3 + 1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_long((__pyx_v_self->_K3 + 1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->_M); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->_M); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -5673,43 +5823,43 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_allo
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_int8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_int8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_dsds_char(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_dsds_char(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_control_signal, 0);
   __pyx_v_self->_control_signal = __pyx_t_5;
   __pyx_t_5.memview = NULL;
   __pyx_t_5.data = NULL;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":106
+  /* "cbc/digital_estimator/linear_filter.pyx":112
  *         # Allocate memory buffers
  *         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)
  *         self._estimate = zeros((self._K1, self._L), dtype=double)             # <<<<<<<<<<<<<<
  *         self._control_signal_in_buffer = 0
  *         self._mean = zeros((self._K1 + 1, self._N), dtype=double)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->_K1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->_K1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->_L); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->_L); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_4);
@@ -5717,30 +5867,30 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_allo
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
   __pyx_t_4 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_estimate, 0);
   __pyx_v_self->_estimate = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":107
+  /* "cbc/digital_estimator/linear_filter.pyx":113
  *         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)
  *         self._estimate = zeros((self._K1, self._L), dtype=double)
  *         self._control_signal_in_buffer = 0             # <<<<<<<<<<<<<<
@@ -5749,20 +5899,20 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_allo
  */
   __pyx_v_self->_control_signal_in_buffer = 0;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":108
+  /* "cbc/digital_estimator/linear_filter.pyx":114
  *         self._estimate = zeros((self._K1, self._L), dtype=double)
  *         self._control_signal_in_buffer = 0
  *         self._mean = zeros((self._K1 + 1, self._N), dtype=double)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_v_self->_K1 + 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_long((__pyx_v_self->_K1 + 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->_N); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->_N); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -5770,30 +5920,30 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_allo
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
   __pyx_t_1 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_mean, 0);
   __pyx_v_self->_mean = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":103
+  /* "cbc/digital_estimator/linear_filter.pyx":109
  *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()
  * 
  *     cdef void allocate_memory_buffers(self):             # <<<<<<<<<<<<<<
@@ -5815,7 +5965,7 @@ static void __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_allo
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":111
+/* "cbc/digital_estimator/linear_filter.pyx":117
  * 
  * 
  *     def input(self, char [:] s):             # <<<<<<<<<<<<<<
@@ -5835,7 +5985,7 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("input (wrapper)", 0);
   assert(__pyx_arg_s); {
-    __pyx_v_s = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_arg_s, PyBUF_WRITABLE); if (unlikely(!__pyx_v_s.memview)) __PYX_ERR(0, 111, __pyx_L3_error)
+    __pyx_v_s = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_arg_s, PyBUF_WRITABLE); if (unlikely(!__pyx_v_s.memview)) __PYX_ERR(0, 117, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5868,7 +6018,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("input", 0);
 
-  /* "cbc/digital_estimator/linear_filter.pyx":112
+  /* "cbc/digital_estimator/linear_filter.pyx":118
  * 
  *     def input(self, char [:] s):
  *         if (self._control_signal_in_buffer == self._K3 + 1):             # <<<<<<<<<<<<<<
@@ -5878,7 +6028,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   __pyx_t_1 = ((__pyx_v_self->_control_signal_in_buffer == (__pyx_v_self->_K3 + 1)) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "cbc/digital_estimator/linear_filter.pyx":113
+    /* "cbc/digital_estimator/linear_filter.pyx":119
  *     def input(self, char [:] s):
  *         if (self._control_signal_in_buffer == self._K3 + 1):
  *             raise "Input buffer full. You must compute batch before adding more control signals"             # <<<<<<<<<<<<<<
@@ -5886,9 +6036,9 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
  *             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1
  */
     __Pyx_Raise(__pyx_kp_u_Input_buffer_full_You_must_compu, 0, 0, 0);
-    __PYX_ERR(0, 113, __pyx_L1_error)
+    __PYX_ERR(0, 119, __pyx_L1_error)
 
-    /* "cbc/digital_estimator/linear_filter.pyx":112
+    /* "cbc/digital_estimator/linear_filter.pyx":118
  * 
  *     def input(self, char [:] s):
  *         if (self._control_signal_in_buffer == self._K3 + 1):             # <<<<<<<<<<<<<<
@@ -5897,7 +6047,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
  */
   }
 
-  /* "cbc/digital_estimator/linear_filter.pyx":114
+  /* "cbc/digital_estimator/linear_filter.pyx":120
  *         if (self._control_signal_in_buffer == self._K3 + 1):
  *             raise "Input buffer full. You must compute batch before adding more control signals"
  *         for m in range(self._M):             # <<<<<<<<<<<<<<
@@ -5909,7 +6059,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_m = __pyx_t_4;
 
-    /* "cbc/digital_estimator/linear_filter.pyx":115
+    /* "cbc/digital_estimator/linear_filter.pyx":121
  *             raise "Input buffer full. You must compute batch before adding more control signals"
  *         for m in range(self._M):
  *             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1             # <<<<<<<<<<<<<<
@@ -5924,9 +6074,9 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
     } else if (unlikely(__pyx_t_5 >= __pyx_v_s.shape[0])) __pyx_t_6 = 0;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(0, 115, __pyx_L1_error)
+      __PYX_ERR(0, 121, __pyx_L1_error)
     }
-    if (unlikely(!__pyx_v_self->_control_signal.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 115, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_control_signal.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 121, __pyx_L1_error)}
     __pyx_t_7 = __pyx_v_self->_control_signal_in_buffer;
     __pyx_t_8 = __pyx_v_m;
     __pyx_t_6 = -1;
@@ -5940,12 +6090,12 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
     } else if (unlikely(__pyx_t_8 >= __pyx_v_self->_control_signal.shape[1])) __pyx_t_6 = 1;
     if (unlikely(__pyx_t_6 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_6);
-      __PYX_ERR(0, 115, __pyx_L1_error)
+      __PYX_ERR(0, 121, __pyx_L1_error)
     }
     *((char *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->_control_signal.data + __pyx_t_7 * __pyx_v_self->_control_signal.strides[0]) ) + __pyx_t_8 * __pyx_v_self->_control_signal.strides[1]) )) = ((2 * (*((char *) ( /* dim=0 */ (__pyx_v_s.data + __pyx_t_5 * __pyx_v_s.strides[0]) )))) - 1);
   }
 
-  /* "cbc/digital_estimator/linear_filter.pyx":116
+  /* "cbc/digital_estimator/linear_filter.pyx":122
  *         for m in range(self._M):
  *             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1
  *         self._control_signal_in_buffer += 1             # <<<<<<<<<<<<<<
@@ -5954,7 +6104,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
  */
   __pyx_v_self->_control_signal_in_buffer = (__pyx_v_self->_control_signal_in_buffer + 1);
 
-  /* "cbc/digital_estimator/linear_filter.pyx":117
+  /* "cbc/digital_estimator/linear_filter.pyx":123
  *             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1
  *         self._control_signal_in_buffer += 1
  *         return self._control_signal_in_buffer == (self._K3)             # <<<<<<<<<<<<<<
@@ -5962,13 +6112,13 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
  *     def output(self, int index):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_9 = __Pyx_PyBool_FromLong((__pyx_v_self->_control_signal_in_buffer == __pyx_v_self->_K3)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyBool_FromLong((__pyx_v_self->_control_signal_in_buffer == __pyx_v_self->_K3)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __pyx_r = __pyx_t_9;
   __pyx_t_9 = 0;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":111
+  /* "cbc/digital_estimator/linear_filter.pyx":117
  * 
  * 
  *     def input(self, char [:] s):             # <<<<<<<<<<<<<<
@@ -5988,7 +6138,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":119
+/* "cbc/digital_estimator/linear_filter.pyx":125
  *         return self._control_signal_in_buffer == (self._K3)
  * 
  *     def output(self, int index):             # <<<<<<<<<<<<<<
@@ -6008,7 +6158,7 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("output (wrapper)", 0);
   assert(__pyx_arg_index); {
-    __pyx_v_index = __Pyx_PyInt_As_int(__pyx_arg_index); if (unlikely((__pyx_v_index == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 119, __pyx_L3_error)
+    __pyx_v_index = __Pyx_PyInt_As_int(__pyx_arg_index); if (unlikely((__pyx_v_index == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 125, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6038,7 +6188,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("output", 0);
 
-  /* "cbc/digital_estimator/linear_filter.pyx":120
+  /* "cbc/digital_estimator/linear_filter.pyx":126
  * 
  *     def output(self, int index):
  *         if (index < 0 or index >= self._K1):             # <<<<<<<<<<<<<<
@@ -6056,7 +6206,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_1)) {
 
-    /* "cbc/digital_estimator/linear_filter.pyx":121
+    /* "cbc/digital_estimator/linear_filter.pyx":127
  *     def output(self, int index):
  *         if (index < 0 or index >= self._K1):
  *             raise "index out of range"             # <<<<<<<<<<<<<<
@@ -6064,9 +6214,9 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
  * 
  */
     __Pyx_Raise(__pyx_kp_u_index_out_of_range, 0, 0, 0);
-    __PYX_ERR(0, 121, __pyx_L1_error)
+    __PYX_ERR(0, 127, __pyx_L1_error)
 
-    /* "cbc/digital_estimator/linear_filter.pyx":120
+    /* "cbc/digital_estimator/linear_filter.pyx":126
  * 
  *     def output(self, int index):
  *         if (index < 0 or index >= self._K1):             # <<<<<<<<<<<<<<
@@ -6075,7 +6225,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
  */
   }
 
-  /* "cbc/digital_estimator/linear_filter.pyx":122
+  /* "cbc/digital_estimator/linear_filter.pyx":128
  *         if (index < 0 or index >= self._K1):
  *             raise "index out of range"
  *         return array(self._estimate[index, :], dtype=double)             # <<<<<<<<<<<<<<
@@ -6083,9 +6233,9 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
  *     cpdef int batch_size(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_self->_estimate.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 122, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_estimate.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 128, __pyx_L1_error)}
   __pyx_t_4.data = __pyx_v_self->_estimate.data;
   __pyx_t_4.memview = __pyx_v_self->_estimate.memview;
   __PYX_INC_MEMVIEW(&__pyx_t_4, 0);
@@ -6098,7 +6248,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 122, __pyx_L1_error)
+            __PYX_ERR(0, 128, __pyx_L1_error)
         }
         __pyx_t_4.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -6107,23 +6257,23 @@ __pyx_t_4.shape[0] = __pyx_v_self->_estimate.shape[1];
 __pyx_t_4.strides[0] = __pyx_v_self->_estimate.strides[1];
     __pyx_t_4.suboffsets[0] = -1;
 
-__pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
+__pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
   __pyx_t_4.memview = NULL;
   __pyx_t_4.data = NULL;
-  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_double); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_double); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 122, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -6132,7 +6282,7 @@ __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __p
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":119
+  /* "cbc/digital_estimator/linear_filter.pyx":125
  *         return self._control_signal_in_buffer == (self._K3)
  * 
  *     def output(self, int index):             # <<<<<<<<<<<<<<
@@ -6155,7 +6305,7 @@ __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __p
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":124
+/* "cbc/digital_estimator/linear_filter.pyx":130
  *         return array(self._estimate[index, :], dtype=double)
  * 
  *     cpdef int batch_size(self):             # <<<<<<<<<<<<<<
@@ -6185,7 +6335,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_batch
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_batch_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_batch_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilter_9batch_size)) {
         __Pyx_INCREF(__pyx_t_1);
@@ -6201,10 +6351,10 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_batch
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 124, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 130, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6223,7 +6373,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_batch
     #endif
   }
 
-  /* "cbc/digital_estimator/linear_filter.pyx":125
+  /* "cbc/digital_estimator/linear_filter.pyx":131
  * 
  *     cpdef int batch_size(self):
  *         return self._K1             # <<<<<<<<<<<<<<
@@ -6233,7 +6383,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_batch
   __pyx_r = __pyx_v_self->_K1;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":124
+  /* "cbc/digital_estimator/linear_filter.pyx":130
  *         return array(self._estimate[index, :], dtype=double)
  * 
  *     cpdef int batch_size(self):             # <<<<<<<<<<<<<<
@@ -6277,7 +6427,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("batch_size", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_batch_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_batch_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6294,7 +6444,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":127
+/* "cbc/digital_estimator/linear_filter.pyx":133
  *         return self._K1
  * 
  *     cpdef int lookahead(self):             # <<<<<<<<<<<<<<
@@ -6324,7 +6474,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_looka
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_lookahead); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_lookahead); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilter_11lookahead)) {
         __Pyx_INCREF(__pyx_t_1);
@@ -6340,10 +6490,10 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_looka
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 133, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 133, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6362,7 +6512,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_looka
     #endif
   }
 
-  /* "cbc/digital_estimator/linear_filter.pyx":128
+  /* "cbc/digital_estimator/linear_filter.pyx":134
  * 
  *     cpdef int lookahead(self):
  *         return self._K2             # <<<<<<<<<<<<<<
@@ -6372,7 +6522,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_looka
   __pyx_r = __pyx_v_self->_K2;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":127
+  /* "cbc/digital_estimator/linear_filter.pyx":133
  *         return self._K1
  * 
  *     cpdef int lookahead(self):             # <<<<<<<<<<<<<<
@@ -6416,7 +6566,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("lookahead", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_lookahead(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_lookahead(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6433,7 +6583,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/linear_filter.pyx":130
+/* "cbc/digital_estimator/linear_filter.pyx":136
  *         return self._K2
  * 
  *     cpdef int size(self):             # <<<<<<<<<<<<<<
@@ -6462,7 +6612,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_size(
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_17digital_estimator_13linear_filter_12LinearFilter_13size)) {
         __Pyx_INCREF(__pyx_t_1);
@@ -6478,10 +6628,10 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_size(
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 130, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -6500,7 +6650,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_size(
     #endif
   }
 
-  /* "cbc/digital_estimator/linear_filter.pyx":131
+  /* "cbc/digital_estimator/linear_filter.pyx":137
  * 
  *     cpdef int size(self):
  *         return self._K3             # <<<<<<<<<<<<<<
@@ -6508,7 +6658,7 @@ static int __pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_size(
   __pyx_r = __pyx_v_self->_K3;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/linear_filter.pyx":130
+  /* "cbc/digital_estimator/linear_filter.pyx":136
  *         return self._K2
  * 
  *     cpdef int size(self):             # <<<<<<<<<<<<<<
@@ -6551,7 +6701,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_13linear_filter_12LinearFilte
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("size", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_13linear_filter_12LinearFilter_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -20754,6 +20904,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_kp_s_MemoryView_of_r_at_0x_x, __pyx_k_MemoryView_of_r_at_0x_x, sizeof(__pyx_k_MemoryView_of_r_at_0x_x), 0, 0, 1, 0},
   {&__pyx_kp_s_MemoryView_of_r_object, __pyx_k_MemoryView_of_r_object, sizeof(__pyx_k_MemoryView_of_r_object), 0, 0, 1, 0},
+  {&__pyx_kp_u_New_Bb, __pyx_k_New_Bb, sizeof(__pyx_k_New_Bb), 0, 1, 0, 0},
+  {&__pyx_kp_u_New_Bf, __pyx_k_New_Bf, sizeof(__pyx_k_New_Bf), 0, 1, 0, 0},
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
@@ -20764,6 +20916,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
   {&__pyx_n_s_analogSystem, __pyx_k_analogSystem, sizeof(__pyx_k_analogSystem), 0, 0, 1, 1},
   {&__pyx_n_s_array, __pyx_k_array, sizeof(__pyx_k_array), 0, 0, 1, 1},
+  {&__pyx_n_s_atol, __pyx_k_atol, sizeof(__pyx_k_atol), 0, 0, 1, 1},
   {&__pyx_n_s_axis, __pyx_k_axis, sizeof(__pyx_k_axis), 0, 0, 1, 1},
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
   {&__pyx_n_s_batch_size, __pyx_k_batch_size, sizeof(__pyx_k_batch_size), 0, 0, 1, 1},
@@ -20803,6 +20956,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
   {&__pyx_n_s_lookahead, __pyx_k_lookahead, sizeof(__pyx_k_lookahead), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_n_s_max_step, __pyx_k_max_step, sizeof(__pyx_k_max_step), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
@@ -20815,6 +20969,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_offline_computations, __pyx_k_offline_computations, sizeof(__pyx_k_offline_computations), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
+  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
@@ -20828,6 +20983,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_reduce_cython, __pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_ex, __pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 0, 1, 1},
   {&__pyx_n_s_roll, __pyx_k_roll, sizeof(__pyx_k_roll), 0, 0, 1, 1},
+  {&__pyx_n_s_rtol, __pyx_k_rtol, sizeof(__pyx_k_rtol), 0, 0, 1, 1},
   {&__pyx_n_s_scipy_integrate, __pyx_k_scipy_integrate, sizeof(__pyx_k_scipy_integrate), 0, 0, 1, 1},
   {&__pyx_n_s_scipy_linalg, __pyx_k_scipy_linalg, sizeof(__pyx_k_scipy_linalg), 0, 0, 1, 1},
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
@@ -20845,7 +21001,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_stringsource, __pyx_k_stringsource, sizeof(__pyx_k_stringsource), 0, 0, 1, 0},
   {&__pyx_n_s_struct, __pyx_k_struct, sizeof(__pyx_k_struct), 0, 0, 1, 1},
   {&__pyx_n_s_t, __pyx_k_t, sizeof(__pyx_k_t), 0, 0, 1, 1},
-  {&__pyx_n_s_t_eval, __pyx_k_t_eval, sizeof(__pyx_k_t_eval), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_transpose, __pyx_k_transpose, sizeof(__pyx_k_transpose), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
@@ -20859,6 +21014,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 133, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 148, __pyx_L1_error)
@@ -20875,17 +21031,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cbc/digital_estimator/linear_filter.pyx":93
+  /* "cbc/digital_estimator/linear_filter.pyx":97
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]             # <<<<<<<<<<<<<<
- *             derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
- *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+ *             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]             # <<<<<<<<<<<<<<
+ *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+ *             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  */
-  __pyx_slice_ = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_slice_ = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice_);
   __Pyx_GIVEREF(__pyx_slice_);
-  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_slice_, __pyx_int_0); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_slice_, __pyx_int_neg_1); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 97, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 

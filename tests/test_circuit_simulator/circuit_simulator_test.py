@@ -40,7 +40,7 @@ def test_large_integrator():
     A = np.eye(N) * rho + np.eye(N, k=-1) * beta
     B = np.zeros((N, 1))
     B[0] = beta
-    C = np.zeros((1, N))
+    C = np.zeros((N, 1))
     C[-1] = 1.0
     Gamma_tilde = np.eye(N)
     Gamma = Gamma_tilde * (-beta)

@@ -57,22 +57,21 @@ def care(A, B, Q, R):
             Starting brute force"""
         )
         Vb = bruteForceCare(-A, B, Q, R)
-
-    RInv = np.linalg.inv(R)
-    cdef double tau = 1e-15
-    Vf = np.array(Vf, dtype=np.longdouble)
-    Vb = np.array(Vb, dtype=np.longdouble)
-    for _ in range(1000):
-        Vf = Vf + tau * (
-            np.dot(A, Vf)
-            + np.transpose(np.dot(A, Vf))
-            + Q
-            - np.dot(Vf, np.dot(B, np.dot(RInv, np.dot(B.transpose(), Vf))))
-        )
-        Vb = Vb + tau * (
-            np.dot(-A, Vb)
-            + np.transpose(np.dot(-A, Vb))
-            + Q
-            - np.dot(Vb, np.dot(B, np.dot(RInv, np.dot(B.transpose(), Vb))))
-        )
+    # RInv = np.linalg.inv(R)
+    # cdef double tau = 1e-15
+    # Vf = np.array(Vf, dtype=np.longdouble)
+    # Vb = np.array(Vb, dtype=np.longdouble)
+    # for _ in range(1000):
+    #     Vf = Vf + tau * (
+    #         np.dot(A, Vf)
+    #         + np.transpose(np.dot(A, Vf))
+    #         + Q
+    #         - np.dot(Vf, np.dot(B, np.dot(RInv, np.dot(B.transpose(), Vf))))
+    #     )
+    #     Vb = Vb + tau * (
+    #         np.dot(-A, Vb)
+    #         + np.transpose(np.dot(-A, Vb))
+    #         + Q
+    #         - np.dot(Vb, np.dot(B, np.dot(RInv, np.dot(B.transpose(), Vb))))
+    #     )
     return np.array(Vf, dtype=np.double), np.array(Vb, dtype=np.double)

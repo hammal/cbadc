@@ -3,24 +3,45 @@ The digital estimator.
 """
 #cython: language_level=3
 from cbc.digital_estimator.linear_filter cimport LinearFilter
+from cbc.digital_estimator.filter_mid_point cimport MidPointFilter
+from numpy import dot, zeros, eye, array, abs
+from numpy.linalg import inv
 
 class DigitalEstimator:
     # cdef int _estimate_pointer, _size, _iteration
     # cdef Filter _filter
 
 
-    def __init__(self, controlSignalSequence, analogSystem, digitalControl, eta2, K1, K2 = 0, stop_after_number_of_iterations = None):
+    def __init__(self, controlSignalSequence, analogSystem, digitalControl, eta2, K1, K2 = 0, stop_after_number_of_iterations = None, midPoint = False):
         # Check inputs
         if (K1 < 1):
             raise "K1 must be a positive integer"
         if (K2 < 0):
             raise "K2 must be a non negative integer"
+        self._analog_system = analogSystem
+        self._eta2 = eta2
         self._s = controlSignalSequence
-        self._filter = LinearFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+        if midPoint:
+            self._filter = MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+        else:
+            self._filter = LinearFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
         self._size = stop_after_number_of_iterations
         self._iteration = 0
         self._estimate_pointer = self._filter.batch_size()
     
+    def transfer_function(self, double [:] omega):
+        result = zeros((self._analog_system.L(), omega.size))
+        eta2Matrix = eye(self._analog_system.C().shape[0]) * self._eta2
+        for index, o in enumerate(omega):
+            G = self._analog_system.transfer_function(array([o]))
+            G = G.reshape((self._analog_system.N_tilde(), self._analog_system.L()))
+            GH = G.transpose().conjugate()
+            GGH = dot(G, GH)
+            result[:, index] = abs(dot(GH, dot(inv(GGH + eta2Matrix), G)))
+            # print(f'G {G}, GGH {GGH}, result: {result[:,index]}')
+        return result
+
+
     def __iter__(self):
         return self
     

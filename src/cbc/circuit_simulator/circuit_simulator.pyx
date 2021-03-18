@@ -13,12 +13,13 @@ cdef class CircuitSimulator(object):
     cdef double _t, _Ts, _t_stop
     cdef double [:] _state_vector
     cdef double [:] _input_vector, _control_vector, _temp_state_vector
+    cdef double _atol, _rtol, _max_step
         
     cdef _ordinary_differentail_function(self, t, y):
         cdef int l,
         for l in range(self._as._L):
             self._input_vector[l] = self._is[l].evaluate(t)
-        self._temp_state_vector = y
+        self._temp_state_vector = np.dot(self._as._Gamma_tildeT, y)
         self._control_vector = self._dc.evaluate(t, self._temp_state_vector)
         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()
 
@@ -46,6 +47,9 @@ cdef class CircuitSimulator(object):
         self._temp_state_vector = np.zeros(self._as._N, dtype=np.double)
         self._input_vector = np.zeros(self._as._L, dtype=np.double)
         self._control_vector = np.zeros(self._as._M, dtype=np.double)
+        self._atol = 1e-6
+        self._rtol = 1e-6
+        self._max_step = self._Ts / 10.
 
     def __iter__(self):
         return self
@@ -58,8 +62,8 @@ cdef class CircuitSimulator(object):
             raise StopIteration
         def f(t, x):
             return self._ordinary_differentail_function(t, x)
-        sol = solve_ivp(f, t_span, self._state_vector, t_eval=t_eval, dense_output=False)
-        self._state_vector = sol.y[:,0]
+        sol = solve_ivp(f, t_span, self._state_vector, atol=self._atol, rtol=self._rtol, max_step=self._max_step)
+        self._state_vector = sol.y[:,-1]
         self._t = t_end
         return self._dc.control_signal()
 

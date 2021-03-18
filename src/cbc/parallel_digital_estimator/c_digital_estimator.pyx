@@ -3,7 +3,7 @@ from cbc.digital_estimator.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
 from numpy import dot as dot_product, eye, zeros, int8, int32, double, roll, array
-from numpy.linalg import eig, inv
+from numpy.linalg import eig, pinv
 from libc.stdint cimport int8_t
 
 cdef class C_Digital_Estimator():
@@ -33,13 +33,13 @@ cdef class C_Digital_Estimator():
     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):
         # Compute filter coefficients
         A = array(analogSystem._A).transpose()
-        B = array(analogSystem._C).transpose()
+        B = array(analogSystem._CT).transpose()
         Q = dot_product(analogSystem._B, array(analogSystem._B).transpose())
         R = eta2 * eye(analogSystem._N_tilde)
         # Solve care
         Vf, Vb = care(A, B, Q, R)
         cdef double T = digitalControl._Ts
-        CCT = dot_product(array(analogSystem._C).transpose(),analogSystem._C)
+        CCT = dot_product(array(analogSystem._CT).transpose(),array(analogSystem._CT))
         tempAf = analogSystem._A - dot_product(Vf,CCT) / eta2
         tempAb = analogSystem._A + dot_product(Vb,CCT) / eta2
         Af = expm(tempAf * T)
@@ -48,14 +48,21 @@ cdef class C_Digital_Estimator():
         # Solve IVPs
         Bf = zeros((self._N, self._M))
         Bb = zeros((self._N, self._M))
+        atol = 1e-200
+        rtol = 1e-10
+        max_step = T/1000.
         for m in range(self._M):
-            derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
-            solBf = solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
-            derivative = lambda t, x: dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
-            solBb = -solve_ivp(derivative, (0, T), zeros(self._N), t_eval=(T,)).y[:,0]
+            derivative1 = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+            solBf = solve_ivp(derivative1, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+            derivative2 = lambda t, x: -dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+            solBb = -solve_ivp(derivative2, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
             for n in range (self._N):
                 Bf[n, m] = solBf[n]
                 Bb[n, m] = solBb[n]
+        print(f"tempAf New: {tempAf}")
+        print(f"tempAb New: {tempAb}")
+        # print(f"New Parallel Bf: {array(Bf)}")
+        # print(f"New Parallel Bb: {array(Bb)}")
 
         # Solve linear system of equations
         W = solve(Vf + Vb, analogSystem._B)
@@ -63,10 +70,10 @@ cdef class C_Digital_Estimator():
         # Parallelilize
         temp, Q_f = eig(Af)
         self.forward_a = array(temp, dtype=complex, order='C')
-        Q_f_inv = inv(Q_f)
+        Q_f_inv = pinv(Q_f, rcond=1e-20)
         temp, Q_b = eig(Ab)
         self.backward_a = array(temp, dtype=complex, order='C')
-        Q_b_inv = inv(Q_b)
+        Q_b_inv = pinv(Q_b, rcond=1e-20)
 
         self.forward_b = array(dot_product(Q_f_inv, Bf).flatten(), dtype=complex, order='C')
         self.backward_b = array(dot_product(Q_b_inv, Bb).flatten(), dtype=complex, order='C')
