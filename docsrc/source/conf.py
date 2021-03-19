@@ -12,7 +12,6 @@
 #
 import os
 import sys
-import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath("../../cbc/"))
 
@@ -34,7 +33,7 @@ version = "0.0.1"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ["sphinx.ext.autodoc",
-              "sphinx.ext.mathjax", "sphinx_rtd_theme", "nbsphinx"]
+              "sphinx.ext.mathjax", "sphinx_rtd_theme", "nbsphinx", 'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

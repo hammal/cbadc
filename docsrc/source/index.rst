@@ -22,6 +22,7 @@ the reader aware of the two main sections:
 * :doc:`control-bounded_converters` which gives a detailed documentation of the included classes and structure of the package
    as well as describing the control-bounded conversion concepts.  
 * :doc:`examples` which provides plenty of code examples demonstrating the main functionality of the package.
+* something with transfer functions and analytical...
 
 Installation
 -------------
@@ -51,7 +52,7 @@ Contents:
    
    control-bounded_converters
    examples
-   api
+   api/api
 
 Indices and tables
 ==================

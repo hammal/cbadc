@@ -1,14 +1,18 @@
 
 cdef class AnalogSystem:
-    cdef double [:,:] _A
-    cdef double [:,:] _B
-    cdef double [:,:] _CT
-    cdef double [:,:] _Gamma
-    cdef double [:,:] _Gamma_tildeT
+    cdef readonly double [:,:] A
+    cdef readonly double [:,:] B    
+    cdef readonly double [:,:] Gamma   
+    cdef readonly double [:,:] CT   
+    cdef readonly double [:,:] Gamma_tildeT   
     cdef double [:] temp_derivative
     cdef double [:] temp_y
     cdef double [:] temp_s_tilde
-    cdef int _M, _N, _L, _N_tilde, _M_tilde
+    cdef readonly int M  
+    cdef readonly int N   
+    cdef readonly int L   
+    cdef readonly int N_tilde    
+    cdef readonly int M_tilde  
     cpdef double [:] derivative(self, double [:] x, double t, double [:] u, double [:] s)
     cpdef double [:] signal_output(self, double [:] x)
     cpdef double [:] control_output(self, double [:] x)

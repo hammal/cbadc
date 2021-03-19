@@ -10,9 +10,9 @@ cdef class C_Digital_Estimator():
 
     def __init__(self, analogSystem, digitalControl, eta2, K1, K2):
         self._iteration = 1
-        self._M = analogSystem.M()
-        self._N = analogSystem.N()
-        self._L = analogSystem.L()
+        self._M = analogSystem.M
+        self._N = analogSystem.N
+        self._L = analogSystem.L
         self._K1 = K1
         self._K2 = K2
         self._K3 = K1 + K2
@@ -32,19 +32,19 @@ cdef class C_Digital_Estimator():
 
     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):
         # Compute filter coefficients
-        A = array(analogSystem._A).transpose()
-        B = array(analogSystem._CT).transpose()
-        Q = dot_product(analogSystem._B, array(analogSystem._B).transpose())
-        R = eta2 * eye(analogSystem._N_tilde)
+        A = array(analogSystem.A).transpose()
+        B = array(analogSystem.CT).transpose()
+        Q = dot_product(analogSystem.B, array(analogSystem.B).transpose())
+        R = eta2 * eye(analogSystem.N_tilde)
         # Solve care
         Vf, Vb = care(A, B, Q, R)
         cdef double T = digitalControl._Ts
-        CCT = dot_product(array(analogSystem._CT).transpose(),array(analogSystem._CT))
-        tempAf = analogSystem._A - dot_product(Vf,CCT) / eta2
-        tempAb = analogSystem._A + dot_product(Vb,CCT) / eta2
+        CCT = dot_product(array(analogSystem.CT).transpose(),array(analogSystem.CT))
+        tempAf = analogSystem.A - dot_product(Vf,CCT) / eta2
+        tempAb = analogSystem.A + dot_product(Vb,CCT) / eta2
         Af = expm(tempAf * T)
         Ab = expm(-tempAb * T)
-        Gamma = analogSystem.Gamma()
+        Gamma = analogSystem.Gamma
         # Solve IVPs
         Bf = zeros((self._N, self._M))
         Bb = zeros((self._N, self._M))
@@ -65,7 +65,7 @@ cdef class C_Digital_Estimator():
         # print(f"New Parallel Bb: {array(Bb)}")
 
         # Solve linear system of equations
-        W = solve(Vf + Vb, analogSystem._B)
+        W = solve(Vf + Vb, analogSystem.B)
 
         # Parallelilize
         temp, Q_f = eig(Af)

@@ -13,3 +13,7 @@ input matrix, and :math:`\mathbf{\Gamma}` is the control matrix.
 5
 
 To create a Analog system we use the class 
+
+
+.. image:: images/generalSSM.png
+    :width: 1000

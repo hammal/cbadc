@@ -8,11 +8,40 @@ from numpy import dot, zeros, eye, array, abs
 from numpy.linalg import inv
 
 class DigitalEstimator:
-    # cdef int _estimate_pointer, _size, _iteration
-    # cdef Filter _filter
+    """The digital estimator estimates a input signal :math:`\mathbf{u}(t)` from a sequence of control
+    signals :math:`\mathbf{s}[k]`.
+
+    Parameters
+    ----------
+    controlSignalSequence : iterator
+        a generator which outputs a sequence of control signals.
+    analogSystem : :py:class:`cbc.analog_system.AnalogSystem`
+        an analog system (necessary to compute the estimators filter coefficients).
+    digitalControl : :py:class:`cbc.digital_control.DigitalControl`
+        a digital control (necessary to determine the corresponding DAC waveform).
+    eta2 : `float`
+        the :math:`\eta^2` parameter determines the bandwidth of the estimator.
+    K1 : `int`
+        batch size.
+    K2 : `int`, `optional`
+        lookahead size, defaults to 0.
+    stop_after_number_of_iterations : `int`
+        determine a max number of iterations by the generator, defaults to :py:`math.inf`.
+    midPoint : `bool`
+        determine which filtering method to use, defaults to False.
+    
+    Yields
+    ------
+    `array_like`, shape=(L,)
+        an input estimate sample
+
+    Examples
+    --------
+    TODO:
+    """
 
 
-    def __init__(self, controlSignalSequence, analogSystem, digitalControl, eta2, K1, K2 = 0, stop_after_number_of_iterations = None, midPoint = False):
+    def __init__(self, controlSignalSequence, analogSystem, digitalControl, eta2, K1, K2 = 0, stop_after_number_of_iterations = 0, midPoint = False):
         # Check inputs
         if (K1 < 1):
             raise "K1 must be a positive integer"
@@ -30,6 +59,18 @@ class DigitalEstimator:
         self._estimate_pointer = self._filter.batch_size()
     
     def transfer_function(self, double [:] omega):
+        """Compute tranfer function for estimator.
+
+        Parameters
+        ----------
+        omega : `array_like`, shape=(:,)
+
+        Returns
+        -------
+        `array_like`, shape=(L, K)
+            return transfer function evaluated at all K angular frequencies of
+            the omega vector.
+        """
         result = zeros((self._analog_system.L(), omega.size))
         eta2Matrix = eye(self._analog_system.C().shape[0]) * self._eta2
         for index, o in enumerate(omega):

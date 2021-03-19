@@ -6,6 +6,9 @@ import time
 #cython: language_level=3
 
 def bruteForceCare(A, B, Q, R):
+    """
+    
+    """
     timelimit = 10 * 60
     start_time = time.time()
     V = np.eye(A.shape[0])

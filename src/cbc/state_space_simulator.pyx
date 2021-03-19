@@ -7,6 +7,49 @@ import math
 
 
 cdef class StateSpaceSimulator(object):
+    """Simulate the analog system and digital control interactions
+    in the precense on analog signals.
+
+    Parameters
+    ----------
+    analogSystem : :py:class:`cbc.analog_system.AnalogSystem`
+        the analog system
+    digitalControl: :py:class:`cbc.digital_control.DigitalControl`
+        the digital control
+    inputSignal : :py:class:`cbc.analog_signal.AnalogSignal`
+        the analog signal (or a derived class)
+    Ts : `float`, optional
+        specify a sampling rate at which we want to evaluate the systems
+        , defaults to digitalContro.Ts. Note that this Ts must be smaller 
+        than digitalControl.Ts. 
+    t_stop : `float`, optional
+        determines a stop time, defaults to :py:`math.inf`
+
+
+
+    Attributes
+    ----------
+    options : :obj:
+        simulation settings
+
+    See also
+    --------
+    :py:class:`cbc.analog_signal.AnalogSignal`
+    :py:class:`cbc.analog_signal.Sinusodial`
+    :py:class:`cbc.analog_system.AnalogSystem`
+    :py:class:`cbc.digital_control.DigitalControl`
+
+    Examples
+    --------
+
+    See also
+    --------
+
+    Yields
+    ------
+    `array_like`, shape=(M,), dtype=numpy.int8
+    
+    """
     cdef AnalogSystem _as
     cdef DigitalControl _dc
     cdef dict __dict__
@@ -52,9 +95,13 @@ cdef class StateSpaceSimulator(object):
         self._max_step = self._Ts / 10.
 
     def __iter__(self):
+        """Use simulator as an iterator
+        """
         return self
     
     def __next__(self):
+        """Computes the next control signal :math:`\mathbf{s}[k]`
+        """
         cdef double t_end = self._t + self._Ts
         cdef double[2] t_span = (self._t, t_end)
         cdef double[1] t_eval = (t_end,)

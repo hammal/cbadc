@@ -990,42 +990,43 @@ struct __pyx_memoryviewslice_obj;
 
 /* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
- *     cdef double _t_next, _Ts
- *     cdef double [:] _dac_values
+ *     cdef double _t_next
+ *     cpdef double T
  */
 struct __pyx_obj_3cbc_15digital_control_DigitalControl {
   PyObject_HEAD
   struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtab;
   double _t_next;
-  double _Ts;
+  double T;
   __Pyx_memviewslice _dac_values;
   __Pyx_memviewslice _s;
-  int _order;
+  int M;
+  int M_tilde;
 };
 
 
 /* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
- *     cdef double [:,:] _A
- *     cdef double [:,:] _B
+ *     cdef readonly double [:,:] A
+ *     cdef readonly double [:,:] B
  */
 struct __pyx_obj_3cbc_13analog_system_AnalogSystem {
   PyObject_HEAD
   struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *__pyx_vtab;
-  __Pyx_memviewslice _A;
-  __Pyx_memviewslice _B;
-  __Pyx_memviewslice _CT;
-  __Pyx_memviewslice _Gamma;
-  __Pyx_memviewslice _Gamma_tildeT;
+  __Pyx_memviewslice A;
+  __Pyx_memviewslice B;
+  __Pyx_memviewslice Gamma;
+  __Pyx_memviewslice CT;
+  __Pyx_memviewslice Gamma_tildeT;
   __Pyx_memviewslice temp_derivative;
   __Pyx_memviewslice temp_y;
   __Pyx_memviewslice temp_s_tilde;
-  int _M;
-  int _N;
-  int _L;
-  int _N_tilde;
-  int _M_tilde;
+  int M;
+  int N;
+  int L;
+  int N_tilde;
+  int M_tilde;
 };
 
 
@@ -1155,14 +1156,13 @@ struct __pyx_memoryviewslice_obj {
 
 /* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
- *     cdef double _t_next, _Ts
- *     cdef double [:] _dac_values
+ *     cdef double _t_next
+ *     cpdef double T
  */
 
 struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl {
   __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
   __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
   __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, PyObject *, PyObject *);
 };
 static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_DigitalControl;
@@ -1171,8 +1171,8 @@ static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtab
 /* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
- *     cdef double [:,:] _A
- *     cdef double [:,:] _B
+ *     cdef readonly double [:,:] A
+ *     cdef readonly double [:,:] B
  */
 
 struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem {
@@ -2152,13 +2152,20 @@ static PyObject *__pyx_builtin_enumerate;
 static PyObject *__pyx_builtin_Ellipsis;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
+static const char __pyx_k_A[] = "_A";
+static const char __pyx_k_B[] = "_B";
+static const char __pyx_k_L[] = "_L";
+static const char __pyx_k_M[] = "_M";
+static const char __pyx_k_N[] = "_N";
 static const char __pyx_k_O[] = "O";
 static const char __pyx_k_c[] = "c";
 static const char __pyx_k_t[] = "t";
 static const char __pyx_k_x[] = "x";
 static const char __pyx_k_y[] = "y";
+static const char __pyx_k_CT[] = "_CT";
 static const char __pyx_k_K1[] = "K1";
 static const char __pyx_k_K2[] = "K2";
+static const char __pyx_k_Ts[] = "_Ts";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_dot[] = "dot";
 static const char __pyx_k_eye[] = "eye";
@@ -2184,6 +2191,7 @@ static const char __pyx_k_step[] = "step";
 static const char __pyx_k_stop[] = "stop";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_ASCII[] = "ASCII";
+static const char __pyx_k_Gamma[] = "_Gamma";
 static const char __pyx_k_array[] = "array";
 static const char __pyx_k_class[] = "__class__";
 static const char __pyx_k_dtype[] = "dtype";
@@ -2208,6 +2216,7 @@ static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
+static const char __pyx_k_N_tilde[] = "_N_tilde";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_memview[] = "memview";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
@@ -2279,8 +2288,11 @@ static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to conver
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static const char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
+static PyObject *__pyx_n_s_A;
 static PyObject *__pyx_n_s_ASCII;
+static PyObject *__pyx_n_s_B;
 static PyObject *__pyx_kp_s_Buffer_view_does_not_expose_stri;
+static PyObject *__pyx_n_s_CT;
 static PyObject *__pyx_kp_s_Can_only_create_a_buffer_that_is;
 static PyObject *__pyx_kp_s_Cannot_assign_to_read_only_memor;
 static PyObject *__pyx_kp_s_Cannot_create_writable_memory_vi;
@@ -2288,6 +2300,7 @@ static PyObject *__pyx_kp_s_Cannot_index_with_type_s;
 static PyObject *__pyx_kp_u_Control_signal_buffer_not_full;
 static PyObject *__pyx_n_s_Ellipsis;
 static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
+static PyObject *__pyx_n_s_Gamma;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xb0;
 static PyObject *__pyx_n_s_IndexError;
 static PyObject *__pyx_kp_s_Indirect_dimensions_not_supporte;
@@ -2296,16 +2309,21 @@ static PyObject *__pyx_kp_s_Invalid_mode_expected_c_or_fortr;
 static PyObject *__pyx_kp_s_Invalid_shape_in_axis_d_d;
 static PyObject *__pyx_n_s_K1;
 static PyObject *__pyx_n_s_K2;
+static PyObject *__pyx_n_s_L;
+static PyObject *__pyx_n_s_M;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_kp_s_MemoryView_of_r_at_0x_x;
 static PyObject *__pyx_kp_s_MemoryView_of_r_object;
 static PyObject *__pyx_n_s_MidPointFilter;
 static PyObject *__pyx_n_s_MidPointFilter_compute_filter_co;
+static PyObject *__pyx_n_s_N;
+static PyObject *__pyx_n_s_N_tilde;
 static PyObject *__pyx_kp_u_New_Bb;
 static PyObject *__pyx_kp_u_New_Bf;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
 static PyObject *__pyx_n_s_PickleError;
+static PyObject *__pyx_n_s_Ts;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
 static PyObject *__pyx_n_s_ValueError;
@@ -2622,7 +2640,11 @@ static int __pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_1__cinit__(PyObject
 static int __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2, int __pyx_v_K1, int __pyx_v_K2) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "cbc/filter_mid_point.pyx":23
@@ -2632,8 +2654,11 @@ static int __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(struct __
  *         self._N = analogSystem._N
  *         self._L = analogSystem._L
  */
-  __pyx_t_1 = __pyx_v_analogSystem->_M;
-  __pyx_v_self->_M = __pyx_t_1;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_M); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->_M = __pyx_t_2;
 
   /* "cbc/filter_mid_point.pyx":24
  *         """
@@ -2642,8 +2667,11 @@ static int __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(struct __
  *         self._L = analogSystem._L
  *         self._K1 = K1
  */
-  __pyx_t_1 = __pyx_v_analogSystem->_N;
-  __pyx_v_self->_N = __pyx_t_1;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_N); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->_N = __pyx_t_2;
 
   /* "cbc/filter_mid_point.pyx":25
  *         self._M = analogSystem._M
@@ -2652,8 +2680,11 @@ static int __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(struct __
  *         self._K1 = K1
  *         self._K2 = K2
  */
-  __pyx_t_1 = __pyx_v_analogSystem->_L;
-  __pyx_v_self->_L = __pyx_t_1;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_L); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->_L = __pyx_t_2;
 
   /* "cbc/filter_mid_point.pyx":26
  *         self._N = analogSystem._N
@@ -2710,6 +2741,12 @@ static int __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(struct __
 
   /* function exit code */
   __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -4388,8 +4425,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_analogSystem->_A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 63, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_A, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_A); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4437,8 +4473,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_v_analogSystem->_CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 64, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_CT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -4488,8 +4523,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (unlikely(!__pyx_v_analogSystem->_B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 65, __pyx_L1_error)}
-  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_B); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -4509,8 +4543,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (unlikely(!__pyx_v_analogSystem->_B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 65, __pyx_L1_error)}
-  __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_B); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_8 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
@@ -4609,7 +4642,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_eye); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_analogSystem->_N_tilde); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_N_tilde); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -4752,7 +4785,10 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
  *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
  *         tempAf = analogSystem._A - dot_product(Vf, CCT) / eta2
  */
-  __pyx_t_11 = __pyx_cur_scope->__pyx_v_digitalControl->_Ts;
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_digitalControl), __pyx_n_s_Ts); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_5); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_v_T = __pyx_t_11;
 
   /* "cbc/filter_mid_point.pyx":70
@@ -4766,8 +4802,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_analogSystem->_CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 70, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_CT); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -4805,8 +4840,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (unlikely(!__pyx_v_analogSystem->_CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 70, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_CT); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -4883,8 +4917,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
  *         tempAb = analogSystem._A + dot_product(Vb, CCT) / eta2
  *         self._Af = expm(tempAf * T / 2.0)
  */
-  if (unlikely(!__pyx_v_analogSystem->_A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 71, __pyx_L1_error)}
-  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_A, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_A); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
@@ -4954,8 +4987,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
  *         self._Af = expm(tempAf * T / 2.0)
  *         self._Ab = expm(-tempAb * T / 2.0)
  */
-  if (unlikely(!__pyx_v_analogSystem->_A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 72, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_A, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_A); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
@@ -5110,8 +5142,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
  */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (unlikely(!__pyx_v_analogSystem->_Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 75, __pyx_L1_error)}
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_Gamma, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_Gamma); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -5604,8 +5635,7 @@ static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coef
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_2 = PyNumber_Add(__pyx_v_Vf, __pyx_v_Vb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_v_analogSystem->_B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 95, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_analogSystem->_B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_B); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_1 = NULL;
   __pyx_t_9 = 0;
@@ -20847,8 +20877,11 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_n_s_A, __pyx_k_A, sizeof(__pyx_k_A), 0, 0, 1, 1},
   {&__pyx_n_s_ASCII, __pyx_k_ASCII, sizeof(__pyx_k_ASCII), 0, 0, 1, 1},
+  {&__pyx_n_s_B, __pyx_k_B, sizeof(__pyx_k_B), 0, 0, 1, 1},
   {&__pyx_kp_s_Buffer_view_does_not_expose_stri, __pyx_k_Buffer_view_does_not_expose_stri, sizeof(__pyx_k_Buffer_view_does_not_expose_stri), 0, 0, 1, 0},
+  {&__pyx_n_s_CT, __pyx_k_CT, sizeof(__pyx_k_CT), 0, 0, 1, 1},
   {&__pyx_kp_s_Can_only_create_a_buffer_that_is, __pyx_k_Can_only_create_a_buffer_that_is, sizeof(__pyx_k_Can_only_create_a_buffer_that_is), 0, 0, 1, 0},
   {&__pyx_kp_s_Cannot_assign_to_read_only_memor, __pyx_k_Cannot_assign_to_read_only_memor, sizeof(__pyx_k_Cannot_assign_to_read_only_memor), 0, 0, 1, 0},
   {&__pyx_kp_s_Cannot_create_writable_memory_vi, __pyx_k_Cannot_create_writable_memory_vi, sizeof(__pyx_k_Cannot_create_writable_memory_vi), 0, 0, 1, 0},
@@ -20856,6 +20889,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Control_signal_buffer_not_full, __pyx_k_Control_signal_buffer_not_full, sizeof(__pyx_k_Control_signal_buffer_not_full), 0, 1, 0, 0},
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
   {&__pyx_kp_s_Empty_shape_tuple_for_cython_arr, __pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 0, 1, 0},
+  {&__pyx_n_s_Gamma, __pyx_k_Gamma, sizeof(__pyx_k_Gamma), 0, 0, 1, 1},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0xb0, __pyx_k_Incompatible_checksums_s_vs_0xb0, sizeof(__pyx_k_Incompatible_checksums_s_vs_0xb0), 0, 0, 1, 0},
   {&__pyx_n_s_IndexError, __pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 0, 1, 1},
   {&__pyx_kp_s_Indirect_dimensions_not_supporte, __pyx_k_Indirect_dimensions_not_supporte, sizeof(__pyx_k_Indirect_dimensions_not_supporte), 0, 0, 1, 0},
@@ -20864,16 +20898,21 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Invalid_shape_in_axis_d_d, __pyx_k_Invalid_shape_in_axis_d_d, sizeof(__pyx_k_Invalid_shape_in_axis_d_d), 0, 0, 1, 0},
   {&__pyx_n_s_K1, __pyx_k_K1, sizeof(__pyx_k_K1), 0, 0, 1, 1},
   {&__pyx_n_s_K2, __pyx_k_K2, sizeof(__pyx_k_K2), 0, 0, 1, 1},
+  {&__pyx_n_s_L, __pyx_k_L, sizeof(__pyx_k_L), 0, 0, 1, 1},
+  {&__pyx_n_s_M, __pyx_k_M, sizeof(__pyx_k_M), 0, 0, 1, 1},
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_kp_s_MemoryView_of_r_at_0x_x, __pyx_k_MemoryView_of_r_at_0x_x, sizeof(__pyx_k_MemoryView_of_r_at_0x_x), 0, 0, 1, 0},
   {&__pyx_kp_s_MemoryView_of_r_object, __pyx_k_MemoryView_of_r_object, sizeof(__pyx_k_MemoryView_of_r_object), 0, 0, 1, 0},
   {&__pyx_n_s_MidPointFilter, __pyx_k_MidPointFilter, sizeof(__pyx_k_MidPointFilter), 0, 0, 1, 1},
   {&__pyx_n_s_MidPointFilter_compute_filter_co, __pyx_k_MidPointFilter_compute_filter_co, sizeof(__pyx_k_MidPointFilter_compute_filter_co), 0, 0, 1, 1},
+  {&__pyx_n_s_N, __pyx_k_N, sizeof(__pyx_k_N), 0, 0, 1, 1},
+  {&__pyx_n_s_N_tilde, __pyx_k_N_tilde, sizeof(__pyx_k_N_tilde), 0, 0, 1, 1},
   {&__pyx_kp_u_New_Bb, __pyx_k_New_Bb, sizeof(__pyx_k_New_Bb), 0, 1, 0, 0},
   {&__pyx_kp_u_New_Bf, __pyx_k_New_Bf, sizeof(__pyx_k_New_Bf), 0, 1, 0, 0},
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
+  {&__pyx_n_s_Ts, __pyx_k_Ts, sizeof(__pyx_k_Ts), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},

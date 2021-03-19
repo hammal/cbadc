@@ -994,53 +994,54 @@ struct __pyx_memoryviewslice_obj;
 /* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
- *     cdef double [:,:] _A
- *     cdef double [:,:] _B
+ *     cdef readonly double [:,:] A
+ *     cdef readonly double [:,:] B
  */
 struct __pyx_obj_3cbc_13analog_system_AnalogSystem {
   PyObject_HEAD
   struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *__pyx_vtab;
-  __Pyx_memviewslice _A;
-  __Pyx_memviewslice _B;
-  __Pyx_memviewslice _CT;
-  __Pyx_memviewslice _Gamma;
-  __Pyx_memviewslice _Gamma_tildeT;
+  __Pyx_memviewslice A;
+  __Pyx_memviewslice B;
+  __Pyx_memviewslice Gamma;
+  __Pyx_memviewslice CT;
+  __Pyx_memviewslice Gamma_tildeT;
   __Pyx_memviewslice temp_derivative;
   __Pyx_memviewslice temp_y;
   __Pyx_memviewslice temp_s_tilde;
-  int _M;
-  int _N;
-  int _L;
-  int _N_tilde;
-  int _M_tilde;
+  int M;
+  int N;
+  int L;
+  int N_tilde;
+  int M_tilde;
 };
 
 
 /* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
- *     cdef double _t_next, _Ts
- *     cdef double [:] _dac_values
+ *     cdef double _t_next
+ *     cpdef double T
  */
 struct __pyx_obj_3cbc_15digital_control_DigitalControl {
   PyObject_HEAD
   struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtab;
   double _t_next;
-  double _Ts;
+  double T;
   __Pyx_memviewslice _dac_values;
   __Pyx_memviewslice _s;
-  int _order;
+  int M;
+  int M_tilde;
 };
 
 
 /* "cbc/analog_signal.pxd":1
  * cdef class AnalogSignal:             # <<<<<<<<<<<<<<
- *     cdef double _offset
+ *     cdef readonly double offset
  *     cpdef double evaluate(self, double t)
  */
 struct __pyx_obj_3cbc_13analog_signal_AnalogSignal {
   PyObject_HEAD
   struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal *__pyx_vtab;
-  double _offset;
+  double offset;
 };
 
 
@@ -1048,15 +1049,15 @@ struct __pyx_obj_3cbc_13analog_signal_AnalogSignal {
  *     cpdef double evaluate(self, double t)
  * 
  * cdef class Sinusodial(AnalogSignal):             # <<<<<<<<<<<<<<
- *     cdef double _amplitude
- *     cdef double _frequency
+ *     cdef readonly double amplitude
+ *     cdef readonly double frequency
  */
 struct __pyx_obj_3cbc_13analog_signal_Sinusodial {
   struct __pyx_obj_3cbc_13analog_signal_AnalogSignal __pyx_base;
-  double _amplitude;
-  double _frequency;
-  double _angluarFrequency;
-  double _phase;
+  double amplitude;
+  double frequency;
+  double angluarFrequency;
+  double phase;
 };
 
 
@@ -1064,8 +1065,8 @@ struct __pyx_obj_3cbc_13analog_signal_Sinusodial {
  * 
  * 
  * cdef class StateSpaceSimulator(object):             # <<<<<<<<<<<<<<
- *     cdef AnalogSystem _as
- *     cdef DigitalControl _dc
+ *     """Simulate the analog system and digital control interactions
+ *     in the precense on analog signals.
  */
 struct __pyx_obj_3cbc_21state_space_simulator_StateSpaceSimulator {
   PyObject_HEAD
@@ -1086,12 +1087,12 @@ struct __pyx_obj_3cbc_21state_space_simulator_StateSpaceSimulator {
 };
 
 
-/* "cbc/state_space_simulator.pyx":57
+/* "cbc/state_space_simulator.pyx":102
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
- *         cdef double t_end = self._t + self._Ts
- *         cdef double[2] t_span = (self._t, t_end)
+ *         """Computes the next control signal :math:`\mathbf{s}[k]`
+ *         """
  */
 struct __pyx_obj_3cbc_21state_space_simulator___pyx_scope_struct____next__ {
   PyObject_HEAD
@@ -1180,8 +1181,8 @@ struct __pyx_memoryviewslice_obj {
 /* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
- *     cdef double [:,:] _A
- *     cdef double [:,:] _B
+ *     cdef readonly double [:,:] A
+ *     cdef readonly double [:,:] B
  */
 
 struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem {
@@ -1195,14 +1196,13 @@ static struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *__pyx_vtabptr_
 
 /* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
- *     cdef double _t_next, _Ts
- *     cdef double [:] _dac_values
+ *     cdef double _t_next
+ *     cpdef double T
  */
 
 struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl {
   __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
   __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
   __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, PyObject *, PyObject *);
 };
 static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_DigitalControl;
@@ -1210,7 +1210,7 @@ static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtab
 
 /* "cbc/analog_signal.pxd":1
  * cdef class AnalogSignal:             # <<<<<<<<<<<<<<
- *     cdef double _offset
+ *     cdef readonly double offset
  *     cpdef double evaluate(self, double t)
  */
 
@@ -1224,8 +1224,8 @@ static struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal *__pyx_vtabptr_
  *     cpdef double evaluate(self, double t)
  * 
  * cdef class Sinusodial(AnalogSignal):             # <<<<<<<<<<<<<<
- *     cdef double _amplitude
- *     cdef double _frequency
+ *     cdef readonly double amplitude
+ *     cdef readonly double frequency
  */
 
 struct __pyx_vtabstruct_3cbc_13analog_signal_Sinusodial {
@@ -1238,8 +1238,8 @@ static struct __pyx_vtabstruct_3cbc_13analog_signal_Sinusodial *__pyx_vtabptr_3c
  * 
  * 
  * cdef class StateSpaceSimulator(object):             # <<<<<<<<<<<<<<
- *     cdef AnalogSystem _as
- *     cdef DigitalControl _dc
+ *     """Simulate the analog system and digital control interactions
+ *     in the precense on analog signals.
  */
 
 struct __pyx_vtabstruct_3cbc_21state_space_simulator_StateSpaceSimulator {
@@ -2186,6 +2186,9 @@ static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_Ellipsis;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
+static const char __pyx_k_L[] = "_L";
+static const char __pyx_k_M[] = "_M";
+static const char __pyx_k_N[] = "_N";
 static const char __pyx_k_O[] = "O";
 static const char __pyx_k_c[] = "c";
 static const char __pyx_k_f[] = "f";
@@ -2200,6 +2203,7 @@ static const char __pyx_k_dot[] = "dot";
 static const char __pyx_k_inf[] = "inf";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
+static const char __pyx_k_Ts_2[] = "_Ts";
 static const char __pyx_k_atol[] = "atol";
 static const char __pyx_k_base[] = "base";
 static const char __pyx_k_dict[] = "__dict__";
@@ -2258,6 +2262,7 @@ static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
 static const char __pyx_k_inputSignal[] = "inputSignal";
+static const char __pyx_k_Gamma_tildeT[] = "_Gamma_tildeT";
 static const char __pyx_k_analogSystem[] = "analogSystem";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
@@ -2314,15 +2319,19 @@ static PyObject *__pyx_kp_s_Cannot_create_writable_memory_vi;
 static PyObject *__pyx_kp_s_Cannot_index_with_type_s;
 static PyObject *__pyx_n_s_Ellipsis;
 static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
+static PyObject *__pyx_n_s_Gamma_tildeT;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x9e;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xb0;
 static PyObject *__pyx_n_s_IndexError;
 static PyObject *__pyx_kp_s_Indirect_dimensions_not_supporte;
 static PyObject *__pyx_kp_s_Invalid_mode_expected_c_or_fortr;
 static PyObject *__pyx_kp_s_Invalid_shape_in_axis_d_d;
+static PyObject *__pyx_n_s_L;
+static PyObject *__pyx_n_s_M;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_kp_s_MemoryView_of_r_at_0x_x;
 static PyObject *__pyx_kp_s_MemoryView_of_r_object;
+static PyObject *__pyx_n_s_N;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
 static PyObject *__pyx_n_s_PickleError;
@@ -2331,6 +2340,7 @@ static PyObject *__pyx_n_s_StateSpaceSimulator;
 static PyObject *__pyx_n_s_StopIteration;
 static PyObject *__pyx_kp_u_The_analog_system_does_not_have;
 static PyObject *__pyx_n_s_Ts;
+static PyObject *__pyx_n_s_Ts_2;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
 static PyObject *__pyx_n_s_ValueError;
@@ -2521,7 +2531,7 @@ static PyObject *__pyx_codeobj__24;
 static PyObject *__pyx_codeobj__31;
 /* Late includes */
 
-/* "cbc/state_space_simulator.pyx":18
+/* "cbc/state_space_simulator.pyx":61
  *     cdef double _atol, _rtol, _max_step
  * 
  *     cdef _ordinary_differentail_function(self, t, y):             # <<<<<<<<<<<<<<
@@ -2533,10 +2543,10 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
   int __pyx_v_l;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_1 = NULL;
+  long __pyx_t_2;
+  long __pyx_t_3;
+  int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   double __pyx_t_7;
@@ -2550,31 +2560,34 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_ordinary_differentail_function", 0);
 
-  /* "cbc/state_space_simulator.pyx":20
+  /* "cbc/state_space_simulator.pyx":63
  *     cdef _ordinary_differentail_function(self, t, y):
  *         cdef int l,
  *         for l in range(self._as._L):             # <<<<<<<<<<<<<<
  *             self._input_vector[l] = self._is[l].evaluate(t)
  *         self._temp_state_vector = np.dot(self._as._Gamma_tildeT, y)
  */
-  __pyx_t_1 = __pyx_v_self->_as->_L;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_l = __pyx_t_3;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_as), __pyx_n_s_L); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_As_long(__pyx_t_1); if (unlikely((__pyx_t_2 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 63, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __pyx_t_2;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_l = __pyx_t_4;
 
-    /* "cbc/state_space_simulator.pyx":21
+    /* "cbc/state_space_simulator.pyx":64
  *         cdef int l,
  *         for l in range(self._as._L):
  *             self._input_vector[l] = self._is[l].evaluate(t)             # <<<<<<<<<<<<<<
  *         self._temp_state_vector = np.dot(self._as._Gamma_tildeT, y)
  *         self._control_vector = self._dc.evaluate(t, self._temp_state_vector)
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_is); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 21, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_is); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_GetItemInt(__pyx_t_5, __pyx_v_l, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 21, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetItemInt(__pyx_t_5, __pyx_v_l, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_evaluate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 21, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_evaluate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -2587,14 +2600,14 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
         __Pyx_DECREF_SET(__pyx_t_5, function);
       }
     }
-    __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_v_t) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_t);
+    __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_v_t) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_t);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 21, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 21, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_v_self->_input_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 21, __pyx_L1_error)}
+    __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (unlikely(!__pyx_v_self->_input_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 64, __pyx_L1_error)}
     __pyx_t_8 = __pyx_v_l;
     __pyx_t_9 = -1;
     if (__pyx_t_8 < 0) {
@@ -2603,28 +2616,27 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
     } else if (unlikely(__pyx_t_8 >= __pyx_v_self->_input_vector.shape[0])) __pyx_t_9 = 0;
     if (unlikely(__pyx_t_9 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_9);
-      __PYX_ERR(0, 21, __pyx_L1_error)
+      __PYX_ERR(0, 64, __pyx_L1_error)
     }
     *((double *) ( /* dim=0 */ (__pyx_v_self->_input_vector.data + __pyx_t_8 * __pyx_v_self->_input_vector.strides[0]) )) = __pyx_t_7;
   }
 
-  /* "cbc/state_space_simulator.pyx":22
+  /* "cbc/state_space_simulator.pyx":65
  *         for l in range(self._as._L):
  *             self._input_vector[l] = self._is[l].evaluate(t)
  *         self._temp_state_vector = np.dot(self._as._Gamma_tildeT, y)             # <<<<<<<<<<<<<<
  *         self._control_vector = self._dc.evaluate(t, self._temp_state_vector)
  *         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_dot); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_dot); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_v_self->_as->_Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 22, __pyx_L1_error)}
-  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->_as->_Gamma_tildeT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_as), __pyx_n_s_Gamma_tildeT); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_10 = NULL;
-  __pyx_t_1 = 0;
+  __pyx_t_4 = 0;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
     __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_6);
     if (likely(__pyx_t_10)) {
@@ -2632,67 +2644,67 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
       __Pyx_INCREF(__pyx_t_10);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_6, function);
-      __pyx_t_1 = 1;
+      __pyx_t_4 = 1;
     }
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_6)) {
     PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_t_5, __pyx_v_y};
-    __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_1, 2+__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
     PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_t_5, __pyx_v_y};
-    __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_1, 2+__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   } else
   #endif
   {
-    __pyx_t_11 = PyTuple_New(2+__pyx_t_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __pyx_t_11 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     if (__pyx_t_10) {
       __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_10); __pyx_t_10 = NULL;
     }
     __Pyx_GIVEREF(__pyx_t_5);
-    PyTuple_SET_ITEM(__pyx_t_11, 0+__pyx_t_1, __pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_11, 0+__pyx_t_4, __pyx_t_5);
     __Pyx_INCREF(__pyx_v_y);
     __Pyx_GIVEREF(__pyx_v_y);
-    PyTuple_SET_ITEM(__pyx_t_11, 1+__pyx_t_1, __pyx_v_y);
+    PyTuple_SET_ITEM(__pyx_t_11, 1+__pyx_t_4, __pyx_v_y);
     __pyx_t_5 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_11, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 22, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_11, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_temp_state_vector, 0);
   __pyx_v_self->_temp_state_vector = __pyx_t_12;
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/state_space_simulator.pyx":23
+  /* "cbc/state_space_simulator.pyx":66
  *             self._input_vector[l] = self._is[l].evaluate(t)
  *         self._temp_state_vector = np.dot(self._as._Gamma_tildeT, y)
  *         self._control_vector = self._dc.evaluate(t, self._temp_state_vector)             # <<<<<<<<<<<<<<
  *         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()
  * 
  */
-  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_t); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L1_error)
-  if (unlikely(!__pyx_v_self->_temp_state_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 23, __pyx_L1_error)}
-  __pyx_t_12 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_v_self->_dc->__pyx_vtab)->evaluate(__pyx_v_self->_dc, __pyx_t_7, __pyx_v_self->_temp_state_vector, 0); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_t); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->_temp_state_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 66, __pyx_L1_error)}
+  __pyx_t_12 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_v_self->_dc->__pyx_vtab)->evaluate(__pyx_v_self->_dc, __pyx_t_7, __pyx_v_self->_temp_state_vector, 0); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 66, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_control_vector, 0);
   __pyx_v_self->_control_vector = __pyx_t_12;
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/state_space_simulator.pyx":24
+  /* "cbc/state_space_simulator.pyx":67
  *         self._temp_state_vector = np.dot(self._as._Gamma_tildeT, y)
  *         self._control_vector = self._dc.evaluate(t, self._temp_state_vector)
  *         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()             # <<<<<<<<<<<<<<
@@ -2700,17 +2712,17 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
  *     def __init__(self,
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_np); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_np); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_n_s_asarray); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_11, __pyx_n_s_asarray); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  if (unlikely(!__pyx_v_self->_temp_state_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 24, __pyx_L1_error)}
-  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_t); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L1_error)
-  if (unlikely(!__pyx_v_self->_input_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 24, __pyx_L1_error)}
-  if (unlikely(!__pyx_v_self->_control_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 24, __pyx_L1_error)}
-  __pyx_t_12 = ((struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *)__pyx_v_self->_as->__pyx_vtab)->derivative(__pyx_v_self->_as, __pyx_v_self->_temp_state_vector, __pyx_t_7, __pyx_v_self->_input_vector, __pyx_v_self->_control_vector, 0); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 24, __pyx_L1_error)
-  __pyx_t_11 = __pyx_memoryview_fromslice(__pyx_t_12, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->_temp_state_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 67, __pyx_L1_error)}
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_t); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->_input_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 67, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->_control_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 67, __pyx_L1_error)}
+  __pyx_t_12 = ((struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *)__pyx_v_self->_as->__pyx_vtab)->derivative(__pyx_v_self->_as, __pyx_v_self->_temp_state_vector, __pyx_t_7, __pyx_v_self->_input_vector, __pyx_v_self->_control_vector, 0); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_11 = __pyx_memoryview_fromslice(__pyx_t_12, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
   __pyx_t_12.memview = NULL;
@@ -2728,10 +2740,10 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
   __pyx_t_6 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_10, __pyx_t_11) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_11);
   __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_flatten); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_flatten); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_6 = NULL;
@@ -2744,16 +2756,16 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
       __Pyx_DECREF_SET(__pyx_t_5, function);
     }
   }
-  __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+  __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_r = __pyx_t_4;
-  __pyx_t_4 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/state_space_simulator.pyx":18
+  /* "cbc/state_space_simulator.pyx":61
  *     cdef double _atol, _rtol, _max_step
  * 
  *     cdef _ordinary_differentail_function(self, t, y):             # <<<<<<<<<<<<<<
@@ -2763,7 +2775,7 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_10);
@@ -2777,7 +2789,7 @@ static PyObject *__pyx_f_3cbc_21state_space_simulator_19StateSpaceSimulator__ord
   return __pyx_r;
 }
 
-/* "cbc/state_space_simulator.pyx":26
+/* "cbc/state_space_simulator.pyx":69
  *         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
@@ -2803,7 +2815,7 @@ static int __pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_1__init__
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_analogSystem,&__pyx_n_s_digitalControl,&__pyx_n_s_inputSignal,&__pyx_n_s_Ts,&__pyx_n_s_t_stop,0};
     PyObject* values[5] = {0,0,0,0,0};
 
-    /* "cbc/state_space_simulator.pyx":30
+    /* "cbc/state_space_simulator.pyx":73
  *             DigitalControl digitalControl,
  *             inputSignal,
  *             Ts=None,             # <<<<<<<<<<<<<<
@@ -2838,13 +2850,13 @@ static int __pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_1__init__
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_digitalControl)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, 1); __PYX_ERR(0, 26, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, 1); __PYX_ERR(0, 69, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_inputSignal)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, 2); __PYX_ERR(0, 26, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, 2); __PYX_ERR(0, 69, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -2860,7 +2872,7 @@ static int __pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_1__init__
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 26, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 69, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2883,17 +2895,17 @@ static int __pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_1__init__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 26, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 69, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbc.state_space_simulator.StateSpaceSimulator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_analogSystem), __pyx_ptype_3cbc_13analog_system_AnalogSystem, 1, "analogSystem", 0))) __PYX_ERR(0, 27, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_digitalControl), __pyx_ptype_3cbc_15digital_control_DigitalControl, 1, "digitalControl", 0))) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_analogSystem), __pyx_ptype_3cbc_13analog_system_AnalogSystem, 1, "analogSystem", 0))) __PYX_ERR(0, 70, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_digitalControl), __pyx_ptype_3cbc_15digital_control_DigitalControl, 1, "digitalControl", 0))) __PYX_ERR(0, 71, __pyx_L1_error)
   __pyx_r = __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(((struct __pyx_obj_3cbc_21state_space_simulator_StateSpaceSimulator *)__pyx_v_self), __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_inputSignal, __pyx_v_Ts, __pyx_v_t_stop);
 
-  /* "cbc/state_space_simulator.pyx":26
+  /* "cbc/state_space_simulator.pyx":69
  *         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
@@ -2913,13 +2925,13 @@ static int __pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_1__init__
 static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(struct __pyx_obj_3cbc_21state_space_simulator_StateSpaceSimulator *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, PyObject *__pyx_v_inputSignal, PyObject *__pyx_v_Ts, PyObject *__pyx_v_t_stop) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  Py_ssize_t __pyx_t_1;
-  int __pyx_t_2;
-  double __pyx_t_3;
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  Py_UCS4 __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_5;
+  double __pyx_t_6;
+  Py_UCS4 __pyx_t_7;
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -2928,18 +2940,26 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbc/state_space_simulator.pyx":33
+  /* "cbc/state_space_simulator.pyx":76
  *             t_stop=math.inf
  *         ):
  *         if analogSystem._L != len(inputSignal):             # <<<<<<<<<<<<<<
  *             raise """The analog system does not have as many inputs as in input
  *             list"""
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_inputSignal); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 33, __pyx_L1_error)
-  __pyx_t_2 = ((__pyx_v_analogSystem->_L != __pyx_t_1) != 0);
-  if (unlikely(__pyx_t_2)) {
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_analogSystem), __pyx_n_s_L); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_Length(__pyx_v_inputSignal); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(__pyx_t_5)) {
 
-    /* "cbc/state_space_simulator.pyx":34
+    /* "cbc/state_space_simulator.pyx":77
  *         ):
  *         if analogSystem._L != len(inputSignal):
  *             raise """The analog system does not have as many inputs as in input             # <<<<<<<<<<<<<<
@@ -2947,9 +2967,9 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
  *         self._as = analogSystem
  */
     __Pyx_Raise(__pyx_kp_u_The_analog_system_does_not_have, 0, 0, 0);
-    __PYX_ERR(0, 34, __pyx_L1_error)
+    __PYX_ERR(0, 77, __pyx_L1_error)
 
-    /* "cbc/state_space_simulator.pyx":33
+    /* "cbc/state_space_simulator.pyx":76
  *             t_stop=math.inf
  *         ):
  *         if analogSystem._L != len(inputSignal):             # <<<<<<<<<<<<<<
@@ -2958,7 +2978,7 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
  */
   }
 
-  /* "cbc/state_space_simulator.pyx":36
+  /* "cbc/state_space_simulator.pyx":79
  *             raise """The analog system does not have as many inputs as in input
  *             list"""
  *         self._as = analogSystem             # <<<<<<<<<<<<<<
@@ -2971,7 +2991,7 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
   __Pyx_DECREF(((PyObject *)__pyx_v_self->_as));
   __pyx_v_self->_as = __pyx_v_analogSystem;
 
-  /* "cbc/state_space_simulator.pyx":37
+  /* "cbc/state_space_simulator.pyx":80
  *             list"""
  *         self._as = analogSystem
  *         self._dc = digitalControl             # <<<<<<<<<<<<<<
@@ -2984,46 +3004,46 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
   __Pyx_DECREF(((PyObject *)__pyx_v_self->_dc));
   __pyx_v_self->_dc = __pyx_v_digitalControl;
 
-  /* "cbc/state_space_simulator.pyx":38
+  /* "cbc/state_space_simulator.pyx":81
  *         self._as = analogSystem
  *         self._dc = digitalControl
  *         self._is = inputSignal             # <<<<<<<<<<<<<<
  *         self._t_stop = t_stop
  *         if Ts:
  */
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_is, __pyx_v_inputSignal) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_is, __pyx_v_inputSignal) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
 
-  /* "cbc/state_space_simulator.pyx":39
+  /* "cbc/state_space_simulator.pyx":82
  *         self._dc = digitalControl
  *         self._is = inputSignal
  *         self._t_stop = t_stop             # <<<<<<<<<<<<<<
  *         if Ts:
  *             self._Ts = Ts
  */
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_t_stop); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 39, __pyx_L1_error)
-  __pyx_v_self->_t_stop = __pyx_t_3;
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_t_stop); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_v_self->_t_stop = __pyx_t_6;
 
-  /* "cbc/state_space_simulator.pyx":40
+  /* "cbc/state_space_simulator.pyx":83
  *         self._is = inputSignal
  *         self._t_stop = t_stop
  *         if Ts:             # <<<<<<<<<<<<<<
  *             self._Ts = Ts
  *         else:
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_Ts); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
-  if (__pyx_t_2) {
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_Ts); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (__pyx_t_5) {
 
-    /* "cbc/state_space_simulator.pyx":41
+    /* "cbc/state_space_simulator.pyx":84
  *         self._t_stop = t_stop
  *         if Ts:
  *             self._Ts = Ts             # <<<<<<<<<<<<<<
  *         else:
  *             self._Ts = self._dc._Ts
  */
-    __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_Ts); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
-    __pyx_v_self->_Ts = __pyx_t_3;
+    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_Ts); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L1_error)
+    __pyx_v_self->_Ts = __pyx_t_6;
 
-    /* "cbc/state_space_simulator.pyx":40
+    /* "cbc/state_space_simulator.pyx":83
  *         self._is = inputSignal
  *         self._t_stop = t_stop
  *         if Ts:             # <<<<<<<<<<<<<<
@@ -3033,7 +3053,7 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
     goto __pyx_L4;
   }
 
-  /* "cbc/state_space_simulator.pyx":43
+  /* "cbc/state_space_simulator.pyx":86
  *             self._Ts = Ts
  *         else:
  *             self._Ts = self._dc._Ts             # <<<<<<<<<<<<<<
@@ -3041,68 +3061,79 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
  *             raise f"Simulating with a sample period ${self._Ts} that exceeds the control period of the digital control ${self._dc._Ts}"
  */
   /*else*/ {
-    __pyx_t_3 = __pyx_v_self->_dc->_Ts;
-    __pyx_v_self->_Ts = __pyx_t_3;
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_dc), __pyx_n_s_Ts_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 86, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_v_self->_Ts = __pyx_t_6;
   }
   __pyx_L4:;
 
-  /* "cbc/state_space_simulator.pyx":44
+  /* "cbc/state_space_simulator.pyx":87
  *         else:
  *             self._Ts = self._dc._Ts
  *         if self._Ts > self._dc._Ts:             # <<<<<<<<<<<<<<
  *             raise f"Simulating with a sample period ${self._Ts} that exceeds the control period of the digital control ${self._dc._Ts}"
  *         self._state_vector = np.zeros(self._as._N, dtype=np.double)
  */
-  __pyx_t_2 = ((__pyx_v_self->_Ts > __pyx_v_self->_dc->_Ts) != 0);
-  if (unlikely(__pyx_t_2)) {
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->_Ts); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_dc), __pyx_n_s_Ts_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (unlikely(__pyx_t_5)) {
 
-    /* "cbc/state_space_simulator.pyx":45
+    /* "cbc/state_space_simulator.pyx":88
  *             self._Ts = self._dc._Ts
  *         if self._Ts > self._dc._Ts:
  *             raise f"Simulating with a sample period ${self._Ts} that exceeds the control period of the digital control ${self._dc._Ts}"             # <<<<<<<<<<<<<<
  *         self._state_vector = np.zeros(self._as._N, dtype=np.double)
  *         self._temp_state_vector = np.zeros(self._as._N, dtype=np.double)
  */
-    __pyx_t_4 = PyTuple_New(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = 0;
-    __pyx_t_5 = 127;
+    __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = 0;
+    __pyx_t_7 = 127;
     __Pyx_INCREF(__pyx_kp_u_Simulating_with_a_sample_period);
-    __pyx_t_1 += 33;
+    __pyx_t_2 += 33;
     __Pyx_GIVEREF(__pyx_kp_u_Simulating_with_a_sample_period);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_Simulating_with_a_sample_period);
-    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_self->_Ts); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_5;
-    __pyx_t_1 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_7);
-    __Pyx_GIVEREF(__pyx_t_7);
-    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_7);
-    __pyx_t_7 = 0;
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Simulating_with_a_sample_period);
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->_Ts); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_7 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_7) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_7;
+    __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
+    __pyx_t_4 = 0;
     __Pyx_INCREF(__pyx_kp_u_that_exceeds_the_control_period);
-    __pyx_t_1 += 57;
+    __pyx_t_2 += 57;
     __Pyx_GIVEREF(__pyx_kp_u_that_exceeds_the_control_period);
-    PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_kp_u_that_exceeds_the_control_period);
-    __pyx_t_7 = PyFloat_FromDouble(__pyx_v_self->_dc->_Ts); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
-    __pyx_t_1 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_t_6);
-    __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_4, 4, __pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_that_exceeds_the_control_period);
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_dc), __pyx_n_s_Ts_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_Raise(__pyx_t_6, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_7 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_7) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_7;
+    __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_2, __pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(0, 88, __pyx_L1_error)
 
-    /* "cbc/state_space_simulator.pyx":44
+    /* "cbc/state_space_simulator.pyx":87
  *         else:
  *             self._Ts = self._dc._Ts
  *         if self._Ts > self._dc._Ts:             # <<<<<<<<<<<<<<
@@ -3111,167 +3142,167 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
  */
   }
 
-  /* "cbc/state_space_simulator.pyx":46
+  /* "cbc/state_space_simulator.pyx":89
  *         if self._Ts > self._dc._Ts:
  *             raise f"Simulating with a sample period ${self._Ts} that exceeds the control period of the digital control ${self._dc._Ts}"
  *         self._state_vector = np.zeros(self._as._N, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self._temp_state_vector = np.zeros(self._as._N, dtype=np.double)
  *         self._input_vector = np.zeros(self._as._L, dtype=np.double)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_as), __pyx_n_s_N); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_self->_as->_N); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GIVEREF(__pyx_t_6);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6);
-  __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_double); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_double); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_9) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_9) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_9, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_9, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_state_vector, 0);
   __pyx_v_self->_state_vector = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "cbc/state_space_simulator.pyx":47
+  /* "cbc/state_space_simulator.pyx":90
  *             raise f"Simulating with a sample period ${self._Ts} that exceeds the control period of the digital control ${self._dc._Ts}"
  *         self._state_vector = np.zeros(self._as._N, dtype=np.double)
  *         self._temp_state_vector = np.zeros(self._as._N, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self._input_vector = np.zeros(self._as._L, dtype=np.double)
  *         self._control_vector = np.zeros(self._as._M, dtype=np.double)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_zeros); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_self->_as->_N); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_as), __pyx_n_s_N); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GIVEREF(__pyx_t_9);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_9);
-  __pyx_t_9 = 0;
-  __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_9);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_9);
+  __pyx_t_9 = 0;
+  __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_9, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem(__pyx_t_9, __pyx_n_s_dtype, __pyx_t_8) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_7, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_8, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_temp_state_vector, 0);
   __pyx_v_self->_temp_state_vector = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "cbc/state_space_simulator.pyx":48
+  /* "cbc/state_space_simulator.pyx":91
  *         self._state_vector = np.zeros(self._as._N, dtype=np.double)
  *         self._temp_state_vector = np.zeros(self._as._N, dtype=np.double)
  *         self._input_vector = np.zeros(self._as._L, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self._control_vector = np.zeros(self._as._M, dtype=np.double)
  *         self._atol = 1e-6
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_zeros); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_zeros); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_self->_as->_L); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_as), __pyx_n_s_L); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_8);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_8);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_8);
   __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_input_vector, 0);
   __pyx_v_self->_input_vector = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "cbc/state_space_simulator.pyx":49
+  /* "cbc/state_space_simulator.pyx":92
  *         self._temp_state_vector = np.zeros(self._as._N, dtype=np.double)
  *         self._input_vector = np.zeros(self._as._L, dtype=np.double)
  *         self._control_vector = np.zeros(self._as._M, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self._atol = 1e-6
  *         self._rtol = 1e-6
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->_as->_M); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self->_as), __pyx_n_s_M); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
-  __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_double); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_double); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_7, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_6, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_control_vector, 0);
   __pyx_v_self->_control_vector = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "cbc/state_space_simulator.pyx":50
+  /* "cbc/state_space_simulator.pyx":93
  *         self._input_vector = np.zeros(self._as._L, dtype=np.double)
  *         self._control_vector = np.zeros(self._as._M, dtype=np.double)
  *         self._atol = 1e-6             # <<<<<<<<<<<<<<
@@ -3280,7 +3311,7 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
  */
   __pyx_v_self->_atol = 1e-6;
 
-  /* "cbc/state_space_simulator.pyx":51
+  /* "cbc/state_space_simulator.pyx":94
  *         self._control_vector = np.zeros(self._as._M, dtype=np.double)
  *         self._atol = 1e-6
  *         self._rtol = 1e-6             # <<<<<<<<<<<<<<
@@ -3289,7 +3320,7 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
  */
   __pyx_v_self->_rtol = 1e-6;
 
-  /* "cbc/state_space_simulator.pyx":52
+  /* "cbc/state_space_simulator.pyx":95
  *         self._atol = 1e-6
  *         self._rtol = 1e-6
  *         self._max_step = self._Ts / 10.             # <<<<<<<<<<<<<<
@@ -3298,7 +3329,7 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
  */
   __pyx_v_self->_max_step = (__pyx_v_self->_Ts / 10.);
 
-  /* "cbc/state_space_simulator.pyx":26
+  /* "cbc/state_space_simulator.pyx":69
  *         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
@@ -3310,9 +3341,9 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
@@ -3323,16 +3354,20 @@ static int __pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator___init__(
   return __pyx_r;
 }
 
-/* "cbc/state_space_simulator.pyx":54
+/* "cbc/state_space_simulator.pyx":97
  *         self._max_step = self._Ts / 10.
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
- *         return self
- * 
+ *         """Use simulator as an iterator
+ *         """
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_3__iter__(PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_3cbc_21state_space_simulator_19StateSpaceSimulator_2__iter__[] = "Use simulator as an iterator\n        ";
+#if CYTHON_COMPILING_IN_CPYTHON
+struct wrapperbase __pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_2__iter__;
+#endif
 static PyObject *__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_3__iter__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -3349,9 +3384,9 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_2__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "cbc/state_space_simulator.pyx":55
- * 
- *     def __iter__(self):
+  /* "cbc/state_space_simulator.pyx":100
+ *         """Use simulator as an iterator
+ *         """
  *         return self             # <<<<<<<<<<<<<<
  * 
  *     def __next__(self):
@@ -3361,12 +3396,12 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_2__
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "cbc/state_space_simulator.pyx":54
+  /* "cbc/state_space_simulator.pyx":97
  *         self._max_step = self._Ts / 10.
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
- *         return self
- * 
+ *         """Use simulator as an iterator
+ *         """
  */
 
   /* function exit code */
@@ -3376,16 +3411,20 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_2__
   return __pyx_r;
 }
 
-/* "cbc/state_space_simulator.pyx":57
+/* "cbc/state_space_simulator.pyx":102
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
- *         cdef double t_end = self._t + self._Ts
- *         cdef double[2] t_span = (self._t, t_end)
+ *         """Computes the next control signal :math:`\mathbf{s}[k]`
+ *         """
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_5__next__(PyObject *__pyx_v_self); /*proto*/
+static char __pyx_doc_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__[] = "Computes the next control signal :math:`\\mathbf{s}[k]`\n        ";
+#if CYTHON_COMPILING_IN_CPYTHON
+struct wrapperbase __pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__;
+#endif
 static PyObject *__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_5__next__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -3397,7 +3436,7 @@ static PyObject *__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_5__
   return __pyx_r;
 }
 
-/* "cbc/state_space_simulator.pyx":63
+/* "cbc/state_space_simulator.pyx":110
  *         if t_end >= self._t_stop:
  *             raise StopIteration
  *         def f(t, x):             # <<<<<<<<<<<<<<
@@ -3440,11 +3479,11 @@ static PyObject *__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_8__
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("f", 1, 2, 2, 1); __PYX_ERR(0, 63, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("f", 1, 2, 2, 1); __PYX_ERR(0, 110, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "f") < 0)) __PYX_ERR(0, 63, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "f") < 0)) __PYX_ERR(0, 110, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3457,7 +3496,7 @@ static PyObject *__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_8__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("f", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 63, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("f", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 110, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbc.state_space_simulator.StateSpaceSimulator.__next__.f", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3483,7 +3522,7 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_8__
   __pyx_outer_scope = (struct __pyx_obj_3cbc_21state_space_simulator___pyx_scope_struct____next__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "cbc/state_space_simulator.pyx":64
+  /* "cbc/state_space_simulator.pyx":111
  *             raise StopIteration
  *         def f(t, x):
  *             return self._ordinary_differentail_function(t, x)             # <<<<<<<<<<<<<<
@@ -3491,14 +3530,14 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_8__
  *         self._state_vector = sol.y[:,-1]
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 64, __pyx_L1_error) }
-  __pyx_t_1 = ((struct __pyx_vtabstruct_3cbc_21state_space_simulator_StateSpaceSimulator *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->_ordinary_differentail_function(__pyx_cur_scope->__pyx_v_self, __pyx_v_t, __pyx_v_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 111, __pyx_L1_error) }
+  __pyx_t_1 = ((struct __pyx_vtabstruct_3cbc_21state_space_simulator_StateSpaceSimulator *)__pyx_cur_scope->__pyx_v_self->__pyx_vtab)->_ordinary_differentail_function(__pyx_cur_scope->__pyx_v_self, __pyx_v_t, __pyx_v_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/state_space_simulator.pyx":63
+  /* "cbc/state_space_simulator.pyx":110
  *         if t_end >= self._t_stop:
  *             raise StopIteration
  *         def f(t, x):             # <<<<<<<<<<<<<<
@@ -3517,12 +3556,12 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_8__
   return __pyx_r;
 }
 
-/* "cbc/state_space_simulator.pyx":57
+/* "cbc/state_space_simulator.pyx":102
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
- *         cdef double t_end = self._t + self._Ts
- *         cdef double[2] t_span = (self._t, t_end)
+ *         """Computes the next control signal :math:`\mathbf{s}[k]`
+ *         """
  */
 
 static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__(struct __pyx_obj_3cbc_21state_space_simulator_StateSpaceSimulator *__pyx_v_self) {
@@ -3552,7 +3591,7 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_3cbc_21state_space_simulator___pyx_scope_struct____next__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 57, __pyx_L1_error)
+    __PYX_ERR(0, 102, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3560,17 +3599,17 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
 
-  /* "cbc/state_space_simulator.pyx":58
- * 
- *     def __next__(self):
+  /* "cbc/state_space_simulator.pyx":105
+ *         """Computes the next control signal :math:`\mathbf{s}[k]`
+ *         """
  *         cdef double t_end = self._t + self._Ts             # <<<<<<<<<<<<<<
  *         cdef double[2] t_span = (self._t, t_end)
  *         cdef double[1] t_eval = (t_end,)
  */
   __pyx_v_t_end = (__pyx_cur_scope->__pyx_v_self->_t + __pyx_cur_scope->__pyx_v_self->_Ts);
 
-  /* "cbc/state_space_simulator.pyx":59
- *     def __next__(self):
+  /* "cbc/state_space_simulator.pyx":106
+ *         """
  *         cdef double t_end = self._t + self._Ts
  *         cdef double[2] t_span = (self._t, t_end)             # <<<<<<<<<<<<<<
  *         cdef double[1] t_eval = (t_end,)
@@ -3582,7 +3621,7 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   (__pyx_t_1[0]) = __pyx_t_2;
   (__pyx_t_1[1]) = __pyx_t_3;
 
-  /* "cbc/state_space_simulator.pyx":60
+  /* "cbc/state_space_simulator.pyx":107
  *         cdef double t_end = self._t + self._Ts
  *         cdef double[2] t_span = (self._t, t_end)
  *         cdef double[1] t_eval = (t_end,)             # <<<<<<<<<<<<<<
@@ -3593,7 +3632,7 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   __pyx_t_3 = __pyx_v_t_end;
   (__pyx_t_1[0]) = __pyx_t_3;
 
-  /* "cbc/state_space_simulator.pyx":61
+  /* "cbc/state_space_simulator.pyx":108
  *         cdef double[2] t_span = (self._t, t_end)
  *         cdef double[1] t_eval = (t_end,)
  *         if t_end >= self._t_stop:             # <<<<<<<<<<<<<<
@@ -3603,7 +3642,7 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   __pyx_t_4 = ((__pyx_v_t_end >= __pyx_cur_scope->__pyx_v_self->_t_stop) != 0);
   if (unlikely(__pyx_t_4)) {
 
-    /* "cbc/state_space_simulator.pyx":62
+    /* "cbc/state_space_simulator.pyx":109
  *         cdef double[1] t_eval = (t_end,)
  *         if t_end >= self._t_stop:
  *             raise StopIteration             # <<<<<<<<<<<<<<
@@ -3611,9 +3650,9 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
  *             return self._ordinary_differentail_function(t, x)
  */
     __Pyx_Raise(__pyx_builtin_StopIteration, 0, 0, 0);
-    __PYX_ERR(0, 62, __pyx_L1_error)
+    __PYX_ERR(0, 109, __pyx_L1_error)
 
-    /* "cbc/state_space_simulator.pyx":61
+    /* "cbc/state_space_simulator.pyx":108
  *         cdef double[2] t_span = (self._t, t_end)
  *         cdef double[1] t_eval = (t_end,)
  *         if t_end >= self._t_stop:             # <<<<<<<<<<<<<<
@@ -3622,33 +3661,33 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
  */
   }
 
-  /* "cbc/state_space_simulator.pyx":63
+  /* "cbc/state_space_simulator.pyx":110
  *         if t_end >= self._t_stop:
  *             raise StopIteration
  *         def f(t, x):             # <<<<<<<<<<<<<<
  *             return self._ordinary_differentail_function(t, x)
  *         sol = solve_ivp(f, t_span, self._state_vector, atol=self._atol, rtol=self._rtol, max_step=self._max_step)
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_21state_space_simulator_19StateSpaceSimulator_8__next___1f, 0, __pyx_n_s_next___locals_f, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_state_space_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_21state_space_simulator_19StateSpaceSimulator_8__next___1f, 0, __pyx_n_s_next___locals_f, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_state_space_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_v_f = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "cbc/state_space_simulator.pyx":65
+  /* "cbc/state_space_simulator.pyx":112
  *         def f(t, x):
  *             return self._ordinary_differentail_function(t, x)
  *         sol = solve_ivp(f, t_span, self._state_vector, atol=self._atol, rtol=self._rtol, max_step=self._max_step)             # <<<<<<<<<<<<<<
  *         self._state_vector = sol.y[:,-1]
  *         self._t = t_end
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_solve_ivp); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_solve_ivp); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_carray_to_py_double(__pyx_v_t_span, 2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_carray_to_py_double(__pyx_v_t_span, 2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self->_state_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 65, __pyx_L1_error)}
-  __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_cur_scope->__pyx_v_self->_state_vector, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_self->_state_vector.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 112, __pyx_L1_error)}
+  __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_cur_scope->__pyx_v_self->_state_vector, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_v_f);
   __Pyx_GIVEREF(__pyx_v_f);
@@ -3659,21 +3698,21 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   PyTuple_SET_ITEM(__pyx_t_8, 2, __pyx_t_7);
   __pyx_t_6 = 0;
   __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_6 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->_atol); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->_atol); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_atol, __pyx_t_6) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_atol, __pyx_t_6) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->_rtol); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->_rtol); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_rtol, __pyx_t_6) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_rtol, __pyx_t_6) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->_max_step); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_6 = PyFloat_FromDouble(__pyx_cur_scope->__pyx_v_self->_max_step); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_max_step, __pyx_t_6) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_max_step, __pyx_t_6) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -3681,26 +3720,26 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   __pyx_v_sol = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "cbc/state_space_simulator.pyx":66
+  /* "cbc/state_space_simulator.pyx":113
  *             return self._ordinary_differentail_function(t, x)
  *         sol = solve_ivp(f, t_span, self._state_vector, atol=self._atol, rtol=self._rtol, max_step=self._max_step)
  *         self._state_vector = sol.y[:,-1]             # <<<<<<<<<<<<<<
  *         self._t = t_end
  *         return self._dc.control_signal()
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_sol, __pyx_n_s_y); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_sol, __pyx_n_s_y); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_tuple__5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_tuple__5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_7, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_7, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_cur_scope->__pyx_v_self->_state_vector, 0);
   __pyx_cur_scope->__pyx_v_self->_state_vector = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "cbc/state_space_simulator.pyx":67
+  /* "cbc/state_space_simulator.pyx":114
  *         sol = solve_ivp(f, t_span, self._state_vector, atol=self._atol, rtol=self._rtol, max_step=self._max_step)
  *         self._state_vector = sol.y[:,-1]
  *         self._t = t_end             # <<<<<<<<<<<<<<
@@ -3709,15 +3748,15 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
  */
   __pyx_cur_scope->__pyx_v_self->_t = __pyx_v_t_end;
 
-  /* "cbc/state_space_simulator.pyx":68
+  /* "cbc/state_space_simulator.pyx":115
  *         self._state_vector = sol.y[:,-1]
  *         self._t = t_end
  *         return self._dc.control_signal()             # <<<<<<<<<<<<<<
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_10 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_self->_dc->__pyx_vtab)->control_signal(__pyx_cur_scope->__pyx_v_self->_dc, 0); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __pyx_memview_get_char, (int (*)(char *, PyObject *)) __pyx_memview_set_char, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_10 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_self->_dc->__pyx_vtab)->control_signal(__pyx_cur_scope->__pyx_v_self->_dc, 0); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __pyx_memview_get_char, (int (*)(char *, PyObject *)) __pyx_memview_set_char, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
   __pyx_t_10.memview = NULL;
@@ -3726,12 +3765,12 @@ static PyObject *__pyx_pf_3cbc_21state_space_simulator_19StateSpaceSimulator_4__
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "cbc/state_space_simulator.pyx":57
+  /* "cbc/state_space_simulator.pyx":102
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
- *         cdef double t_end = self._t + self._Ts
- *         cdef double[2] t_span = (self._t, t_end)
+ *         """Computes the next control signal :math:`\mathbf{s}[k]`
+ *         """
  */
 
   /* function exit code */
@@ -17971,7 +18010,7 @@ static PyObject *__pyx___dict__getter_3cbc_21state_space_simulator_StateSpaceSim
 static PyObject *__pyx_specialmethod___pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_5__next__(PyObject *self, CYTHON_UNUSED PyObject *arg) {return __pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_5__next__(self);}
 
 static PyMethodDef __pyx_methods_3cbc_21state_space_simulator_StateSpaceSimulator[] = {
-  {"__next__", (PyCFunction)__pyx_specialmethod___pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_5__next__, METH_NOARGS|METH_COEXIST, 0},
+  {"__next__", (PyCFunction)__pyx_specialmethod___pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_5__next__, METH_NOARGS|METH_COEXIST, __pyx_doc_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__},
   {"__reduce_cython__", (PyCFunction)__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_7__reduce_cython__, METH_NOARGS, __pyx_doc_3cbc_21state_space_simulator_19StateSpaceSimulator_6__reduce_cython__},
   {"__setstate_cython__", (PyCFunction)__pyx_pw_3cbc_21state_space_simulator_19StateSpaceSimulator_9__setstate_cython__, METH_O, __pyx_doc_3cbc_21state_space_simulator_19StateSpaceSimulator_8__setstate_cython__},
   {0, 0, 0, 0}
@@ -18013,7 +18052,7 @@ static PyTypeObject __pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator 
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  "StateSpaceSimulator(AnalogSystem analogSystem, DigitalControl digitalControl, inputSignal, Ts=None, t_stop=math.inf)", /*tp_doc*/
+  "StateSpaceSimulator(AnalogSystem analogSystem, DigitalControl digitalControl, inputSignal, Ts=None, t_stop=math.inf)\nSimulate the analog system and digital control interactions\n    in the precense on analog signals.\n\n    Parameters\n    ----------\n    analogSystem : :py:class:`cbc.analog_system.AnalogSystem`\n        the analog system\n    digitalControl: :py:class:`cbc.digital_control.DigitalControl`\n        the digital control\n    inputSignal : :py:class:`cbc.analog_signal.AnalogSignal`\n        the analog signal (or a derived class)\n    Ts : `float`, optional\n        specify a sampling rate at which we want to evaluate the systems\n        , defaults to digitalContro.Ts. Note that this Ts must be smaller \n        than digitalControl.Ts. \n    t_stop : `float`, optional\n        determines a stop time, defaults to :py:`math.inf`\n\n\n\n    Attributes\n    ----------\n    options : :obj:\n        simulation settings\n\n    See also\n    --------\n    :py:class:`cbc.analog_signal.AnalogSignal`\n    :py:class:`cbc.analog_signal.Sinusodial`\n    :py:class:`cbc.analog_system.AnalogSystem`\n    :py:class:`cbc.digital_control.DigitalControl`\n\n    Examples\n    --------\n\n    See also\n    --------\n\n    Yields\n    ------\n    `array_like`, shape=(M,), dtype=numpy.int8\n    \n    ", /*tp_doc*/
   __pyx_tp_traverse_3cbc_21state_space_simulator_StateSpaceSimulator, /*tp_traverse*/
   __pyx_tp_clear_3cbc_21state_space_simulator_StateSpaceSimulator, /*tp_clear*/
   0, /*tp_richcompare*/
@@ -18935,15 +18974,19 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Cannot_index_with_type_s, __pyx_k_Cannot_index_with_type_s, sizeof(__pyx_k_Cannot_index_with_type_s), 0, 0, 1, 0},
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
   {&__pyx_kp_s_Empty_shape_tuple_for_cython_arr, __pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 0, 1, 0},
+  {&__pyx_n_s_Gamma_tildeT, __pyx_k_Gamma_tildeT, sizeof(__pyx_k_Gamma_tildeT), 0, 0, 1, 1},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0x9e, __pyx_k_Incompatible_checksums_s_vs_0x9e, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x9e), 0, 0, 1, 0},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0xb0, __pyx_k_Incompatible_checksums_s_vs_0xb0, sizeof(__pyx_k_Incompatible_checksums_s_vs_0xb0), 0, 0, 1, 0},
   {&__pyx_n_s_IndexError, __pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 0, 1, 1},
   {&__pyx_kp_s_Indirect_dimensions_not_supporte, __pyx_k_Indirect_dimensions_not_supporte, sizeof(__pyx_k_Indirect_dimensions_not_supporte), 0, 0, 1, 0},
   {&__pyx_kp_s_Invalid_mode_expected_c_or_fortr, __pyx_k_Invalid_mode_expected_c_or_fortr, sizeof(__pyx_k_Invalid_mode_expected_c_or_fortr), 0, 0, 1, 0},
   {&__pyx_kp_s_Invalid_shape_in_axis_d_d, __pyx_k_Invalid_shape_in_axis_d_d, sizeof(__pyx_k_Invalid_shape_in_axis_d_d), 0, 0, 1, 0},
+  {&__pyx_n_s_L, __pyx_k_L, sizeof(__pyx_k_L), 0, 0, 1, 1},
+  {&__pyx_n_s_M, __pyx_k_M, sizeof(__pyx_k_M), 0, 0, 1, 1},
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_kp_s_MemoryView_of_r_at_0x_x, __pyx_k_MemoryView_of_r_at_0x_x, sizeof(__pyx_k_MemoryView_of_r_at_0x_x), 0, 0, 1, 0},
   {&__pyx_kp_s_MemoryView_of_r_object, __pyx_k_MemoryView_of_r_object, sizeof(__pyx_k_MemoryView_of_r_object), 0, 0, 1, 0},
+  {&__pyx_n_s_N, __pyx_k_N, sizeof(__pyx_k_N), 0, 0, 1, 1},
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
@@ -18952,6 +18995,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_StopIteration, __pyx_k_StopIteration, sizeof(__pyx_k_StopIteration), 0, 0, 1, 1},
   {&__pyx_kp_u_The_analog_system_does_not_have, __pyx_k_The_analog_system_does_not_have, sizeof(__pyx_k_The_analog_system_does_not_have), 0, 1, 0, 0},
   {&__pyx_n_s_Ts, __pyx_k_Ts, sizeof(__pyx_k_Ts), 0, 0, 1, 1},
+  {&__pyx_n_s_Ts_2, __pyx_k_Ts_2, sizeof(__pyx_k_Ts_2), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
@@ -19052,8 +19096,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 20, __pyx_L1_error)
-  __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 109, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 133, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(1, 148, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(1, 151, __pyx_L1_error)
@@ -19070,29 +19114,29 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cbc/state_space_simulator.pyx":63
+  /* "cbc/state_space_simulator.pyx":110
  *         if t_end >= self._t_stop:
  *             raise StopIteration
  *         def f(t, x):             # <<<<<<<<<<<<<<
  *             return self._ordinary_differentail_function(t, x)
  *         sol = solve_ivp(f, t_span, self._state_vector, atol=self._atol, rtol=self._rtol, max_step=self._max_step)
  */
-  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_n_s_t, __pyx_n_s_x); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_n_s_t, __pyx_n_s_x); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_state_space_simulator_py, __pyx_n_s_f, 63, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_state_space_simulator_py, __pyx_n_s_f, 110, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 110, __pyx_L1_error)
 
-  /* "cbc/state_space_simulator.pyx":66
+  /* "cbc/state_space_simulator.pyx":113
  *             return self._ordinary_differentail_function(t, x)
  *         sol = solve_ivp(f, t_span, self._state_vector, atol=self._atol, rtol=self._rtol, max_step=self._max_step)
  *         self._state_vector = sol.y[:,-1]             # <<<<<<<<<<<<<<
  *         self._t = t_end
  *         return self._dc.control_signal()
  */
-  __pyx_slice__4 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__4)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_slice__4 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__4)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__4);
   __Pyx_GIVEREF(__pyx_slice__4);
-  __pyx_tuple__5 = PyTuple_Pack(2, __pyx_slice__4, __pyx_int_neg_1); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(2, __pyx_slice__4, __pyx_int_neg_1); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
@@ -19420,11 +19464,31 @@ static int __Pyx_modinit_type_init_code(void) {
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator.tp_print = 0;
   #endif
+  #if CYTHON_COMPILING_IN_CPYTHON
+  {
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator, "__iter__"); if (unlikely(!wrapper)) __PYX_ERR(0, 9, __pyx_L1_error)
+    if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
+      __pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_2__iter__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_2__iter__.doc = __pyx_doc_3cbc_21state_space_simulator_19StateSpaceSimulator_2__iter__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_2__iter__;
+    }
+  }
+  #endif
+  #if CYTHON_COMPILING_IN_CPYTHON
+  {
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator, "__next__"); if (unlikely(!wrapper)) __PYX_ERR(0, 9, __pyx_L1_error)
+    if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
+      __pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__.doc = __pyx_doc_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_3cbc_21state_space_simulator_19StateSpaceSimulator_4__next__;
+    }
+  }
+  #endif
   if (__Pyx_SetVtable(__pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator.tp_dict, __pyx_vtabptr_3cbc_21state_space_simulator_StateSpaceSimulator) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_StateSpaceSimulator, (PyObject *)&__pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __pyx_ptype_3cbc_21state_space_simulator_StateSpaceSimulator = &__pyx_type_3cbc_21state_space_simulator_StateSpaceSimulator;
-  if (PyType_Ready(&__pyx_type_3cbc_21state_space_simulator___pyx_scope_struct____next__) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3cbc_21state_space_simulator___pyx_scope_struct____next__) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3cbc_21state_space_simulator___pyx_scope_struct____next__.tp_print = 0;
   #endif
@@ -19792,16 +19856,16 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_math, __pyx_t_2) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/state_space_simulator.pyx":31
+  /* "cbc/state_space_simulator.pyx":74
  *             inputSignal,
  *             Ts=None,
  *             t_stop=math.inf             # <<<<<<<<<<<<<<
  *         ):
  *         if analogSystem._L != len(inputSignal):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_math); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_math); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_inf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_inf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_k_ = __pyx_t_1;
