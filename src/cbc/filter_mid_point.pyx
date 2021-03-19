@@ -2,13 +2,13 @@
 The digital estimator.
 """
 #cython: language_level=3
-from .offline_computations import care
+from cbc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
 from numpy import dot as dot_product, eye, zeros, int8, double, roll, array
 
 
-cdef class LinearFilter():
+cdef class MidPointFilter():
 
     def __cinit__(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2, int K1, int K2 = 0):
         """Initializes filter object by computing filter coefficents and allocation buffer memory.
@@ -30,42 +30,30 @@ cdef class LinearFilter():
         self.allocate_memory_buffers()
     
     cpdef void compute_batch(self):
-        cdef int k1, k2, k3
-        cdef double [:] temp_forward_mean
-        temp_forward_mean = zeros(self._N, dtype=double) 
+        cdef int k
+        
         # check if ready to compute buffer
         if (self._control_signal_in_buffer < self._K3):
             raise "Control signal buffer not full"
         # compute lookahead
         # print(array(self._control_signal))
-        for k1 in range(self._K3, self._K1, -1):
-            temp = dot_product(self._Ab, self._mean[self._K1,:]) + dot_product(self._Bb, self._control_signal[k1, :])
-            for n in range(self._N):
-                self._mean[self._K1, n] = temp[n]
-        # print(array(self._mean[self._K1, :]))
-        # compute forward recursion
-        for k2 in range(1, self._K1):
-            temp = dot_product(self._Af, self._mean[k2 - 1, :]) + dot_product(self._Bf, self._control_signal[k2 - 1, :])
-            for n in range(self._N):
-                self._mean[k2, n] = temp[n]
-            # print(array(self._mean[k2, :]))
-        for n in range(self._N):
-            temp_forward_mean[n] = self._mean[self._K1 - 1, n]
-        # compute backward recursion and estimate
-        # print("Backward")
-        for k3 in range(self._K1, 0, -1):
-            temp = dot_product(self._Ab, self._mean[k3, :]) + dot_product(self._Bb, self._control_signal[k3-1, :])
-            temp_estimate = dot_product(self._WT, temp - self._mean[k3-1, :])
+        for k in range(self._K3, 0, -1):
+            self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])
+            temp_est = dot_product(self._WT, self.temp_backward_mean)
+            if k < self._K1:
+                for l in range(self._L):
+                    self._estimate[k, l] = temp_est[l]
+            self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])
+        for k in range(0, self._K1):
+            self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])
+            temp_est = -dot_product(self._WT, self.temp_forward_mean)
             for l in range(self._L):
-                self._estimate[k3 - 1, l] = temp_estimate[l]
-            for n in range(self._N):
-                self._mean[k3 - 1, n] = temp[n]
-            # print(array(self._mean[k3-1, :]))
-        # reset intital means
+                self._estimate[k, l] += temp_est[l]
+            self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])
         for n in range(self._N):
-            self._mean[0, n] = temp_forward_mean[n]
-            self._mean[self._K1, n] = 0
-        # print(array(self._mean))
+            self.temp_backward_mean[n] = 0
+            # temp_forward_mean is already set correctly.
+
         # rotate buffer to make place for new control signals
         self._control_signal = roll(self._control_signal, -self._K1, axis=0)
         self._control_signal_in_buffer -= self._K1
@@ -80,10 +68,10 @@ cdef class LinearFilter():
         Vf, Vb = care(A, B, Q, R)
         cdef double T = digitalControl._Ts
         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
-        tempAf = analogSystem._A - dot_product(Vf,CCT) / eta2
-        tempAb = analogSystem._A + dot_product(Vb,CCT) / eta2
-        self._Af = expm(tempAf * T)
-        self._Ab = expm(-tempAb * T)
+        tempAf = analogSystem._A - dot_product(Vf, CCT) / eta2
+        tempAb = analogSystem._A + dot_product(Vb, CCT) / eta2
+        self._Af = expm(tempAf * T / 2.0)
+        self._Ab = expm(-tempAb * T / 2.0)
         Gamma = array(analogSystem._Gamma)
         # Solve IVPs
         self._Bf = zeros((self._N, self._M))
@@ -94,9 +82,9 @@ cdef class LinearFilter():
         max_step = T/1000.0
         for m in range(self._M):
             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
-            solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+            solBf = solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
-            solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
+            solBb = -solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
             for n in range (self._N):
                 self._Bf[n, m] = solBf[n]
                 self._Bb[n, m] = solBb[n]
@@ -111,7 +99,8 @@ cdef class LinearFilter():
         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)
         self._estimate = zeros((self._K1, self._L), dtype=double)
         self._control_signal_in_buffer = 0
-        self._mean = zeros((self._K1 + 1, self._N), dtype=double)
+        self.temp_forward_mean = zeros(self._N, dtype=double) 
+        self.temp_backward_mean = zeros(self._N, dtype=double) 
 
 
     def input(self, char [:] s):

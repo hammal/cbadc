@@ -1,7 +1,7 @@
-from cbc.circuit_simulator import CircuitSimulator
-from cbc.analog_signal import AnalogSignal, Sinusodial
-from cbc.analog_system import AnalogSystem
-from cbc.digital_control import DigitalControl
+from cbc import StateSpaceSimulator
+from cbc import AnalogSignal, Sinusodial
+from cbc import AnalogSystem
+from cbc import DigitalControl
 import numpy as np
 from tests.test_analog_system.chain_of_integrators import chain_of_integrators
 beta = 6250.0
@@ -21,16 +21,16 @@ Ts = 1/(2 * beta)
 def test_initialization(chain_of_integrators):
     analogSignals = [AnalogSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
-    CircuitSimulator(
+    StateSpaceSimulator(
         chain_of_integrators["system"], digitalControl, analogSignals)
 
 
 def test_iterator(chain_of_integrators):
     analogSignals = [AnalogSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
-    circuitSimulator = CircuitSimulator(
+    statespacesimulator = StateSpaceSimulator(
         chain_of_integrators["system"], digitalControl, analogSignals, t_stop=Ts * 1000)
-    for control_signal in circuitSimulator:
+    for control_signal in statespacesimulator:
         pass
 
 
@@ -47,7 +47,7 @@ def test_large_integrator():
     analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
     analogSignals = [AnalogSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
-    circuitSimulator = CircuitSimulator(
+    statespacesimulator = StateSpaceSimulator(
         analogSystem, digitalControl, analogSignals, t_stop=Ts * 1000)
-    for control_signal in circuitSimulator:
+    for control_signal in statespacesimulator:
         pass

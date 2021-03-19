@@ -1,8 +1,8 @@
-from cbc.circuit_simulator import CircuitSimulator
-from cbc.digital_estimator.digital_estimator import DigitalEstimator
-from cbc.analog_signal import AnalogSignal, Sinusodial
-from cbc.analog_system import AnalogSystem
-from cbc.digital_control import DigitalControl
+from cbc import StateSpaceSimulator
+from cbc.digital_estimator import DigitalEstimator
+from cbc import AnalogSignal, Sinusodial
+from cbc import AnalogSystem
+from cbc import DigitalControl
 import numpy as np
 from tests.test_analog_system.chain_of_integrators import chain_of_integrators
 beta = 6250.0
@@ -70,7 +70,7 @@ def test_estimation_with_circuit_simulator():
     # analogSignals = [Sinusodial(0.5, 10)]
     analogSignals = [AnalogSignal(0.25)]
     digitalControl = DigitalControl(Ts, M)
-    circuitSimulator = CircuitSimulator(
+    circuitSimulator = StateSpaceSimulator(
         analogSystem, digitalControl, analogSignals, t_stop=Ts * 1000)
     estimator = DigitalEstimator(
         circuitSimulator, analogSystem, digitalControl, eta2, K1, K2)

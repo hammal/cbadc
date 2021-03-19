@@ -3,25 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "extra_compile_args": [
-            "-fopenmp"
-        ],
-        "include_dirs": [
-            ".",
-            "src/cbc/analog_system",
-            "src/cbc/digital_control",
-            "src/cbc/analog_signal",
-            "src/cbc/digital_estimator"
-        ],
-        "libraries": [
-            "m"
-        ],
-        "name": "cbc.digital_estimator.filter_mid_point",
+        "name": "cbc.filter_mid_point",
         "sources": [
-            "src/cbc/digital_estimator/filter_mid_point.pyx"
+            "src/cbc/filter_mid_point.pyx"
         ]
     },
-    "module_name": "cbc.digital_estimator.filter_mid_point"
+    "module_name": "cbc.filter_mid_point"
 }
 END: Cython Metadata */
 
@@ -627,8 +614,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__cbc__digital_estimator__filter_mid_point
-#define __PYX_HAVE_API__cbc__digital_estimator__filter_mid_point
+#define __PYX_HAVE__cbc__filter_mid_point
+#define __PYX_HAVE_API__cbc__filter_mid_point
 /* Early includes */
 #include "pythread.h"
 #include <string.h>
@@ -865,10 +852,10 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/cbc/digital_estimator/filter_mid_point.pyx",
+  "src/cbc/filter_mid_point.pyx",
   "stringsource",
-  "src/cbc/digital_control/digital_control.pxd",
-  "src/cbc/analog_system/analog_system.pxd",
+  "src/cbc/digital_control.pxd",
+  "src/cbc/analog_system.pxd",
 };
 /* MemviewSliceStruct.proto */
 struct __pyx_memoryview_obj;
@@ -992,23 +979,23 @@ static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(do
 
 
 /*--- Type declarations ---*/
-struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl;
-struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem;
-struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter;
-struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients;
+struct __pyx_obj_3cbc_15digital_control_DigitalControl;
+struct __pyx_obj_3cbc_13analog_system_AnalogSystem;
+struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter;
+struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "cbc/digital_control/digital_control.pxd":1
+/* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
  *     cdef double _t_next, _Ts
  *     cdef double [:] _dac_values
  */
-struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl {
+struct __pyx_obj_3cbc_15digital_control_DigitalControl {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_vtab;
+  struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtab;
   double _t_next;
   double _Ts;
   __Pyx_memviewslice _dac_values;
@@ -1017,15 +1004,15 @@ struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl {
 };
 
 
-/* "cbc/analog_system/analog_system.pxd":2
+/* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
  *     cdef double [:,:] _A
  *     cdef double [:,:] _B
  */
-struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem {
+struct __pyx_obj_3cbc_13analog_system_AnalogSystem {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_vtab;
+  struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *__pyx_vtab;
   __Pyx_memviewslice _A;
   __Pyx_memviewslice _B;
   __Pyx_memviewslice _CT;
@@ -1042,16 +1029,16 @@ struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem {
 };
 
 
-/* "cbc/digital_estimator/filter_mid_point.pxd":3
- * from cbc.digital_control.digital_control cimport DigitalControl
- * from cbc.analog_system.analog_system cimport AnalogSystem
+/* "cbc/filter_mid_point.pxd":3
+ * from cbc.digital_control cimport DigitalControl
+ * from cbc.analog_system cimport AnalogSystem
  * cdef class MidPointFilter:             # <<<<<<<<<<<<<<
  *     cdef double [:,:] _Af
  *     cdef double [:,:] _Ab
  */
-struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter {
+struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_vtab;
+  struct __pyx_vtabstruct_3cbc_16filter_mid_point_MidPointFilter *__pyx_vtab;
   __Pyx_memviewslice _Af;
   __Pyx_memviewslice _Ab;
   __Pyx_memviewslice _Bf;
@@ -1071,17 +1058,17 @@ struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter {
 };
 
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":61
+/* "cbc/filter_mid_point.pyx":61
  *         self._control_signal_in_buffer -= self._K1
  * 
  *     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):             # <<<<<<<<<<<<<<
  *         # Compute filter coefficients
  *         A = array(analogSystem._A).transpose()
  */
-struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients {
+struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients {
   PyObject_HEAD
   PyObject *__pyx_v_Gamma;
-  struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl;
+  struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl;
   int __pyx_v_m;
   PyObject *__pyx_v_tempAb;
   PyObject *__pyx_v_tempAf;
@@ -1166,38 +1153,38 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "cbc/digital_control/digital_control.pxd":1
+/* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
  *     cdef double _t_next, _Ts
  *     cdef double [:] _dac_values
  */
 
-struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl {
-  __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, PyObject *, PyObject *);
+struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl {
+  __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
+  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, PyObject *, PyObject *);
 };
-static struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl;
+static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_DigitalControl;
 
 
-/* "cbc/analog_system/analog_system.pxd":2
+/* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
  *     cdef double [:,:] _A
  *     cdef double [:,:] _B
  */
 
-struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem {
-  __Pyx_memviewslice (*derivative)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, __Pyx_memviewslice, double, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*signal_output)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*control_output)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*_atf)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, double);
+struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem {
+  __Pyx_memviewslice (*derivative)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, __Pyx_memviewslice, double, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*signal_output)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*control_output)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*_atf)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, double);
 };
-static struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_vtabptr_3cbc_13analog_system_13analog_system_AnalogSystem;
+static struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *__pyx_vtabptr_3cbc_13analog_system_AnalogSystem;
 
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":11
+/* "cbc/filter_mid_point.pyx":11
  * 
  * 
  * cdef class MidPointFilter():             # <<<<<<<<<<<<<<
@@ -1205,15 +1192,15 @@ static struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem
  *     def __cinit__(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2, int K1, int K2 = 0):
  */
 
-struct __pyx_vtabstruct_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter {
-  void (*compute_batch)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
-  int (*batch_size)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
-  int (*lookahead)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
-  int (*size)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
-  void (*allocate_memory_buffers)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *);
-  void (*compute_filter_coefficients)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double);
+struct __pyx_vtabstruct_3cbc_16filter_mid_point_MidPointFilter {
+  void (*compute_batch)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
+  int (*batch_size)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
+  int (*lookahead)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
+  int (*size)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch);
+  void (*allocate_memory_buffers)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *);
+  void (*compute_filter_coefficients)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double);
 };
-static struct __pyx_vtabstruct_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_vtabptr_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter;
+static struct __pyx_vtabstruct_3cbc_16filter_mid_point_MidPointFilter *__pyx_vtabptr_3cbc_16filter_mid_point_MidPointFilter;
 
 
 /* "View.MemoryView":105
@@ -2079,12 +2066,12 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_compute_batch(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
-static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_compute_filter_coefficients(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2); /* proto*/
-static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_allocate_memory_buffers(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto*/
-static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_batch_size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
-static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_lookahead(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
-static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_batch(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coefficients(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2); /* proto*/
+static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_allocate_memory_buffers(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto*/
+static int __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_batch_size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static int __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_lookahead(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static int __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
@@ -2096,15 +2083,15 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp); /* proto*/
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value); /* proto*/
 
-/* Module declarations from 'cbc.digital_control.digital_control' */
-static PyTypeObject *__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl = 0;
+/* Module declarations from 'cbc.digital_control' */
+static PyTypeObject *__pyx_ptype_3cbc_15digital_control_DigitalControl = 0;
 
-/* Module declarations from 'cbc.analog_system.analog_system' */
-static PyTypeObject *__pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem = 0;
+/* Module declarations from 'cbc.analog_system' */
+static PyTypeObject *__pyx_ptype_3cbc_13analog_system_AnalogSystem = 0;
 
-/* Module declarations from 'cbc.digital_estimator.filter_mid_point' */
-static PyTypeObject *__pyx_ptype_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter = 0;
-static PyTypeObject *__pyx_ptype_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = 0;
+/* Module declarations from 'cbc.filter_mid_point' */
+static PyTypeObject *__pyx_ptype_3cbc_16filter_mid_point_MidPointFilter = 0;
+static PyTypeObject *__pyx_ptype_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
@@ -2151,11 +2138,11 @@ static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_char = { "char", NULL, sizeof(char), { 0 }, 0, 'H', IS_UNSIGNED(char), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
-#define __Pyx_MODULE_NAME "cbc.digital_estimator.filter_mid_point"
-extern int __pyx_module_is_main_cbc__digital_estimator__filter_mid_point;
-int __pyx_module_is_main_cbc__digital_estimator__filter_mid_point = 0;
+#define __Pyx_MODULE_NAME "cbc.filter_mid_point"
+extern int __pyx_module_is_main_cbc__filter_mid_point;
+int __pyx_module_is_main_cbc__filter_mid_point = 0;
 
-/* Implementation of 'cbc.digital_estimator.filter_mid_point' */
+/* Implementation of 'cbc.filter_mid_point' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_print;
 static PyObject *__pyx_builtin_TypeError;
@@ -2263,7 +2250,7 @@ static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_index_out_of_range[] = "index out of range";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
-static const char __pyx_k_offline_computations[] = "offline_computations";
+static const char __pyx_k_cbc_filter_mid_point[] = "cbc.filter_mid_point";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_The_digital_estimator[] = "\nThe digital estimator.\n";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
@@ -2271,6 +2258,7 @@ static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>"
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
+static const char __pyx_k_cbc_offline_computations[] = "cbc.offline_computations";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
@@ -2288,7 +2276,6 @@ static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, ex
 static const char __pyx_k_MidPointFilter_compute_filter_co[] = "MidPointFilter.compute_filter_coefficients.<locals>.<lambda>";
 static const char __pyx_k_Out_of_bounds_on_buffer_access_a[] = "Out of bounds on buffer access (axis %d)";
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
-static const char __pyx_k_cbc_digital_estimator_filter_mid[] = "cbc.digital_estimator.filter_mid_point";
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static const char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
@@ -2333,7 +2320,8 @@ static PyObject *__pyx_n_s_batch_size;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
 static PyObject *__pyx_n_s_care;
-static PyObject *__pyx_n_s_cbc_digital_estimator_filter_mid;
+static PyObject *__pyx_n_s_cbc_filter_mid_point;
+static PyObject *__pyx_n_s_cbc_offline_computations;
 static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_compute_batch;
@@ -2376,7 +2364,6 @@ static PyObject *__pyx_n_s_new;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_n_s_obj;
-static PyObject *__pyx_n_s_offline_computations;
 static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_print;
@@ -2420,17 +2407,17 @@ static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_x;
 static PyObject *__pyx_n_s_y;
 static PyObject *__pyx_n_s_zeros;
-static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter___cinit__(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2, int __pyx_v_K1, int __pyx_v_K2); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_2compute_batch(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
+static int __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2, int __pyx_v_K1, int __pyx_v_K2); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_2compute_batch(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_4input(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, __Pyx_memviewslice __pyx_v_s); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_6output(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_v_index); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_8batch_size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_10lookahead(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_12size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_4input(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, __Pyx_memviewslice __pyx_v_s); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_6output(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_v_index); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_8batch_size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_10lookahead(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_12size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -2473,8 +2460,8 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__
 static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_3cbc_16filter_mid_point_MidPointFilter(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2514,7 +2501,7 @@ static PyObject *__pyx_tuple__27;
 static PyObject *__pyx_codeobj__28;
 /* Late includes */
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":13
+/* "cbc/filter_mid_point.pyx":13
  * cdef class MidPointFilter():
  * 
  *     def __cinit__(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2, int K1, int K2 = 0):             # <<<<<<<<<<<<<<
@@ -2523,10 +2510,10 @@ static PyObject *__pyx_codeobj__28;
  */
 
 /* Python wrapper */
-static int __pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_v_analogSystem = 0;
-  struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl = 0;
+static int __pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem = 0;
+  struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl = 0;
   double __pyx_v_eta2;
   int __pyx_v_K1;
   int __pyx_v_K2;
@@ -2601,8 +2588,8 @@ static int __pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_analogSystem = ((struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *)values[0]);
-    __pyx_v_digitalControl = ((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)values[1]);
+    __pyx_v_analogSystem = ((struct __pyx_obj_3cbc_13analog_system_AnalogSystem *)values[0]);
+    __pyx_v_digitalControl = ((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)values[1]);
     __pyx_v_eta2 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_eta2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 13, __pyx_L3_error)
     __pyx_v_K1 = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_K1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 13, __pyx_L3_error)
     if (values[4]) {
@@ -2615,13 +2602,13 @@ static int __pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 13, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_analogSystem), __pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem, 1, "analogSystem", 0))) __PYX_ERR(0, 13, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_digitalControl), __pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl, 1, "digitalControl", 0))) __PYX_ERR(0, 13, __pyx_L1_error)
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter___cinit__(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self), __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_eta2, __pyx_v_K1, __pyx_v_K2);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_analogSystem), __pyx_ptype_3cbc_13analog_system_AnalogSystem, 1, "analogSystem", 0))) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_digitalControl), __pyx_ptype_3cbc_15digital_control_DigitalControl, 1, "digitalControl", 0))) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self), __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_eta2, __pyx_v_K1, __pyx_v_K2);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2632,13 +2619,13 @@ static int __pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   return __pyx_r;
 }
 
-static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter___cinit__(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2, int __pyx_v_K1, int __pyx_v_K2) {
+static int __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter___cinit__(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2, int __pyx_v_K1, int __pyx_v_K2) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":23
+  /* "cbc/filter_mid_point.pyx":23
  *             K2 (int): the lookahead size
  *         """
  *         self._M = analogSystem._M             # <<<<<<<<<<<<<<
@@ -2648,7 +2635,7 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_1 = __pyx_v_analogSystem->_M;
   __pyx_v_self->_M = __pyx_t_1;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":24
+  /* "cbc/filter_mid_point.pyx":24
  *         """
  *         self._M = analogSystem._M
  *         self._N = analogSystem._N             # <<<<<<<<<<<<<<
@@ -2658,7 +2645,7 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_1 = __pyx_v_analogSystem->_N;
   __pyx_v_self->_N = __pyx_t_1;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":25
+  /* "cbc/filter_mid_point.pyx":25
  *         self._M = analogSystem._M
  *         self._N = analogSystem._N
  *         self._L = analogSystem._L             # <<<<<<<<<<<<<<
@@ -2668,7 +2655,7 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_1 = __pyx_v_analogSystem->_L;
   __pyx_v_self->_L = __pyx_t_1;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":26
+  /* "cbc/filter_mid_point.pyx":26
  *         self._N = analogSystem._N
  *         self._L = analogSystem._L
  *         self._K1 = K1             # <<<<<<<<<<<<<<
@@ -2677,7 +2664,7 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   __pyx_v_self->_K1 = __pyx_v_K1;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":27
+  /* "cbc/filter_mid_point.pyx":27
  *         self._L = analogSystem._L
  *         self._K1 = K1
  *         self._K2 = K2             # <<<<<<<<<<<<<<
@@ -2686,7 +2673,7 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   __pyx_v_self->_K2 = __pyx_v_K2;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":28
+  /* "cbc/filter_mid_point.pyx":28
  *         self._K1 = K1
  *         self._K2 = K2
  *         self._K3 = K1 + K2             # <<<<<<<<<<<<<<
@@ -2695,25 +2682,25 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   __pyx_v_self->_K3 = (__pyx_v_K1 + __pyx_v_K2);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":29
+  /* "cbc/filter_mid_point.pyx":29
  *         self._K2 = K2
  *         self._K3 = K1 + K2
  *         self.compute_filter_coefficients(analogSystem, digitalControl, eta2)             # <<<<<<<<<<<<<<
  *         self.allocate_memory_buffers()
  * 
  */
-  ((struct __pyx_vtabstruct_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self->__pyx_vtab)->compute_filter_coefficients(__pyx_v_self, __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_eta2);
+  ((struct __pyx_vtabstruct_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self->__pyx_vtab)->compute_filter_coefficients(__pyx_v_self, __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_eta2);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":30
+  /* "cbc/filter_mid_point.pyx":30
  *         self._K3 = K1 + K2
  *         self.compute_filter_coefficients(analogSystem, digitalControl, eta2)
  *         self.allocate_memory_buffers()             # <<<<<<<<<<<<<<
  * 
  *     cpdef void compute_batch(self):
  */
-  ((struct __pyx_vtabstruct_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self->__pyx_vtab)->allocate_memory_buffers(__pyx_v_self);
+  ((struct __pyx_vtabstruct_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self->__pyx_vtab)->allocate_memory_buffers(__pyx_v_self);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":13
+  /* "cbc/filter_mid_point.pyx":13
  * cdef class MidPointFilter():
  * 
  *     def __cinit__(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2, int K1, int K2 = 0):             # <<<<<<<<<<<<<<
@@ -2727,7 +2714,7 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":32
+/* "cbc/filter_mid_point.pyx":32
  *         self.allocate_memory_buffers()
  * 
  *     cpdef void compute_batch(self):             # <<<<<<<<<<<<<<
@@ -2735,8 +2722,8 @@ static int __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  * 
  */
 
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_3compute_batch(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_compute_batch(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_3compute_batch(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_batch(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_v_k;
   PyObject *__pyx_v_temp_est = NULL;
   int __pyx_v_l;
@@ -2778,7 +2765,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_compute_batch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_3compute_batch)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_3compute_batch)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -2812,7 +2799,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
     #endif
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":36
+  /* "cbc/filter_mid_point.pyx":36
  * 
  *         # check if ready to compute buffer
  *         if (self._control_signal_in_buffer < self._K3):             # <<<<<<<<<<<<<<
@@ -2822,7 +2809,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_5 = ((__pyx_v_self->_control_signal_in_buffer < __pyx_v_self->_K3) != 0);
   if (unlikely(__pyx_t_5)) {
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":37
+    /* "cbc/filter_mid_point.pyx":37
  *         # check if ready to compute buffer
  *         if (self._control_signal_in_buffer < self._K3):
  *             raise "Control signal buffer not full"             # <<<<<<<<<<<<<<
@@ -2832,7 +2819,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
     __Pyx_Raise(__pyx_kp_u_Control_signal_buffer_not_full, 0, 0, 0);
     __PYX_ERR(0, 37, __pyx_L1_error)
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":36
+    /* "cbc/filter_mid_point.pyx":36
  * 
  *         # check if ready to compute buffer
  *         if (self._control_signal_in_buffer < self._K3):             # <<<<<<<<<<<<<<
@@ -2841,7 +2828,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":40
+  /* "cbc/filter_mid_point.pyx":40
  *         # compute lookahead
  *         # print(array(self._control_signal))
  *         for k in range(self._K3, 0, -1):             # <<<<<<<<<<<<<<
@@ -2851,7 +2838,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   for (__pyx_t_6 = __pyx_v_self->_K3; __pyx_t_6 > 0; __pyx_t_6-=1) {
     __pyx_v_k = __pyx_t_6;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":41
+    /* "cbc/filter_mid_point.pyx":41
  *         # print(array(self._control_signal))
  *         for k in range(self._K3, 0, -1):
  *             self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])             # <<<<<<<<<<<<<<
@@ -3007,7 +2994,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __pyx_t_12.memview = NULL;
     __pyx_t_12.data = NULL;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":42
+    /* "cbc/filter_mid_point.pyx":42
  *         for k in range(self._K3, 0, -1):
  *             self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])
  *             temp_est = dot_product(self._WT, self.temp_backward_mean)             # <<<<<<<<<<<<<<
@@ -3074,7 +3061,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF_SET(__pyx_v_temp_est, __pyx_t_9);
     __pyx_t_9 = 0;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":43
+    /* "cbc/filter_mid_point.pyx":43
  *             self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])
  *             temp_est = dot_product(self._WT, self.temp_backward_mean)
  *             if k < self._K1:             # <<<<<<<<<<<<<<
@@ -3084,7 +3071,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __pyx_t_5 = ((__pyx_v_k < __pyx_v_self->_K1) != 0);
     if (__pyx_t_5) {
 
-      /* "cbc/digital_estimator/filter_mid_point.pyx":44
+      /* "cbc/filter_mid_point.pyx":44
  *             temp_est = dot_product(self._WT, self.temp_backward_mean)
  *             if k < self._K1:
  *                 for l in range(self._L):             # <<<<<<<<<<<<<<
@@ -3096,7 +3083,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
       for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
         __pyx_v_l = __pyx_t_14;
 
-        /* "cbc/digital_estimator/filter_mid_point.pyx":45
+        /* "cbc/filter_mid_point.pyx":45
  *             if k < self._K1:
  *                 for l in range(self._L):
  *                     self._estimate[k, l] = temp_est[l]             # <<<<<<<<<<<<<<
@@ -3126,7 +3113,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
         *((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->_estimate.data + __pyx_t_16 * __pyx_v_self->_estimate.strides[0]) ) + __pyx_t_17 * __pyx_v_self->_estimate.strides[1]) )) = __pyx_t_15;
       }
 
-      /* "cbc/digital_estimator/filter_mid_point.pyx":43
+      /* "cbc/filter_mid_point.pyx":43
  *             self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])
  *             temp_est = dot_product(self._WT, self.temp_backward_mean)
  *             if k < self._K1:             # <<<<<<<<<<<<<<
@@ -3135,7 +3122,7 @@ __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
  */
     }
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":46
+    /* "cbc/filter_mid_point.pyx":46
  *                 for l in range(self._L):
  *                     self._estimate[k, l] = temp_est[l]
  *             self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])             # <<<<<<<<<<<<<<
@@ -3292,7 +3279,7 @@ __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __pyx_t_12.data = NULL;
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":47
+  /* "cbc/filter_mid_point.pyx":47
  *                     self._estimate[k, l] = temp_est[l]
  *             self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])
  *         for k in range(0, self._K1):             # <<<<<<<<<<<<<<
@@ -3304,7 +3291,7 @@ __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
   for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_8; __pyx_t_13+=1) {
     __pyx_v_k = __pyx_t_13;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":48
+    /* "cbc/filter_mid_point.pyx":48
  *             self.temp_backward_mean = dot_product(self._Ab, self.temp_backward_mean) + dot_product(self._Bb, self._control_signal[k, :])
  *         for k in range(0, self._K1):
  *             self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])             # <<<<<<<<<<<<<<
@@ -3460,7 +3447,7 @@ __pyx_t_9 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __pyx_t_12.memview = NULL;
     __pyx_t_12.data = NULL;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":49
+    /* "cbc/filter_mid_point.pyx":49
  *         for k in range(0, self._K1):
  *             self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])
  *             temp_est = -dot_product(self._WT, self.temp_forward_mean)             # <<<<<<<<<<<<<<
@@ -3530,7 +3517,7 @@ __pyx_t_9 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __Pyx_XDECREF_SET(__pyx_v_temp_est, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":50
+    /* "cbc/filter_mid_point.pyx":50
  *             self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])
  *             temp_est = -dot_product(self._WT, self.temp_forward_mean)
  *             for l in range(self._L):             # <<<<<<<<<<<<<<
@@ -3542,7 +3529,7 @@ __pyx_t_9 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     for (__pyx_t_19 = 0; __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
       __pyx_v_l = __pyx_t_19;
 
-      /* "cbc/digital_estimator/filter_mid_point.pyx":51
+      /* "cbc/filter_mid_point.pyx":51
  *             temp_est = -dot_product(self._WT, self.temp_forward_mean)
  *             for l in range(self._L):
  *                 self._estimate[k, l] += temp_est[l]             # <<<<<<<<<<<<<<
@@ -3572,7 +3559,7 @@ __pyx_t_9 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
       *((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->_estimate.data + __pyx_t_17 * __pyx_v_self->_estimate.strides[0]) ) + __pyx_t_16 * __pyx_v_self->_estimate.strides[1]) )) += __pyx_t_15;
     }
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":52
+    /* "cbc/filter_mid_point.pyx":52
  *             for l in range(self._L):
  *                 self._estimate[k, l] += temp_est[l]
  *             self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])             # <<<<<<<<<<<<<<
@@ -3729,7 +3716,7 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     __pyx_t_12.data = NULL;
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":53
+  /* "cbc/filter_mid_point.pyx":53
  *                 self._estimate[k, l] += temp_est[l]
  *             self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])
  *         for n in range(self._N):             # <<<<<<<<<<<<<<
@@ -3741,7 +3728,7 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
   for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_8; __pyx_t_13+=1) {
     __pyx_v_n = __pyx_t_13;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":54
+    /* "cbc/filter_mid_point.pyx":54
  *             self.temp_forward_mean = dot_product(self._Af, self.temp_forward_mean) + dot_product(self._Bf, self._control_signal[k, :])
  *         for n in range(self._N):
  *             self.temp_backward_mean[n] = 0             # <<<<<<<<<<<<<<
@@ -3762,7 +3749,7 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
     *((double *) ( /* dim=0 */ (__pyx_v_self->temp_backward_mean.data + __pyx_t_16 * __pyx_v_self->temp_backward_mean.strides[0]) )) = 0.0;
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":58
+  /* "cbc/filter_mid_point.pyx":58
  * 
  *         # rotate buffer to make place for new control signals
  *         self._control_signal = roll(self._control_signal, -self._K1, axis=0)             # <<<<<<<<<<<<<<
@@ -3799,7 +3786,7 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
   __pyx_t_21.memview = NULL;
   __pyx_t_21.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":59
+  /* "cbc/filter_mid_point.pyx":59
  *         # rotate buffer to make place for new control signals
  *         self._control_signal = roll(self._control_signal, -self._K1, axis=0)
  *         self._control_signal_in_buffer -= self._K1             # <<<<<<<<<<<<<<
@@ -3808,7 +3795,7 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
  */
   __pyx_v_self->_control_signal_in_buffer = (__pyx_v_self->_control_signal_in_buffer - __pyx_v_self->_K1);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":32
+  /* "cbc/filter_mid_point.pyx":32
  *         self.allocate_memory_buffers()
  * 
  *     cpdef void compute_batch(self):             # <<<<<<<<<<<<<<
@@ -3829,27 +3816,27 @@ __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_t_10, 1, (PyObject *(*)(char *)) __
   __Pyx_XDECREF(__pyx_t_11);
   __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_21, 1);
-  __Pyx_WriteUnraisable("cbc.digital_estimator.filter_mid_point.MidPointFilter.compute_batch", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbc.filter_mid_point.MidPointFilter.compute_batch", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_temp_est);
   __Pyx_RefNannyFinishContext();
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_3compute_batch(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_2compute_batch[] = "MidPointFilter.compute_batch(self) -> void";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_3compute_batch(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_3compute_batch(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_2compute_batch[] = "MidPointFilter.compute_batch(self) -> void";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_3compute_batch(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compute_batch (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_2compute_batch(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_2compute_batch(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_2compute_batch(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_2compute_batch(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3858,7 +3845,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compute_batch", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_void_to_None(__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_compute_batch(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_void_to_None(__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_batch(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3867,7 +3854,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.compute_batch", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.compute_batch", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3875,7 +3862,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":84
+/* "cbc/filter_mid_point.pyx":84
  *         max_step = T/1000.0
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
@@ -3884,9 +3871,9 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda = {"lambda", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda = {"lambda", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -3937,7 +3924,7 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 84, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -3949,8 +3936,8 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
 }
 
 static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_cur_scope;
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_outer_scope;
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_cur_scope;
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3965,7 +3952,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("lambda", 0);
-  __pyx_outer_scope = (struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_outer_scope = (struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
@@ -4022,7 +4009,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 84, __pyx_L1_error) }
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -4093,7 +4080,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4101,7 +4088,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":86
+/* "cbc/filter_mid_point.pyx":86
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  *             solBf = solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
@@ -4110,9 +4097,9 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1 = {"lambda1", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1 = {"lambda1", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -4163,7 +4150,7 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 86, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -4175,8 +4162,8 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
 }
 
 static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_cur_scope;
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_outer_scope;
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_cur_scope;
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4191,7 +4178,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("lambda1", 0);
-  __pyx_outer_scope = (struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_outer_scope = (struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_dot_product); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
@@ -4251,7 +4238,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 86, __pyx_L1_error) }
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -4322,7 +4309,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.compute_filter_coefficients.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4330,7 +4317,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":61
+/* "cbc/filter_mid_point.pyx":61
  *         self._control_signal_in_buffer -= self._K1
  * 
  *     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):             # <<<<<<<<<<<<<<
@@ -4338,8 +4325,8 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
  *         A = array(analogSystem._A).transpose()
  */
 
-static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_compute_filter_coefficients(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2) {
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_cur_scope;
+static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coefficients(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2) {
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_cur_scope;
   PyObject *__pyx_v_A = NULL;
   PyObject *__pyx_v_B = NULL;
   PyObject *__pyx_v_Q = NULL;
@@ -4380,9 +4367,9 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compute_filter_coefficients", 0);
-  __pyx_cur_scope = (struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(__pyx_ptype_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)__pyx_tp_new_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(__pyx_ptype_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)Py_None);
     __Pyx_INCREF(Py_None);
     __PYX_ERR(0, 61, __pyx_L1_error)
   } else {
@@ -4392,7 +4379,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_digitalControl);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_digitalControl);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":63
+  /* "cbc/filter_mid_point.pyx":63
  *     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):
  *         # Compute filter coefficients
  *         A = array(analogSystem._A).transpose()             # <<<<<<<<<<<<<<
@@ -4441,7 +4428,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_v_A = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":64
+  /* "cbc/filter_mid_point.pyx":64
  *         # Compute filter coefficients
  *         A = array(analogSystem._A).transpose()
  *         B = array(analogSystem._CT).transpose()             # <<<<<<<<<<<<<<
@@ -4490,7 +4477,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_v_B = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":65
+  /* "cbc/filter_mid_point.pyx":65
  *         A = array(analogSystem._A).transpose()
  *         B = array(analogSystem._CT).transpose()
  *         Q = dot_product(array(analogSystem._B), array(analogSystem._B).transpose())             # <<<<<<<<<<<<<<
@@ -4611,7 +4598,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_v_Q = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":66
+  /* "cbc/filter_mid_point.pyx":66
  *         B = array(analogSystem._CT).transpose()
  *         Q = dot_product(array(analogSystem._B), array(analogSystem._B).transpose())
  *         R = eta2 * eye(analogSystem._N_tilde)             # <<<<<<<<<<<<<<
@@ -4647,7 +4634,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_v_R = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":68
+  /* "cbc/filter_mid_point.pyx":68
  *         R = eta2 * eye(analogSystem._N_tilde)
  *         # Solve care
  *         Vf, Vb = care(A, B, Q, R)             # <<<<<<<<<<<<<<
@@ -4758,7 +4745,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_v_Vb = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":69
+  /* "cbc/filter_mid_point.pyx":69
  *         # Solve care
  *         Vf, Vb = care(A, B, Q, R)
  *         cdef double T = digitalControl._Ts             # <<<<<<<<<<<<<<
@@ -4768,7 +4755,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_11 = __pyx_cur_scope->__pyx_v_digitalControl->_Ts;
   __pyx_v_T = __pyx_t_11;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":70
+  /* "cbc/filter_mid_point.pyx":70
  *         Vf, Vb = care(A, B, Q, R)
  *         cdef double T = digitalControl._Ts
  *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))             # <<<<<<<<<<<<<<
@@ -4889,7 +4876,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_v_CCT = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":71
+  /* "cbc/filter_mid_point.pyx":71
  *         cdef double T = digitalControl._Ts
  *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
  *         tempAf = analogSystem._A - dot_product(Vf, CCT) / eta2             # <<<<<<<<<<<<<<
@@ -4960,7 +4947,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_cur_scope->__pyx_v_tempAf = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":72
+  /* "cbc/filter_mid_point.pyx":72
  *         CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
  *         tempAf = analogSystem._A - dot_product(Vf, CCT) / eta2
  *         tempAb = analogSystem._A + dot_product(Vb, CCT) / eta2             # <<<<<<<<<<<<<<
@@ -5031,7 +5018,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_cur_scope->__pyx_v_tempAb = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":73
+  /* "cbc/filter_mid_point.pyx":73
  *         tempAf = analogSystem._A - dot_product(Vf, CCT) / eta2
  *         tempAb = analogSystem._A + dot_product(Vb, CCT) / eta2
  *         self._Af = expm(tempAf * T / 2.0)             # <<<<<<<<<<<<<<
@@ -5071,7 +5058,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":74
+  /* "cbc/filter_mid_point.pyx":74
  *         tempAb = analogSystem._A + dot_product(Vb, CCT) / eta2
  *         self._Af = expm(tempAf * T / 2.0)
  *         self._Ab = expm(-tempAb * T / 2.0)             # <<<<<<<<<<<<<<
@@ -5114,7 +5101,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":75
+  /* "cbc/filter_mid_point.pyx":75
  *         self._Af = expm(tempAf * T / 2.0)
  *         self._Ab = expm(-tempAb * T / 2.0)
  *         Gamma = array(analogSystem._Gamma)             # <<<<<<<<<<<<<<
@@ -5146,7 +5133,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_cur_scope->__pyx_v_Gamma = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":77
+  /* "cbc/filter_mid_point.pyx":77
  *         Gamma = array(analogSystem._Gamma)
  *         # Solve IVPs
  *         self._Bf = zeros((self._N, self._M))             # <<<<<<<<<<<<<<
@@ -5190,7 +5177,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":78
+  /* "cbc/filter_mid_point.pyx":78
  *         # Solve IVPs
  *         self._Bf = zeros((self._N, self._M))
  *         self._Bb = zeros((self._N, self._M))             # <<<<<<<<<<<<<<
@@ -5234,7 +5221,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":80
+  /* "cbc/filter_mid_point.pyx":80
  *         self._Bb = zeros((self._N, self._M))
  * 
  *         atol = 1e-200             # <<<<<<<<<<<<<<
@@ -5243,7 +5230,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   __pyx_v_atol = 1e-200;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":81
+  /* "cbc/filter_mid_point.pyx":81
  * 
  *         atol = 1e-200
  *         rtol = 1e-10             # <<<<<<<<<<<<<<
@@ -5252,7 +5239,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   __pyx_v_rtol = 1e-10;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":82
+  /* "cbc/filter_mid_point.pyx":82
  *         atol = 1e-200
  *         rtol = 1e-10
  *         max_step = T/1000.0             # <<<<<<<<<<<<<<
@@ -5261,7 +5248,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   __pyx_v_max_step = (__pyx_v_T / 1000.0);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":83
+  /* "cbc/filter_mid_point.pyx":83
  *         rtol = 1e-10
  *         max_step = T/1000.0
  *         for m in range(self._M):             # <<<<<<<<<<<<<<
@@ -5273,19 +5260,19 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
     __pyx_cur_scope->__pyx_v_m = __pyx_t_14;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":84
+    /* "cbc/filter_mid_point.pyx":84
  *         max_step = T/1000.0
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
  *             solBf = solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  */
-    __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda, 0, __pyx_n_s_MidPointFilter_compute_filter_co, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_digital_estimator_filter_mid, __pyx_d, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_lambda, 0, __pyx_n_s_MidPointFilter_compute_filter_co, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_filter_mid_point, __pyx_d, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 84, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v_derivative, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":85
+    /* "cbc/filter_mid_point.pyx":85
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  *             solBf = solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]             # <<<<<<<<<<<<<<
@@ -5363,19 +5350,19 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
     __Pyx_XDECREF_SET(__pyx_v_solBf, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":86
+    /* "cbc/filter_mid_point.pyx":86
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  *             solBf = solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))             # <<<<<<<<<<<<<<
  *             solBb = -solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):
  */
-    __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1, 0, __pyx_n_s_MidPointFilter_compute_filter_co, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_digital_estimator_filter_mid, __pyx_d, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_16filter_mid_point_14MidPointFilter_27compute_filter_coefficients_1lambda1, 0, __pyx_n_s_MidPointFilter_compute_filter_co, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_filter_mid_point, __pyx_d, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF_SET(__pyx_v_derivative, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":87
+    /* "cbc/filter_mid_point.pyx":87
  *             solBf = solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  *             solBb = -solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]             # <<<<<<<<<<<<<<
@@ -5456,7 +5443,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
     __Pyx_XDECREF_SET(__pyx_v_solBb, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":88
+    /* "cbc/filter_mid_point.pyx":88
  *             derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  *             solBb = -solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):             # <<<<<<<<<<<<<<
@@ -5468,7 +5455,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_n = __pyx_t_17;
 
-      /* "cbc/digital_estimator/filter_mid_point.pyx":89
+      /* "cbc/filter_mid_point.pyx":89
  *             solBb = -solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):
  *                 self._Bf[n, m] = solBf[n]             # <<<<<<<<<<<<<<
@@ -5497,7 +5484,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
       }
       *((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->_Bf.data + __pyx_t_18 * __pyx_v_self->_Bf.strides[0]) ) + __pyx_t_19 * __pyx_v_self->_Bf.strides[1]) )) = __pyx_t_11;
 
-      /* "cbc/digital_estimator/filter_mid_point.pyx":90
+      /* "cbc/filter_mid_point.pyx":90
  *             for n in range (self._N):
  *                 self._Bf[n, m] = solBf[n]
  *                 self._Bb[n, m] = solBb[n]             # <<<<<<<<<<<<<<
@@ -5528,7 +5515,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
     }
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":93
+  /* "cbc/filter_mid_point.pyx":93
  * 
  *         # Solve linear system of equations
  *         print(f"New Bf: {array(self._Bf)}")             # <<<<<<<<<<<<<<
@@ -5567,7 +5554,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":94
+  /* "cbc/filter_mid_point.pyx":94
  *         # Solve linear system of equations
  *         print(f"New Bf: {array(self._Bf)}")
  *         print(f"New Bb: {array(self._Bb)}")             # <<<<<<<<<<<<<<
@@ -5606,7 +5593,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":95
+  /* "cbc/filter_mid_point.pyx":95
  *         print(f"New Bf: {array(self._Bf)}")
  *         print(f"New Bb: {array(self._Bb)}")
  *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()             # <<<<<<<<<<<<<<
@@ -5694,7 +5681,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_12.memview = NULL;
   __pyx_t_12.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":61
+  /* "cbc/filter_mid_point.pyx":61
  *         self._control_signal_in_buffer -= self._K1
  * 
  *     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):             # <<<<<<<<<<<<<<
@@ -5714,7 +5701,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
-  __Pyx_WriteUnraisable("cbc.digital_estimator.filter_mid_point.MidPointFilter.compute_filter_coefficients", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbc.filter_mid_point.MidPointFilter.compute_filter_coefficients", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_A);
   __Pyx_XDECREF(__pyx_v_B);
@@ -5730,7 +5717,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":97
+/* "cbc/filter_mid_point.pyx":97
  *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()
  * 
  *     cdef void allocate_memory_buffers(self):             # <<<<<<<<<<<<<<
@@ -5738,7 +5725,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  *         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)
  */
 
-static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_allocate_memory_buffers(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self) {
+static void __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_allocate_memory_buffers(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -5752,7 +5739,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("allocate_memory_buffers", 0);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":99
+  /* "cbc/filter_mid_point.pyx":99
  *     cdef void allocate_memory_buffers(self):
  *         # Allocate memory buffers
  *         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)             # <<<<<<<<<<<<<<
@@ -5796,7 +5783,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_5.memview = NULL;
   __pyx_t_5.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":100
+  /* "cbc/filter_mid_point.pyx":100
  *         # Allocate memory buffers
  *         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)
  *         self._estimate = zeros((self._K1, self._L), dtype=double)             # <<<<<<<<<<<<<<
@@ -5840,7 +5827,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":101
+  /* "cbc/filter_mid_point.pyx":101
  *         self._control_signal = zeros((self._K3 + 1, self._M), dtype=int8)
  *         self._estimate = zeros((self._K1, self._L), dtype=double)
  *         self._control_signal_in_buffer = 0             # <<<<<<<<<<<<<<
@@ -5849,7 +5836,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
   __pyx_v_self->_control_signal_in_buffer = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":102
+  /* "cbc/filter_mid_point.pyx":102
  *         self._estimate = zeros((self._K1, self._L), dtype=double)
  *         self._control_signal_in_buffer = 0
  *         self.temp_forward_mean = zeros(self._N, dtype=double)             # <<<<<<<<<<<<<<
@@ -5883,7 +5870,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":103
+  /* "cbc/filter_mid_point.pyx":103
  *         self._control_signal_in_buffer = 0
  *         self.temp_forward_mean = zeros(self._N, dtype=double)
  *         self.temp_backward_mean = zeros(self._N, dtype=double)             # <<<<<<<<<<<<<<
@@ -5917,7 +5904,7 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":97
+  /* "cbc/filter_mid_point.pyx":97
  *         self._WT = solve(Vf + Vb, analogSystem._B).transpose()
  * 
  *     cdef void allocate_memory_buffers(self):             # <<<<<<<<<<<<<<
@@ -5935,12 +5922,12 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
   __PYX_XDEC_MEMVIEW(&__pyx_t_5, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
-  __Pyx_WriteUnraisable("cbc.digital_estimator.filter_mid_point.MidPointFilter.allocate_memory_buffers", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbc.filter_mid_point.MidPointFilter.allocate_memory_buffers", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":106
+/* "cbc/filter_mid_point.pyx":106
  * 
  * 
  *     def input(self, char [:] s):             # <<<<<<<<<<<<<<
@@ -5949,9 +5936,9 @@ static void __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_5input(PyObject *__pyx_v_self, PyObject *__pyx_arg_s); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_4input[] = "MidPointFilter.input(self, char[:] s)";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_5input(PyObject *__pyx_v_self, PyObject *__pyx_arg_s) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_5input(PyObject *__pyx_v_self, PyObject *__pyx_arg_s); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_4input[] = "MidPointFilter.input(self, char[:] s)";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_5input(PyObject *__pyx_v_self, PyObject *__pyx_arg_s) {
   __Pyx_memviewslice __pyx_v_s = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -5964,18 +5951,18 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.input", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.input", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_4input(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self), __pyx_v_s);
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_4input(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self), __pyx_v_s);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_4input(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, __Pyx_memviewslice __pyx_v_s) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_4input(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, __Pyx_memviewslice __pyx_v_s) {
   int __pyx_v_m;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -5993,7 +5980,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("input", 0);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":107
+  /* "cbc/filter_mid_point.pyx":107
  * 
  *     def input(self, char [:] s):
  *         if (self._control_signal_in_buffer == self._K3 + 1):             # <<<<<<<<<<<<<<
@@ -6003,7 +5990,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   __pyx_t_1 = ((__pyx_v_self->_control_signal_in_buffer == (__pyx_v_self->_K3 + 1)) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":108
+    /* "cbc/filter_mid_point.pyx":108
  *     def input(self, char [:] s):
  *         if (self._control_signal_in_buffer == self._K3 + 1):
  *             raise "Input buffer full. You must compute batch before adding more control signals"             # <<<<<<<<<<<<<<
@@ -6013,7 +6000,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
     __Pyx_Raise(__pyx_kp_u_Input_buffer_full_You_must_compu, 0, 0, 0);
     __PYX_ERR(0, 108, __pyx_L1_error)
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":107
+    /* "cbc/filter_mid_point.pyx":107
  * 
  *     def input(self, char [:] s):
  *         if (self._control_signal_in_buffer == self._K3 + 1):             # <<<<<<<<<<<<<<
@@ -6022,7 +6009,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  */
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":109
+  /* "cbc/filter_mid_point.pyx":109
  *         if (self._control_signal_in_buffer == self._K3 + 1):
  *             raise "Input buffer full. You must compute batch before adding more control signals"
  *         for m in range(self._M):             # <<<<<<<<<<<<<<
@@ -6034,7 +6021,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_m = __pyx_t_4;
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":110
+    /* "cbc/filter_mid_point.pyx":110
  *             raise "Input buffer full. You must compute batch before adding more control signals"
  *         for m in range(self._M):
  *             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1             # <<<<<<<<<<<<<<
@@ -6070,7 +6057,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
     *((char *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->_control_signal.data + __pyx_t_7 * __pyx_v_self->_control_signal.strides[0]) ) + __pyx_t_8 * __pyx_v_self->_control_signal.strides[1]) )) = ((2 * (*((char *) ( /* dim=0 */ (__pyx_v_s.data + __pyx_t_5 * __pyx_v_s.strides[0]) )))) - 1);
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":111
+  /* "cbc/filter_mid_point.pyx":111
  *         for m in range(self._M):
  *             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1
  *         self._control_signal_in_buffer += 1             # <<<<<<<<<<<<<<
@@ -6079,7 +6066,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  */
   __pyx_v_self->_control_signal_in_buffer = (__pyx_v_self->_control_signal_in_buffer + 1);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":112
+  /* "cbc/filter_mid_point.pyx":112
  *             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1
  *         self._control_signal_in_buffer += 1
  *         return self._control_signal_in_buffer == (self._K3)             # <<<<<<<<<<<<<<
@@ -6093,7 +6080,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   __pyx_t_9 = 0;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":106
+  /* "cbc/filter_mid_point.pyx":106
  * 
  * 
  *     def input(self, char [:] s):             # <<<<<<<<<<<<<<
@@ -6104,7 +6091,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.input", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.input", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_s, 1);
@@ -6113,7 +6100,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":114
+/* "cbc/filter_mid_point.pyx":114
  *         return self._control_signal_in_buffer == (self._K3)
  * 
  *     def output(self, int index):             # <<<<<<<<<<<<<<
@@ -6122,9 +6109,9 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_7output(PyObject *__pyx_v_self, PyObject *__pyx_arg_index); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_6output[] = "MidPointFilter.output(self, int index)";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_7output(PyObject *__pyx_v_self, PyObject *__pyx_arg_index) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_7output(PyObject *__pyx_v_self, PyObject *__pyx_arg_index); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_6output[] = "MidPointFilter.output(self, int index)";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_7output(PyObject *__pyx_v_self, PyObject *__pyx_arg_index) {
   int __pyx_v_index;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -6137,18 +6124,18 @@ static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.output", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.output", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_6output(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self), ((int)__pyx_v_index));
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_6output(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self), ((int)__pyx_v_index));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_6output(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_v_index) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_6output(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_v_index) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -6163,7 +6150,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("output", 0);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":115
+  /* "cbc/filter_mid_point.pyx":115
  * 
  *     def output(self, int index):
  *         if (index < 0 or index >= self._K1):             # <<<<<<<<<<<<<<
@@ -6181,7 +6168,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_1)) {
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":116
+    /* "cbc/filter_mid_point.pyx":116
  *     def output(self, int index):
  *         if (index < 0 or index >= self._K1):
  *             raise "index out of range"             # <<<<<<<<<<<<<<
@@ -6191,7 +6178,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
     __Pyx_Raise(__pyx_kp_u_index_out_of_range, 0, 0, 0);
     __PYX_ERR(0, 116, __pyx_L1_error)
 
-    /* "cbc/digital_estimator/filter_mid_point.pyx":115
+    /* "cbc/filter_mid_point.pyx":115
  * 
  *     def output(self, int index):
  *         if (index < 0 or index >= self._K1):             # <<<<<<<<<<<<<<
@@ -6200,7 +6187,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  */
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":117
+  /* "cbc/filter_mid_point.pyx":117
  *         if (index < 0 or index >= self._K1):
  *             raise "index out of range"
  *         return array(self._estimate[index, :], dtype=double)             # <<<<<<<<<<<<<<
@@ -6257,7 +6244,7 @@ __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __p
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":114
+  /* "cbc/filter_mid_point.pyx":114
  *         return self._control_signal_in_buffer == (self._K3)
  * 
  *     def output(self, int index):             # <<<<<<<<<<<<<<
@@ -6272,7 +6259,7 @@ __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __p
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.output", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.output", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6280,7 +6267,7 @@ __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __p
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":119
+/* "cbc/filter_mid_point.pyx":119
  *         return array(self._estimate[index, :], dtype=double)
  * 
  *     cpdef int batch_size(self):             # <<<<<<<<<<<<<<
@@ -6288,8 +6275,8 @@ __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_t_4, 1, (PyObject *(*)(char *)) __p
  * 
  */
 
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_9batch_size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_batch_size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_9batch_size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static int __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_batch_size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6312,7 +6299,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_batch_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_9batch_size)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_9batch_size)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -6348,7 +6335,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
     #endif
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":120
+  /* "cbc/filter_mid_point.pyx":120
  * 
  *     cpdef int batch_size(self):
  *         return self._K1             # <<<<<<<<<<<<<<
@@ -6358,7 +6345,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
   __pyx_r = __pyx_v_self->_K1;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":119
+  /* "cbc/filter_mid_point.pyx":119
  *         return array(self._estimate[index, :], dtype=double)
  * 
  *     cpdef int batch_size(self):             # <<<<<<<<<<<<<<
@@ -6372,7 +6359,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_WriteUnraisable("cbc.digital_estimator.filter_mid_point.MidPointFilter.batch_size", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbc.filter_mid_point.MidPointFilter.batch_size", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -6380,20 +6367,20 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_9batch_size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_8batch_size[] = "MidPointFilter.batch_size(self) -> int";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_9batch_size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_9batch_size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_8batch_size[] = "MidPointFilter.batch_size(self) -> int";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_9batch_size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("batch_size (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_8batch_size(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_8batch_size(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_8batch_size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_8batch_size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6402,7 +6389,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("batch_size", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_batch_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_batch_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6411,7 +6398,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.batch_size", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.batch_size", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6419,7 +6406,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":122
+/* "cbc/filter_mid_point.pyx":122
  *         return self._K1
  * 
  *     cpdef int lookahead(self):             # <<<<<<<<<<<<<<
@@ -6427,8 +6414,8 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  * 
  */
 
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_11lookahead(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_lookahead(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_11lookahead(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static int __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_lookahead(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6451,7 +6438,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_lookahead); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_11lookahead)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_11lookahead)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -6487,7 +6474,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
     #endif
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":123
+  /* "cbc/filter_mid_point.pyx":123
  * 
  *     cpdef int lookahead(self):
  *         return self._K2             # <<<<<<<<<<<<<<
@@ -6497,7 +6484,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
   __pyx_r = __pyx_v_self->_K2;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":122
+  /* "cbc/filter_mid_point.pyx":122
  *         return self._K1
  * 
  *     cpdef int lookahead(self):             # <<<<<<<<<<<<<<
@@ -6511,7 +6498,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_WriteUnraisable("cbc.digital_estimator.filter_mid_point.MidPointFilter.lookahead", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbc.filter_mid_point.MidPointFilter.lookahead", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -6519,20 +6506,20 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_11lookahead(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_10lookahead[] = "MidPointFilter.lookahead(self) -> int";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_11lookahead(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_11lookahead(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_10lookahead[] = "MidPointFilter.lookahead(self) -> int";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_11lookahead(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("lookahead (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_10lookahead(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_10lookahead(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_10lookahead(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_10lookahead(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6541,7 +6528,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("lookahead", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_lookahead(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_lookahead(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6550,7 +6537,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.lookahead", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.lookahead", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6558,15 +6545,15 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   return __pyx_r;
 }
 
-/* "cbc/digital_estimator/filter_mid_point.pyx":125
+/* "cbc/filter_mid_point.pyx":125
  *         return self._K2
  * 
  *     cpdef int size(self):             # <<<<<<<<<<<<<<
  *         return self._K3
  */
 
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_13size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_13size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static int __pyx_f_3cbc_16filter_mid_point_14MidPointFilter_size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6589,7 +6576,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_13size)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_13size)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -6625,7 +6612,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
     #endif
   }
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":126
+  /* "cbc/filter_mid_point.pyx":126
  * 
  *     cpdef int size(self):
  *         return self._K3             # <<<<<<<<<<<<<<
@@ -6633,7 +6620,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
   __pyx_r = __pyx_v_self->_K3;
   goto __pyx_L0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":125
+  /* "cbc/filter_mid_point.pyx":125
  *         return self._K2
  * 
  *     cpdef int size(self):             # <<<<<<<<<<<<<<
@@ -6646,7 +6633,7 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_WriteUnraisable("cbc.digital_estimator.filter_mid_point.MidPointFilter.size", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbc.filter_mid_point.MidPointFilter.size", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -6654,20 +6641,20 @@ static int __pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_13size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_12size[] = "MidPointFilter.size(self) -> int";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_13size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_13size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_12size[] = "MidPointFilter.size(self) -> int";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_13size(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("size (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_12size(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_12size(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_12size(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_12size(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6676,7 +6663,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("size", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_size(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6685,7 +6672,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.size", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.size", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6700,20 +6687,20 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_14__reduce_cython__[] = "MidPointFilter.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_14__reduce_cython__[] = "MidPointFilter.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_14__reduce_cython__(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_14__reduce_cython__(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6743,7 +6730,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -6758,20 +6745,20 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_16__setstate_cython__[] = "MidPointFilter.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_16__setstate_cython__[] = "MidPointFilter.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_16__setstate_cython__(((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_16__setstate_cython__(((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3cbc_16filter_mid_point_14MidPointFilter_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6801,7 +6788,7 @@ static PyObject *__pyx_pf_3cbc_17digital_estimator_16filter_mid_point_14MidPoint
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_estimator.filter_mid_point.MidPointFilter.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.filter_mid_point.MidPointFilter.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -19825,10 +19812,10 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static struct __pyx_vtabstruct_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter __pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter;
+static struct __pyx_vtabstruct_3cbc_16filter_mid_point_MidPointFilter __pyx_vtable_3cbc_16filter_mid_point_MidPointFilter;
 
-static PyObject *__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *p;
+static PyObject *__pyx_tp_new_3cbc_16filter_mid_point_MidPointFilter(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -19836,8 +19823,8 @@ static PyObject *__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point_MidPoi
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)o);
-  p->__pyx_vtab = __pyx_vtabptr_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter;
+  p = ((struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)o);
+  p->__pyx_vtab = __pyx_vtabptr_3cbc_16filter_mid_point_MidPointFilter;
   p->_Af.data = NULL;
   p->_Af.memview = NULL;
   p->_Ab.data = NULL;
@@ -19856,15 +19843,15 @@ static PyObject *__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point_MidPoi
   p->temp_forward_mean.memview = NULL;
   p->temp_backward_mean.data = NULL;
   p->temp_backward_mean.memview = NULL;
-  if (unlikely(__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_1__cinit__(o, a, k) < 0)) goto bad;
+  if (unlikely(__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
   Py_DECREF(o); o = 0;
   return NULL;
 }
 
-static void __pyx_tp_dealloc_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter(PyObject *o) {
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *p = (struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *)o;
+static void __pyx_tp_dealloc_3cbc_16filter_mid_point_MidPointFilter(PyObject *o) {
+  struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *p = (struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *)o;
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -19882,24 +19869,24 @@ static void __pyx_tp_dealloc_3cbc_17digital_estimator_16filter_mid_point_MidPoin
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static PyMethodDef __pyx_methods_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter[] = {
-  {"compute_batch", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_3compute_batch, METH_NOARGS, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_2compute_batch},
-  {"input", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_5input, METH_O, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_4input},
-  {"output", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_7output, METH_O, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_6output},
-  {"batch_size", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_9batch_size, METH_NOARGS, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_8batch_size},
-  {"lookahead", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_11lookahead, METH_NOARGS, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_10lookahead},
-  {"size", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_13size, METH_NOARGS, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_12size},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_15__reduce_cython__, METH_NOARGS, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_14__reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_17__setstate_cython__, METH_O, __pyx_doc_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_16__setstate_cython__},
+static PyMethodDef __pyx_methods_3cbc_16filter_mid_point_MidPointFilter[] = {
+  {"compute_batch", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_3compute_batch, METH_NOARGS, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_2compute_batch},
+  {"input", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_5input, METH_O, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_4input},
+  {"output", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_7output, METH_O, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_6output},
+  {"batch_size", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_9batch_size, METH_NOARGS, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_8batch_size},
+  {"lookahead", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_11lookahead, METH_NOARGS, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_10lookahead},
+  {"size", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_13size, METH_NOARGS, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_12size},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_15__reduce_cython__, METH_NOARGS, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_14__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3cbc_16filter_mid_point_14MidPointFilter_17__setstate_cython__, METH_O, __pyx_doc_3cbc_16filter_mid_point_14MidPointFilter_16__setstate_cython__},
   {0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter = {
+static PyTypeObject __pyx_type_3cbc_16filter_mid_point_MidPointFilter = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_estimator.filter_mid_point.MidPointFilter", /*tp_name*/
-  sizeof(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter), /*tp_basicsize*/
+  "cbc.filter_mid_point.MidPointFilter", /*tp_name*/
+  sizeof(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter, /*tp_dealloc*/
+  __pyx_tp_dealloc_3cbc_16filter_mid_point_MidPointFilter, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -19932,7 +19919,7 @@ static PyTypeObject __pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPo
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter, /*tp_methods*/
+  __pyx_methods_3cbc_16filter_mid_point_MidPointFilter, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -19942,7 +19929,7 @@ static PyTypeObject __pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPo
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter, /*tp_new*/
+  __pyx_tp_new_3cbc_16filter_mid_point_MidPointFilter, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -19963,14 +19950,14 @@ static PyTypeObject __pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPo
   #endif
 };
 
-static struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_freelist_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients[8];
-static int __pyx_freecount_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = 0;
+static struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *__pyx_freelist_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients[8];
+static int __pyx_freecount_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = 0;
 
-static PyObject *__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients)))) {
-    o = (PyObject*)__pyx_freelist_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients[--__pyx_freecount_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients];
-    memset(o, 0, sizeof(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients)))) {
+    o = (PyObject*)__pyx_freelist_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients[--__pyx_freecount_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients];
+    memset(o, 0, sizeof(struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -19980,23 +19967,23 @@ static PyObject *__pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point___pyx_
   return o;
 }
 
-static void __pyx_tp_dealloc_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyObject *o) {
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *p = (struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o;
+static void __pyx_tp_dealloc_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyObject *o) {
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *p = (struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_Gamma);
   Py_CLEAR(p->__pyx_v_digitalControl);
   Py_CLEAR(p->__pyx_v_tempAb);
   Py_CLEAR(p->__pyx_v_tempAf);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients)))) {
-    __pyx_freelist_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients[__pyx_freecount_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients++] = ((struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients)))) {
+    __pyx_freelist_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients[__pyx_freecount_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients++] = ((struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *p = (struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o;
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *p = (struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o;
   if (p->__pyx_v_Gamma) {
     e = (*v)(p->__pyx_v_Gamma, a); if (e) return e;
   }
@@ -20012,14 +19999,14 @@ static int __pyx_tp_traverse_3cbc_17digital_estimator_16filter_mid_point___pyx_s
   return 0;
 }
 
-static int __pyx_tp_clear_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyObject *o) {
+static int __pyx_tp_clear_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *p = (struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o;
+  struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *p = (struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients *)o;
   tmp = ((PyObject*)p->__pyx_v_Gamma);
   p->__pyx_v_Gamma = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_digitalControl);
-  p->__pyx_v_digitalControl = ((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)Py_None); Py_INCREF(Py_None);
+  p->__pyx_v_digitalControl = ((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_tempAb);
   p->__pyx_v_tempAb = Py_None; Py_INCREF(Py_None);
@@ -20030,12 +20017,12 @@ static int __pyx_tp_clear_3cbc_17digital_estimator_16filter_mid_point___pyx_scop
   return 0;
 }
 
-static PyTypeObject __pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = {
+static PyTypeObject __pyx_type_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_estimator.filter_mid_point.__pyx_scope_struct__compute_filter_coefficients", /*tp_name*/
-  sizeof(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients), /*tp_basicsize*/
+  "cbc.filter_mid_point.__pyx_scope_struct__compute_filter_coefficients", /*tp_name*/
+  sizeof(struct __pyx_obj_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_dealloc*/
+  __pyx_tp_dealloc_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -20062,8 +20049,8 @@ static PyTypeObject __pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_traverse*/
-  __pyx_tp_clear_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_clear*/
+  __pyx_tp_traverse_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_traverse*/
+  __pyx_tp_clear_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
@@ -20078,7 +20065,7 @@ static PyTypeObject __pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_new*/
+  __pyx_tp_new_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -20221,7 +20208,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_estimator.filter_mid_point.array", /*tp_name*/
+  "cbc.filter_mid_point.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -20340,7 +20327,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_estimator.filter_mid_point.Enum", /*tp_name*/
+  "cbc.filter_mid_point.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -20601,7 +20588,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_estimator.filter_mid_point.memoryview", /*tp_name*/
+  "cbc.filter_mid_point.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -20739,7 +20726,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_estimator.filter_mid_point._memoryviewslice", /*tp_name*/
+  "cbc.filter_mid_point._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -20901,7 +20888,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
   {&__pyx_n_s_care, __pyx_k_care, sizeof(__pyx_k_care), 0, 0, 1, 1},
-  {&__pyx_n_s_cbc_digital_estimator_filter_mid, __pyx_k_cbc_digital_estimator_filter_mid, sizeof(__pyx_k_cbc_digital_estimator_filter_mid), 0, 0, 1, 1},
+  {&__pyx_n_s_cbc_filter_mid_point, __pyx_k_cbc_filter_mid_point, sizeof(__pyx_k_cbc_filter_mid_point), 0, 0, 1, 1},
+  {&__pyx_n_s_cbc_offline_computations, __pyx_k_cbc_offline_computations, sizeof(__pyx_k_cbc_offline_computations), 0, 0, 1, 1},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_compute_batch, __pyx_k_compute_batch, sizeof(__pyx_k_compute_batch), 0, 0, 1, 1},
@@ -20944,7 +20932,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_n_s_obj, __pyx_k_obj, sizeof(__pyx_k_obj), 0, 0, 1, 1},
-  {&__pyx_n_s_offline_computations, __pyx_k_offline_computations, sizeof(__pyx_k_offline_computations), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
@@ -21009,7 +20996,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":85
+  /* "cbc/filter_mid_point.pyx":85
  *         for m in range(self._M):
  *             derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
  *             solBf = solve_ivp(derivative, (0, T / 2.0), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]             # <<<<<<<<<<<<<<
@@ -21350,32 +21337,32 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  __pyx_vtabptr_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter = &__pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter;
-  __pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.compute_batch = (void (*)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_compute_batch;
-  __pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.batch_size = (int (*)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_batch_size;
-  __pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.lookahead = (int (*)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_lookahead;
-  __pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.size = (int (*)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_size;
-  __pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.allocate_memory_buffers = (void (*)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *))__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_allocate_memory_buffers;
-  __pyx_vtable_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.compute_filter_coefficients = (void (*)(struct __pyx_obj_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter *, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double))__pyx_f_3cbc_17digital_estimator_16filter_mid_point_14MidPointFilter_compute_filter_coefficients;
-  if (PyType_Ready(&__pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_vtabptr_3cbc_16filter_mid_point_MidPointFilter = &__pyx_vtable_3cbc_16filter_mid_point_MidPointFilter;
+  __pyx_vtable_3cbc_16filter_mid_point_MidPointFilter.compute_batch = (void (*)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_batch;
+  __pyx_vtable_3cbc_16filter_mid_point_MidPointFilter.batch_size = (int (*)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_batch_size;
+  __pyx_vtable_3cbc_16filter_mid_point_MidPointFilter.lookahead = (int (*)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_lookahead;
+  __pyx_vtable_3cbc_16filter_mid_point_MidPointFilter.size = (int (*)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, int __pyx_skip_dispatch))__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_size;
+  __pyx_vtable_3cbc_16filter_mid_point_MidPointFilter.allocate_memory_buffers = (void (*)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *))__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_allocate_memory_buffers;
+  __pyx_vtable_3cbc_16filter_mid_point_MidPointFilter.compute_filter_coefficients = (void (*)(struct __pyx_obj_3cbc_16filter_mid_point_MidPointFilter *, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double))__pyx_f_3cbc_16filter_mid_point_14MidPointFilter_compute_filter_coefficients;
+  if (PyType_Ready(&__pyx_type_3cbc_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.tp_print = 0;
+  __pyx_type_3cbc_16filter_mid_point_MidPointFilter.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.tp_dictoffset && __pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_16filter_mid_point_MidPointFilter.tp_dictoffset && __pyx_type_3cbc_16filter_mid_point_MidPointFilter.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_3cbc_16filter_mid_point_MidPointFilter.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter.tp_dict, __pyx_vtabptr_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_MidPointFilter, (PyObject *)&__pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
-  __pyx_ptype_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter = &__pyx_type_3cbc_17digital_estimator_16filter_mid_point_MidPointFilter;
-  if (PyType_Ready(&__pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_3cbc_16filter_mid_point_MidPointFilter.tp_dict, __pyx_vtabptr_3cbc_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_MidPointFilter, (PyObject *)&__pyx_type_3cbc_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_16filter_mid_point_MidPointFilter) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_ptype_3cbc_16filter_mid_point_MidPointFilter = &__pyx_type_3cbc_16filter_mid_point_MidPointFilter;
+  if (PyType_Ready(&__pyx_type_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_print = 0;
+  __pyx_type_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_dictoffset && __pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_dictoffset && __pyx_type_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = &__pyx_type_3cbc_17digital_estimator_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients;
+  __pyx_ptype_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients = &__pyx_type_3cbc_16filter_mid_point___pyx_scope_struct__compute_filter_coefficients;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) __PYX_ERR(1, 105, __pyx_L1_error)
@@ -21442,17 +21429,17 @@ static int __Pyx_modinit_type_import_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_import_code", 0);
   /*--- Type import code ---*/
-  __pyx_t_1 = PyImport_ImportModule("cbc.digital_control.digital_control"); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cbc.digital_control"); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl = __Pyx_ImportType(__pyx_t_1, "cbc.digital_control.digital_control", "DigitalControl", sizeof(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl) __PYX_ERR(2, 1, __pyx_L1_error)
-  __pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl = (struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl*)__Pyx_GetVtable(__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_ptype_3cbc_15digital_control_DigitalControl = __Pyx_ImportType(__pyx_t_1, "cbc.digital_control", "DigitalControl", sizeof(struct __pyx_obj_3cbc_15digital_control_DigitalControl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_3cbc_15digital_control_DigitalControl) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_vtabptr_3cbc_15digital_control_DigitalControl = (struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl*)__Pyx_GetVtable(__pyx_ptype_3cbc_15digital_control_DigitalControl->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_15digital_control_DigitalControl)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cbc.analog_system.analog_system"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 2, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cbc.analog_system"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem = __Pyx_ImportType(__pyx_t_1, "cbc.analog_system.analog_system", "AnalogSystem", sizeof(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem) __PYX_ERR(3, 2, __pyx_L1_error)
-  __pyx_vtabptr_3cbc_13analog_system_13analog_system_AnalogSystem = (struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem*)__Pyx_GetVtable(__pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_13analog_system_13analog_system_AnalogSystem)) __PYX_ERR(3, 2, __pyx_L1_error)
+  __pyx_ptype_3cbc_13analog_system_AnalogSystem = __Pyx_ImportType(__pyx_t_1, "cbc.analog_system", "AnalogSystem", sizeof(struct __pyx_obj_3cbc_13analog_system_AnalogSystem), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_3cbc_13analog_system_AnalogSystem) __PYX_ERR(3, 2, __pyx_L1_error)
+  __pyx_vtabptr_3cbc_13analog_system_AnalogSystem = (struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem*)__Pyx_GetVtable(__pyx_ptype_3cbc_13analog_system_AnalogSystem->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_13analog_system_AnalogSystem)) __PYX_ERR(3, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -21654,14 +21641,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_cbc__digital_estimator__filter_mid_point) {
+  if (__pyx_module_is_main_cbc__filter_mid_point) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name_2, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "cbc.digital_estimator.filter_mid_point")) {
-      if (unlikely(PyDict_SetItemString(modules, "cbc.digital_estimator.filter_mid_point", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "cbc.filter_mid_point")) {
+      if (unlikely(PyDict_SetItemString(modules, "cbc.filter_mid_point", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -21682,10 +21669,10 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":5
+  /* "cbc/filter_mid_point.pyx":5
  * """
  * #cython: language_level=3
- * from .offline_computations import care             # <<<<<<<<<<<<<<
+ * from cbc.offline_computations import care             # <<<<<<<<<<<<<<
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp
  */
@@ -21694,7 +21681,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_care);
   __Pyx_GIVEREF(__pyx_n_s_care);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_care);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_offline_computations, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_cbc_offline_computations, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_care); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
@@ -21703,9 +21690,9 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":6
+  /* "cbc/filter_mid_point.pyx":6
  * #cython: language_level=3
- * from .offline_computations import care
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve             # <<<<<<<<<<<<<<
  * from scipy.integrate import solve_ivp
  * from numpy import dot as dot_product, eye, zeros, int8, double, roll, array
@@ -21731,8 +21718,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":7
- * from .offline_computations import care
+  /* "cbc/filter_mid_point.pyx":7
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp             # <<<<<<<<<<<<<<
  * from numpy import dot as dot_product, eye, zeros, int8, double, roll, array
@@ -21752,7 +21739,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":8
+  /* "cbc/filter_mid_point.pyx":8
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp
  * from numpy import dot as dot_product, eye, zeros, int8, double, roll, array             # <<<<<<<<<<<<<<
@@ -21815,7 +21802,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/digital_estimator/filter_mid_point.pyx":1
+  /* "cbc/filter_mid_point.pyx":1
  * """             # <<<<<<<<<<<<<<
  * The digital estimator.
  * """
@@ -21986,11 +21973,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cbc.digital_estimator.filter_mid_point", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init cbc.filter_mid_point", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cbc.digital_estimator.filter_mid_point");
+    PyErr_SetString(PyExc_ImportError, "init cbc.filter_mid_point");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

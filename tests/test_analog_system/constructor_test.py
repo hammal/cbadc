@@ -8,7 +8,7 @@ import numpy as np
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
 if myPath:
-    from cbc.analog_system import AnalogSystem, InvalidAnalogSystemError
+    from cbc import AnalogSystem, InvalidAnalogSystemError
 
 
 beta = 6250.0
@@ -17,7 +17,7 @@ N = 5
 A = np.eye(N) * rho + np.eye(N, k=-1) * beta
 B = np.zeros((N, 1))
 B[0] = beta
-C = np.zeros((N,1))
+C = np.zeros((N, 1))
 C[-1] = 1.0
 Gamma_tilde = np.eye(N)
 Gamma = Gamma_tilde * (-beta)

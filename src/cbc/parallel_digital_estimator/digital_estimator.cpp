@@ -6,17 +6,7 @@
         "extra_compile_args": [
             "-fopenmp"
         ],
-        "include_dirs": [
-            ".",
-            "src/cbc/analog_system",
-            "src/cbc/digital_control",
-            "src/cbc/analog_signal",
-            "src/cbc/digital_estimator"
-        ],
         "language": "c++",
-        "libraries": [
-            "m"
-        ],
         "name": "cbc.parallel_digital_estimator.digital_estimator",
         "sources": [
             "src/cbc/parallel_digital_estimator/digital_estimator.pyx"
@@ -2025,6 +2015,7 @@ static const char __pyx_k_DigitalEstimator___next[] = "DigitalEstimator.__next__
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
+static const char __pyx_k_cbc_offline_computations[] = "cbc.offline_computations";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_K1_must_be_a_positive_integer[] = "K1 must be a positive integer";
@@ -2046,7 +2037,6 @@ static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, ex
 static const char __pyx_k_K2_must_be_a_non_negative_intege[] = "K2 must be a non negative integer";
 static const char __pyx_k_Out_of_bounds_on_buffer_access_a[] = "Out of bounds on buffer access (axis %d)";
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
-static const char __pyx_k_cbc_digital_estimator_offline_co[] = "cbc.digital_estimator.offline_computations";
 static const char __pyx_k_cbc_parallel_digital_estimator_c[] = "cbc.parallel_digital_estimator.c_digital_estimator";
 static const char __pyx_k_cbc_parallel_digital_estimator_d[] = "cbc.parallel_digital_estimator.digital_estimator";
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
@@ -2106,7 +2096,7 @@ static PyObject *__pyx_n_s_base;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
 static PyObject *__pyx_n_s_care;
-static PyObject *__pyx_n_s_cbc_digital_estimator_offline_co;
+static PyObject *__pyx_n_s_cbc_offline_computations;
 static PyObject *__pyx_n_s_cbc_parallel_digital_estimator_c;
 static PyObject *__pyx_n_s_cbc_parallel_digital_estimator_d;
 static PyObject *__pyx_n_s_class;
@@ -17883,7 +17873,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
   {&__pyx_n_s_care, __pyx_k_care, sizeof(__pyx_k_care), 0, 0, 1, 1},
-  {&__pyx_n_s_cbc_digital_estimator_offline_co, __pyx_k_cbc_digital_estimator_offline_co, sizeof(__pyx_k_cbc_digital_estimator_offline_co), 0, 0, 1, 1},
+  {&__pyx_n_s_cbc_offline_computations, __pyx_k_cbc_offline_computations, sizeof(__pyx_k_cbc_offline_computations), 0, 0, 1, 1},
   {&__pyx_n_s_cbc_parallel_digital_estimator_c, __pyx_k_cbc_parallel_digital_estimator_c, sizeof(__pyx_k_cbc_parallel_digital_estimator_c), 0, 0, 1, 1},
   {&__pyx_n_s_cbc_parallel_digital_estimator_d, __pyx_k_cbc_parallel_digital_estimator_d, sizeof(__pyx_k_cbc_parallel_digital_estimator_d), 0, 0, 1, 1},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
@@ -18716,7 +18706,7 @@ if (!__Pyx_RefNanny) {
 
   /* "cbc/parallel_digital_estimator/digital_estimator.pyx":2
  * # distutils: language = c++
- * from cbc.digital_estimator.offline_computations import care             # <<<<<<<<<<<<<<
+ * from cbc.offline_computations import care             # <<<<<<<<<<<<<<
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp
  */
@@ -18725,7 +18715,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_care);
   __Pyx_GIVEREF(__pyx_n_s_care);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_care);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_cbc_digital_estimator_offline_co, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_cbc_offline_computations, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_care); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
@@ -18736,7 +18726,7 @@ if (!__Pyx_RefNanny) {
 
   /* "cbc/parallel_digital_estimator/digital_estimator.pyx":3
  * # distutils: language = c++
- * from cbc.digital_estimator.offline_computations import care
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve             # <<<<<<<<<<<<<<
  * from scipy.integrate import solve_ivp
  * from numpy import dot as dot_product, eye, zeros, int8, double, roll, array, abs
@@ -18763,7 +18753,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "cbc/parallel_digital_estimator/digital_estimator.pyx":4
- * from cbc.digital_estimator.offline_computations import care
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp             # <<<<<<<<<<<<<<
  * from numpy import dot as dot_product, eye, zeros, int8, double, roll, array, abs
@@ -19029,7 +19019,7 @@ if (!__Pyx_RefNanny) {
 
   /* "cbc/parallel_digital_estimator/digital_estimator.pyx":1
  * # distutils: language = c++             # <<<<<<<<<<<<<<
- * from cbc.digital_estimator.offline_computations import care
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve
  */
   __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)

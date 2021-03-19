@@ -3,25 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "extra_compile_args": [
-            "-fopenmp"
-        ],
-        "include_dirs": [
-            ".",
-            "src/cbc/analog_system",
-            "src/cbc/digital_control",
-            "src/cbc/analog_signal",
-            "src/cbc/digital_estimator"
-        ],
-        "libraries": [
-            "m"
-        ],
-        "name": "cbc.digital_control.digital_control",
+        "name": "cbc.digital_control",
         "sources": [
-            "src/cbc/digital_control/digital_control.pyx"
+            "src/cbc/digital_control.pyx"
         ]
     },
-    "module_name": "cbc.digital_control.digital_control"
+    "module_name": "cbc.digital_control"
 }
 END: Cython Metadata */
 
@@ -627,8 +614,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__cbc__digital_control__digital_control
-#define __PYX_HAVE_API__cbc__digital_control__digital_control
+#define __PYX_HAVE__cbc__digital_control
+#define __PYX_HAVE_API__cbc__digital_control
 /* Early includes */
 #include "pythread.h"
 #include <string.h>
@@ -843,7 +830,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/cbc/digital_control/digital_control.pyx",
+  "src/cbc/digital_control.pyx",
   "stringsource",
 };
 /* MemviewSliceStruct.proto */
@@ -956,20 +943,20 @@ typedef struct {
 
 
 /*--- Type declarations ---*/
-struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl;
+struct __pyx_obj_3cbc_15digital_control_DigitalControl;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "cbc/digital_control/digital_control.pxd":1
+/* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
  *     cdef double _t_next, _Ts
  *     cdef double [:] _dac_values
  */
-struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl {
+struct __pyx_obj_3cbc_15digital_control_DigitalControl {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_vtab;
+  struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtab;
   double _t_next;
   double _Ts;
   __Pyx_memviewslice _dac_values;
@@ -1056,7 +1043,7 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "cbc/digital_control/digital_control.pyx":7
+/* "cbc/digital_control.pyx":7
  * import numpy as np
  * 
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
@@ -1064,13 +1051,13 @@ struct __pyx_memoryviewslice_obj {
  *     def __init__(self, Ts, M, t0 = 0.):
  */
 
-struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl {
-  __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, PyObject *, PyObject *);
+struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl {
+  __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
+  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, PyObject *, PyObject *);
 };
-static struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl;
+static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_DigitalControl;
 
 
 /* "View.MemoryView":105
@@ -1754,10 +1741,10 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_evaluate(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
-static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_control_signal(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
-static double __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_Ts(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
-static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_impulse_response(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_m, CYTHON_UNUSED PyObject *__pyx_v_t); /* proto*/
+static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evaluate(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x, int __pyx_skip_dispatch); /* proto*/
+static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_control_signal(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static double __pyx_f_3cbc_15digital_control_14DigitalControl_Ts(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
+static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_impulse_response(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_m, CYTHON_UNUSED PyObject *__pyx_v_t); /* proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
@@ -1769,8 +1756,8 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp); /* proto*/
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value); /* proto*/
 
-/* Module declarations from 'cbc.digital_control.digital_control' */
-static PyTypeObject *__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl = 0;
+/* Module declarations from 'cbc.digital_control' */
+static PyTypeObject *__pyx_ptype_3cbc_15digital_control_DigitalControl = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
@@ -1782,7 +1769,7 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static PyObject *__pyx_f_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl__set_state(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, PyObject *); /*proto*/
+static PyObject *__pyx_f_3cbc_15digital_control___pyx_unpickle_DigitalControl__set_state(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, PyObject *); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -1818,11 +1805,11 @@ static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_char = { "char", NULL, sizeof(char), { 0 }, 0, 'H', IS_UNSIGNED(char), 0 };
-#define __Pyx_MODULE_NAME "cbc.digital_control.digital_control"
-extern int __pyx_module_is_main_cbc__digital_control__digital_control;
-int __pyx_module_is_main_cbc__digital_control__digital_control = 0;
+#define __Pyx_MODULE_NAME "cbc.digital_control"
+extern int __pyx_module_is_main_cbc__digital_control;
+int __pyx_module_is_main_cbc__digital_control = 0;
 
-/* Implementation of 'cbc.digital_control.digital_control' */
+/* Implementation of 'cbc.digital_control' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_MemoryError;
@@ -1906,6 +1893,7 @@ static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
+static const char __pyx_k_cbc_digital_control[] = "cbc.digital_control";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
@@ -1929,7 +1917,6 @@ static const char __pyx_k_Indirect_dimensions_not_supporte[] = "Indirect dimensi
 static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, expected 'c' or 'fortran', got %s";
 static const char __pyx_k_Out_of_bounds_on_buffer_access_a[] = "Out of bounds on buffer access (axis %d)";
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
-static const char __pyx_k_cbc_digital_control_digital_cont[] = "cbc.digital_control.digital_control";
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static const char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
@@ -1964,7 +1951,7 @@ static PyObject *__pyx_n_s_allocate_buffer;
 static PyObject *__pyx_n_s_base;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
-static PyObject *__pyx_n_s_cbc_digital_control_digital_cont;
+static PyObject *__pyx_n_s_cbc_digital_control;
 static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
@@ -2036,13 +2023,13 @@ static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_x;
 static PyObject *__pyx_n_s_zeros;
-static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___init__(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_Ts, PyObject *__pyx_v_M, PyObject *__pyx_v_t0); /* proto */
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_2evaluate(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x); /* proto */
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_4control_signal(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_6Ts(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_8__reduce_cython__(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_10__setstate_cython__(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3cbc_15digital_control_14DigitalControl___init__(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_Ts, PyObject *__pyx_v_M, PyObject *__pyx_v_t0); /* proto */
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_2evaluate(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x); /* proto */
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_4control_signal(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_6Ts(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_8__reduce_cython__(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_10__setstate_cython__(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_3cbc_15digital_control___pyx_unpickle_DigitalControl(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -2085,7 +2072,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__
 static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_tp_new_3cbc_15digital_control_15digital_control_DigitalControl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_3cbc_15digital_control_DigitalControl(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2125,7 +2112,7 @@ static PyObject *__pyx_codeobj__20;
 static PyObject *__pyx_codeobj__27;
 /* Late includes */
 
-/* "cbc/digital_control/digital_control.pyx":9
+/* "cbc/digital_control.pyx":9
  * cdef class DigitalControl:
  * 
  *     def __init__(self, Ts, M, t0 = 0.):             # <<<<<<<<<<<<<<
@@ -2134,8 +2121,8 @@ static PyObject *__pyx_codeobj__27;
  */
 
 /* Python wrapper */
-static int __pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_3cbc_15digital_control_14DigitalControl_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3cbc_15digital_control_14DigitalControl_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_Ts = 0;
   PyObject *__pyx_v_M = 0;
   PyObject *__pyx_v_t0 = 0;
@@ -2201,18 +2188,18 @@ static int __pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_1_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 9, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___init__(((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v_self), __pyx_v_Ts, __pyx_v_M, __pyx_v_t0);
+  __pyx_r = __pyx_pf_3cbc_15digital_control_14DigitalControl___init__(((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v_self), __pyx_v_Ts, __pyx_v_M, __pyx_v_t0);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___init__(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_Ts, PyObject *__pyx_v_M, PyObject *__pyx_v_t0) {
+static int __pyx_pf_3cbc_15digital_control_14DigitalControl___init__(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_Ts, PyObject *__pyx_v_M, PyObject *__pyx_v_t0) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -2229,7 +2216,7 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbc/digital_control/digital_control.pyx":10
+  /* "cbc/digital_control.pyx":10
  * 
  *     def __init__(self, Ts, M, t0 = 0.):
  *         self._Ts = Ts             # <<<<<<<<<<<<<<
@@ -2239,7 +2226,7 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_Ts); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 10, __pyx_L1_error)
   __pyx_v_self->_Ts = __pyx_t_1;
 
-  /* "cbc/digital_control/digital_control.pyx":11
+  /* "cbc/digital_control.pyx":11
  *     def __init__(self, Ts, M, t0 = 0.):
  *         self._Ts = Ts
  *         self._order = M             # <<<<<<<<<<<<<<
@@ -2249,7 +2236,7 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
   __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_M); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L1_error)
   __pyx_v_self->_order = __pyx_t_2;
 
-  /* "cbc/digital_control/digital_control.pyx":12
+  /* "cbc/digital_control.pyx":12
  *         self._Ts = Ts
  *         self._order = M
  *         self._t_next = t0 + self._Ts             # <<<<<<<<<<<<<<
@@ -2265,7 +2252,7 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_self->_t_next = __pyx_t_1;
 
-  /* "cbc/digital_control/digital_control.pyx":13
+  /* "cbc/digital_control.pyx":13
  *         self._order = M
  *         self._t_next = t0 + self._Ts
  *         self._s = np.zeros(self._order, dtype=np.int8)             # <<<<<<<<<<<<<<
@@ -2305,7 +2292,7 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "cbc/digital_control/digital_control.pyx":14
+  /* "cbc/digital_control.pyx":14
  *         self._t_next = t0 + self._Ts
  *         self._s = np.zeros(self._order, dtype=np.int8)
  *         self._dac_values = np.zeros(self._order, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -2345,7 +2332,7 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "cbc/digital_control/digital_control.pyx":9
+  /* "cbc/digital_control.pyx":9
  * cdef class DigitalControl:
  * 
  *     def __init__(self, Ts, M, t0 = 0.):             # <<<<<<<<<<<<<<
@@ -2364,14 +2351,14 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
   __Pyx_XDECREF(__pyx_t_7);
   __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cbc/digital_control/digital_control.pyx":16
+/* "cbc/digital_control.pyx":16
  *         self._dac_values = np.zeros(self._order, dtype=np.double)
  * 
  *     cpdef double [:] evaluate(self, double t, double [:] x):             # <<<<<<<<<<<<<<
@@ -2379,8 +2366,8 @@ static int __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl___
  *         cdef int m
  */
 
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_evaluate(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evaluate(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x, int __pyx_skip_dispatch) {
   int __pyx_v_m;
   __Pyx_memviewslice __pyx_r = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_RefNannyDeclarations
@@ -2414,7 +2401,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_3evaluate)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_15digital_control_14DigitalControl_3evaluate)) {
         __pyx_t_3 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 16, __pyx_L1_error) }
@@ -2491,7 +2478,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
     #endif
   }
 
-  /* "cbc/digital_control/digital_control.pyx":19
+  /* "cbc/digital_control.pyx":19
  *         # sample and digitize
  *         cdef int m
  *         if t >= self._t_next:             # <<<<<<<<<<<<<<
@@ -2501,7 +2488,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __pyx_t_10 = ((__pyx_v_t >= __pyx_v_self->_t_next) != 0);
   if (__pyx_t_10) {
 
-    /* "cbc/digital_control/digital_control.pyx":20
+    /* "cbc/digital_control.pyx":20
  *         cdef int m
  *         if t >= self._t_next:
  *             for m in range(self._order):             # <<<<<<<<<<<<<<
@@ -2513,7 +2500,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
     for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
       __pyx_v_m = __pyx_t_12;
 
-      /* "cbc/digital_control/digital_control.pyx":21
+      /* "cbc/digital_control.pyx":21
  *         if t >= self._t_next:
  *             for m in range(self._order):
  *                 self._s[m] = x[m] > 0             # <<<<<<<<<<<<<<
@@ -2543,7 +2530,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
       }
       *((char *) ( /* dim=0 */ (__pyx_v_self->_s.data + __pyx_t_15 * __pyx_v_self->_s.strides[0]) )) = ((*((double *) ( /* dim=0 */ (__pyx_v_x.data + __pyx_t_13 * __pyx_v_x.strides[0]) ))) > 0.0);
 
-      /* "cbc/digital_control/digital_control.pyx":22
+      /* "cbc/digital_control.pyx":22
  *             for m in range(self._order):
  *                 self._s[m] = x[m] > 0
  *                 if self._s[m]:             # <<<<<<<<<<<<<<
@@ -2564,7 +2551,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
       __pyx_t_10 = ((*((char *) ( /* dim=0 */ (__pyx_v_self->_s.data + __pyx_t_13 * __pyx_v_self->_s.strides[0]) ))) != 0);
       if (__pyx_t_10) {
 
-        /* "cbc/digital_control/digital_control.pyx":23
+        /* "cbc/digital_control.pyx":23
  *                 self._s[m] = x[m] > 0
  *                 if self._s[m]:
  *                     self._dac_values[m] = 1             # <<<<<<<<<<<<<<
@@ -2584,7 +2571,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
         }
         *((double *) ( /* dim=0 */ (__pyx_v_self->_dac_values.data + __pyx_t_13 * __pyx_v_self->_dac_values.strides[0]) )) = 1.0;
 
-        /* "cbc/digital_control/digital_control.pyx":22
+        /* "cbc/digital_control.pyx":22
  *             for m in range(self._order):
  *                 self._s[m] = x[m] > 0
  *                 if self._s[m]:             # <<<<<<<<<<<<<<
@@ -2594,7 +2581,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
         goto __pyx_L6;
       }
 
-      /* "cbc/digital_control/digital_control.pyx":25
+      /* "cbc/digital_control.pyx":25
  *                     self._dac_values[m] = 1
  *                 else:
  *                     self._dac_values[m] = -1             # <<<<<<<<<<<<<<
@@ -2618,7 +2605,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
       __pyx_L6:;
     }
 
-    /* "cbc/digital_control/digital_control.pyx":26
+    /* "cbc/digital_control.pyx":26
  *                 else:
  *                     self._dac_values[m] = -1
  *             self._t_next += self._Ts             # <<<<<<<<<<<<<<
@@ -2627,7 +2614,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
  */
     __pyx_v_self->_t_next = (__pyx_v_self->_t_next + __pyx_v_self->_Ts);
 
-    /* "cbc/digital_control/digital_control.pyx":19
+    /* "cbc/digital_control.pyx":19
  *         # sample and digitize
  *         cdef int m
  *         if t >= self._t_next:             # <<<<<<<<<<<<<<
@@ -2636,7 +2623,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
  */
   }
 
-  /* "cbc/digital_control/digital_control.pyx":28
+  /* "cbc/digital_control.pyx":28
  *             self._t_next += self._Ts
  *         # DAC
  *         return self._dac_values             # <<<<<<<<<<<<<<
@@ -2648,7 +2635,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __pyx_r = __pyx_v_self->_dac_values;
   goto __pyx_L0;
 
-  /* "cbc/digital_control/digital_control.pyx":16
+  /* "cbc/digital_control.pyx":16
  *         self._dac_values = np.zeros(self._order, dtype=np.double)
  * 
  *     cpdef double [:] evaluate(self, double t, double [:] x):             # <<<<<<<<<<<<<<
@@ -2668,7 +2655,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
   __pyx_r.data = NULL;
   __pyx_r.memview = NULL;
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   goto __pyx_L2;
   __pyx_L0:;
   if (unlikely(!__pyx_r.memview)) {
@@ -2680,9 +2667,9 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_2evaluate[] = "DigitalControl.evaluate(self, double t, double[:] x) -> double[:]";
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_3cbc_15digital_control_14DigitalControl_2evaluate[] = "DigitalControl.evaluate(self, double t, double[:] x) -> double[:]";
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   double __pyx_v_t;
   __Pyx_memviewslice __pyx_v_x = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_lineno = 0;
@@ -2733,18 +2720,18 @@ static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalCont
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("evaluate", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 16, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_2evaluate(((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v_self), __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_pf_3cbc_15digital_control_14DigitalControl_2evaluate(((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v_self), __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_2evaluate(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x) {
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_2evaluate(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, double __pyx_v_t, __Pyx_memviewslice __pyx_v_x) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_memviewslice __pyx_t_1 = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -2755,7 +2742,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   __Pyx_RefNannySetupContext("evaluate", 0);
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 16, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_evaluate(__pyx_v_self, __pyx_v_t, __pyx_v_x, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3cbc_15digital_control_14DigitalControl_evaluate(__pyx_v_self, __pyx_v_t, __pyx_v_x, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 16, __pyx_L1_error)
   __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
@@ -2769,7 +2756,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_x, 1);
@@ -2778,7 +2765,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   return __pyx_r;
 }
 
-/* "cbc/digital_control/digital_control.pyx":30
+/* "cbc/digital_control.pyx":30
  *         return self._dac_values
  * 
  *     cpdef char [:] control_signal(self):             # <<<<<<<<<<<<<<
@@ -2786,8 +2773,8 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
  * 
  */
 
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_5control_signal(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_control_signal(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_5control_signal(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_control_signal(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch) {
   __Pyx_memviewslice __pyx_r = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2810,7 +2797,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_control_signal); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_5control_signal)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_15digital_control_14DigitalControl_5control_signal)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -2848,7 +2835,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
     #endif
   }
 
-  /* "cbc/digital_control/digital_control.pyx":31
+  /* "cbc/digital_control.pyx":31
  * 
  *     cpdef char [:] control_signal(self):
  *         return self._s             # <<<<<<<<<<<<<<
@@ -2860,7 +2847,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __pyx_r = __pyx_v_self->_s;
   goto __pyx_L0;
 
-  /* "cbc/digital_control/digital_control.pyx":30
+  /* "cbc/digital_control.pyx":30
  *         return self._dac_values
  * 
  *     cpdef char [:] control_signal(self):             # <<<<<<<<<<<<<<
@@ -2877,7 +2864,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __PYX_XDEC_MEMVIEW(&__pyx_t_5, 1);
   __pyx_r.data = NULL;
   __pyx_r.memview = NULL;
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.control_signal", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.control_signal", __pyx_clineno, __pyx_lineno, __pyx_filename);
   goto __pyx_L2;
   __pyx_L0:;
   if (unlikely(!__pyx_r.memview)) {
@@ -2889,20 +2876,20 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_5control_signal(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_4control_signal[] = "DigitalControl.control_signal(self) -> char[:]";
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_5control_signal(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_5control_signal(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_15digital_control_14DigitalControl_4control_signal[] = "DigitalControl.control_signal(self) -> char[:]";
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_5control_signal(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("control_signal (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_4control_signal(((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_15digital_control_14DigitalControl_4control_signal(((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_4control_signal(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_4control_signal(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_memviewslice __pyx_t_1 = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -2912,7 +2899,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("control_signal", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_control_signal(__pyx_v_self, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3cbc_15digital_control_14DigitalControl_control_signal(__pyx_v_self, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 30, __pyx_L1_error)
   __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_char, (int (*)(char *, PyObject *)) __pyx_memview_set_char, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
@@ -2926,7 +2913,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.control_signal", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.control_signal", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2934,7 +2921,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   return __pyx_r;
 }
 
-/* "cbc/digital_control/digital_control.pyx":33
+/* "cbc/digital_control.pyx":33
  *         return self._s
  * 
  *     cpdef double Ts(self):             # <<<<<<<<<<<<<<
@@ -2942,8 +2929,8 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
  * 
  */
 
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_7Ts(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static double __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_Ts(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_7Ts(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static double __pyx_f_3cbc_15digital_control_14DigitalControl_Ts(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, int __pyx_skip_dispatch) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2966,7 +2953,7 @@ static double __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_Ts); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_7Ts)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_15digital_control_14DigitalControl_7Ts)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -3002,7 +2989,7 @@ static double __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_
     #endif
   }
 
-  /* "cbc/digital_control/digital_control.pyx":34
+  /* "cbc/digital_control.pyx":34
  * 
  *     cpdef double Ts(self):
  *         return self._Ts             # <<<<<<<<<<<<<<
@@ -3012,7 +2999,7 @@ static double __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_
   __pyx_r = __pyx_v_self->_Ts;
   goto __pyx_L0;
 
-  /* "cbc/digital_control/digital_control.pyx":33
+  /* "cbc/digital_control.pyx":33
  *         return self._s
  * 
  *     cpdef double Ts(self):             # <<<<<<<<<<<<<<
@@ -3026,7 +3013,7 @@ static double __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_WriteUnraisable("cbc.digital_control.digital_control.DigitalControl.Ts", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbc.digital_control.DigitalControl.Ts", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -3034,20 +3021,20 @@ static double __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_7Ts(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_6Ts[] = "DigitalControl.Ts(self) -> double";
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_7Ts(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_7Ts(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_15digital_control_14DigitalControl_6Ts[] = "DigitalControl.Ts(self) -> double";
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_7Ts(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("Ts (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_6Ts(((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_15digital_control_14DigitalControl_6Ts(((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_6Ts(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_6Ts(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3056,7 +3043,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("Ts", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_Ts(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_15digital_control_14DigitalControl_Ts(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3065,7 +3052,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.Ts", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.Ts", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3073,7 +3060,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   return __pyx_r;
 }
 
-/* "cbc/digital_control/digital_control.pyx":36
+/* "cbc/digital_control.pyx":36
  *         return self._Ts
  * 
  *     cdef double [:] impulse_response(self, m, t):             # <<<<<<<<<<<<<<
@@ -3081,7 +3068,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
  *         temp[m] = 1
  */
 
-static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_impulse_response(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_m, CYTHON_UNUSED PyObject *__pyx_v_t) {
+static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_impulse_response(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v_m, CYTHON_UNUSED PyObject *__pyx_v_t) {
   PyObject *__pyx_v_temp = NULL;
   __Pyx_memviewslice __pyx_r = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_RefNannyDeclarations
@@ -3096,7 +3083,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("impulse_response", 0);
 
-  /* "cbc/digital_control/digital_control.pyx":37
+  /* "cbc/digital_control.pyx":37
  * 
  *     cdef double [:] impulse_response(self, m, t):
  *         temp = np.zeros(self._order, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -3132,7 +3119,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __pyx_v_temp = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "cbc/digital_control/digital_control.pyx":38
+  /* "cbc/digital_control.pyx":38
  *     cdef double [:] impulse_response(self, m, t):
  *         temp = np.zeros(self._order, dtype=np.double)
  *         temp[m] = 1             # <<<<<<<<<<<<<<
@@ -3140,7 +3127,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
  */
   if (unlikely(PyObject_SetItem(__pyx_v_temp, __pyx_v_m, __pyx_int_1) < 0)) __PYX_ERR(0, 38, __pyx_L1_error)
 
-  /* "cbc/digital_control/digital_control.pyx":39
+  /* "cbc/digital_control.pyx":39
  *         temp = np.zeros(self._order, dtype=np.double)
  *         temp[m] = 1
  *         return temp             # <<<<<<<<<<<<<<
@@ -3151,7 +3138,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __pyx_t_6.data = NULL;
   goto __pyx_L0;
 
-  /* "cbc/digital_control/digital_control.pyx":36
+  /* "cbc/digital_control.pyx":36
  *         return self._Ts
  * 
  *     cdef double [:] impulse_response(self, m, t):             # <<<<<<<<<<<<<<
@@ -3169,7 +3156,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __pyx_r.data = NULL;
   __pyx_r.memview = NULL;
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.impulse_response", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.impulse_response", __pyx_clineno, __pyx_lineno, __pyx_filename);
   goto __pyx_L2;
   __pyx_L0:;
   if (unlikely(!__pyx_r.memview)) {
@@ -3188,20 +3175,20 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_15digital_control_14Dig
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_8__reduce_cython__[] = "DigitalControl.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3cbc_15digital_control_14DigitalControl_8__reduce_cython__[] = "DigitalControl.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_8__reduce_cython__(((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3cbc_15digital_control_14DigitalControl_8__reduce_cython__(((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_8__reduce_cython__(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self) {
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_8__reduce_cython__(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self) {
   PyObject *__pyx_v_state = 0;
   PyObject *__pyx_v__dict = 0;
   int __pyx_v_use_setstate;
@@ -3435,7 +3422,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_state);
@@ -3453,20 +3440,20 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_10__setstate_cython__[] = "DigitalControl.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3cbc_15digital_control_14DigitalControl_10__setstate_cython__[] = "DigitalControl.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3cbc_15digital_control_14DigitalControl_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_10__setstate_cython__(((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3cbc_15digital_control_14DigitalControl_10__setstate_cython__(((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalControl_10__setstate_cython__(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3cbc_15digital_control_14DigitalControl_10__setstate_cython__(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3481,7 +3468,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
  *     __pyx_unpickle_DigitalControl__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
   if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(1, 17, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 17, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3cbc_15digital_control___pyx_unpickle_DigitalControl__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -3497,7 +3484,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.DigitalControl.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.DigitalControl.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3512,10 +3499,10 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control_14DigitalCont
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_1__pyx_unpickle_DigitalControl(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl[] = "__pyx_unpickle_DigitalControl(__pyx_type, long __pyx_checksum, __pyx_state)";
-static PyMethodDef __pyx_mdef_3cbc_15digital_control_15digital_control_1__pyx_unpickle_DigitalControl = {"__pyx_unpickle_DigitalControl", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_15digital_control_15digital_control_1__pyx_unpickle_DigitalControl, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl};
-static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_1__pyx_unpickle_DigitalControl(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_15digital_control_1__pyx_unpickle_DigitalControl(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_3cbc_15digital_control___pyx_unpickle_DigitalControl[] = "__pyx_unpickle_DigitalControl(__pyx_type, long __pyx_checksum, __pyx_state)";
+static PyMethodDef __pyx_mdef_3cbc_15digital_control_1__pyx_unpickle_DigitalControl = {"__pyx_unpickle_DigitalControl", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_15digital_control_1__pyx_unpickle_DigitalControl, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_15digital_control___pyx_unpickle_DigitalControl};
+static PyObject *__pyx_pw_3cbc_15digital_control_1__pyx_unpickle_DigitalControl(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v___pyx_type = 0;
   long __pyx_v___pyx_checksum;
   PyObject *__pyx_v___pyx_state = 0;
@@ -3577,18 +3564,18 @@ static PyObject *__pyx_pw_3cbc_15digital_control_15digital_control_1__pyx_unpick
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_DigitalControl", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 1, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.__pyx_unpickle_DigitalControl", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.__pyx_unpickle_DigitalControl", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
+  __pyx_r = __pyx_pf_3cbc_15digital_control___pyx_unpickle_DigitalControl(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3cbc_15digital_control___pyx_unpickle_DigitalControl(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_v___pyx_PickleError = 0;
   PyObject *__pyx_v___pyx_result = 0;
   PyObject *__pyx_r = NULL;
@@ -3685,7 +3672,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control___pyx_unpickl
  *     if __pyx_state is not None:
  *         __pyx_unpickle_DigitalControl__set_state(<DigitalControl> __pyx_result, __pyx_state)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 7, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3cbc_15digital_control_DigitalControl), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3724,7 +3711,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control___pyx_unpickl
  * cdef __pyx_unpickle_DigitalControl__set_state(DigitalControl __pyx_result, tuple __pyx_state):
  */
     if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(1, 9, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl__set_state(((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 9, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3cbc_15digital_control___pyx_unpickle_DigitalControl__set_state(((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 9, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
@@ -3761,7 +3748,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control___pyx_unpickl
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.__pyx_unpickle_DigitalControl", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.__pyx_unpickle_DigitalControl", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v___pyx_PickleError);
@@ -3779,7 +3766,7 @@ static PyObject *__pyx_pf_3cbc_15digital_control_15digital_control___pyx_unpickl
  *     if len(__pyx_state) > 5 and hasattr(__pyx_result, '__dict__'):
  */
 
-static PyObject *__pyx_f_3cbc_15digital_control_15digital_control___pyx_unpickle_DigitalControl__set_state(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_f_3cbc_15digital_control___pyx_unpickle_DigitalControl__set_state(struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3941,7 +3928,7 @@ static PyObject *__pyx_f_3cbc_15digital_control_15digital_control___pyx_unpickle
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_AddTraceback("cbc.digital_control.digital_control.__pyx_unpickle_DigitalControl__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.digital_control.__pyx_unpickle_DigitalControl__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -16966,10 +16953,10 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl __pyx_vtable_3cbc_15digital_control_15digital_control_DigitalControl;
+static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl __pyx_vtable_3cbc_15digital_control_DigitalControl;
 
-static PyObject *__pyx_tp_new_3cbc_15digital_control_15digital_control_DigitalControl(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *p;
+static PyObject *__pyx_tp_new_3cbc_15digital_control_DigitalControl(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_3cbc_15digital_control_DigitalControl *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -16977,8 +16964,8 @@ static PyObject *__pyx_tp_new_3cbc_15digital_control_15digital_control_DigitalCo
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)o);
-  p->__pyx_vtab = __pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl;
+  p = ((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)o);
+  p->__pyx_vtab = __pyx_vtabptr_3cbc_15digital_control_DigitalControl;
   p->_dac_values.data = NULL;
   p->_dac_values.memview = NULL;
   p->_s.data = NULL;
@@ -16986,8 +16973,8 @@ static PyObject *__pyx_tp_new_3cbc_15digital_control_15digital_control_DigitalCo
   return o;
 }
 
-static void __pyx_tp_dealloc_3cbc_15digital_control_15digital_control_DigitalControl(PyObject *o) {
-  struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *p = (struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)o;
+static void __pyx_tp_dealloc_3cbc_15digital_control_DigitalControl(PyObject *o) {
+  struct __pyx_obj_3cbc_15digital_control_DigitalControl *p = (struct __pyx_obj_3cbc_15digital_control_DigitalControl *)o;
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -16998,21 +16985,21 @@ static void __pyx_tp_dealloc_3cbc_15digital_control_15digital_control_DigitalCon
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static PyMethodDef __pyx_methods_3cbc_15digital_control_15digital_control_DigitalControl[] = {
-  {"evaluate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_3evaluate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_2evaluate},
-  {"control_signal", (PyCFunction)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_5control_signal, METH_NOARGS, __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_4control_signal},
-  {"Ts", (PyCFunction)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_7Ts, METH_NOARGS, __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_6Ts},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_9__reduce_cython__, METH_NOARGS, __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_8__reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_11__setstate_cython__, METH_O, __pyx_doc_3cbc_15digital_control_15digital_control_14DigitalControl_10__setstate_cython__},
+static PyMethodDef __pyx_methods_3cbc_15digital_control_DigitalControl[] = {
+  {"evaluate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_15digital_control_14DigitalControl_3evaluate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_15digital_control_14DigitalControl_2evaluate},
+  {"control_signal", (PyCFunction)__pyx_pw_3cbc_15digital_control_14DigitalControl_5control_signal, METH_NOARGS, __pyx_doc_3cbc_15digital_control_14DigitalControl_4control_signal},
+  {"Ts", (PyCFunction)__pyx_pw_3cbc_15digital_control_14DigitalControl_7Ts, METH_NOARGS, __pyx_doc_3cbc_15digital_control_14DigitalControl_6Ts},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3cbc_15digital_control_14DigitalControl_9__reduce_cython__, METH_NOARGS, __pyx_doc_3cbc_15digital_control_14DigitalControl_8__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3cbc_15digital_control_14DigitalControl_11__setstate_cython__, METH_O, __pyx_doc_3cbc_15digital_control_14DigitalControl_10__setstate_cython__},
   {0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_3cbc_15digital_control_15digital_control_DigitalControl = {
+static PyTypeObject __pyx_type_3cbc_15digital_control_DigitalControl = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_control.digital_control.DigitalControl", /*tp_name*/
-  sizeof(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl), /*tp_basicsize*/
+  "cbc.digital_control.DigitalControl", /*tp_name*/
+  sizeof(struct __pyx_obj_3cbc_15digital_control_DigitalControl), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cbc_15digital_control_15digital_control_DigitalControl, /*tp_dealloc*/
+  __pyx_tp_dealloc_3cbc_15digital_control_DigitalControl, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -17045,7 +17032,7 @@ static PyTypeObject __pyx_type_3cbc_15digital_control_15digital_control_DigitalC
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_3cbc_15digital_control_15digital_control_DigitalControl, /*tp_methods*/
+  __pyx_methods_3cbc_15digital_control_DigitalControl, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -17053,9 +17040,9 @@ static PyTypeObject __pyx_type_3cbc_15digital_control_15digital_control_DigitalC
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_3cbc_15digital_control_15digital_control_14DigitalControl_1__init__, /*tp_init*/
+  __pyx_pw_3cbc_15digital_control_14DigitalControl_1__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cbc_15digital_control_15digital_control_DigitalControl, /*tp_new*/
+  __pyx_tp_new_3cbc_15digital_control_DigitalControl, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -17198,7 +17185,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_control.digital_control.array", /*tp_name*/
+  "cbc.digital_control.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -17317,7 +17304,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_control.digital_control.Enum", /*tp_name*/
+  "cbc.digital_control.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -17578,7 +17565,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_control.digital_control.memoryview", /*tp_name*/
+  "cbc.digital_control.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -17716,7 +17703,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.digital_control.digital_control._memoryviewslice", /*tp_name*/
+  "cbc.digital_control._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -17868,7 +17855,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
-  {&__pyx_n_s_cbc_digital_control_digital_cont, __pyx_k_cbc_digital_control_digital_cont, sizeof(__pyx_k_cbc_digital_control_digital_cont), 0, 0, 1, 1},
+  {&__pyx_n_s_cbc_digital_control, __pyx_k_cbc_digital_control, sizeof(__pyx_k_cbc_digital_control), 0, 0, 1, 1},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
@@ -18290,22 +18277,22 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  __pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl = &__pyx_vtable_3cbc_15digital_control_15digital_control_DigitalControl;
-  __pyx_vtable_3cbc_15digital_control_15digital_control_DigitalControl.evaluate = (__Pyx_memviewslice (*)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch))__pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_evaluate;
-  __pyx_vtable_3cbc_15digital_control_15digital_control_DigitalControl.control_signal = (__Pyx_memviewslice (*)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch))__pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_control_signal;
-  __pyx_vtable_3cbc_15digital_control_15digital_control_DigitalControl.Ts = (double (*)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch))__pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_Ts;
-  __pyx_vtable_3cbc_15digital_control_15digital_control_DigitalControl.impulse_response = (__Pyx_memviewslice (*)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, PyObject *, PyObject *))__pyx_f_3cbc_15digital_control_15digital_control_14DigitalControl_impulse_response;
-  if (PyType_Ready(&__pyx_type_3cbc_15digital_control_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_vtabptr_3cbc_15digital_control_DigitalControl = &__pyx_vtable_3cbc_15digital_control_DigitalControl;
+  __pyx_vtable_3cbc_15digital_control_DigitalControl.evaluate = (__Pyx_memviewslice (*)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch))__pyx_f_3cbc_15digital_control_14DigitalControl_evaluate;
+  __pyx_vtable_3cbc_15digital_control_DigitalControl.control_signal = (__Pyx_memviewslice (*)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch))__pyx_f_3cbc_15digital_control_14DigitalControl_control_signal;
+  __pyx_vtable_3cbc_15digital_control_DigitalControl.Ts = (double (*)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch))__pyx_f_3cbc_15digital_control_14DigitalControl_Ts;
+  __pyx_vtable_3cbc_15digital_control_DigitalControl.impulse_response = (__Pyx_memviewslice (*)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, PyObject *, PyObject *))__pyx_f_3cbc_15digital_control_14DigitalControl_impulse_response;
+  if (PyType_Ready(&__pyx_type_3cbc_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_3cbc_15digital_control_15digital_control_DigitalControl.tp_print = 0;
+  __pyx_type_3cbc_15digital_control_DigitalControl.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_15digital_control_15digital_control_DigitalControl.tp_dictoffset && __pyx_type_3cbc_15digital_control_15digital_control_DigitalControl.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_3cbc_15digital_control_15digital_control_DigitalControl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_15digital_control_DigitalControl.tp_dictoffset && __pyx_type_3cbc_15digital_control_DigitalControl.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_3cbc_15digital_control_DigitalControl.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_3cbc_15digital_control_15digital_control_DigitalControl.tp_dict, __pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DigitalControl, (PyObject *)&__pyx_type_3cbc_15digital_control_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_15digital_control_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
-  __pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl = &__pyx_type_3cbc_15digital_control_15digital_control_DigitalControl;
+  if (__Pyx_SetVtable(__pyx_type_3cbc_15digital_control_DigitalControl.tp_dict, __pyx_vtabptr_3cbc_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DigitalControl, (PyObject *)&__pyx_type_3cbc_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_15digital_control_DigitalControl) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_ptype_3cbc_15digital_control_DigitalControl = &__pyx_type_3cbc_15digital_control_DigitalControl;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) __PYX_ERR(1, 105, __pyx_L1_error)
@@ -18563,14 +18550,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_cbc__digital_control__digital_control) {
+  if (__pyx_module_is_main_cbc__digital_control) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name_2, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "cbc.digital_control.digital_control")) {
-      if (unlikely(PyDict_SetItemString(modules, "cbc.digital_control.digital_control", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "cbc.digital_control")) {
+      if (unlikely(PyDict_SetItemString(modules, "cbc.digital_control", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -18591,7 +18578,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cbc/digital_control/digital_control.pyx":5
+  /* "cbc/digital_control.pyx":5
  * """
  * #cython: language_level=3
  * import numpy as np             # <<<<<<<<<<<<<<
@@ -18608,12 +18595,12 @@ if (!__Pyx_RefNanny) {
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3cbc_15digital_control_15digital_control_1__pyx_unpickle_DigitalControl, NULL, __pyx_n_s_cbc_digital_control_digital_cont); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3cbc_15digital_control_1__pyx_unpickle_DigitalControl, NULL, __pyx_n_s_cbc_digital_control); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_DigitalControl, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/digital_control/digital_control.pyx":1
+  /* "cbc/digital_control.pyx":1
  * """             # <<<<<<<<<<<<<<
  * The digital control is responsible for stabilizing the analog system.
  * """
@@ -18783,11 +18770,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cbc.digital_control.digital_control", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init cbc.digital_control", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cbc.digital_control.digital_control");
+    PyErr_SetString(PyExc_ImportError, "init cbc.digital_control");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

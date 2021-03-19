@@ -1,9 +1,9 @@
-from cbc.circuit_simulator import CircuitSimulator
-from cbc.digital_estimator.digital_estimator import DigitalEstimator
+from cbc import StateSpaceSimulator
+from cbc.digital_estimator import DigitalEstimator
 from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator as ParallelDigitalEstimator
-from cbc.analog_signal import AnalogSignal, Sinusodial
-from cbc.analog_system import AnalogSystem
-from cbc.digital_control import DigitalControl
+from cbc import AnalogSignal, Sinusodial
+from cbc import AnalogSystem
+from cbc import DigitalControl
 import numpy as np
 import time
 
@@ -50,6 +50,6 @@ def controlSequence():
 
 # def test_initialization_circuit_simulation_algorithm(benchmark):
 #     def setup():
-#         CircuitSimulator(
+#         StateSpaceSimulator(
 #             analogSystem, digitalControl, analogSignals)
 #     benchmark(setup)

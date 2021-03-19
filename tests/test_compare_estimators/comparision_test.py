@@ -1,9 +1,9 @@
-from cbc.circuit_simulator import CircuitSimulator
-from cbc.digital_estimator.digital_estimator import DigitalEstimator
+from cbc import StateSpaceSimulator
+from cbc.digital_estimator import DigitalEstimator
 from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator as ParallelDigitalEstimator
-from cbc.analog_signal import AnalogSignal, Sinusodial
-from cbc.analog_system import AnalogSystem
-from cbc.digital_control import DigitalControl
+from cbc import AnalogSignal, Sinusodial
+from cbc import AnalogSystem
+from cbc import DigitalControl
 from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
 from matplotlib import pyplot as plt
 import numpy as np
@@ -46,17 +46,17 @@ def test_estimation_with_circuit_simulator():
         np.array([2 * np.pi * frequency])))
     print(tf_abs, tf_abs.shape)
 
-    circuitSimulator1 = CircuitSimulator(
+    circuitSimulator1 = StateSpaceSimulator(
         analogSystem, digitalControl1, analogSignals)
     estimator1 = DigitalEstimator(
         circuitSimulator1, analogSystem, digitalControl1, eta2, K1, K2)
     digitalControl2 = DigitalControl(Ts, M)
-    circuitSimulator2 = CircuitSimulator(
+    circuitSimulator2 = StateSpaceSimulator(
         analogSystem, digitalControl2, analogSignals)
     estimator2 = ParallelDigitalEstimator(
         circuitSimulator2, analogSystem, digitalControl1, eta2, K1, K2)
     digitalControl4 = DigitalControl(Ts, M)
-    circuitSimulator4 = CircuitSimulator(
+    circuitSimulator4 = StateSpaceSimulator(
         analogSystem, digitalControl4, analogSignals)
     estimator4 = DigitalEstimator(
         circuitSimulator4, analogSystem, digitalControl4, eta2, K1, K2, midPoint=True)

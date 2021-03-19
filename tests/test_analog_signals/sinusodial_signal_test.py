@@ -1,4 +1,4 @@
-from cbc.analog_signal import Sinusodial
+from cbc import Sinusodial
 import math
 
 

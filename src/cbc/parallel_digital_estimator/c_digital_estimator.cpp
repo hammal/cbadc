@@ -3,21 +3,17 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [],
+        "depends": [
+            "src/cbc/parallel_digital_estimator/parallel_digital_estimator.cpp",
+            "src/cbc/parallel_digital_estimator/parallel_digital_estimator.h"
+        ],
         "extra_compile_args": [
             "-fopenmp"
         ],
         "include_dirs": [
-            ".",
-            "src/cbc/analog_system",
-            "src/cbc/digital_control",
-            "src/cbc/analog_signal",
-            "src/cbc/digital_estimator"
+            "src/cbc/parallel_digital_estimator"
         ],
         "language": "c++",
-        "libraries": [
-            "m"
-        ],
         "name": "cbc.parallel_digital_estimator.c_digital_estimator",
         "sources": [
             "src/cbc/parallel_digital_estimator/c_digital_estimator.pyx"
@@ -890,8 +886,8 @@ static const char *__pyx_filename;
 static const char *__pyx_f[] = {
   "src/cbc/parallel_digital_estimator/c_digital_estimator.pyx",
   "stringsource",
-  "src/cbc/digital_control/digital_control.pxd",
-  "src/cbc/analog_system/analog_system.pxd",
+  "src/cbc/digital_control.pxd",
+  "src/cbc/analog_system.pxd",
 };
 /* MemviewSliceStruct.proto */
 struct __pyx_memoryview_obj;
@@ -1015,8 +1011,8 @@ static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(do
 
 
 /*--- Type declarations ---*/
-struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl;
-struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem;
+struct __pyx_obj_3cbc_15digital_control_DigitalControl;
+struct __pyx_obj_3cbc_13analog_system_AnalogSystem;
 struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator;
 struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator___pyx_scope_struct__compute_filter_coefficients;
 struct __pyx_array_obj;
@@ -1024,14 +1020,14 @@ struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "cbc/digital_control/digital_control.pxd":1
+/* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
  *     cdef double _t_next, _Ts
  *     cdef double [:] _dac_values
  */
-struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl {
+struct __pyx_obj_3cbc_15digital_control_DigitalControl {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_vtab;
+  struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtab;
   double _t_next;
   double _Ts;
   __Pyx_memviewslice _dac_values;
@@ -1040,15 +1036,15 @@ struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl {
 };
 
 
-/* "cbc/analog_system/analog_system.pxd":2
+/* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
  *     cdef double [:,:] _A
  *     cdef double [:,:] _B
  */
-struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem {
+struct __pyx_obj_3cbc_13analog_system_AnalogSystem {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_vtab;
+  struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *__pyx_vtab;
   __Pyx_memviewslice _A;
   __Pyx_memviewslice _B;
   __Pyx_memviewslice _CT;
@@ -1107,7 +1103,7 @@ struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digit
 struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator___pyx_scope_struct__compute_filter_coefficients {
   PyObject_HEAD
   PyObject *__pyx_v_Gamma;
-  struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl;
+  struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl;
   int __pyx_v_m;
   PyObject *__pyx_v_tempAb;
   PyObject *__pyx_v_tempAf;
@@ -1192,35 +1188,35 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "cbc/digital_control/digital_control.pxd":1
+/* "cbc/digital_control.pxd":1
  * cdef class DigitalControl:             # <<<<<<<<<<<<<<
  *     cdef double _t_next, _Ts
  *     cdef double [:] _dac_values
  */
 
-struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl {
-  __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, PyObject *, PyObject *);
+struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl {
+  __Pyx_memviewslice (*evaluate)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*control_signal)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
+  double (*Ts)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_3cbc_15digital_control_DigitalControl *, PyObject *, PyObject *);
 };
-static struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl;
+static struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *__pyx_vtabptr_3cbc_15digital_control_DigitalControl;
 
 
-/* "cbc/analog_system/analog_system.pxd":2
+/* "cbc/analog_system.pxd":2
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
  *     cdef double [:,:] _A
  *     cdef double [:,:] _B
  */
 
-struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem {
-  __Pyx_memviewslice (*derivative)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, __Pyx_memviewslice, double, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*signal_output)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*control_output)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*_atf)(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, double);
+struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem {
+  __Pyx_memviewslice (*derivative)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, __Pyx_memviewslice, double, __Pyx_memviewslice, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*signal_output)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*control_output)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch);
+  __Pyx_memviewslice (*_atf)(struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, double);
 };
-static struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_vtabptr_3cbc_13analog_system_13analog_system_AnalogSystem;
+static struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem *__pyx_vtabptr_3cbc_13analog_system_AnalogSystem;
 
 
 /* "cbc/parallel_digital_estimator/c_digital_estimator.pyx":9
@@ -1232,7 +1228,7 @@ static struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem
  */
 
 struct __pyx_vtabstruct_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator {
-  void (*compute_filter_coefficients)(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double);
+  void (*compute_filter_coefficients)(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double);
 };
 static struct __pyx_vtabstruct_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *__pyx_vtabptr_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator;
 
@@ -2145,7 +2141,7 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static void __pyx_f_3cbc_26parallel_digital_estimator_19c_digital_estimator_19C_Digital_Estimator_compute_filter_coefficients(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2); /* proto*/
+static void __pyx_f_3cbc_26parallel_digital_estimator_19c_digital_estimator_19C_Digital_Estimator_compute_filter_coefficients(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2); /* proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
@@ -2157,11 +2153,11 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp); /* proto*/
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value); /* proto*/
 
-/* Module declarations from 'cbc.digital_control.digital_control' */
-static PyTypeObject *__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl = 0;
+/* Module declarations from 'cbc.digital_control' */
+static PyTypeObject *__pyx_ptype_3cbc_15digital_control_DigitalControl = 0;
 
-/* Module declarations from 'cbc.analog_system.analog_system' */
-static PyTypeObject *__pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem = 0;
+/* Module declarations from 'cbc.analog_system' */
+static PyTypeObject *__pyx_ptype_3cbc_13analog_system_AnalogSystem = 0;
 
 /* Module declarations from 'libc.stdint' */
 
@@ -2344,6 +2340,7 @@ static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>"
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
+static const char __pyx_k_cbc_offline_computations[] = "cbc.offline_computations";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
@@ -2359,7 +2356,6 @@ static const char __pyx_k_Indirect_dimensions_not_supporte[] = "Indirect dimensi
 static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, expected 'c' or 'fortran', got %s";
 static const char __pyx_k_Out_of_bounds_on_buffer_access_a[] = "Out of bounds on buffer access (axis %d)";
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
-static const char __pyx_k_cbc_digital_estimator_offline_co[] = "cbc.digital_estimator.offline_computations";
 static const char __pyx_k_cbc_parallel_digital_estimator_c[] = "cbc.parallel_digital_estimator.c_digital_estimator";
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
@@ -2405,7 +2401,7 @@ static PyObject *__pyx_n_s_base;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
 static PyObject *__pyx_n_s_care;
-static PyObject *__pyx_n_s_cbc_digital_estimator_offline_co;
+static PyObject *__pyx_n_s_cbc_offline_computations;
 static PyObject *__pyx_n_s_cbc_parallel_digital_estimator_c;
 static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_cline_in_traceback;
@@ -2856,10 +2852,10 @@ static int __pyx_pf_3cbc_26parallel_digital_estimator_19c_digital_estimator_19C_
  *         self._filter = new ParallelDigitalEstimator(
  *             &(self.forward_a[0]), &(self.backward_a[0]),
  */
-  if (!(likely(((__pyx_v_analogSystem) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_analogSystem, __pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem))))) __PYX_ERR(0, 19, __pyx_L1_error)
-  if (!(likely(((__pyx_v_digitalControl) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_digitalControl, __pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl))))) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (!(likely(((__pyx_v_analogSystem) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_analogSystem, __pyx_ptype_3cbc_13analog_system_AnalogSystem))))) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (!(likely(((__pyx_v_digitalControl) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_digitalControl, __pyx_ptype_3cbc_15digital_control_DigitalControl))))) __PYX_ERR(0, 19, __pyx_L1_error)
   __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_eta2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L1_error)
-  ((struct __pyx_vtabstruct_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *)__pyx_v_self->__pyx_vtab)->compute_filter_coefficients(__pyx_v_self, ((struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *)__pyx_v_analogSystem), ((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_v_digitalControl), __pyx_t_5);
+  ((struct __pyx_vtabstruct_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *)__pyx_v_self->__pyx_vtab)->compute_filter_coefficients(__pyx_v_self, ((struct __pyx_obj_3cbc_13analog_system_AnalogSystem *)__pyx_v_analogSystem), ((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)__pyx_v_digitalControl), __pyx_t_5);
 
   /* "cbc/parallel_digital_estimator/c_digital_estimator.pyx":21
  *         self.compute_filter_coefficients(analogSystem, digitalControl, eta2)
@@ -3194,7 +3190,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self, PyObject *__p
   if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 55, __pyx_L1_error) }
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -3423,7 +3419,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 57, __pyx_L1_error) }
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_cur_scope->__pyx_v_m); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_6 = ((struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl *)__pyx_cur_scope->__pyx_v_digitalControl->__pyx_vtab)->impulse_response(__pyx_cur_scope->__pyx_v_digitalControl, __pyx_t_3, __pyx_v_t); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_t_6, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -3510,7 +3506,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
  *         A = array(analogSystem._A).transpose()
  */
 
-static void __pyx_f_3cbc_26parallel_digital_estimator_19c_digital_estimator_19C_Digital_Estimator_compute_filter_coefficients(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2) {
+static void __pyx_f_3cbc_26parallel_digital_estimator_19c_digital_estimator_19C_Digital_Estimator_compute_filter_coefficients(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *__pyx_v_self, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *__pyx_v_analogSystem, struct __pyx_obj_3cbc_15digital_control_DigitalControl *__pyx_v_digitalControl, double __pyx_v_eta2) {
   struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator___pyx_scope_struct__compute_filter_coefficients *__pyx_cur_scope;
   PyObject *__pyx_v_A = NULL;
   PyObject *__pyx_v_B = NULL;
@@ -19315,7 +19311,7 @@ static int __pyx_tp_clear_3cbc_26parallel_digital_estimator_19c_digital_estimato
   p->__pyx_v_Gamma = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_digitalControl);
-  p->__pyx_v_digitalControl = ((struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *)Py_None); Py_INCREF(Py_None);
+  p->__pyx_v_digitalControl = ((struct __pyx_obj_3cbc_15digital_control_DigitalControl *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_tempAb);
   p->__pyx_v_tempAb = Py_None; Py_INCREF(Py_None);
@@ -20196,7 +20192,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
   {&__pyx_n_s_care, __pyx_k_care, sizeof(__pyx_k_care), 0, 0, 1, 1},
-  {&__pyx_n_s_cbc_digital_estimator_offline_co, __pyx_k_cbc_digital_estimator_offline_co, sizeof(__pyx_k_cbc_digital_estimator_offline_co), 0, 0, 1, 1},
+  {&__pyx_n_s_cbc_offline_computations, __pyx_k_cbc_offline_computations, sizeof(__pyx_k_cbc_offline_computations), 0, 0, 1, 1},
   {&__pyx_n_s_cbc_parallel_digital_estimator_c, __pyx_k_cbc_parallel_digital_estimator_c, sizeof(__pyx_k_cbc_parallel_digital_estimator_c), 0, 0, 1, 1},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
@@ -20655,7 +20651,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
   __pyx_vtabptr_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator = &__pyx_vtable_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator;
-  __pyx_vtable_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator.compute_filter_coefficients = (void (*)(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *, struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl *, double))__pyx_f_3cbc_26parallel_digital_estimator_19c_digital_estimator_19C_Digital_Estimator_compute_filter_coefficients;
+  __pyx_vtable_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator.compute_filter_coefficients = (void (*)(struct __pyx_obj_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator *, struct __pyx_obj_3cbc_13analog_system_AnalogSystem *, struct __pyx_obj_3cbc_15digital_control_DigitalControl *, double))__pyx_f_3cbc_26parallel_digital_estimator_19c_digital_estimator_19C_Digital_Estimator_compute_filter_coefficients;
   if (PyType_Ready(&__pyx_type_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3cbc_26parallel_digital_estimator_19c_digital_estimator_C_Digital_Estimator.tp_print = 0;
@@ -20741,17 +20737,17 @@ static int __Pyx_modinit_type_import_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_import_code", 0);
   /*--- Type import code ---*/
-  __pyx_t_1 = PyImport_ImportModule("cbc.digital_control.digital_control"); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cbc.digital_control"); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl = __Pyx_ImportType(__pyx_t_1, "cbc.digital_control.digital_control", "DigitalControl", sizeof(struct __pyx_obj_3cbc_15digital_control_15digital_control_DigitalControl), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl) __PYX_ERR(2, 1, __pyx_L1_error)
-  __pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl = (struct __pyx_vtabstruct_3cbc_15digital_control_15digital_control_DigitalControl*)__Pyx_GetVtable(__pyx_ptype_3cbc_15digital_control_15digital_control_DigitalControl->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_15digital_control_15digital_control_DigitalControl)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_ptype_3cbc_15digital_control_DigitalControl = __Pyx_ImportType(__pyx_t_1, "cbc.digital_control", "DigitalControl", sizeof(struct __pyx_obj_3cbc_15digital_control_DigitalControl), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_3cbc_15digital_control_DigitalControl) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_vtabptr_3cbc_15digital_control_DigitalControl = (struct __pyx_vtabstruct_3cbc_15digital_control_DigitalControl*)__Pyx_GetVtable(__pyx_ptype_3cbc_15digital_control_DigitalControl->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_15digital_control_DigitalControl)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cbc.analog_system.analog_system"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 2, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule("cbc.analog_system"); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem = __Pyx_ImportType(__pyx_t_1, "cbc.analog_system.analog_system", "AnalogSystem", sizeof(struct __pyx_obj_3cbc_13analog_system_13analog_system_AnalogSystem), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem) __PYX_ERR(3, 2, __pyx_L1_error)
-  __pyx_vtabptr_3cbc_13analog_system_13analog_system_AnalogSystem = (struct __pyx_vtabstruct_3cbc_13analog_system_13analog_system_AnalogSystem*)__Pyx_GetVtable(__pyx_ptype_3cbc_13analog_system_13analog_system_AnalogSystem->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_13analog_system_13analog_system_AnalogSystem)) __PYX_ERR(3, 2, __pyx_L1_error)
+  __pyx_ptype_3cbc_13analog_system_AnalogSystem = __Pyx_ImportType(__pyx_t_1, "cbc.analog_system", "AnalogSystem", sizeof(struct __pyx_obj_3cbc_13analog_system_AnalogSystem), __Pyx_ImportType_CheckSize_Warn);
+   if (!__pyx_ptype_3cbc_13analog_system_AnalogSystem) __PYX_ERR(3, 2, __pyx_L1_error)
+  __pyx_vtabptr_3cbc_13analog_system_AnalogSystem = (struct __pyx_vtabstruct_3cbc_13analog_system_AnalogSystem*)__Pyx_GetVtable(__pyx_ptype_3cbc_13analog_system_AnalogSystem->tp_dict); if (unlikely(!__pyx_vtabptr_3cbc_13analog_system_AnalogSystem)) __PYX_ERR(3, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -20983,7 +20979,7 @@ if (!__Pyx_RefNanny) {
 
   /* "cbc/parallel_digital_estimator/c_digital_estimator.pyx":2
  * # distutils: language = c++
- * from cbc.digital_estimator.offline_computations import care             # <<<<<<<<<<<<<<
+ * from cbc.offline_computations import care             # <<<<<<<<<<<<<<
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp
  */
@@ -20992,7 +20988,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_care);
   __Pyx_GIVEREF(__pyx_n_s_care);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_care);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_cbc_digital_estimator_offline_co, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_cbc_offline_computations, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_care); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
@@ -21003,7 +20999,7 @@ if (!__Pyx_RefNanny) {
 
   /* "cbc/parallel_digital_estimator/c_digital_estimator.pyx":3
  * # distutils: language = c++
- * from cbc.digital_estimator.offline_computations import care
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve             # <<<<<<<<<<<<<<
  * from scipy.integrate import solve_ivp
  * from numpy import dot as dot_product, eye, zeros, int8, int32, double, roll, array
@@ -21030,7 +21026,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "cbc/parallel_digital_estimator/c_digital_estimator.pyx":4
- * from cbc.digital_estimator.offline_computations import care
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp             # <<<<<<<<<<<<<<
  * from numpy import dot as dot_product, eye, zeros, int8, int32, double, roll, array
@@ -21150,7 +21146,7 @@ if (!__Pyx_RefNanny) {
 
   /* "cbc/parallel_digital_estimator/c_digital_estimator.pyx":1
  * # distutils: language = c++             # <<<<<<<<<<<<<<
- * from cbc.digital_estimator.offline_computations import care
+ * from cbc.offline_computations import care
  * from scipy.linalg import expm, solve
  */
   __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)

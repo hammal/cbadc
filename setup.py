@@ -1,6 +1,6 @@
 import os
 from sys import path
-from setuptools import Extension, setup, find_packages
+from setuptools import Extension, extension, setup, find_packages
 from Cython.Build import cythonize
 import numpy
 
@@ -42,7 +42,21 @@ def makeExtension(extName):
 extNames = scandir("src/cbc")
 
 # and build up the set of Extension objects
-extensions = [makeExtension(name) for name in extNames]
+# extensions = [makeExtension(name) for name in extNames]
+
+root_path = "src/cbc"
+parallel_digital_estimator_path = "src/cbc/parallel_digital_estimator"
+extensions = [
+    Extension(
+        root_path + "/*",
+        [root_path + "/*.pyx"]
+    ),
+    Extension(
+        parallel_digital_estimator_path + "/*",
+        [parallel_digital_estimator_path + "/*.pyx"],
+        extra_compile_args=["-fopenmp"]
+    )
+]
 
 
 compiler_directives = {"language_level": 3, "embedsignature": True}

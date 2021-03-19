@@ -3,25 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "extra_compile_args": [
-            "-fopenmp"
-        ],
-        "include_dirs": [
-            ".",
-            "src/cbc/analog_system",
-            "src/cbc/digital_control",
-            "src/cbc/analog_signal",
-            "src/cbc/digital_estimator"
-        ],
-        "libraries": [
-            "m"
-        ],
-        "name": "cbc.circuit_simulator.simulator",
+        "name": "cbc.simulator",
         "sources": [
-            "src/cbc/circuit_simulator/simulator.pyx"
+            "src/cbc/simulator.pyx"
         ]
     },
-    "module_name": "cbc.circuit_simulator.simulator"
+    "module_name": "cbc.simulator"
 }
 END: Cython Metadata */
 
@@ -627,8 +614,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__cbc__circuit_simulator__simulator
-#define __PYX_HAVE_API__cbc__circuit_simulator__simulator
+#define __PYX_HAVE__cbc__simulator
+#define __PYX_HAVE_API__cbc__simulator
 /* Early includes */
 #ifdef _OPENMP
 #include <omp.h>
@@ -838,20 +825,20 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/cbc/circuit_simulator/simulator.pyx",
+  "src/cbc/simulator.pyx",
 };
 
 /*--- Type declarations ---*/
-struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate;
+struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate;
 
-/* "cbc/circuit_simulator/simulator.pyx":17
+/* "cbc/simulator.pyx":17
  *         self._input = input
  * 
  *     def simulate(self, t, initialState):             # <<<<<<<<<<<<<<
  *         timeInterval = (t[0], t[-1])
  *         # make numpy array to store control signals
  */
-struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate {
+struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate {
   PyObject_HEAD
   PyObject *__pyx_v_controlContribution;
   PyObject *__pyx_v_controlSignals;
@@ -1316,13 +1303,13 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'cbc.circuit_simulator.simulator' */
-static PyTypeObject *__pyx_ptype_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate = 0;
-#define __Pyx_MODULE_NAME "cbc.circuit_simulator.simulator"
-extern int __pyx_module_is_main_cbc__circuit_simulator__simulator;
-int __pyx_module_is_main_cbc__circuit_simulator__simulator = 0;
+/* Module declarations from 'cbc.simulator' */
+static PyTypeObject *__pyx_ptype_3cbc_9simulator___pyx_scope_struct__simulate = 0;
+#define __Pyx_MODULE_NAME "cbc.simulator"
+extern int __pyx_module_is_main_cbc__simulator;
+int __pyx_module_is_main_cbc__simulator = 0;
 
-/* Implementation of 'cbc.circuit_simulator.simulator' */
+/* Implementation of 'cbc.simulator' */
 static PyObject *__pyx_builtin_object;
 static const char __pyx_k_t[] = "t";
 static const char __pyx_k_u[] = "u";
@@ -1369,6 +1356,7 @@ static const char __pyx_k_vectorized[] = "vectorized";
 static const char __pyx_k_analogSystem[] = "analogSystem";
 static const char __pyx_k_initialState[] = "initialState";
 static const char __pyx_k_timeInterval[] = "timeInterval";
+static const char __pyx_k_cbc_simulator[] = "cbc.simulator";
 static const char __pyx_k_controlPeriod[] = "controlPeriod";
 static const char __pyx_k_controlSignal[] = "controlSignal";
 static const char __pyx_k_controlSignals[] = "controlSignals";
@@ -1382,12 +1370,11 @@ static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_number_of_controls[] = "number_of_controls";
 static const char __pyx_k_signalContribution[] = "signalContribution";
 static const char __pyx_k_controlContribution[] = "controlContribution";
+static const char __pyx_k_src_cbc_simulator_pyx[] = "src/cbc/simulator.pyx";
 static const char __pyx_k_The_analog_system_does_not_have[] = "The analog system does not have as many inputs as in input\n            list";
-static const char __pyx_k_cbc_circuit_simulator_simulator[] = "cbc.circuit_simulator.simulator";
 static const char __pyx_k_Simulator_simulate_locals_contro[] = "Simulator.simulate.<locals>.controlContribution";
 static const char __pyx_k_Simulator_simulate_locals_deriva[] = "Simulator.simulate.<locals>.derivative";
 static const char __pyx_k_Simulator_simulate_locals_signal[] = "Simulator.simulate.<locals>.signalContribution";
-static const char __pyx_k_src_cbc_circuit_simulator_simula[] = "src/cbc/circuit_simulator/simulator.pyx";
 static PyObject *__pyx_n_s_Simulator;
 static PyObject *__pyx_n_s_Simulator___init;
 static PyObject *__pyx_n_s_Simulator_simulate;
@@ -1399,7 +1386,7 @@ static PyObject *__pyx_n_s_ac;
 static PyObject *__pyx_n_s_analogSystem;
 static PyObject *__pyx_n_s_array;
 static PyObject *__pyx_n_s_as;
-static PyObject *__pyx_n_s_cbc_circuit_simulator_simulator;
+static PyObject *__pyx_n_s_cbc_simulator;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_controlContribution;
 static PyObject *__pyx_n_s_controlPeriod;
@@ -1436,7 +1423,7 @@ static PyObject *__pyx_n_s_self;
 static PyObject *__pyx_n_s_signalContribution;
 static PyObject *__pyx_n_s_simulate;
 static PyObject *__pyx_n_s_solve_ivp;
-static PyObject *__pyx_kp_s_src_cbc_circuit_simulator_simula;
+static PyObject *__pyx_kp_s_src_cbc_simulator_pyx;
 static PyObject *__pyx_n_s_stateTrajectory;
 static PyObject *__pyx_n_u_stateTrajectory;
 static PyObject *__pyx_n_u_success;
@@ -1455,12 +1442,12 @@ static PyObject *__pyx_n_u_x_events;
 static PyObject *__pyx_n_u_y;
 static PyObject *__pyx_n_u_y_events;
 static PyObject *__pyx_n_s_zeros;
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_analogSystem, PyObject *__pyx_v_digitalControl, PyObject *__pyx_v_input, CYTHON_UNUSED PyObject *__pyx_v_controlPeriod, CYTHON_UNUSED PyObject *__pyx_v_noise); /* proto */
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_controlContribution(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_2signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t); /* proto */
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_4derivative(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simulate(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_t, PyObject *__pyx_v_initialState); /* proto */
-static PyObject *__pyx_tp_new_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_analogSystem, PyObject *__pyx_v_digitalControl, PyObject *__pyx_v_input, CYTHON_UNUSED PyObject *__pyx_v_controlPeriod, CYTHON_UNUSED PyObject *__pyx_v_noise); /* proto */
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_8simulate_controlContribution(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_8simulate_2signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t); /* proto */
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_8simulate_4derivative(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_2simulate(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_t, PyObject *__pyx_v_initialState); /* proto */
+static PyObject *__pyx_tp_new_3cbc_9simulator___pyx_scope_struct__simulate(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_slice_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__4;
@@ -1475,7 +1462,7 @@ static PyObject *__pyx_codeobj__10;
 static PyObject *__pyx_codeobj__12;
 /* Late includes */
 
-/* "cbc/circuit_simulator/simulator.pyx":6
+/* "cbc/simulator.pyx":6
  * 
  * class Simulator(object):
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -1484,10 +1471,10 @@ static PyObject *__pyx_codeobj__12;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_17circuit_simulator_9simulator_9Simulator___init__[] = "Simulator.__init__(self, analogSystem, digitalControl, input, controlPeriod, noise)";
-static PyMethodDef __pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_17circuit_simulator_9simulator_9Simulator___init__};
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_3cbc_9simulator_9Simulator___init__[] = "Simulator.__init__(self, analogSystem, digitalControl, input, controlPeriod, noise)";
+static PyMethodDef __pyx_mdef_3cbc_9simulator_9Simulator_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_9simulator_9Simulator_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_9simulator_9Simulator___init__};
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_analogSystem = 0;
   PyObject *__pyx_v_digitalControl = 0;
@@ -1582,18 +1569,18 @@ static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_1__init
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 6, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init__(__pyx_self, __pyx_v_self, __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_input, __pyx_v_controlPeriod, __pyx_v_noise);
+  __pyx_r = __pyx_pf_3cbc_9simulator_9Simulator___init__(__pyx_self, __pyx_v_self, __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_input, __pyx_v_controlPeriod, __pyx_v_noise);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_analogSystem, PyObject *__pyx_v_digitalControl, PyObject *__pyx_v_input, CYTHON_UNUSED PyObject *__pyx_v_controlPeriod, CYTHON_UNUSED PyObject *__pyx_v_noise) {
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_analogSystem, PyObject *__pyx_v_digitalControl, PyObject *__pyx_v_input, CYTHON_UNUSED PyObject *__pyx_v_controlPeriod, CYTHON_UNUSED PyObject *__pyx_v_noise) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1606,7 +1593,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbc/circuit_simulator/simulator.pyx":10
+  /* "cbc/simulator.pyx":10
  *     ):
  * 
  *         if analogSystem.number_of_inputs() != len(input):             # <<<<<<<<<<<<<<
@@ -1640,7 +1627,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (unlikely(__pyx_t_5)) {
 
-    /* "cbc/circuit_simulator/simulator.pyx":11
+    /* "cbc/simulator.pyx":11
  * 
  *         if analogSystem.number_of_inputs() != len(input):
  *             raise """The analog system does not have as many inputs as in input             # <<<<<<<<<<<<<<
@@ -1650,7 +1637,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
     __Pyx_Raise(__pyx_kp_u_The_analog_system_does_not_have, 0, 0, 0);
     __PYX_ERR(0, 11, __pyx_L1_error)
 
-    /* "cbc/circuit_simulator/simulator.pyx":10
+    /* "cbc/simulator.pyx":10
  *     ):
  * 
  *         if analogSystem.number_of_inputs() != len(input):             # <<<<<<<<<<<<<<
@@ -1659,7 +1646,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
  */
   }
 
-  /* "cbc/circuit_simulator/simulator.pyx":13
+  /* "cbc/simulator.pyx":13
  *             raise """The analog system does not have as many inputs as in input
  *             list"""
  *         self._as = (analogSystem,)             # <<<<<<<<<<<<<<
@@ -1674,7 +1661,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_as, __pyx_t_3) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":14
+  /* "cbc/simulator.pyx":14
  *             list"""
  *         self._as = (analogSystem,)
  *         self._dc = digitalControl             # <<<<<<<<<<<<<<
@@ -1683,7 +1670,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dc, __pyx_v_digitalControl) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":15
+  /* "cbc/simulator.pyx":15
  *         self._as = (analogSystem,)
  *         self._dc = digitalControl
  *         self._input = input             # <<<<<<<<<<<<<<
@@ -1692,7 +1679,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_input_2, __pyx_v_input) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":6
+  /* "cbc/simulator.pyx":6
  * 
  * class Simulator(object):
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -1707,7 +1694,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1715,7 +1702,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
   return __pyx_r;
 }
 
-/* "cbc/circuit_simulator/simulator.pyx":17
+/* "cbc/simulator.pyx":17
  *         self._input = input
  * 
  *     def simulate(self, t, initialState):             # <<<<<<<<<<<<<<
@@ -1724,10 +1711,10 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator___init_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_3simulate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_17circuit_simulator_9simulator_9Simulator_2simulate[] = "Simulator.simulate(self, t, initialState)";
-static PyMethodDef __pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_3simulate = {"simulate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_3simulate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_17circuit_simulator_9simulator_9Simulator_2simulate};
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_3simulate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_3simulate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_3cbc_9simulator_9Simulator_2simulate[] = "Simulator.simulate(self, t, initialState)";
+static PyMethodDef __pyx_mdef_3cbc_9simulator_9Simulator_3simulate = {"simulate", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_9simulator_9Simulator_3simulate, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_9simulator_9Simulator_2simulate};
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_3simulate(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_initialState = 0;
@@ -1789,18 +1776,18 @@ static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_3simula
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("simulate", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 17, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.simulate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.simulate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simulate(__pyx_self, __pyx_v_self, __pyx_v_t, __pyx_v_initialState);
+  __pyx_r = __pyx_pf_3cbc_9simulator_9Simulator_2simulate(__pyx_self, __pyx_v_self, __pyx_v_t, __pyx_v_initialState);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cbc/circuit_simulator/simulator.pyx":32
+/* "cbc/simulator.pyx":32
  *         timeIndex = 0
  * 
  *         def controlContribution(t, x):             # <<<<<<<<<<<<<<
@@ -1809,9 +1796,9 @@ static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_3simula
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_1controlContribution(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_1controlContribution = {"controlContribution", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_1controlContribution, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_1controlContribution(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_8simulate_1controlContribution(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3cbc_9simulator_9Simulator_8simulate_1controlContribution = {"controlContribution", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_9simulator_9Simulator_8simulate_1controlContribution, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_8simulate_1controlContribution(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -1862,20 +1849,20 @@ static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("controlContribution", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 32, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.simulate.controlContribution", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.simulate.controlContribution", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_controlContribution(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_pf_3cbc_9simulator_9Simulator_8simulate_controlContribution(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_controlContribution(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_outer_scope;
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_8simulate_controlContribution(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_outer_scope;
   PyObject *__pyx_v_controlSignal = NULL;
   PyObject *__pyx_v_update = NULL;
   PyObject *__pyx_r = NULL;
@@ -1891,10 +1878,10 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("controlContribution", 0);
-  __pyx_outer_scope = (struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_outer_scope = (struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "cbc/circuit_simulator/simulator.pyx":34
+  /* "cbc/simulator.pyx":34
  *         def controlContribution(t, x):
  *             # Check with digital control for new control signal
  *             [controlSignal, update] = self._dc.controlSignal(t, x)             # <<<<<<<<<<<<<<
@@ -2003,7 +1990,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __pyx_v_update = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":35
+  /* "cbc/simulator.pyx":35
  *             # Check with digital control for new control signal
  *             [controlSignal, update] = self._dc.controlSignal(t, x)
  *             if update:             # <<<<<<<<<<<<<<
@@ -2013,7 +2000,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_v_update); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 35, __pyx_L1_error)
   if (__pyx_t_7) {
 
-    /* "cbc/circuit_simulator/simulator.pyx":36
+    /* "cbc/simulator.pyx":36
  *             [controlSignal, update] = self._dc.controlSignal(t, x)
  *             if update:
  *                 controlSignals[timeIndex, :] = controlSignal             # <<<<<<<<<<<<<<
@@ -2034,7 +2021,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
     if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_controlSignals, __pyx_t_5, __pyx_v_controlSignal) < 0)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "cbc/circuit_simulator/simulator.pyx":35
+    /* "cbc/simulator.pyx":35
  *             # Check with digital control for new control signal
  *             [controlSignal, update] = self._dc.controlSignal(t, x)
  *             if update:             # <<<<<<<<<<<<<<
@@ -2043,7 +2030,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
  */
   }
 
-  /* "cbc/circuit_simulator/simulator.pyx":37
+  /* "cbc/simulator.pyx":37
  *             if update:
  *                 controlSignals[timeIndex, :] = controlSignal
  *             return self._dc.controlContribution()             # <<<<<<<<<<<<<<
@@ -2076,7 +2063,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":32
+  /* "cbc/simulator.pyx":32
  *         timeIndex = 0
  * 
  *         def controlContribution(t, x):             # <<<<<<<<<<<<<<
@@ -2090,7 +2077,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.simulate.controlContribution", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.simulate.controlContribution", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_controlSignal);
@@ -2100,7 +2087,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   return __pyx_r;
 }
 
-/* "cbc/circuit_simulator/simulator.pyx":39
+/* "cbc/simulator.pyx":39
  *             return self._dc.controlContribution()
  * 
  *         def signalContribution(t):             # <<<<<<<<<<<<<<
@@ -2109,22 +2096,22 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_3signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t); /*proto*/
-static PyMethodDef __pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_3signalContribution = {"signalContribution", (PyCFunction)__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_3signalContribution, METH_O, 0};
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_3signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t) {
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_8simulate_3signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t); /*proto*/
+static PyMethodDef __pyx_mdef_3cbc_9simulator_9Simulator_8simulate_3signalContribution = {"signalContribution", (PyCFunction)__pyx_pw_3cbc_9simulator_9Simulator_8simulate_3signalContribution, METH_O, 0};
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_8simulate_3signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("signalContribution (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_2signalContribution(__pyx_self, ((PyObject *)__pyx_v_t));
+  __pyx_r = __pyx_pf_3cbc_9simulator_9Simulator_8simulate_2signalContribution(__pyx_self, ((PyObject *)__pyx_v_t));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_2signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t) {
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_outer_scope;
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_8simulate_2signalContribution(PyObject *__pyx_self, PyObject *__pyx_v_t) {
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_outer_scope;
   PyObject *__pyx_7genexpr__pyx_v_u = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -2141,10 +2128,10 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("signalContribution", 0);
-  __pyx_outer_scope = (struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_outer_scope = (struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "cbc/circuit_simulator/simulator.pyx":40
+  /* "cbc/simulator.pyx":40
  * 
  *         def signalContribution(t):
  *             return np.array([u.eval(t) for u in self._input])             # <<<<<<<<<<<<<<
@@ -2253,7 +2240,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":39
+  /* "cbc/simulator.pyx":39
  *             return self._dc.controlContribution()
  * 
  *         def signalContribution(t):             # <<<<<<<<<<<<<<
@@ -2270,7 +2257,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.simulate.signalContribution", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.simulate.signalContribution", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_7genexpr__pyx_v_u);
@@ -2279,7 +2266,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   return __pyx_r;
 }
 
-/* "cbc/circuit_simulator/simulator.pyx":42
+/* "cbc/simulator.pyx":42
  *             return np.array([u.eval(t) for u in self._input])
  * 
  *         def derivative(t, x):             # <<<<<<<<<<<<<<
@@ -2288,9 +2275,9 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_5derivative(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_5derivative = {"derivative", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_5derivative, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_5derivative(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_8simulate_5derivative(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3cbc_9simulator_9Simulator_8simulate_5derivative = {"derivative", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_9simulator_9Simulator_8simulate_5derivative, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3cbc_9simulator_9Simulator_8simulate_5derivative(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -2341,20 +2328,20 @@ static PyObject *__pyx_pw_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("derivative", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 42, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.simulate.derivative", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.simulate.derivative", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_4derivative(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_pf_3cbc_9simulator_9Simulator_8simulate_4derivative(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_4derivative(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_outer_scope;
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_8simulate_4derivative(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2367,10 +2354,10 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("derivative", 0);
-  __pyx_outer_scope = (struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_outer_scope = (struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "cbc/circuit_simulator/simulator.pyx":43
+  /* "cbc/simulator.pyx":43
  * 
  *         def derivative(t, x):
  *             return self._as.derivative(             # <<<<<<<<<<<<<<
@@ -2385,7 +2372,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":44
+  /* "cbc/simulator.pyx":44
  *         def derivative(t, x):
  *             return self._as.derivative(
  *                 x, t, signalContribution, controlContribution(t, x)             # <<<<<<<<<<<<<<
@@ -2394,7 +2381,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
  */
   if (unlikely(!__pyx_cur_scope->__pyx_v_signalContribution)) { __Pyx_RaiseClosureNameError("signalContribution"); __PYX_ERR(0, 44, __pyx_L1_error) }
   if (unlikely(!__pyx_cur_scope->__pyx_v_controlContribution)) { __Pyx_RaiseClosureNameError("controlContribution"); __PYX_ERR(0, 44, __pyx_L1_error) }
-  __pyx_t_2 = __pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_controlContribution(__pyx_cur_scope->__pyx_v_controlContribution, __pyx_v_t, __pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_t_2 = __pyx_pf_3cbc_9simulator_9Simulator_8simulate_controlContribution(__pyx_cur_scope->__pyx_v_controlContribution, __pyx_v_t, __pyx_v_x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -2453,7 +2440,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":42
+  /* "cbc/simulator.pyx":42
  *             return np.array([u.eval(t) for u in self._input])
  * 
  *         def derivative(t, x):             # <<<<<<<<<<<<<<
@@ -2468,7 +2455,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.simulate.derivative", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.simulate.derivative", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2476,7 +2463,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
   return __pyx_r;
 }
 
-/* "cbc/circuit_simulator/simulator.pyx":17
+/* "cbc/simulator.pyx":17
  *         self._input = input
  * 
  *     def simulate(self, t, initialState):             # <<<<<<<<<<<<<<
@@ -2484,8 +2471,8 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_8simula
  *         # make numpy array to store control signals
  */
 
-static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simulate(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_t, PyObject *__pyx_v_initialState) {
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
+static PyObject *__pyx_pf_3cbc_9simulator_9Simulator_2simulate(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_t, PyObject *__pyx_v_initialState) {
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_cur_scope;
   PyObject *__pyx_v_timeInterval = NULL;
   PyObject *__pyx_v_derivative = 0;
   PyObject *__pyx_v_stateTrajectory = NULL;
@@ -2500,9 +2487,9 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("simulate", 0);
-  __pyx_cur_scope = (struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *)__pyx_tp_new_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate(__pyx_ptype_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate, __pyx_empty_tuple, NULL);
+  __pyx_cur_scope = (struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *)__pyx_tp_new_3cbc_9simulator___pyx_scope_struct__simulate(__pyx_ptype_3cbc_9simulator___pyx_scope_struct__simulate, __pyx_empty_tuple, NULL);
   if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *)Py_None);
+    __pyx_cur_scope = ((struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *)Py_None);
     __Pyx_INCREF(Py_None);
     __PYX_ERR(0, 17, __pyx_L1_error)
   } else {
@@ -2512,7 +2499,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_self);
 
-  /* "cbc/circuit_simulator/simulator.pyx":18
+  /* "cbc/simulator.pyx":18
  * 
  *     def simulate(self, t, initialState):
  *         timeInterval = (t[0], t[-1])             # <<<<<<<<<<<<<<
@@ -2534,7 +2521,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __pyx_v_timeInterval = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":21
+  /* "cbc/simulator.pyx":21
  *         # make numpy array to store control signals
  *         # (#TimeSteps, #controls)
  *         controlSignals = np.zeros(             # <<<<<<<<<<<<<<
@@ -2547,7 +2534,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":24
+  /* "cbc/simulator.pyx":24
  *             (
  *                 int(
  *                     (timeInterval[1] - timeInterval[0]) / self._dc.controlPeriod             # <<<<<<<<<<<<<<
@@ -2572,7 +2559,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":23
+  /* "cbc/simulator.pyx":23
  *         controlSignals = np.zeros(
  *             (
  *                 int(             # <<<<<<<<<<<<<<
@@ -2583,7 +2570,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":26
+  /* "cbc/simulator.pyx":26
  *                     (timeInterval[1] - timeInterval[0]) / self._dc.controlPeriod
  *                 ),
  *                 self._ac.number_of_controls(),             # <<<<<<<<<<<<<<
@@ -2611,7 +2598,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":23
+  /* "cbc/simulator.pyx":23
  *         controlSignals = np.zeros(
  *             (
  *                 int(             # <<<<<<<<<<<<<<
@@ -2627,7 +2614,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __pyx_t_3 = 0;
   __pyx_t_1 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":21
+  /* "cbc/simulator.pyx":21
  *         # make numpy array to store control signals
  *         # (#TimeSteps, #controls)
  *         controlSignals = np.zeros(             # <<<<<<<<<<<<<<
@@ -2640,7 +2627,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":28
+  /* "cbc/simulator.pyx":28
  *                 self._ac.number_of_controls(),
  *             ),
  *             dtype=np.int,             # <<<<<<<<<<<<<<
@@ -2657,7 +2644,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":21
+  /* "cbc/simulator.pyx":21
  *         # make numpy array to store control signals
  *         # (#TimeSteps, #controls)
  *         controlSignals = np.zeros(             # <<<<<<<<<<<<<<
@@ -2673,7 +2660,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __pyx_cur_scope->__pyx_v_controlSignals = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":30
+  /* "cbc/simulator.pyx":30
  *             dtype=np.int,
  *         )
  *         timeIndex = 0             # <<<<<<<<<<<<<<
@@ -2682,45 +2669,45 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
  */
   __pyx_cur_scope->__pyx_v_timeIndex = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":32
+  /* "cbc/simulator.pyx":32
  *         timeIndex = 0
  * 
  *         def controlContribution(t, x):             # <<<<<<<<<<<<<<
  *             # Check with digital control for new control signal
  *             [controlSignal, update] = self._dc.controlSignal(t, x)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_1controlContribution, 0, __pyx_n_s_Simulator_simulate_locals_contro, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_circuit_simulator_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_9simulator_9Simulator_8simulate_1controlContribution, 0, __pyx_n_s_Simulator_simulate_locals_contro, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_4);
   __pyx_cur_scope->__pyx_v_controlContribution = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":39
+  /* "cbc/simulator.pyx":39
  *             return self._dc.controlContribution()
  * 
  *         def signalContribution(t):             # <<<<<<<<<<<<<<
  *             return np.array([u.eval(t) for u in self._input])
  * 
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_3signalContribution, 0, __pyx_n_s_Simulator_simulate_locals_signal, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_circuit_simulator_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_9simulator_9Simulator_8simulate_3signalContribution, 0, __pyx_n_s_Simulator_simulate_locals_signal, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_4);
   __pyx_cur_scope->__pyx_v_signalContribution = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":42
+  /* "cbc/simulator.pyx":42
  *             return np.array([u.eval(t) for u in self._input])
  * 
  *         def derivative(t, x):             # <<<<<<<<<<<<<<
  *             return self._as.derivative(
  *                 x, t, signalContribution, controlContribution(t, x)
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_8simulate_5derivative, 0, __pyx_n_s_Simulator_simulate_locals_deriva, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_circuit_simulator_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_9simulator_9Simulator_8simulate_5derivative, 0, __pyx_n_s_Simulator_simulate_locals_deriva, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbc_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_derivative = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":47
+  /* "cbc/simulator.pyx":47
  *             )
  * 
  *         stateTrajectory = solve_ivp(             # <<<<<<<<<<<<<<
@@ -2730,7 +2717,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_solve_ivp); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "cbc/circuit_simulator/simulator.pyx":48
+  /* "cbc/simulator.pyx":48
  * 
  *         stateTrajectory = solve_ivp(
  *             derivative, timeInterval, initialState, t_eval=t, vectorized=True             # <<<<<<<<<<<<<<
@@ -2753,7 +2740,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_t_eval, __pyx_v_t) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_vectorized, Py_True) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":47
+  /* "cbc/simulator.pyx":47
  *             )
  * 
  *         stateTrajectory = solve_ivp(             # <<<<<<<<<<<<<<
@@ -2768,7 +2755,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __pyx_v_stateTrajectory = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":51
+  /* "cbc/simulator.pyx":51
  *         )
  * 
  *         return {             # <<<<<<<<<<<<<<
@@ -2777,7 +2764,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "cbc/circuit_simulator/simulator.pyx":52
+  /* "cbc/simulator.pyx":52
  * 
  *         return {
  *             "controlSignals": controlSignals,             # <<<<<<<<<<<<<<
@@ -2788,7 +2775,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_controlSignals, __pyx_cur_scope->__pyx_v_controlSignals) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":53
+  /* "cbc/simulator.pyx":53
  *         return {
  *             "controlSignals": controlSignals,
  *             "stateTrajectory": stateTrajectory["y"],             # <<<<<<<<<<<<<<
@@ -2800,7 +2787,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_stateTrajectory, __pyx_t_1) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":54
+  /* "cbc/simulator.pyx":54
  *             "controlSignals": controlSignals,
  *             "stateTrajectory": stateTrajectory["y"],
  *             "t": t,             # <<<<<<<<<<<<<<
@@ -2809,7 +2796,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
  */
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_t, __pyx_v_t) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":55
+  /* "cbc/simulator.pyx":55
  *             "stateTrajectory": stateTrajectory["y"],
  *             "t": t,
  *             "success": stateTrajectory["success"],             # <<<<<<<<<<<<<<
@@ -2821,7 +2808,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_success, __pyx_t_1) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":56
+  /* "cbc/simulator.pyx":56
  *             "t": t,
  *             "success": stateTrajectory["success"],
  *             "message": stateTrajectory["message"],             # <<<<<<<<<<<<<<
@@ -2833,7 +2820,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_message, __pyx_t_1) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":57
+  /* "cbc/simulator.pyx":57
  *             "success": stateTrajectory["success"],
  *             "message": stateTrajectory["message"],
  *             "t_events": stateTrajectory["t_events"],             # <<<<<<<<<<<<<<
@@ -2845,7 +2832,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_t_events, __pyx_t_1) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":58
+  /* "cbc/simulator.pyx":58
  *             "message": stateTrajectory["message"],
  *             "t_events": stateTrajectory["t_events"],
  *             "x_events": stateTrajectory["y_events"],             # <<<<<<<<<<<<<<
@@ -2859,7 +2846,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":17
+  /* "cbc/simulator.pyx":17
  *         self._input = input
  * 
  *     def simulate(self, t, initialState):             # <<<<<<<<<<<<<<
@@ -2874,7 +2861,7 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cbc.circuit_simulator.simulator.Simulator.simulate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbc.simulator.Simulator.simulate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_timeInterval);
@@ -2886,14 +2873,14 @@ static PyObject *__pyx_pf_3cbc_17circuit_simulator_9simulator_9Simulator_2simula
   return __pyx_r;
 }
 
-static struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *__pyx_freelist_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate[8];
-static int __pyx_freecount_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate = 0;
+static struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *__pyx_freelist_3cbc_9simulator___pyx_scope_struct__simulate[8];
+static int __pyx_freecount_3cbc_9simulator___pyx_scope_struct__simulate = 0;
 
-static PyObject *__pyx_tp_new_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_3cbc_9simulator___pyx_scope_struct__simulate(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate)))) {
-    o = (PyObject*)__pyx_freelist_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate[--__pyx_freecount_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate];
-    memset(o, 0, sizeof(struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate));
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_3cbc_9simulator___pyx_scope_struct__simulate > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate)))) {
+    o = (PyObject*)__pyx_freelist_3cbc_9simulator___pyx_scope_struct__simulate[--__pyx_freecount_3cbc_9simulator___pyx_scope_struct__simulate];
+    memset(o, 0, sizeof(struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate));
     (void) PyObject_INIT(o, t);
     PyObject_GC_Track(o);
   } else {
@@ -2903,23 +2890,23 @@ static PyObject *__pyx_tp_new_3cbc_17circuit_simulator_9simulator___pyx_scope_st
   return o;
 }
 
-static void __pyx_tp_dealloc_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate(PyObject *o) {
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *p = (struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *)o;
+static void __pyx_tp_dealloc_3cbc_9simulator___pyx_scope_struct__simulate(PyObject *o) {
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *p = (struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *)o;
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_controlContribution);
   Py_CLEAR(p->__pyx_v_controlSignals);
   Py_CLEAR(p->__pyx_v_self);
   Py_CLEAR(p->__pyx_v_signalContribution);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate)))) {
-    __pyx_freelist_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate[__pyx_freecount_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate++] = ((struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *)o);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_3cbc_9simulator___pyx_scope_struct__simulate < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate)))) {
+    __pyx_freelist_3cbc_9simulator___pyx_scope_struct__simulate[__pyx_freecount_3cbc_9simulator___pyx_scope_struct__simulate++] = ((struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *)o);
   } else {
     (*Py_TYPE(o)->tp_free)(o);
   }
 }
 
-static int __pyx_tp_traverse_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_3cbc_9simulator___pyx_scope_struct__simulate(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *p = (struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *)o;
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *p = (struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *)o;
   if (p->__pyx_v_controlContribution) {
     e = (*v)(p->__pyx_v_controlContribution, a); if (e) return e;
   }
@@ -2935,9 +2922,9 @@ static int __pyx_tp_traverse_3cbc_17circuit_simulator_9simulator___pyx_scope_str
   return 0;
 }
 
-static int __pyx_tp_clear_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate(PyObject *o) {
+static int __pyx_tp_clear_3cbc_9simulator___pyx_scope_struct__simulate(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *p = (struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate *)o;
+  struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *p = (struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate *)o;
   tmp = ((PyObject*)p->__pyx_v_controlContribution);
   p->__pyx_v_controlContribution = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
@@ -2953,12 +2940,12 @@ static int __pyx_tp_clear_3cbc_17circuit_simulator_9simulator___pyx_scope_struct
   return 0;
 }
 
-static PyTypeObject __pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate = {
+static PyTypeObject __pyx_type_3cbc_9simulator___pyx_scope_struct__simulate = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.circuit_simulator.simulator.__pyx_scope_struct__simulate", /*tp_name*/
-  sizeof(struct __pyx_obj_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate), /*tp_basicsize*/
+  "cbc.simulator.__pyx_scope_struct__simulate", /*tp_name*/
+  sizeof(struct __pyx_obj_3cbc_9simulator___pyx_scope_struct__simulate), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate, /*tp_dealloc*/
+  __pyx_tp_dealloc_3cbc_9simulator___pyx_scope_struct__simulate, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -2985,8 +2972,8 @@ static PyTypeObject __pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_s
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate, /*tp_traverse*/
-  __pyx_tp_clear_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate, /*tp_clear*/
+  __pyx_tp_traverse_3cbc_9simulator___pyx_scope_struct__simulate, /*tp_traverse*/
+  __pyx_tp_clear_3cbc_9simulator___pyx_scope_struct__simulate, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
@@ -3001,7 +2988,7 @@ static PyTypeObject __pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_s
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate, /*tp_new*/
+  __pyx_tp_new_3cbc_9simulator___pyx_scope_struct__simulate, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -3079,7 +3066,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_analogSystem, __pyx_k_analogSystem, sizeof(__pyx_k_analogSystem), 0, 0, 1, 1},
   {&__pyx_n_s_array, __pyx_k_array, sizeof(__pyx_k_array), 0, 0, 1, 1},
   {&__pyx_n_s_as, __pyx_k_as, sizeof(__pyx_k_as), 0, 0, 1, 1},
-  {&__pyx_n_s_cbc_circuit_simulator_simulator, __pyx_k_cbc_circuit_simulator_simulator, sizeof(__pyx_k_cbc_circuit_simulator_simulator), 0, 0, 1, 1},
+  {&__pyx_n_s_cbc_simulator, __pyx_k_cbc_simulator, sizeof(__pyx_k_cbc_simulator), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_controlContribution, __pyx_k_controlContribution, sizeof(__pyx_k_controlContribution), 0, 0, 1, 1},
   {&__pyx_n_s_controlPeriod, __pyx_k_controlPeriod, sizeof(__pyx_k_controlPeriod), 0, 0, 1, 1},
@@ -3116,7 +3103,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_signalContribution, __pyx_k_signalContribution, sizeof(__pyx_k_signalContribution), 0, 0, 1, 1},
   {&__pyx_n_s_simulate, __pyx_k_simulate, sizeof(__pyx_k_simulate), 0, 0, 1, 1},
   {&__pyx_n_s_solve_ivp, __pyx_k_solve_ivp, sizeof(__pyx_k_solve_ivp), 0, 0, 1, 1},
-  {&__pyx_kp_s_src_cbc_circuit_simulator_simula, __pyx_k_src_cbc_circuit_simulator_simula, sizeof(__pyx_k_src_cbc_circuit_simulator_simula), 0, 0, 1, 0},
+  {&__pyx_kp_s_src_cbc_simulator_pyx, __pyx_k_src_cbc_simulator_pyx, sizeof(__pyx_k_src_cbc_simulator_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_stateTrajectory, __pyx_k_stateTrajectory, sizeof(__pyx_k_stateTrajectory), 0, 0, 1, 1},
   {&__pyx_n_u_stateTrajectory, __pyx_k_stateTrajectory, sizeof(__pyx_k_stateTrajectory), 0, 1, 0, 1},
   {&__pyx_n_u_success, __pyx_k_success, sizeof(__pyx_k_success), 0, 1, 0, 1},
@@ -3148,7 +3135,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cbc/circuit_simulator/simulator.pyx":36
+  /* "cbc/simulator.pyx":36
  *             [controlSignal, update] = self._dc.controlSignal(t, x)
  *             if update:
  *                 controlSignals[timeIndex, :] = controlSignal             # <<<<<<<<<<<<<<
@@ -3159,7 +3146,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_slice_);
   __Pyx_GIVEREF(__pyx_slice_);
 
-  /* "cbc/circuit_simulator/simulator.pyx":32
+  /* "cbc/simulator.pyx":32
  *         timeIndex = 0
  * 
  *         def controlContribution(t, x):             # <<<<<<<<<<<<<<
@@ -3169,9 +3156,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__2 = PyTuple_Pack(4, __pyx_n_s_t, __pyx_n_s_x, __pyx_n_s_controlSignal, __pyx_n_s_update); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_circuit_simulator_simula, __pyx_n_s_controlContribution, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_simulator_pyx, __pyx_n_s_controlContribution, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 32, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":39
+  /* "cbc/simulator.pyx":39
  *             return self._dc.controlContribution()
  * 
  *         def signalContribution(t):             # <<<<<<<<<<<<<<
@@ -3181,9 +3168,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__4 = PyTuple_Pack(2, __pyx_n_s_t, __pyx_n_s_u); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_circuit_simulator_simula, __pyx_n_s_signalContribution, 39, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_simulator_pyx, __pyx_n_s_signalContribution, 39, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 39, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":42
+  /* "cbc/simulator.pyx":42
  *             return np.array([u.eval(t) for u in self._input])
  * 
  *         def derivative(t, x):             # <<<<<<<<<<<<<<
@@ -3193,9 +3180,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__6 = PyTuple_Pack(2, __pyx_n_s_t, __pyx_n_s_x); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_circuit_simulator_simula, __pyx_n_s_derivative, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_simulator_pyx, __pyx_n_s_derivative, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 42, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":5
+  /* "cbc/simulator.pyx":5
  * 
  * 
  * class Simulator(object):             # <<<<<<<<<<<<<<
@@ -3206,7 +3193,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "cbc/circuit_simulator/simulator.pyx":6
+  /* "cbc/simulator.pyx":6
  * 
  * class Simulator(object):
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -3216,9 +3203,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__9 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_analogSystem, __pyx_n_s_digitalControl, __pyx_n_s_input, __pyx_n_s_controlPeriod, __pyx_n_s_noise); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(6, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_circuit_simulator_simula, __pyx_n_s_init, 6, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(6, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_simulator_pyx, __pyx_n_s_init, 6, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 6, __pyx_L1_error)
 
-  /* "cbc/circuit_simulator/simulator.pyx":17
+  /* "cbc/simulator.pyx":17
  *         self._input = input
  * 
  *     def simulate(self, t, initialState):             # <<<<<<<<<<<<<<
@@ -3228,7 +3215,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__11 = PyTuple_Pack(13, __pyx_n_s_self, __pyx_n_s_t, __pyx_n_s_initialState, __pyx_n_s_timeInterval, __pyx_n_s_controlSignals, __pyx_n_s_timeIndex, __pyx_n_s_controlContribution, __pyx_n_s_controlContribution, __pyx_n_s_signalContribution, __pyx_n_s_signalContribution, __pyx_n_s_derivative, __pyx_n_s_derivative, __pyx_n_s_stateTrajectory); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_circuit_simulator_simula, __pyx_n_s_simulate, 17, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_simulator_pyx, __pyx_n_s_simulate, 17, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3282,14 +3269,14 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3cbc_9simulator___pyx_scope_struct__simulate) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate.tp_print = 0;
+  __pyx_type_3cbc_9simulator___pyx_scope_struct__simulate.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate.tp_dictoffset && __pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_9simulator___pyx_scope_struct__simulate.tp_dictoffset && __pyx_type_3cbc_9simulator___pyx_scope_struct__simulate.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_3cbc_9simulator___pyx_scope_struct__simulate.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
-  __pyx_ptype_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate = &__pyx_type_3cbc_17circuit_simulator_9simulator___pyx_scope_struct__simulate;
+  __pyx_ptype_3cbc_9simulator___pyx_scope_struct__simulate = &__pyx_type_3cbc_9simulator___pyx_scope_struct__simulate;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3497,14 +3484,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_cbc__circuit_simulator__simulator) {
+  if (__pyx_module_is_main_cbc__simulator) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "cbc.circuit_simulator.simulator")) {
-      if (unlikely(PyDict_SetItemString(modules, "cbc.circuit_simulator.simulator", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "cbc.simulator")) {
+      if (unlikely(PyDict_SetItemString(modules, "cbc.simulator", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -3525,7 +3512,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cbc/circuit_simulator/simulator.pyx":1
+  /* "cbc/simulator.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * from scipy.integrate import solve_ivp
  * 
@@ -3535,7 +3522,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":2
+  /* "cbc/simulator.pyx":2
  * import numpy as np
  * from scipy.integrate import solve_ivp             # <<<<<<<<<<<<<<
  * 
@@ -3555,7 +3542,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":5
+  /* "cbc/simulator.pyx":5
  * 
  * 
  * class Simulator(object):             # <<<<<<<<<<<<<<
@@ -3564,34 +3551,34 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_tuple__8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_tuple__8, __pyx_n_s_Simulator, __pyx_n_s_Simulator, (PyObject *) NULL, __pyx_n_s_cbc_circuit_simulator_simulator, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_tuple__8, __pyx_n_s_Simulator, __pyx_n_s_Simulator, (PyObject *) NULL, __pyx_n_s_cbc_simulator, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "cbc/circuit_simulator/simulator.pyx":6
+  /* "cbc/simulator.pyx":6
  * 
  * class Simulator(object):
  *     def __init__(             # <<<<<<<<<<<<<<
  *         self, analogSystem, digitalControl, input, controlPeriod, noise
  *     ):
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_1__init__, 0, __pyx_n_s_Simulator___init, NULL, __pyx_n_s_cbc_circuit_simulator_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_9simulator_9Simulator_1__init__, 0, __pyx_n_s_Simulator___init, NULL, __pyx_n_s_cbc_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_init, __pyx_t_3) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":17
+  /* "cbc/simulator.pyx":17
  *         self._input = input
  * 
  *     def simulate(self, t, initialState):             # <<<<<<<<<<<<<<
  *         timeInterval = (t[0], t[-1])
  *         # make numpy array to store control signals
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_17circuit_simulator_9simulator_9Simulator_3simulate, 0, __pyx_n_s_Simulator_simulate, NULL, __pyx_n_s_cbc_circuit_simulator_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3cbc_9simulator_9Simulator_3simulate, 0, __pyx_n_s_Simulator_simulate, NULL, __pyx_n_s_cbc_simulator, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_simulate, __pyx_t_3) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":5
+  /* "cbc/simulator.pyx":5
  * 
  * 
  * class Simulator(object):             # <<<<<<<<<<<<<<
@@ -3605,7 +3592,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/circuit_simulator/simulator.pyx":1
+  /* "cbc/simulator.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * from scipy.integrate import solve_ivp
  * 
@@ -3624,11 +3611,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_3);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cbc.circuit_simulator.simulator", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init cbc.simulator", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cbc.circuit_simulator.simulator");
+    PyErr_SetString(PyExc_ImportError, "init cbc.simulator");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

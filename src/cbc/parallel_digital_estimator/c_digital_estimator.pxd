@@ -1,5 +1,5 @@
-from cbc.digital_control.digital_control cimport DigitalControl
-from cbc.analog_system.analog_system cimport AnalogSystem
+from cbc.digital_control cimport DigitalControl
+from cbc.analog_system cimport AnalogSystem
 from cbc.parallel_digital_estimator.parallel_estimator cimport ParallelDigitalEstimator
 
 cdef class C_Digital_Estimator:

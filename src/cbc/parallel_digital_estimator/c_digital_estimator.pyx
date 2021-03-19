@@ -1,5 +1,5 @@
 # distutils: language = c++
-from cbc.digital_estimator.offline_computations import care
+from cbc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
 from numpy import dot as dot_product, eye, zeros, int8, int32, double, roll, array

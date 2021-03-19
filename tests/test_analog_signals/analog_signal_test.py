@@ -1,4 +1,4 @@
-from cbc.analog_signal import AnalogSignal
+from cbc import AnalogSignal
 
 
 def test_initialization():

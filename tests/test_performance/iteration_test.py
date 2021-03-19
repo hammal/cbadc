@@ -1,9 +1,9 @@
-from cbc.circuit_simulator import CircuitSimulator
-from cbc.digital_estimator.digital_estimator import DigitalEstimator
+from cbc import StateSpaceSimulator
+from cbc.digital_estimator import DigitalEstimator
 from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator as ParallelDigitalEstimator
-from cbc.analog_signal import AnalogSignal, Sinusodial
-from cbc.analog_system import AnalogSystem
-from cbc.digital_control import DigitalControl
+from cbc import AnalogSignal, Sinusodial
+from cbc import AnalogSystem
+from cbc import DigitalControl
 from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
 import numpy as np
 
@@ -65,7 +65,7 @@ def test_benchmark_quadratic_algorithm(benchmark):
 
 
 def test_benchmark_circuit_simulation_algorithm(benchmark):
-    est = CircuitSimulator(
+    est = StateSpaceSimulator(
         analogSystem, digitalControl, analogSignals)
     result = benchmark(iterate_through, est)
     assert(result == size)

@@ -1,12 +1,12 @@
-from cbc.analog_system.analog_system cimport AnalogSystem
-from cbc.digital_control.digital_control cimport DigitalControl
-from cbc.analog_signal.analog_signal cimport AnalogSignal
+from cbc.analog_system cimport AnalogSystem
+from cbc.digital_control cimport DigitalControl
+from cbc.analog_signal cimport AnalogSignal
 import numpy as np
 from scipy.integrate import solve_ivp
 import math
 
 
-cdef class CircuitSimulator(object):
+cdef class StateSpaceSimulator(object):
     cdef AnalogSystem _as
     cdef DigitalControl _dc
     cdef dict __dict__
