@@ -3,15 +3,11 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [
-            "src/cbc/parallel_digital_estimator/parallel_digital_estimator.cpp",
-            "src/cbc/parallel_digital_estimator/parallel_digital_estimator.h"
-        ],
+        "depends": [],
         "extra_compile_args": [
             "-fopenmp"
         ],
         "include_dirs": [
-            "src/cbc/parallel_digital_estimator",
             ".",
             "src/cbc/analog_system",
             "src/cbc/digital_control",

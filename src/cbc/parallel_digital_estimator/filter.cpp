@@ -5,7 +5,7 @@
 
 using namespace CBC;
 
-Filter::Filter(int K1, int K2, int M, int N, int L) : K1{K1}, K2{K2}, K3{K1 + K2}, M{M}, N{N}, L{L}
+Filter::Filter(int K1, int K2, int M, int N, int L) : K1(K1), K2(K2), K3(K1 + K2), M(M), N(N), L(L)
 {
     // Initialize control signal buffer
     control_signal = (char *)std::malloc(M * (K3 + 1) * sizeof(char));

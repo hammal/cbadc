@@ -1,1 +1,1 @@
-from .analog_signal import AnalogSignal, Sinusodial
+from cbc.analog_signal.analog_signal import AnalogSignal, Sinusodial

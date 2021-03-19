@@ -1,2 +1,2 @@
-Chain-of-Integrators ADC
+Comparison
 ===========================================

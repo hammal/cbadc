@@ -32,7 +32,7 @@ def makeExtension(extName):
         # adding the '.' to include_dirs is CRUCIAL!!
         include_dirs=[".", "src/cbc/analog_system",
                       "src/cbc/digital_control", "src/cbc/analog_signal", "src/cbc/digital_estimator"],
-        extra_compile_args=["-fopenmp"],
+        # extra_compile_args=["-fopenmp"],
         # extra_link_args=['-g'],
         libraries=["m"],
     )
@@ -44,34 +44,6 @@ extNames = scandir("src/cbc")
 # and build up the set of Extension objects
 extensions = [makeExtension(name) for name in extNames]
 
-# extensions += [Extension(
-#     'cbc.parallel_digital_estimator',
-#     sources=['src/cbc/parallel_digital_estimator/parallel_digital_estimator.pyx'],
-#     include_dirs=['src/cbc/parallel_digital_estimator'],
-#     language='c++',
-#     extra_compile_args=['-fopenmp'])]
-
-print(extensions)
-
-# extensions = [
-#     Extension(
-#         "cbc.circuit_simulator",
-#         ["src/cbc/{analog_system,analog_signal,digital_control,circuit_simulator}.pyx"],
-#         # include_dirs=[numpy.get_include(), './src/cbc/'],
-#     ),
-#     Extension(
-#         "cbc.analog_system",
-#         ["src/cbc/analog_system.pyx"],
-#     ),
-#     Extension(
-#         "cbc.digital_control",
-#         ["src/cbc/digital_control.pyx"],
-#     ),
-#     Extension(
-#         "cbc.analog_signal",
-#         ["src/cbc/analog_signal.pyx"],
-#     ),
-# ]
 
 compiler_directives = {"language_level": 3, "embedsignature": True}
 print(find_packages('src'))

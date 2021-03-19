@@ -1,11 +1,18 @@
 API
 =========================
 
+
+.. automodule:: cbc.analog_signal
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 .. automodule:: cbc.analog_system
     :members:
+    :undoc-members:
+    :show-inheritance:
 
-.. automodule:: cbc.digital_control
+.. automodule:: cbc.circuit_simulator
     :members:
-
-.. automodule:: cbc.digital_estimator
-    :members:
+    :undoc-members:
+    :show-inheritance:

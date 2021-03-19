@@ -3,21 +3,25 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
+        "extra_compile_args": [
+            "-fopenmp"
+        ],
         "include_dirs": [
             ".",
             "src/cbc/analog_system",
             "src/cbc/digital_control",
-            "src/cbc/analog_signal"
+            "src/cbc/analog_signal",
+            "src/cbc/digital_estimator"
         ],
         "libraries": [
             "m"
         ],
-        "name": "src.cbc.digital_control.quantizer",
+        "name": "cbc.digital_control.quantizer",
         "sources": [
             "src/cbc/digital_control/quantizer.pyx"
         ]
     },
-    "module_name": "src.cbc.digital_control.quantizer"
+    "module_name": "cbc.digital_control.quantizer"
 }
 END: Cython Metadata */
 
@@ -623,8 +627,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__src__cbc__digital_control__quantizer
-#define __PYX_HAVE_API__src__cbc__digital_control__quantizer
+#define __PYX_HAVE__cbc__digital_control__quantizer
+#define __PYX_HAVE_API__cbc__digital_control__quantizer
 /* Early includes */
 #ifdef _OPENMP
 #include <omp.h>
@@ -1027,12 +1031,12 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'src.cbc.digital_control.quantizer' */
-#define __Pyx_MODULE_NAME "src.cbc.digital_control.quantizer"
-extern int __pyx_module_is_main_src__cbc__digital_control__quantizer;
-int __pyx_module_is_main_src__cbc__digital_control__quantizer = 0;
+/* Module declarations from 'cbc.digital_control.quantizer' */
+#define __Pyx_MODULE_NAME "cbc.digital_control.quantizer"
+extern int __pyx_module_is_main_cbc__digital_control__quantizer;
+int __pyx_module_is_main_cbc__digital_control__quantizer = 0;
 
-/* Implementation of 'src.cbc.digital_control.quantizer' */
+/* Implementation of 'cbc.digital_control.quantizer' */
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
@@ -1351,14 +1355,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_src__cbc__digital_control__quantizer) {
+  if (__pyx_module_is_main_cbc__digital_control__quantizer) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "src.cbc.digital_control.quantizer")) {
-      if (unlikely(PyDict_SetItemString(modules, "src.cbc.digital_control.quantizer", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "cbc.digital_control.quantizer")) {
+      if (unlikely(PyDict_SetItemString(modules, "cbc.digital_control.quantizer", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -1379,7 +1383,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "src/cbc/digital_control/quantizer.pyx":1
+  /* "cbc/digital_control/quantizer.pyx":1
              # <<<<<<<<<<<<<<
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -1394,11 +1398,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init src.cbc.digital_control.quantizer", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init cbc.digital_control.quantizer", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init src.cbc.digital_control.quantizer");
+    PyErr_SetString(PyExc_ImportError, "init cbc.digital_control.quantizer");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

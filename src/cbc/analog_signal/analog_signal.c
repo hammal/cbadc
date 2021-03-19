@@ -8,7 +8,8 @@
             ".",
             "src/cbc/analog_system",
             "src/cbc/digital_control",
-            "src/cbc/analog_signal"
+            "src/cbc/analog_signal",
+            "src/cbc/digital_estimator"
         ],
         "libraries": [
             "m"
@@ -877,8 +878,8 @@ struct __pyx_obj_3cbc_13analog_signal_13analog_signal_Sinusodial {
  * from libc.math cimport sin
  * 
  * cdef class AnalogSignal:             # <<<<<<<<<<<<<<
- * 
- *     def __init__(self, offset = 0):
+ *     """
+ *     The analog signal
  */
 
 struct __pyx_vtabstruct_3cbc_13analog_signal_13analog_signal_AnalogSignal {
@@ -887,12 +888,12 @@ struct __pyx_vtabstruct_3cbc_13analog_signal_13analog_signal_AnalogSignal {
 static struct __pyx_vtabstruct_3cbc_13analog_signal_13analog_signal_AnalogSignal *__pyx_vtabptr_3cbc_13analog_signal_13analog_signal_AnalogSignal;
 
 
-/* "cbc/analog_signal/analog_signal.pyx":16
+/* "cbc/analog_signal/analog_signal.pyx":29
  *         return self._offset
  * 
  * cdef class Sinusodial(AnalogSignal):             # <<<<<<<<<<<<<<
- *     def __init__(self, amplitude, frequency, phase=0, offset=0):
- *         self._amplitude = amplitude
+ *     """Sinusodial input signal this is class is
+ *     a helper to quickly generate sinusodial input signals.
  */
 
 struct __pyx_vtabstruct_3cbc_13analog_signal_13analog_signal_Sinusodial {
@@ -1361,16 +1362,20 @@ static PyObject *__pyx_codeobj__2;
 static PyObject *__pyx_codeobj__4;
 /* Late includes */
 
-/* "cbc/analog_signal/analog_signal.pyx":6
- * cdef class AnalogSignal:
+/* "cbc/analog_signal/analog_signal.pyx":9
+ *     """
  * 
  *     def __init__(self, offset = 0):             # <<<<<<<<<<<<<<
- *         self._offset = offset
- * 
+ *         """
+ *         initalize the signal
  */
 
 /* Python wrapper */
 static int __pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__[] = "\n        initalize the signal\n        ";
+#if CYTHON_COMPILING_IN_CPYTHON
+struct wrapperbase __pyx_wrapperbase_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__;
+#endif
 static int __pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_offset = 0;
   int __pyx_lineno = 0;
@@ -1401,7 +1406,7 @@ static int __pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_1__init_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 6, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 9, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1415,7 +1420,7 @@ static int __pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_1__init_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 6, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 9, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbc.analog_signal.analog_signal.AnalogSignal.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1437,22 +1442,22 @@ static int __pyx_pf_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbc/analog_signal/analog_signal.pyx":7
- * 
- *     def __init__(self, offset = 0):
+  /* "cbc/analog_signal/analog_signal.pyx":13
+ *         initalize the signal
+ *         """
  *         self._offset = offset             # <<<<<<<<<<<<<<
  * 
  *     cpdef double evaluate(self, double t):
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_offset); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_offset); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 13, __pyx_L1_error)
   __pyx_v_self->_offset = __pyx_t_1;
 
-  /* "cbc/analog_signal/analog_signal.pyx":6
- * cdef class AnalogSignal:
+  /* "cbc/analog_signal/analog_signal.pyx":9
+ *     """
  * 
  *     def __init__(self, offset = 0):             # <<<<<<<<<<<<<<
- *         self._offset = offset
- * 
+ *         """
+ *         initalize the signal
  */
 
   /* function exit code */
@@ -1466,11 +1471,11 @@ static int __pyx_pf_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__
   return __pyx_r;
 }
 
-/* "cbc/analog_signal/analog_signal.pyx":9
+/* "cbc/analog_signal/analog_signal.pyx":15
  *         self._offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
- *         return self._offset
+ *         """evaluate the signal at a given time
  * 
  */
 
@@ -1497,10 +1502,10 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_12AnalogSignal_evalua
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_3evaluate)) {
-        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 9, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -1516,10 +1521,10 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_12AnalogSignal_evalua
         __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 9, __pyx_L1_error)
+        __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 15, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_6;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -1538,9 +1543,9 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_12AnalogSignal_evalua
     #endif
   }
 
-  /* "cbc/analog_signal/analog_signal.pyx":10
- * 
- *     cpdef double evaluate(self, double t):
+  /* "cbc/analog_signal/analog_signal.pyx":23
+ *         :rtype: [type]
+ *         """
  *         return self._offset             # <<<<<<<<<<<<<<
  * 
  *     @property
@@ -1548,11 +1553,11 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_12AnalogSignal_evalua
   __pyx_r = __pyx_v_self->_offset;
   goto __pyx_L0;
 
-  /* "cbc/analog_signal/analog_signal.pyx":9
+  /* "cbc/analog_signal/analog_signal.pyx":15
  *         self._offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
- *         return self._offset
+ *         """evaluate the signal at a given time
  * 
  */
 
@@ -1572,7 +1577,7 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_12AnalogSignal_evalua
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_13analog_signal_12AnalogSignal_2evaluate[] = "AnalogSignal.evaluate(self, double t) -> double";
+static char __pyx_doc_3cbc_13analog_signal_13analog_signal_12AnalogSignal_2evaluate[] = "AnalogSignal.evaluate(self, double t) -> double\nevaluate the signal at a given time\n\n        :param doublet: [description]\n        :type doublet: [type]\n        :return: [description]\n        :rtype: [type]\n        ";
 static PyObject *__pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t) {
   double __pyx_v_t;
   int __pyx_lineno = 0;
@@ -1582,7 +1587,7 @@ static PyObject *__pyx_pw_3cbc_13analog_signal_13analog_signal_12AnalogSignal_3e
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("evaluate (wrapper)", 0);
   assert(__pyx_arg_t); {
-    __pyx_v_t = __pyx_PyFloat_AsDouble(__pyx_arg_t); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 9, __pyx_L3_error)
+    __pyx_v_t = __pyx_PyFloat_AsDouble(__pyx_arg_t); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 15, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -1606,7 +1611,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_12AnalogSignal_2e
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_13analog_signal_13analog_signal_12AnalogSignal_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_13analog_signal_13analog_signal_12AnalogSignal_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1623,7 +1628,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_12AnalogSignal_2e
   return __pyx_r;
 }
 
-/* "cbc/analog_signal/analog_signal.pyx":13
+/* "cbc/analog_signal/analog_signal.pyx":26
  * 
  *     @property
  *     def offset(self):             # <<<<<<<<<<<<<<
@@ -1653,7 +1658,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_12AnalogSignal_6o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cbc/analog_signal/analog_signal.pyx":14
+  /* "cbc/analog_signal/analog_signal.pyx":27
  *     @property
  *     def offset(self):
  *         return self._offset             # <<<<<<<<<<<<<<
@@ -1661,13 +1666,13 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_12AnalogSignal_6o
  * cdef class Sinusodial(AnalogSignal):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_offset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_offset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/analog_signal/analog_signal.pyx":13
+  /* "cbc/analog_signal/analog_signal.pyx":26
  * 
  *     @property
  *     def offset(self):             # <<<<<<<<<<<<<<
@@ -1982,9 +1987,9 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_12AnalogSignal_6_
   return __pyx_r;
 }
 
-/* "cbc/analog_signal/analog_signal.pyx":17
- * 
- * cdef class Sinusodial(AnalogSignal):
+/* "cbc/analog_signal/analog_signal.pyx":36
+ *     :type AnalogSignal: AnalogSignal
+ *     """
  *     def __init__(self, amplitude, frequency, phase=0, offset=0):             # <<<<<<<<<<<<<<
  *         self._amplitude = amplitude
  *         self._frequency = frequency
@@ -2032,7 +2037,7 @@ static int __pyx_pw_3cbc_13analog_signal_13analog_signal_10Sinusodial_1__init__(
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_frequency)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, 1); __PYX_ERR(0, 17, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, 1); __PYX_ERR(0, 36, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -2048,7 +2053,7 @@ static int __pyx_pw_3cbc_13analog_signal_13analog_signal_10Sinusodial_1__init__(
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 17, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 36, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2069,7 +2074,7 @@ static int __pyx_pw_3cbc_13analog_signal_13analog_signal_10Sinusodial_1__init__(
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 17, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 36, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbc.analog_signal.analog_signal.Sinusodial.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2091,27 +2096,27 @@ static int __pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial___init__(s
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbc/analog_signal/analog_signal.pyx":18
- * cdef class Sinusodial(AnalogSignal):
+  /* "cbc/analog_signal/analog_signal.pyx":37
+ *     """
  *     def __init__(self, amplitude, frequency, phase=0, offset=0):
  *         self._amplitude = amplitude             # <<<<<<<<<<<<<<
  *         self._frequency = frequency
  *         self._angluarFrequency = 2 * 3.14159265358979323846 * self._frequency
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_amplitude); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_amplitude); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 37, __pyx_L1_error)
   __pyx_v_self->_amplitude = __pyx_t_1;
 
-  /* "cbc/analog_signal/analog_signal.pyx":19
+  /* "cbc/analog_signal/analog_signal.pyx":38
  *     def __init__(self, amplitude, frequency, phase=0, offset=0):
  *         self._amplitude = amplitude
  *         self._frequency = frequency             # <<<<<<<<<<<<<<
  *         self._angluarFrequency = 2 * 3.14159265358979323846 * self._frequency
  *         self._phase = phase
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_frequency); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_frequency); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
   __pyx_v_self->_frequency = __pyx_t_1;
 
-  /* "cbc/analog_signal/analog_signal.pyx":20
+  /* "cbc/analog_signal/analog_signal.pyx":39
  *         self._amplitude = amplitude
  *         self._frequency = frequency
  *         self._angluarFrequency = 2 * 3.14159265358979323846 * self._frequency             # <<<<<<<<<<<<<<
@@ -2120,29 +2125,29 @@ static int __pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial___init__(s
  */
   __pyx_v_self->_angluarFrequency = ((2.0 * 3.14159265358979323846) * __pyx_v_self->_frequency);
 
-  /* "cbc/analog_signal/analog_signal.pyx":21
+  /* "cbc/analog_signal/analog_signal.pyx":40
  *         self._frequency = frequency
  *         self._angluarFrequency = 2 * 3.14159265358979323846 * self._frequency
  *         self._phase = phase             # <<<<<<<<<<<<<<
  *         self._offset = offset
  * 
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_phase); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_phase); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 40, __pyx_L1_error)
   __pyx_v_self->_phase = __pyx_t_1;
 
-  /* "cbc/analog_signal/analog_signal.pyx":22
+  /* "cbc/analog_signal/analog_signal.pyx":41
  *         self._angluarFrequency = 2 * 3.14159265358979323846 * self._frequency
  *         self._phase = phase
  *         self._offset = offset             # <<<<<<<<<<<<<<
  * 
  *     cpdef double evaluate(self, double t):
  */
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_offset); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_offset); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
   __pyx_v_self->__pyx_base._offset = __pyx_t_1;
 
-  /* "cbc/analog_signal/analog_signal.pyx":17
- * 
- * cdef class Sinusodial(AnalogSignal):
+  /* "cbc/analog_signal/analog_signal.pyx":36
+ *     :type AnalogSignal: AnalogSignal
+ *     """
  *     def __init__(self, amplitude, frequency, phase=0, offset=0):             # <<<<<<<<<<<<<<
  *         self._amplitude = amplitude
  *         self._frequency = frequency
@@ -2159,7 +2164,7 @@ static int __pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial___init__(s
   return __pyx_r;
 }
 
-/* "cbc/analog_signal/analog_signal.pyx":24
+/* "cbc/analog_signal/analog_signal.pyx":43
  *         self._offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
@@ -2190,10 +2195,10 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_10Sinusodial_evaluate
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_13analog_signal_13analog_signal_10Sinusodial_3evaluate)) {
-        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -2209,10 +2214,10 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_10Sinusodial_evaluate
         __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L1_error)
+        __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_6;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2231,7 +2236,7 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_10Sinusodial_evaluate
     #endif
   }
 
-  /* "cbc/analog_signal/analog_signal.pyx":27
+  /* "cbc/analog_signal/analog_signal.pyx":46
  *         return (
  *             self._amplitude * sin(self._angluarFrequency * t + self._phase)
  *             + self._offset             # <<<<<<<<<<<<<<
@@ -2241,7 +2246,7 @@ static double __pyx_f_3cbc_13analog_signal_13analog_signal_10Sinusodial_evaluate
   __pyx_r = ((__pyx_v_self->_amplitude * sin(((__pyx_v_self->_angluarFrequency * __pyx_v_t) + __pyx_v_self->_phase))) + __pyx_v_self->__pyx_base._offset);
   goto __pyx_L0;
 
-  /* "cbc/analog_signal/analog_signal.pyx":24
+  /* "cbc/analog_signal/analog_signal.pyx":43
  *         self._offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
@@ -2275,7 +2280,7 @@ static PyObject *__pyx_pw_3cbc_13analog_signal_13analog_signal_10Sinusodial_3eva
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("evaluate (wrapper)", 0);
   assert(__pyx_arg_t); {
-    __pyx_v_t = __pyx_PyFloat_AsDouble(__pyx_arg_t); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
+    __pyx_v_t = __pyx_PyFloat_AsDouble(__pyx_arg_t); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -2299,7 +2304,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_2eva
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_13analog_signal_13analog_signal_10Sinusodial_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_13analog_signal_13analog_signal_10Sinusodial_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2316,7 +2321,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_2eva
   return __pyx_r;
 }
 
-/* "cbc/analog_signal/analog_signal.pyx":31
+/* "cbc/analog_signal/analog_signal.pyx":50
  * 
  *     @property
  *     def amplitude(self):             # <<<<<<<<<<<<<<
@@ -2346,7 +2351,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_9amp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cbc/analog_signal/analog_signal.pyx":32
+  /* "cbc/analog_signal/analog_signal.pyx":51
  *     @property
  *     def amplitude(self):
  *         return self._amplitude             # <<<<<<<<<<<<<<
@@ -2354,13 +2359,13 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_9amp
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_amplitude); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_amplitude); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/analog_signal/analog_signal.pyx":31
+  /* "cbc/analog_signal/analog_signal.pyx":50
  * 
  *     @property
  *     def amplitude(self):             # <<<<<<<<<<<<<<
@@ -2379,7 +2384,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_9amp
   return __pyx_r;
 }
 
-/* "cbc/analog_signal/analog_signal.pyx":35
+/* "cbc/analog_signal/analog_signal.pyx":54
  * 
  *     @property
  *     def frequency(self):             # <<<<<<<<<<<<<<
@@ -2409,7 +2414,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_9fre
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cbc/analog_signal/analog_signal.pyx":36
+  /* "cbc/analog_signal/analog_signal.pyx":55
  *     @property
  *     def frequency(self):
  *         return self._frequency             # <<<<<<<<<<<<<<
@@ -2417,13 +2422,13 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_9fre
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_frequency); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_frequency); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/analog_signal/analog_signal.pyx":35
+  /* "cbc/analog_signal/analog_signal.pyx":54
  * 
  *     @property
  *     def frequency(self):             # <<<<<<<<<<<<<<
@@ -2442,7 +2447,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_9fre
   return __pyx_r;
 }
 
-/* "cbc/analog_signal/analog_signal.pyx":39
+/* "cbc/analog_signal/analog_signal.pyx":58
  * 
  *     @property
  *     def phase(self):             # <<<<<<<<<<<<<<
@@ -2471,19 +2476,19 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_13analog_signal_10Sinusodial_5pha
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "cbc/analog_signal/analog_signal.pyx":40
+  /* "cbc/analog_signal/analog_signal.pyx":59
  *     @property
  *     def phase(self):
  *         return self._phase             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_phase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->_phase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbc/analog_signal/analog_signal.pyx":39
+  /* "cbc/analog_signal/analog_signal.pyx":58
  * 
  *     @property
  *     def phase(self):             # <<<<<<<<<<<<<<
@@ -3724,7 +3729,7 @@ static PyTypeObject __pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  "AnalogSignal(offset=0)", /*tp_doc*/
+  "AnalogSignal(offset=0)\n\n    The analog signal\n    ", /*tp_doc*/
   0, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
@@ -3829,7 +3834,7 @@ static PyTypeObject __pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial =
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  "Sinusodial(amplitude, frequency, phase=0, offset=0)", /*tp_doc*/
+  "Sinusodial(amplitude, frequency, phase=0, offset=0)\nSinusodial input signal this is class is \n    a helper to quickly generate sinusodial input signals.\n\n    :param AnalogSignal: Inherits from AnalogSignal\n    :type AnalogSignal: AnalogSignal\n    ", /*tp_doc*/
   0, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
@@ -4038,6 +4043,16 @@ static int __Pyx_modinit_type_init_code(void) {
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal.tp_dictoffset && __pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
+  #if CYTHON_COMPILING_IN_CPYTHON
+  {
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 4, __pyx_L1_error)
+    if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
+      __pyx_wrapperbase_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__.doc = __pyx_doc_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_3cbc_13analog_signal_13analog_signal_12AnalogSignal___init__;
+    }
+  }
+  #endif
   if (__Pyx_SetVtable(__pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal.tp_dict, __pyx_vtabptr_3cbc_13analog_signal_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_AnalogSignal, (PyObject *)&__pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_13analog_signal_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
@@ -4046,16 +4061,16 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_3cbc_13analog_signal_13analog_signal_Sinusodial.__pyx_base = *__pyx_vtabptr_3cbc_13analog_signal_13analog_signal_AnalogSignal;
   __pyx_vtable_3cbc_13analog_signal_13analog_signal_Sinusodial.__pyx_base.evaluate = (double (*)(struct __pyx_obj_3cbc_13analog_signal_13analog_signal_AnalogSignal *, double, int __pyx_skip_dispatch))__pyx_f_3cbc_13analog_signal_13analog_signal_10Sinusodial_evaluate;
   __pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial.tp_base = __pyx_ptype_3cbc_13analog_signal_13analog_signal_AnalogSignal;
-  if (PyType_Ready(&__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial.tp_dictoffset && __pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial.tp_dict, __pyx_vtabptr_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Sinusodial, (PyObject *)&__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial.tp_dict, __pyx_vtabptr_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Sinusodial, (PyObject *)&__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __pyx_ptype_3cbc_13analog_signal_13analog_signal_Sinusodial = &__pyx_type_3cbc_13analog_signal_13analog_signal_Sinusodial;
   __Pyx_RefNannyFinishContext();
   return 0;

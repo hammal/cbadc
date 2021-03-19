@@ -12,7 +12,7 @@ ParallelDigitalEstimator::ParallelDigitalEstimator(
     complex *backward_b,
     complex *forward_w,
     complex *backward_w,
-    int K1, int K2, int M, int N, int L) : K1{K1}, K2{K2}, K3{K1 + K2}, M{M}, N{N}, L{L}
+    int K1, int K2, int M, int N, int L) : K1(K1), K2(K2), K3(K1 + K2), M(M), N(N), L(L)
 {
     inital_mean = (complex *)std::malloc(N * sizeof(complex));
     fa = (complex *)std::malloc(N * sizeof(complex));

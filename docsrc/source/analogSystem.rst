@@ -1,5 +1,6 @@
 Analog System
 =================
+
 The analog system is defined by the linear differential equation
 
 :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B}
@@ -10,3 +11,5 @@ input matrix, and :math:`\mathbf{\Gamma}` is the control matrix.
 
 >>> 5 
 5
+
+To create a Analog system we use the class 
