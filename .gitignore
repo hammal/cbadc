@@ -6,8 +6,7 @@ dist
 cbc.egg-info
 docs/build
 .coverage
-cbc/**/*.c
 cbc/**/*.html
-src/**/*.so
+cbc/**/*.so
 *.DS_Store
-src/cbc/**/*.html
+.tox
