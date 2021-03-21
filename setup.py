@@ -28,7 +28,7 @@ with open("README.md", "r") as fh:
 
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
-USING_CYTHON = True
+USING_CYTHON = False
 ext = "pyx"
 
 root_path = "src/cbc"
