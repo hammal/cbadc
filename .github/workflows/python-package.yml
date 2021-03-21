@@ -22,6 +22,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Initalize submodules
+      run: >-
+        git submodule init; 
+        ln -s PythonADC/AnalogToDigital tests/
     - name: Upgrade pip
       run: >-
         python -m
