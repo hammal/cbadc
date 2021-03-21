@@ -8,7 +8,7 @@ import numpy as np
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
 if myPath:
-    from cbc import AnalogSystem, InvalidAnalogSystemError
+    from cbadc import AnalogSystem, InvalidAnalogSystemError
 
 
 beta = 6250.0

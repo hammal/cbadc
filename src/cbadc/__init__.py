@@ -2,9 +2,9 @@
 The control-bounded converter toolbox allows simulation and reconstruction
 of control-bounded converters.
 """
-from cbc.analog_signal import AnalogSignal, Sinusodial
-from cbc.analog_system import AnalogSystem, InvalidAnalogSystemError
-from cbc.state_space_simulator import StateSpaceSimulator
-from cbc.digital_control import DigitalControl
-from cbc.digital_estimator import DigitalEstimator
-# from cbc.parallel_digital_estimator.parallel_estimator import DigitalEstimator as ParallelDigitalEstimator
+from cbadc.analog_signal import AnalogSignal, Sinusodial
+from cbadc.analog_system import AnalogSystem, InvalidAnalogSystemError
+from cbadc.state_space_simulator import StateSpaceSimulator
+from cbadc.digital_control import DigitalControl
+from cbadc.digital_estimator import DigitalEstimator
+# from cbadc.parallel_digital_estimator.parallel_estimator import DigitalEstimator as ParallelDigitalEstimator
