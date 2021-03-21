@@ -24,7 +24,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Initalize submodules
       run: >-
-        git submodule init
+        git submodule init;
+        rm -rf tests/AnalogToDigital;
+        ln -s PythonADC/AnalogToDigital tests/;
     - name: Upgrade pip
       run: >-
         python -m
