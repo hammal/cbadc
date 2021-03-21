@@ -27,10 +27,12 @@ jobs:
         python -m
         pip install
         --upgrade
-        pip 
-    - name: UnitTest with Tox
+        pip
+    - name: install Tox
       run:
         python -m pip install tox;
+    - name: UnitTest with Tox
+      run:
         tox -e ${PYTHON_V};
       env:
         PYTHON_V: ${{ matrix.python-version }}
