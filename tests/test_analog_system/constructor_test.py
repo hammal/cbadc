@@ -24,7 +24,7 @@ Gamma = Gamma_tilde * (-beta)
 
 
 def test_correct_initialization():
-    analog_system = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+    AnalogSystem(A, B, C, Gamma, Gamma_tilde)
 
 
 def test_chain_of_integrators_fixture(chain_of_integrators):

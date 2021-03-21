@@ -24,9 +24,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: UnitTest with Tox
       run:
-        tox -e ${python-version}
-      with:
-        python-version: ${{ matrix.python-version }}
+        tox -e ${PYTHON_V}
+      env:
+        PYTHON_V: ${{ matrix.python-version }}
     - name: Install pypa/build
       run: >-
         python -m
