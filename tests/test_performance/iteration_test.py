@@ -1,10 +1,10 @@
-# from cbc import StateSpaceSimulator
-# from cbc.digital_estimator import DigitalEstimator
-# from cbc.parallel_digital_estimator.digital_estimator import
+# from cbadc import StateSpaceSimulator
+# from cbadc.digital_estimator import DigitalEstimator
+# from cbadc.parallel_digital_estimator.digital_estimator import
 # DigitalEstimator as ParallelDigitalEstimator
-# from cbc import AnalogSignal, Sinusodial
-# from cbc import AnalogSystem
-# from cbc import DigitalControl
+# from cbadc import AnalogSignal, Sinusodial
+# from cbadc import AnalogSystem
+# from cbadc import DigitalControl
 # from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
 # import numpy as np
 

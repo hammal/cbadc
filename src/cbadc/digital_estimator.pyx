@@ -2,8 +2,8 @@
 The digital estimator.
 """
 #cython: language_level=3
-from cbc.linear_filter cimport LinearFilter
-from cbc.filter_mid_point cimport MidPointFilter
+from cbadc.linear_filter cimport LinearFilter
+from cbadc.filter_mid_point cimport MidPointFilter
 from numpy import dot, zeros, eye, array, abs
 from numpy.linalg import inv
 

@@ -4,12 +4,12 @@
 {
     "distutils": {
         "depends": [],
-        "name": "cbc.analog_signal",
+        "name": "cbadc.analog_signal",
         "sources": [
-            "src/cbc/analog_signal.pyx"
+            "src/cbadc/analog_signal.pyx"
         ]
     },
-    "module_name": "cbc.analog_signal"
+    "module_name": "cbadc.analog_signal"
 }
 END: Cython Metadata */
 
@@ -615,8 +615,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__cbc__analog_signal
-#define __PYX_HAVE_API__cbc__analog_signal
+#define __PYX_HAVE__cbadc__analog_signal
+#define __PYX_HAVE_API__cbadc__analog_signal
 /* Early includes */
 #include <math.h>
 #ifdef _OPENMP
@@ -827,36 +827,36 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/cbc/analog_signal.pyx",
-  "src/cbc/analog_signal.pxd",
+  "src/cbadc/analog_signal.pyx",
+  "src/cbadc/analog_signal.pxd",
   "stringsource",
 };
 
 /*--- Type declarations ---*/
-struct __pyx_obj_3cbc_13analog_signal_AnalogSignal;
-struct __pyx_obj_3cbc_13analog_signal_Sinusodial;
+struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal;
+struct __pyx_obj_5cbadc_13analog_signal_Sinusodial;
 
-/* "cbc/analog_signal.pxd":1
+/* "cbadc/analog_signal.pxd":1
  * cdef class AnalogSignal:             # <<<<<<<<<<<<<<
  *     cdef readonly double offset
  *     cpdef double evaluate(self, double t)
  */
-struct __pyx_obj_3cbc_13analog_signal_AnalogSignal {
+struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal {
   PyObject_HEAD
-  struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal *__pyx_vtab;
+  struct __pyx_vtabstruct_5cbadc_13analog_signal_AnalogSignal *__pyx_vtab;
   double offset;
 };
 
 
-/* "cbc/analog_signal.pxd":5
+/* "cbadc/analog_signal.pxd":5
  *     cpdef double evaluate(self, double t)
  * 
  * cdef class Sinusodial(AnalogSignal):             # <<<<<<<<<<<<<<
  *     cdef readonly double amplitude
  *     cdef readonly double frequency
  */
-struct __pyx_obj_3cbc_13analog_signal_Sinusodial {
-  struct __pyx_obj_3cbc_13analog_signal_AnalogSignal __pyx_base;
+struct __pyx_obj_5cbadc_13analog_signal_Sinusodial {
+  struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal __pyx_base;
   double amplitude;
   double frequency;
   double angluarFrequency;
@@ -865,7 +865,7 @@ struct __pyx_obj_3cbc_13analog_signal_Sinusodial {
 
 
 
-/* "cbc/analog_signal.pyx":13
+/* "cbadc/analog_signal.pyx":13
  * from libc.math cimport sin
  * 
  * cdef class AnalogSignal:             # <<<<<<<<<<<<<<
@@ -873,13 +873,13 @@ struct __pyx_obj_3cbc_13analog_signal_Sinusodial {
  * 
  */
 
-struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal {
-  double (*evaluate)(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *, double, int __pyx_skip_dispatch);
+struct __pyx_vtabstruct_5cbadc_13analog_signal_AnalogSignal {
+  double (*evaluate)(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *, double, int __pyx_skip_dispatch);
 };
-static struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal *__pyx_vtabptr_3cbc_13analog_signal_AnalogSignal;
+static struct __pyx_vtabstruct_5cbadc_13analog_signal_AnalogSignal *__pyx_vtabptr_5cbadc_13analog_signal_AnalogSignal;
 
 
-/* "cbc/analog_signal.pyx":62
+/* "cbadc/analog_signal.pyx":62
  *         return self.offset
  * 
  * cdef class Sinusodial(AnalogSignal):             # <<<<<<<<<<<<<<
@@ -887,10 +887,10 @@ static struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal *__pyx_vtabptr_
  * 
  */
 
-struct __pyx_vtabstruct_3cbc_13analog_signal_Sinusodial {
-  struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal __pyx_base;
+struct __pyx_vtabstruct_5cbadc_13analog_signal_Sinusodial {
+  struct __pyx_vtabstruct_5cbadc_13analog_signal_AnalogSignal __pyx_base;
 };
-static struct __pyx_vtabstruct_3cbc_13analog_signal_Sinusodial *__pyx_vtabptr_3cbc_13analog_signal_Sinusodial;
+static struct __pyx_vtabstruct_5cbadc_13analog_signal_Sinusodial *__pyx_vtabptr_5cbadc_13analog_signal_Sinusodial;
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1244,21 +1244,21 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static double __pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, CYTHON_UNUSED double __pyx_v_t, int __pyx_skip_dispatch); /* proto*/
-static double __pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t, int __pyx_skip_dispatch); /* proto*/
+static double __pyx_f_5cbadc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, CYTHON_UNUSED double __pyx_v_t, int __pyx_skip_dispatch); /* proto*/
+static double __pyx_f_5cbadc_13analog_signal_10Sinusodial_evaluate(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'libc.math' */
 
-/* Module declarations from 'cbc.analog_signal' */
-static PyTypeObject *__pyx_ptype_3cbc_13analog_signal_AnalogSignal = 0;
-static PyTypeObject *__pyx_ptype_3cbc_13analog_signal_Sinusodial = 0;
-static PyObject *__pyx_f_3cbc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *, PyObject *); /*proto*/
-static PyObject *__pyx_f_3cbc_13analog_signal___pyx_unpickle_Sinusodial__set_state(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *, PyObject *); /*proto*/
-#define __Pyx_MODULE_NAME "cbc.analog_signal"
-extern int __pyx_module_is_main_cbc__analog_signal;
-int __pyx_module_is_main_cbc__analog_signal = 0;
+/* Module declarations from 'cbadc.analog_signal' */
+static PyTypeObject *__pyx_ptype_5cbadc_13analog_signal_AnalogSignal = 0;
+static PyTypeObject *__pyx_ptype_5cbadc_13analog_signal_Sinusodial = 0;
+static PyObject *__pyx_f_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *, PyObject *); /*proto*/
+static PyObject *__pyx_f_5cbadc_13analog_signal___pyx_unpickle_Sinusodial__set_state(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *, PyObject *); /*proto*/
+#define __Pyx_MODULE_NAME "cbadc.analog_signal"
+extern int __pyx_module_is_main_cbadc__analog_signal;
+int __pyx_module_is_main_cbadc__analog_signal = 0;
 
-/* Implementation of 'cbc.analog_signal' */
+/* Implementation of 'cbadc.analog_signal' */
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_pi[] = "pi";
 static const char __pyx_k_new[] = "__new__";
@@ -1291,8 +1291,8 @@ static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_cbc_analog_signal[] = "cbc.analog_signal";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
+static const char __pyx_k_cbadc_analog_signal[] = "cbadc.analog_signal";
 static const char __pyx_k_pyx_unpickle_Sinusodial[] = "__pyx_unpickle_Sinusodial";
 static const char __pyx_k_pyx_unpickle_AnalogSignal[] = "__pyx_unpickle_AnalogSignal";
 static const char __pyx_k_Incompatible_checksums_s_vs_0x7a[] = "Incompatible checksums (%s vs 0x7a86c15 = (offset))";
@@ -1304,7 +1304,7 @@ static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xa9;
 static PyObject *__pyx_n_s_PickleError;
 static PyObject *__pyx_n_s_Sinusodial;
 static PyObject *__pyx_n_s_amplitude;
-static PyObject *__pyx_n_s_cbc_analog_signal;
+static PyObject *__pyx_n_s_cbadc_analog_signal;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_dict;
 static PyObject *__pyx_n_s_evaluate;
@@ -1336,23 +1336,23 @@ static PyObject *__pyx_n_s_setstate_cython;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_update;
-static int __pyx_pf_3cbc_13analog_signal_12AnalogSignal___init__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v_offset); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_2evaluate(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, double __pyx_v_t); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6offset___get__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_4__reduce_cython__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
-static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v_amplitude, PyObject *__pyx_v_frequency, PyObject *__pyx_v_phase, PyObject *__pyx_v_offset); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_2evaluate(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9amplitude___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9frequency___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_16angluarFrequency___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_5phase___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_4__reduce_cython__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_tp_new_3cbc_13analog_signal_AnalogSignal(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_3cbc_13analog_signal_Sinusodial(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static int __pyx_pf_5cbadc_13analog_signal_12AnalogSignal___init__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v_offset); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_2evaluate(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, double __pyx_v_t); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_6offset___get__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_4__reduce_cython__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_6__setstate_cython__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_5cbadc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v_amplitude, PyObject *__pyx_v_frequency, PyObject *__pyx_v_phase, PyObject *__pyx_v_offset); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_2evaluate(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_9amplitude___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_9frequency___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_16angluarFrequency___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_5phase___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_4__reduce_cython__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_6__setstate_cython__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_5cbadc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_tp_new_5cbadc_13analog_signal_AnalogSignal(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5cbadc_13analog_signal_Sinusodial(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_float_0_0;
 static PyObject *__pyx_int_2;
 static PyObject *__pyx_int_128478229;
@@ -1363,7 +1363,7 @@ static PyObject *__pyx_codeobj__2;
 static PyObject *__pyx_codeobj__4;
 /* Late includes */
 
-/* "cbc/analog_signal.pyx":42
+/* "cbadc/analog_signal.pyx":42
  *     """
  * 
  *     def __init__(self, offset = 0.0):             # <<<<<<<<<<<<<<
@@ -1372,12 +1372,12 @@ static PyObject *__pyx_codeobj__4;
  */
 
 /* Python wrapper */
-static int __pyx_pw_3cbc_13analog_signal_12AnalogSignal_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_12AnalogSignal___init__[] = "Create a constant analog signal.\n        ";
+static int __pyx_pw_5cbadc_13analog_signal_12AnalogSignal_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_12AnalogSignal___init__[] = "Create a constant analog signal.\n        ";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_3cbc_13analog_signal_12AnalogSignal___init__;
+struct wrapperbase __pyx_wrapperbase_5cbadc_13analog_signal_12AnalogSignal___init__;
 #endif
-static int __pyx_pw_3cbc_13analog_signal_12AnalogSignal_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_5cbadc_13analog_signal_12AnalogSignal_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_offset = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -1423,18 +1423,18 @@ static int __pyx_pw_3cbc_13analog_signal_12AnalogSignal_1__init__(PyObject *__py
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 42, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.analog_signal.AnalogSignal.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.AnalogSignal.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_12AnalogSignal___init__(((struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *)__pyx_v_self), __pyx_v_offset);
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_12AnalogSignal___init__(((struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *)__pyx_v_self), __pyx_v_offset);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_3cbc_13analog_signal_12AnalogSignal___init__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v_offset) {
+static int __pyx_pf_5cbadc_13analog_signal_12AnalogSignal___init__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v_offset) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -1443,7 +1443,7 @@ static int __pyx_pf_3cbc_13analog_signal_12AnalogSignal___init__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbc/analog_signal.pyx":45
+  /* "cbadc/analog_signal.pyx":45
  *         """Create a constant analog signal.
  *         """
  *         self.offset = offset             # <<<<<<<<<<<<<<
@@ -1453,7 +1453,7 @@ static int __pyx_pf_3cbc_13analog_signal_12AnalogSignal___init__(struct __pyx_ob
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_offset); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L1_error)
   __pyx_v_self->offset = __pyx_t_1;
 
-  /* "cbc/analog_signal.pyx":42
+  /* "cbadc/analog_signal.pyx":42
  *     """
  * 
  *     def __init__(self, offset = 0.0):             # <<<<<<<<<<<<<<
@@ -1465,14 +1465,14 @@ static int __pyx_pf_3cbc_13analog_signal_12AnalogSignal___init__(struct __pyx_ob
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("cbc.analog_signal.AnalogSignal.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.AnalogSignal.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pyx":47
+/* "cbadc/analog_signal.pyx":47
  *         self.offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
@@ -1480,8 +1480,8 @@ static int __pyx_pf_3cbc_13analog_signal_12AnalogSignal___init__(struct __pyx_ob
  * 
  */
 
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
-static double __pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, CYTHON_UNUSED double __pyx_v_t, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
+static double __pyx_f_5cbadc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, CYTHON_UNUSED double __pyx_v_t, int __pyx_skip_dispatch) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1505,7 +1505,7 @@ static double __pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_13analog_signal_12AnalogSignal_3evaluate)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_3evaluate)) {
         __pyx_t_3 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
@@ -1544,7 +1544,7 @@ static double __pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_
     #endif
   }
 
-  /* "cbc/analog_signal.pyx":60
+  /* "cbadc/analog_signal.pyx":60
  *             The analog signal value
  *         """
  *         return self.offset             # <<<<<<<<<<<<<<
@@ -1554,7 +1554,7 @@ static double __pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_
   __pyx_r = __pyx_v_self->offset;
   goto __pyx_L0;
 
-  /* "cbc/analog_signal.pyx":47
+  /* "cbadc/analog_signal.pyx":47
  *         self.offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
@@ -1569,7 +1569,7 @@ static double __pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_WriteUnraisable("cbc.analog_signal.AnalogSignal.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbadc.analog_signal.AnalogSignal.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -1577,9 +1577,9 @@ static double __pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(struct __pyx_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_12AnalogSignal_2evaluate[] = "AnalogSignal.evaluate(self, double t) -> double\nEvaluate the signal at time :math:`t`.\n\n        Parameters\n        ----------\n        t : `float`\n            the time instance for evaluation.\n\n        Returns\n        -------\n        float\n            The analog signal value\n        ";
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_12AnalogSignal_2evaluate[] = "AnalogSignal.evaluate(self, double t) -> double\nEvaluate the signal at time :math:`t`.\n\n        Parameters\n        ----------\n        t : `float`\n            the time instance for evaluation.\n\n        Returns\n        -------\n        float\n            The analog signal value\n        ";
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t) {
   double __pyx_v_t;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -1592,18 +1592,18 @@ static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_3evaluate(PyObject
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.analog_signal.AnalogSignal.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.AnalogSignal.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_12AnalogSignal_2evaluate(((struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *)__pyx_v_self), ((double)__pyx_v_t));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_12AnalogSignal_2evaluate(((struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *)__pyx_v_self), ((double)__pyx_v_t));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_2evaluate(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, double __pyx_v_t) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_2evaluate(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, double __pyx_v_t) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1612,7 +1612,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_2evaluate(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_5cbadc_13analog_signal_12AnalogSignal_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1621,7 +1621,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_2evaluate(struct _
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.AnalogSignal.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.AnalogSignal.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1629,7 +1629,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_2evaluate(struct _
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pxd":2
+/* "cbadc/analog_signal.pxd":2
  * cdef class AnalogSignal:
  *     cdef readonly double offset             # <<<<<<<<<<<<<<
  *     cpdef double evaluate(self, double t)
@@ -1637,19 +1637,19 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_2evaluate(struct _
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_6offset_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_6offset_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_6offset_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_6offset_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_12AnalogSignal_6offset___get__(((struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_12AnalogSignal_6offset___get__(((struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6offset___get__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_6offset___get__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1667,7 +1667,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6offset___get__(st
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.AnalogSignal.offset.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.AnalogSignal.offset.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1682,20 +1682,20 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6offset___get__(st
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_12AnalogSignal_4__reduce_cython__[] = "AnalogSignal.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_12AnalogSignal_4__reduce_cython__[] = "AnalogSignal.__reduce_cython__(self)";
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_12AnalogSignal_4__reduce_cython__(((struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_12AnalogSignal_4__reduce_cython__(((struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_4__reduce_cython__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_4__reduce_cython__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self) {
   PyObject *__pyx_v_state = 0;
   PyObject *__pyx_v__dict = 0;
   int __pyx_v_use_setstate;
@@ -1901,7 +1901,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_4__reduce_cython__
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cbc.analog_signal.AnalogSignal.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.AnalogSignal.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_state);
@@ -1919,20 +1919,20 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_4__reduce_cython__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython__[] = "AnalogSignal.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3cbc_13analog_signal_12AnalogSignal_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_12AnalogSignal_6__setstate_cython__[] = "AnalogSignal.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython__(((struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_12AnalogSignal_6__setstate_cython__(((struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython__(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_12AnalogSignal_6__setstate_cython__(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1947,7 +1947,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython
  *     __pyx_unpickle_AnalogSignal__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
   if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 17, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_3cbc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 17, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -1963,7 +1963,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.AnalogSignal.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.AnalogSignal.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1971,7 +1971,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pyx":104
+/* "cbadc/analog_signal.pyx":104
  * 
  *     """
  *     def __init__(self, amplitude, frequency, phase=0.0, offset=0.0):             # <<<<<<<<<<<<<<
@@ -1980,8 +1980,8 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython
  */
 
 /* Python wrapper */
-static int __pyx_pw_3cbc_13analog_signal_10Sinusodial_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_3cbc_13analog_signal_10Sinusodial_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_5cbadc_13analog_signal_10Sinusodial_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_5cbadc_13analog_signal_10Sinusodial_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_amplitude = 0;
   PyObject *__pyx_v_frequency = 0;
   PyObject *__pyx_v_phase = 0;
@@ -2060,18 +2060,18 @@ static int __pyx_pw_3cbc_13analog_signal_10Sinusodial_1__init__(PyObject *__pyx_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 104, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self), __pyx_v_amplitude, __pyx_v_frequency, __pyx_v_phase, __pyx_v_offset);
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial___init__(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self), __pyx_v_amplitude, __pyx_v_frequency, __pyx_v_phase, __pyx_v_offset);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v_amplitude, PyObject *__pyx_v_frequency, PyObject *__pyx_v_phase, PyObject *__pyx_v_offset) {
+static int __pyx_pf_5cbadc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v_amplitude, PyObject *__pyx_v_frequency, PyObject *__pyx_v_phase, PyObject *__pyx_v_offset) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -2083,7 +2083,7 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbc/analog_signal.pyx":105
+  /* "cbadc/analog_signal.pyx":105
  *     """
  *     def __init__(self, amplitude, frequency, phase=0.0, offset=0.0):
  *         self.amplitude = amplitude             # <<<<<<<<<<<<<<
@@ -2093,7 +2093,7 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_amplitude); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 105, __pyx_L1_error)
   __pyx_v_self->amplitude = __pyx_t_1;
 
-  /* "cbc/analog_signal.pyx":106
+  /* "cbadc/analog_signal.pyx":106
  *     def __init__(self, amplitude, frequency, phase=0.0, offset=0.0):
  *         self.amplitude = amplitude
  *         self.frequency = frequency             # <<<<<<<<<<<<<<
@@ -2103,7 +2103,7 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_frequency); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 106, __pyx_L1_error)
   __pyx_v_self->frequency = __pyx_t_1;
 
-  /* "cbc/analog_signal.pyx":107
+  /* "cbadc/analog_signal.pyx":107
  *         self.amplitude = amplitude
  *         self.frequency = frequency
  *         self.angluarFrequency = 2 * np.pi * self.frequency             # <<<<<<<<<<<<<<
@@ -2128,7 +2128,7 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_self->angluarFrequency = __pyx_t_1;
 
-  /* "cbc/analog_signal.pyx":108
+  /* "cbadc/analog_signal.pyx":108
  *         self.frequency = frequency
  *         self.angluarFrequency = 2 * np.pi * self.frequency
  *         self.phase = phase             # <<<<<<<<<<<<<<
@@ -2138,7 +2138,7 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_phase); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 108, __pyx_L1_error)
   __pyx_v_self->phase = __pyx_t_1;
 
-  /* "cbc/analog_signal.pyx":109
+  /* "cbadc/analog_signal.pyx":109
  *         self.angluarFrequency = 2 * np.pi * self.frequency
  *         self.phase = phase
  *         self.offset = offset             # <<<<<<<<<<<<<<
@@ -2148,7 +2148,7 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_offset); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 109, __pyx_L1_error)
   __pyx_v_self->__pyx_base.offset = __pyx_t_1;
 
-  /* "cbc/analog_signal.pyx":104
+  /* "cbadc/analog_signal.pyx":104
  * 
  *     """
  *     def __init__(self, amplitude, frequency, phase=0.0, offset=0.0):             # <<<<<<<<<<<<<<
@@ -2163,14 +2163,14 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pyx":111
+/* "cbadc/analog_signal.pyx":111
  *         self.offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
@@ -2178,8 +2178,8 @@ static int __pyx_pf_3cbc_13analog_signal_10Sinusodial___init__(struct __pyx_obj_
  * 
  */
 
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
-static double __pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t, int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
+static double __pyx_f_5cbadc_13analog_signal_10Sinusodial_evaluate(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t, int __pyx_skip_dispatch) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2203,7 +2203,7 @@ static double __pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(struct __pyx_ob
       #endif
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_evaluate); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_3cbc_13analog_signal_10Sinusodial_3evaluate)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5cbadc_13analog_signal_10Sinusodial_3evaluate)) {
         __pyx_t_3 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
@@ -2242,7 +2242,7 @@ static double __pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(struct __pyx_ob
     #endif
   }
 
-  /* "cbc/analog_signal.pyx":126
+  /* "cbadc/analog_signal.pyx":126
  *         return (
  *             self.amplitude * sin(self.angluarFrequency * t + self.phase)
  *             + self.offset             # <<<<<<<<<<<<<<
@@ -2251,7 +2251,7 @@ static double __pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(struct __pyx_ob
   __pyx_r = ((__pyx_v_self->amplitude * sin(((__pyx_v_self->angluarFrequency * __pyx_v_t) + __pyx_v_self->phase))) + __pyx_v_self->__pyx_base.offset);
   goto __pyx_L0;
 
-  /* "cbc/analog_signal.pyx":111
+  /* "cbadc/analog_signal.pyx":111
  *         self.offset = offset
  * 
  *     cpdef double evaluate(self, double t):             # <<<<<<<<<<<<<<
@@ -2266,7 +2266,7 @@ static double __pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(struct __pyx_ob
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_WriteUnraisable("cbc.analog_signal.Sinusodial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("cbadc.analog_signal.Sinusodial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -2274,9 +2274,9 @@ static double __pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(struct __pyx_ob
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_10Sinusodial_2evaluate[] = "Sinusodial.evaluate(self, double t) -> double\nEvaluate the signal at time :math:`t`.\n\n        Parameters\n        ----------\n        t : `float`\n            the time instance for evaluation.\n\n        Returns\n        -------\n        float\n            The analog signal value\n        ";
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_10Sinusodial_2evaluate[] = "Sinusodial.evaluate(self, double t) -> double\nEvaluate the signal at time :math:`t`.\n\n        Parameters\n        ----------\n        t : `float`\n            the time instance for evaluation.\n\n        Returns\n        -------\n        float\n            The analog signal value\n        ";
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_3evaluate(PyObject *__pyx_v_self, PyObject *__pyx_arg_t) {
   double __pyx_v_t;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -2289,18 +2289,18 @@ static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_3evaluate(PyObject *
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial_2evaluate(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self), ((double)__pyx_v_t));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial_2evaluate(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self), ((double)__pyx_v_t));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_2evaluate(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_2evaluate(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, double __pyx_v_t) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2309,7 +2309,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_2evaluate(struct __p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_5cbadc_13analog_signal_10Sinusodial_evaluate(__pyx_v_self, __pyx_v_t, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2318,7 +2318,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_2evaluate(struct __p
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2326,7 +2326,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_2evaluate(struct __p
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pxd":6
+/* "cbadc/analog_signal.pxd":6
  * 
  * cdef class Sinusodial(AnalogSignal):
  *     cdef readonly double amplitude             # <<<<<<<<<<<<<<
@@ -2335,19 +2335,19 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_2evaluate(struct __p
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_9amplitude_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_9amplitude_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_9amplitude_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_9amplitude_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial_9amplitude___get__(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial_9amplitude___get__(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9amplitude___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_9amplitude___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2365,7 +2365,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9amplitude___get__(s
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.amplitude.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.amplitude.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2373,7 +2373,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9amplitude___get__(s
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pxd":7
+/* "cbadc/analog_signal.pxd":7
  * cdef class Sinusodial(AnalogSignal):
  *     cdef readonly double amplitude
  *     cdef readonly double frequency             # <<<<<<<<<<<<<<
@@ -2382,19 +2382,19 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9amplitude___get__(s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_9frequency_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_9frequency_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_9frequency_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_9frequency_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial_9frequency___get__(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial_9frequency___get__(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9frequency___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_9frequency___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2412,7 +2412,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9frequency___get__(s
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.frequency.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.frequency.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2420,7 +2420,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9frequency___get__(s
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pxd":8
+/* "cbadc/analog_signal.pxd":8
  *     cdef readonly double amplitude
  *     cdef readonly double frequency
  *     cdef readonly double angluarFrequency             # <<<<<<<<<<<<<<
@@ -2429,19 +2429,19 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_9frequency___get__(s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_16angluarFrequency_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_16angluarFrequency_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_16angluarFrequency_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_16angluarFrequency_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial_16angluarFrequency___get__(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial_16angluarFrequency___get__(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_16angluarFrequency___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_16angluarFrequency___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2459,7 +2459,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_16angluarFrequency__
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.angluarFrequency.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.angluarFrequency.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2467,7 +2467,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_16angluarFrequency__
   return __pyx_r;
 }
 
-/* "cbc/analog_signal.pxd":9
+/* "cbadc/analog_signal.pxd":9
  *     cdef readonly double frequency
  *     cdef readonly double angluarFrequency
  *     cdef readonly double phase             # <<<<<<<<<<<<<<
@@ -2475,19 +2475,19 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_16angluarFrequency__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_5phase_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_5phase_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_5phase_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_5phase_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial_5phase___get__(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial_5phase___get__(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_5phase___get__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_5phase___get__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2505,7 +2505,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_5phase___get__(struc
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.phase.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.phase.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2520,20 +2520,20 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_5phase___get__(struc
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_10Sinusodial_4__reduce_cython__[] = "Sinusodial.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_10Sinusodial_4__reduce_cython__[] = "Sinusodial.__reduce_cython__(self)";
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_5__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial_4__reduce_cython__(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial_4__reduce_cython__(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_4__reduce_cython__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_4__reduce_cython__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self) {
   PyObject *__pyx_v_state = 0;
   PyObject *__pyx_v__dict = 0;
   int __pyx_v_use_setstate;
@@ -2765,7 +2765,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_4__reduce_cython__(s
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_state);
@@ -2783,20 +2783,20 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_4__reduce_cython__(s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__[] = "Sinusodial.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3cbc_13analog_signal_10Sinusodial_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_10Sinusodial_6__setstate_cython__[] = "Sinusodial.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_5cbadc_13analog_signal_10Sinusodial_7__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_10Sinusodial_6__setstate_cython__(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_10Sinusodial_6__setstate_cython__(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2811,7 +2811,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__
  *     __pyx_unpickle_Sinusodial__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
   if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 17, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_3cbc_13analog_signal___pyx_unpickle_Sinusodial__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 17, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5cbadc_13analog_signal___pyx_unpickle_Sinusodial__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -2827,7 +2827,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("cbc.analog_signal.Sinusodial.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.Sinusodial.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2842,10 +2842,10 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_1__pyx_unpickle_AnalogSignal(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal___pyx_unpickle_AnalogSignal[] = "__pyx_unpickle_AnalogSignal(__pyx_type, long __pyx_checksum, __pyx_state)";
-static PyMethodDef __pyx_mdef_3cbc_13analog_signal_1__pyx_unpickle_AnalogSignal = {"__pyx_unpickle_AnalogSignal", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_13analog_signal_1__pyx_unpickle_AnalogSignal, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_13analog_signal___pyx_unpickle_AnalogSignal};
-static PyObject *__pyx_pw_3cbc_13analog_signal_1__pyx_unpickle_AnalogSignal(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_1__pyx_unpickle_AnalogSignal(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal[] = "__pyx_unpickle_AnalogSignal(__pyx_type, long __pyx_checksum, __pyx_state)";
+static PyMethodDef __pyx_mdef_5cbadc_13analog_signal_1__pyx_unpickle_AnalogSignal = {"__pyx_unpickle_AnalogSignal", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_13analog_signal_1__pyx_unpickle_AnalogSignal, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal};
+static PyObject *__pyx_pw_5cbadc_13analog_signal_1__pyx_unpickle_AnalogSignal(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v___pyx_type = 0;
   long __pyx_v___pyx_checksum;
   PyObject *__pyx_v___pyx_state = 0;
@@ -2907,18 +2907,18 @@ static PyObject *__pyx_pw_3cbc_13analog_signal_1__pyx_unpickle_AnalogSignal(PyOb
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_AnalogSignal", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(2, 1, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.analog_signal.__pyx_unpickle_AnalogSignal", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.__pyx_unpickle_AnalogSignal", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_13analog_signal___pyx_unpickle_AnalogSignal(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_v___pyx_PickleError = 0;
   PyObject *__pyx_v___pyx_result = 0;
   PyObject *__pyx_r = NULL;
@@ -3015,7 +3015,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHO
  *     if __pyx_state is not None:
  *         __pyx_unpickle_AnalogSignal__set_state(<AnalogSignal> __pyx_result, __pyx_state)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3cbc_13analog_signal_AnalogSignal), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 7, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5cbadc_13analog_signal_AnalogSignal), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3054,7 +3054,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHO
  * cdef __pyx_unpickle_AnalogSignal__set_state(AnalogSignal __pyx_result, tuple __pyx_state):
  */
     if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 9, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3cbc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(((struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 9, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(((struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 9, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
@@ -3091,7 +3091,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHO
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cbc.analog_signal.__pyx_unpickle_AnalogSignal", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.__pyx_unpickle_AnalogSignal", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v___pyx_PickleError);
@@ -3109,7 +3109,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal___pyx_unpickle_AnalogSignal(CYTHO
  *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):
  */
 
-static PyObject *__pyx_f_3cbc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_f_5cbadc_13analog_signal___pyx_unpickle_AnalogSignal__set_state(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3224,7 +3224,7 @@ static PyObject *__pyx_f_3cbc_13analog_signal___pyx_unpickle_AnalogSignal__set_s
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("cbc.analog_signal.__pyx_unpickle_AnalogSignal__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.__pyx_unpickle_AnalogSignal__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3239,10 +3239,10 @@ static PyObject *__pyx_f_3cbc_13analog_signal___pyx_unpickle_AnalogSignal__set_s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_13analog_signal_3__pyx_unpickle_Sinusodial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial[] = "__pyx_unpickle_Sinusodial(__pyx_type, long __pyx_checksum, __pyx_state)";
-static PyMethodDef __pyx_mdef_3cbc_13analog_signal_3__pyx_unpickle_Sinusodial = {"__pyx_unpickle_Sinusodial", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_13analog_signal_3__pyx_unpickle_Sinusodial, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial};
-static PyObject *__pyx_pw_3cbc_13analog_signal_3__pyx_unpickle_Sinusodial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_13analog_signal_3__pyx_unpickle_Sinusodial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5cbadc_13analog_signal_2__pyx_unpickle_Sinusodial[] = "__pyx_unpickle_Sinusodial(__pyx_type, long __pyx_checksum, __pyx_state)";
+static PyMethodDef __pyx_mdef_5cbadc_13analog_signal_3__pyx_unpickle_Sinusodial = {"__pyx_unpickle_Sinusodial", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_13analog_signal_3__pyx_unpickle_Sinusodial, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5cbadc_13analog_signal_2__pyx_unpickle_Sinusodial};
+static PyObject *__pyx_pw_5cbadc_13analog_signal_3__pyx_unpickle_Sinusodial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v___pyx_type = 0;
   long __pyx_v___pyx_checksum;
   PyObject *__pyx_v___pyx_state = 0;
@@ -3304,18 +3304,18 @@ static PyObject *__pyx_pw_3cbc_13analog_signal_3__pyx_unpickle_Sinusodial(PyObje
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_Sinusodial", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(2, 1, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.analog_signal.__pyx_unpickle_Sinusodial", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.__pyx_unpickle_Sinusodial", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
+  __pyx_r = __pyx_pf_5cbadc_13analog_signal_2__pyx_unpickle_Sinusodial(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5cbadc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_v___pyx_PickleError = 0;
   PyObject *__pyx_v___pyx_result = 0;
   PyObject *__pyx_r = NULL;
@@ -3412,7 +3412,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON
  *     if __pyx_state is not None:
  *         __pyx_unpickle_Sinusodial__set_state(<Sinusodial> __pyx_result, __pyx_state)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3cbc_13analog_signal_Sinusodial), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 7, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5cbadc_13analog_signal_Sinusodial), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3451,7 +3451,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON
  * cdef __pyx_unpickle_Sinusodial__set_state(Sinusodial __pyx_result, tuple __pyx_state):
  */
     if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 9, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3cbc_13analog_signal___pyx_unpickle_Sinusodial__set_state(((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 9, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_5cbadc_13analog_signal___pyx_unpickle_Sinusodial__set_state(((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 9, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
@@ -3488,7 +3488,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("cbc.analog_signal.__pyx_unpickle_Sinusodial", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.__pyx_unpickle_Sinusodial", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v___pyx_PickleError);
@@ -3506,7 +3506,7 @@ static PyObject *__pyx_pf_3cbc_13analog_signal_2__pyx_unpickle_Sinusodial(CYTHON
  *     if len(__pyx_state) > 5 and hasattr(__pyx_result, '__dict__'):
  */
 
-static PyObject *__pyx_f_3cbc_13analog_signal___pyx_unpickle_Sinusodial__set_state(struct __pyx_obj_3cbc_13analog_signal_Sinusodial *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_f_5cbadc_13analog_signal___pyx_unpickle_Sinusodial__set_state(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3657,17 +3657,17 @@ static PyObject *__pyx_f_3cbc_13analog_signal___pyx_unpickle_Sinusodial__set_sta
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("cbc.analog_signal.__pyx_unpickle_Sinusodial__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.analog_signal.__pyx_unpickle_Sinusodial__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal __pyx_vtable_3cbc_13analog_signal_AnalogSignal;
+static struct __pyx_vtabstruct_5cbadc_13analog_signal_AnalogSignal __pyx_vtable_5cbadc_13analog_signal_AnalogSignal;
 
-static PyObject *__pyx_tp_new_3cbc_13analog_signal_AnalogSignal(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *p;
+static PyObject *__pyx_tp_new_5cbadc_13analog_signal_AnalogSignal(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -3675,12 +3675,12 @@ static PyObject *__pyx_tp_new_3cbc_13analog_signal_AnalogSignal(PyTypeObject *t,
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *)o);
-  p->__pyx_vtab = __pyx_vtabptr_3cbc_13analog_signal_AnalogSignal;
+  p = ((struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *)o);
+  p->__pyx_vtab = __pyx_vtabptr_5cbadc_13analog_signal_AnalogSignal;
   return o;
 }
 
-static void __pyx_tp_dealloc_3cbc_13analog_signal_AnalogSignal(PyObject *o) {
+static void __pyx_tp_dealloc_5cbadc_13analog_signal_AnalogSignal(PyObject *o) {
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -3689,28 +3689,28 @@ static void __pyx_tp_dealloc_3cbc_13analog_signal_AnalogSignal(PyObject *o) {
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static PyObject *__pyx_getprop_3cbc_13analog_signal_12AnalogSignal_offset(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3cbc_13analog_signal_12AnalogSignal_6offset_1__get__(o);
+static PyObject *__pyx_getprop_5cbadc_13analog_signal_12AnalogSignal_offset(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5cbadc_13analog_signal_12AnalogSignal_6offset_1__get__(o);
 }
 
-static PyMethodDef __pyx_methods_3cbc_13analog_signal_AnalogSignal[] = {
-  {"evaluate", (PyCFunction)__pyx_pw_3cbc_13analog_signal_12AnalogSignal_3evaluate, METH_O, __pyx_doc_3cbc_13analog_signal_12AnalogSignal_2evaluate},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3cbc_13analog_signal_12AnalogSignal_5__reduce_cython__, METH_NOARGS, __pyx_doc_3cbc_13analog_signal_12AnalogSignal_4__reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3cbc_13analog_signal_12AnalogSignal_7__setstate_cython__, METH_O, __pyx_doc_3cbc_13analog_signal_12AnalogSignal_6__setstate_cython__},
+static PyMethodDef __pyx_methods_5cbadc_13analog_signal_AnalogSignal[] = {
+  {"evaluate", (PyCFunction)__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_3evaluate, METH_O, __pyx_doc_5cbadc_13analog_signal_12AnalogSignal_2evaluate},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_5__reduce_cython__, METH_NOARGS, __pyx_doc_5cbadc_13analog_signal_12AnalogSignal_4__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5cbadc_13analog_signal_12AnalogSignal_7__setstate_cython__, METH_O, __pyx_doc_5cbadc_13analog_signal_12AnalogSignal_6__setstate_cython__},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_3cbc_13analog_signal_AnalogSignal[] = {
-  {(char *)"offset", __pyx_getprop_3cbc_13analog_signal_12AnalogSignal_offset, 0, (char *)0, 0},
+static struct PyGetSetDef __pyx_getsets_5cbadc_13analog_signal_AnalogSignal[] = {
+  {(char *)"offset", __pyx_getprop_5cbadc_13analog_signal_12AnalogSignal_offset, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_3cbc_13analog_signal_AnalogSignal = {
+static PyTypeObject __pyx_type_5cbadc_13analog_signal_AnalogSignal = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.analog_signal.AnalogSignal", /*tp_name*/
-  sizeof(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal), /*tp_basicsize*/
+  "cbadc.analog_signal.AnalogSignal", /*tp_name*/
+  sizeof(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cbc_13analog_signal_AnalogSignal, /*tp_dealloc*/
+  __pyx_tp_dealloc_5cbadc_13analog_signal_AnalogSignal, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -3743,17 +3743,17 @@ static PyTypeObject __pyx_type_3cbc_13analog_signal_AnalogSignal = {
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_3cbc_13analog_signal_AnalogSignal, /*tp_methods*/
+  __pyx_methods_5cbadc_13analog_signal_AnalogSignal, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_3cbc_13analog_signal_AnalogSignal, /*tp_getset*/
+  __pyx_getsets_5cbadc_13analog_signal_AnalogSignal, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_3cbc_13analog_signal_12AnalogSignal_1__init__, /*tp_init*/
+  __pyx_pw_5cbadc_13analog_signal_12AnalogSignal_1__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cbc_13analog_signal_AnalogSignal, /*tp_new*/
+  __pyx_tp_new_5cbadc_13analog_signal_AnalogSignal, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -3773,54 +3773,54 @@ static PyTypeObject __pyx_type_3cbc_13analog_signal_AnalogSignal = {
   0, /*tp_print*/
   #endif
 };
-static struct __pyx_vtabstruct_3cbc_13analog_signal_Sinusodial __pyx_vtable_3cbc_13analog_signal_Sinusodial;
+static struct __pyx_vtabstruct_5cbadc_13analog_signal_Sinusodial __pyx_vtable_5cbadc_13analog_signal_Sinusodial;
 
-static PyObject *__pyx_tp_new_3cbc_13analog_signal_Sinusodial(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_3cbc_13analog_signal_Sinusodial *p;
-  PyObject *o = __pyx_tp_new_3cbc_13analog_signal_AnalogSignal(t, a, k);
+static PyObject *__pyx_tp_new_5cbadc_13analog_signal_Sinusodial(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *p;
+  PyObject *o = __pyx_tp_new_5cbadc_13analog_signal_AnalogSignal(t, a, k);
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_3cbc_13analog_signal_Sinusodial *)o);
-  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_3cbc_13analog_signal_AnalogSignal*)__pyx_vtabptr_3cbc_13analog_signal_Sinusodial;
+  p = ((struct __pyx_obj_5cbadc_13analog_signal_Sinusodial *)o);
+  p->__pyx_base.__pyx_vtab = (struct __pyx_vtabstruct_5cbadc_13analog_signal_AnalogSignal*)__pyx_vtabptr_5cbadc_13analog_signal_Sinusodial;
   return o;
 }
 
-static PyObject *__pyx_getprop_3cbc_13analog_signal_10Sinusodial_amplitude(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3cbc_13analog_signal_10Sinusodial_9amplitude_1__get__(o);
+static PyObject *__pyx_getprop_5cbadc_13analog_signal_10Sinusodial_amplitude(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5cbadc_13analog_signal_10Sinusodial_9amplitude_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_3cbc_13analog_signal_10Sinusodial_frequency(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3cbc_13analog_signal_10Sinusodial_9frequency_1__get__(o);
+static PyObject *__pyx_getprop_5cbadc_13analog_signal_10Sinusodial_frequency(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5cbadc_13analog_signal_10Sinusodial_9frequency_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_3cbc_13analog_signal_10Sinusodial_angluarFrequency(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3cbc_13analog_signal_10Sinusodial_16angluarFrequency_1__get__(o);
+static PyObject *__pyx_getprop_5cbadc_13analog_signal_10Sinusodial_angluarFrequency(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5cbadc_13analog_signal_10Sinusodial_16angluarFrequency_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_3cbc_13analog_signal_10Sinusodial_phase(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3cbc_13analog_signal_10Sinusodial_5phase_1__get__(o);
+static PyObject *__pyx_getprop_5cbadc_13analog_signal_10Sinusodial_phase(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_5cbadc_13analog_signal_10Sinusodial_5phase_1__get__(o);
 }
 
-static PyMethodDef __pyx_methods_3cbc_13analog_signal_Sinusodial[] = {
-  {"evaluate", (PyCFunction)__pyx_pw_3cbc_13analog_signal_10Sinusodial_3evaluate, METH_O, __pyx_doc_3cbc_13analog_signal_10Sinusodial_2evaluate},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3cbc_13analog_signal_10Sinusodial_5__reduce_cython__, METH_NOARGS, __pyx_doc_3cbc_13analog_signal_10Sinusodial_4__reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3cbc_13analog_signal_10Sinusodial_7__setstate_cython__, METH_O, __pyx_doc_3cbc_13analog_signal_10Sinusodial_6__setstate_cython__},
+static PyMethodDef __pyx_methods_5cbadc_13analog_signal_Sinusodial[] = {
+  {"evaluate", (PyCFunction)__pyx_pw_5cbadc_13analog_signal_10Sinusodial_3evaluate, METH_O, __pyx_doc_5cbadc_13analog_signal_10Sinusodial_2evaluate},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5cbadc_13analog_signal_10Sinusodial_5__reduce_cython__, METH_NOARGS, __pyx_doc_5cbadc_13analog_signal_10Sinusodial_4__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5cbadc_13analog_signal_10Sinusodial_7__setstate_cython__, METH_O, __pyx_doc_5cbadc_13analog_signal_10Sinusodial_6__setstate_cython__},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_3cbc_13analog_signal_Sinusodial[] = {
-  {(char *)"amplitude", __pyx_getprop_3cbc_13analog_signal_10Sinusodial_amplitude, 0, (char *)0, 0},
-  {(char *)"frequency", __pyx_getprop_3cbc_13analog_signal_10Sinusodial_frequency, 0, (char *)0, 0},
-  {(char *)"angluarFrequency", __pyx_getprop_3cbc_13analog_signal_10Sinusodial_angluarFrequency, 0, (char *)0, 0},
-  {(char *)"phase", __pyx_getprop_3cbc_13analog_signal_10Sinusodial_phase, 0, (char *)0, 0},
+static struct PyGetSetDef __pyx_getsets_5cbadc_13analog_signal_Sinusodial[] = {
+  {(char *)"amplitude", __pyx_getprop_5cbadc_13analog_signal_10Sinusodial_amplitude, 0, (char *)0, 0},
+  {(char *)"frequency", __pyx_getprop_5cbadc_13analog_signal_10Sinusodial_frequency, 0, (char *)0, 0},
+  {(char *)"angluarFrequency", __pyx_getprop_5cbadc_13analog_signal_10Sinusodial_angluarFrequency, 0, (char *)0, 0},
+  {(char *)"phase", __pyx_getprop_5cbadc_13analog_signal_10Sinusodial_phase, 0, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_3cbc_13analog_signal_Sinusodial = {
+static PyTypeObject __pyx_type_5cbadc_13analog_signal_Sinusodial = {
   PyVarObject_HEAD_INIT(0, 0)
-  "cbc.analog_signal.Sinusodial", /*tp_name*/
-  sizeof(struct __pyx_obj_3cbc_13analog_signal_Sinusodial), /*tp_basicsize*/
+  "cbadc.analog_signal.Sinusodial", /*tp_name*/
+  sizeof(struct __pyx_obj_5cbadc_13analog_signal_Sinusodial), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3cbc_13analog_signal_AnalogSignal, /*tp_dealloc*/
+  __pyx_tp_dealloc_5cbadc_13analog_signal_AnalogSignal, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -3853,17 +3853,17 @@ static PyTypeObject __pyx_type_3cbc_13analog_signal_Sinusodial = {
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_3cbc_13analog_signal_Sinusodial, /*tp_methods*/
+  __pyx_methods_5cbadc_13analog_signal_Sinusodial, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_3cbc_13analog_signal_Sinusodial, /*tp_getset*/
+  __pyx_getsets_5cbadc_13analog_signal_Sinusodial, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_3cbc_13analog_signal_10Sinusodial_1__init__, /*tp_init*/
+  __pyx_pw_5cbadc_13analog_signal_10Sinusodial_1__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_3cbc_13analog_signal_Sinusodial, /*tp_new*/
+  __pyx_tp_new_5cbadc_13analog_signal_Sinusodial, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -3936,7 +3936,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_Sinusodial, __pyx_k_Sinusodial, sizeof(__pyx_k_Sinusodial), 0, 0, 1, 1},
   {&__pyx_n_s_amplitude, __pyx_k_amplitude, sizeof(__pyx_k_amplitude), 0, 0, 1, 1},
-  {&__pyx_n_s_cbc_analog_signal, __pyx_k_cbc_analog_signal, sizeof(__pyx_k_cbc_analog_signal), 0, 0, 1, 1},
+  {&__pyx_n_s_cbadc_analog_signal, __pyx_k_cbadc_analog_signal, sizeof(__pyx_k_cbadc_analog_signal), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
   {&__pyx_n_s_evaluate, __pyx_k_evaluate, sizeof(__pyx_k_evaluate), 0, 0, 1, 1},
@@ -4048,44 +4048,44 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  __pyx_vtabptr_3cbc_13analog_signal_AnalogSignal = &__pyx_vtable_3cbc_13analog_signal_AnalogSignal;
-  __pyx_vtable_3cbc_13analog_signal_AnalogSignal.evaluate = (double (*)(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *, double, int __pyx_skip_dispatch))__pyx_f_3cbc_13analog_signal_12AnalogSignal_evaluate;
-  if (PyType_Ready(&__pyx_type_3cbc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_vtabptr_5cbadc_13analog_signal_AnalogSignal = &__pyx_vtable_5cbadc_13analog_signal_AnalogSignal;
+  __pyx_vtable_5cbadc_13analog_signal_AnalogSignal.evaluate = (double (*)(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *, double, int __pyx_skip_dispatch))__pyx_f_5cbadc_13analog_signal_12AnalogSignal_evaluate;
+  if (PyType_Ready(&__pyx_type_5cbadc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_3cbc_13analog_signal_AnalogSignal.tp_print = 0;
+  __pyx_type_5cbadc_13analog_signal_AnalogSignal.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_13analog_signal_AnalogSignal.tp_dictoffset && __pyx_type_3cbc_13analog_signal_AnalogSignal.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_3cbc_13analog_signal_AnalogSignal.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5cbadc_13analog_signal_AnalogSignal.tp_dictoffset && __pyx_type_5cbadc_13analog_signal_AnalogSignal.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5cbadc_13analog_signal_AnalogSignal.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3cbc_13analog_signal_AnalogSignal, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 13, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_5cbadc_13analog_signal_AnalogSignal, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 13, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_3cbc_13analog_signal_12AnalogSignal___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_3cbc_13analog_signal_12AnalogSignal___init__.doc = __pyx_doc_3cbc_13analog_signal_12AnalogSignal___init__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_3cbc_13analog_signal_12AnalogSignal___init__;
+      __pyx_wrapperbase_5cbadc_13analog_signal_12AnalogSignal___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_5cbadc_13analog_signal_12AnalogSignal___init__.doc = __pyx_doc_5cbadc_13analog_signal_12AnalogSignal___init__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_5cbadc_13analog_signal_12AnalogSignal___init__;
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_type_3cbc_13analog_signal_AnalogSignal.tp_dict, __pyx_vtabptr_3cbc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_AnalogSignal, (PyObject *)&__pyx_type_3cbc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
-  __pyx_ptype_3cbc_13analog_signal_AnalogSignal = &__pyx_type_3cbc_13analog_signal_AnalogSignal;
-  __pyx_vtabptr_3cbc_13analog_signal_Sinusodial = &__pyx_vtable_3cbc_13analog_signal_Sinusodial;
-  __pyx_vtable_3cbc_13analog_signal_Sinusodial.__pyx_base = *__pyx_vtabptr_3cbc_13analog_signal_AnalogSignal;
-  __pyx_vtable_3cbc_13analog_signal_Sinusodial.__pyx_base.evaluate = (double (*)(struct __pyx_obj_3cbc_13analog_signal_AnalogSignal *, double, int __pyx_skip_dispatch))__pyx_f_3cbc_13analog_signal_10Sinusodial_evaluate;
-  __pyx_type_3cbc_13analog_signal_Sinusodial.tp_base = __pyx_ptype_3cbc_13analog_signal_AnalogSignal;
-  if (PyType_Ready(&__pyx_type_3cbc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5cbadc_13analog_signal_AnalogSignal.tp_dict, __pyx_vtabptr_5cbadc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_AnalogSignal, (PyObject *)&__pyx_type_5cbadc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5cbadc_13analog_signal_AnalogSignal) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_ptype_5cbadc_13analog_signal_AnalogSignal = &__pyx_type_5cbadc_13analog_signal_AnalogSignal;
+  __pyx_vtabptr_5cbadc_13analog_signal_Sinusodial = &__pyx_vtable_5cbadc_13analog_signal_Sinusodial;
+  __pyx_vtable_5cbadc_13analog_signal_Sinusodial.__pyx_base = *__pyx_vtabptr_5cbadc_13analog_signal_AnalogSignal;
+  __pyx_vtable_5cbadc_13analog_signal_Sinusodial.__pyx_base.evaluate = (double (*)(struct __pyx_obj_5cbadc_13analog_signal_AnalogSignal *, double, int __pyx_skip_dispatch))__pyx_f_5cbadc_13analog_signal_10Sinusodial_evaluate;
+  __pyx_type_5cbadc_13analog_signal_Sinusodial.tp_base = __pyx_ptype_5cbadc_13analog_signal_AnalogSignal;
+  if (PyType_Ready(&__pyx_type_5cbadc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_3cbc_13analog_signal_Sinusodial.tp_print = 0;
+  __pyx_type_5cbadc_13analog_signal_Sinusodial.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3cbc_13analog_signal_Sinusodial.tp_dictoffset && __pyx_type_3cbc_13analog_signal_Sinusodial.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_3cbc_13analog_signal_Sinusodial.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5cbadc_13analog_signal_Sinusodial.tp_dictoffset && __pyx_type_5cbadc_13analog_signal_Sinusodial.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5cbadc_13analog_signal_Sinusodial.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_3cbc_13analog_signal_Sinusodial.tp_dict, __pyx_vtabptr_3cbc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Sinusodial, (PyObject *)&__pyx_type_3cbc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3cbc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
-  __pyx_ptype_3cbc_13analog_signal_Sinusodial = &__pyx_type_3cbc_13analog_signal_Sinusodial;
+  if (__Pyx_SetVtable(__pyx_type_5cbadc_13analog_signal_Sinusodial.tp_dict, __pyx_vtabptr_5cbadc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Sinusodial, (PyObject *)&__pyx_type_5cbadc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5cbadc_13analog_signal_Sinusodial) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_ptype_5cbadc_13analog_signal_Sinusodial = &__pyx_type_5cbadc_13analog_signal_Sinusodial;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4291,14 +4291,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_cbc__analog_signal) {
+  if (__pyx_module_is_main_cbadc__analog_signal) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "cbc.analog_signal")) {
-      if (unlikely(PyDict_SetItemString(modules, "cbc.analog_signal", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "cbadc.analog_signal")) {
+      if (unlikely(PyDict_SetItemString(modules, "cbadc.analog_signal", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -4319,7 +4319,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cbc/analog_signal.pyx":10
+  /* "cbadc/analog_signal.pyx":10
  * """
  * 
  * import numpy as np             # <<<<<<<<<<<<<<
@@ -4336,7 +4336,7 @@ if (!__Pyx_RefNanny) {
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3cbc_13analog_signal_1__pyx_unpickle_AnalogSignal, NULL, __pyx_n_s_cbc_analog_signal); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_5cbadc_13analog_signal_1__pyx_unpickle_AnalogSignal, NULL, __pyx_n_s_cbadc_analog_signal); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_AnalogSignal, __pyx_t_1) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4348,12 +4348,12 @@ if (!__Pyx_RefNanny) {
  *     __pyx_result.offset = __pyx_state[0]
  *     if len(__pyx_state) > 1 and hasattr(__pyx_result, '__dict__'):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3cbc_13analog_signal_3__pyx_unpickle_Sinusodial, NULL, __pyx_n_s_cbc_analog_signal); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_5cbadc_13analog_signal_3__pyx_unpickle_Sinusodial, NULL, __pyx_n_s_cbadc_analog_signal); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Sinusodial, __pyx_t_1) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/analog_signal.pyx":1
+  /* "cbadc/analog_signal.pyx":1
  * """This module contains various analog signal classes             # <<<<<<<<<<<<<<
  * 
  * Specifically, we represent analog signals, i.e., mappings from the time :math:`t`
@@ -4370,11 +4370,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cbc.analog_signal", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init cbadc.analog_signal", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cbc.analog_signal");
+    PyErr_SetString(PyExc_ImportError, "init cbadc.analog_signal");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

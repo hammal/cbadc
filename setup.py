@@ -28,12 +28,12 @@ with open("README.md", "r") as fh:
 
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
-USING_CYTHON = False
+USING_CYTHON = True
 ext = "pyx"
 
-root_path = "src/cbc"
+root_path = "src/cbadc"
 
-parallel_digital_estimator_path = "src/cbc/parallel_digital_estimator"
+parallel_digital_estimator_path = "src/cbadc/parallel_digital_estimator"
 
 
 source_files = glob(root_path + "/*.pyx")
@@ -69,15 +69,15 @@ else:
 
 
 setup(
-    name="cbc",  # Replace with your own username
+    name="cbadc",
     version="0.0.1",
     author="Hampus Malmberg",
     author_email="hampus.malmberg88@gmail.com",
     description="A toolbox for simulating control-bounded converters.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/hammal/cbc",
-    packages=['cbc'],
+    url="https://github.com/hammal/cbadc",
+    packages=['cbadc'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved ",

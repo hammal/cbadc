@@ -1,4 +1,4 @@
-from cbc import DigitalControl
+from cbadc import DigitalControl
 import numpy as np
 
 

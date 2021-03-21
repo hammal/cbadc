@@ -1,4 +1,4 @@
-from cbc import Sinusodial
+from cbadc import Sinusodial
 import math
 
 

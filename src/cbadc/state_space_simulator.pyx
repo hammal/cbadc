@@ -1,6 +1,6 @@
-from cbc.analog_system cimport AnalogSystem
-from cbc.digital_control cimport DigitalControl
-from cbc.analog_signal cimport AnalogSignal
+from cbadc.analog_system cimport AnalogSystem
+from cbadc.digital_control cimport DigitalControl
+from cbadc.analog_signal cimport AnalogSignal
 import numpy as np
 from scipy.integrate import solve_ivp
 import math

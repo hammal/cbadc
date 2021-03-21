@@ -1,7 +1,7 @@
-from cbc import StateSpaceSimulator
-from cbc import AnalogSignal, Sinusodial
-from cbc import AnalogSystem
-from cbc import DigitalControl
+from cbadc import StateSpaceSimulator
+from cbadc import AnalogSignal, Sinusodial
+from cbadc import AnalogSystem
+from cbadc import DigitalControl
 import numpy as np
 from tests.test_analog_system.chain_of_integrators import chain_of_integrators
 beta = 6250.0

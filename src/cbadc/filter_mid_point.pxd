@@ -1,5 +1,5 @@
-from cbc.digital_control cimport DigitalControl
-from cbc.analog_system cimport AnalogSystem
+from cbadc.digital_control cimport DigitalControl
+from cbadc.analog_system cimport AnalogSystem
 cdef class MidPointFilter:
     cdef double [:,:] _Af
     cdef double [:,:] _Ab

@@ -1,10 +1,10 @@
 # distutils: language = c++
-from cbc.offline_computations import care
+from cbadc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
 from numpy import dot as dot_product, eye, zeros, int8, double, roll, array, abs
 from numpy.linalg import eig, inv
-from cbc.parallel_digital_estimator.c_digital_estimator import C_Digital_Estimator
+from cbadc.parallel_digital_estimator.c_digital_estimator import C_Digital_Estimator
 
 class DigitalEstimator(C_Digital_Estimator):
 

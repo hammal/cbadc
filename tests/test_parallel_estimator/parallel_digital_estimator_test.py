@@ -1,8 +1,8 @@
-# from cbc import StateSpaceSimulator
-# from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator
-# from cbc import AnalogSignal, Sinusodial
-# from cbc import AnalogSystem
-# from cbc import DigitalControl
+# from cbadc import StateSpaceSimulator
+# from cbadc.parallel_digital_estimator.digital_estimator import DigitalEstimator
+# from cbadc import AnalogSignal, Sinusodial
+# from cbadc import AnalogSystem
+# from cbadc import DigitalControl
 # import numpy as np
 # from tests.test_analog_system.chain_of_integrators import
 # chain_of_integrators

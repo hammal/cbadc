@@ -8,7 +8,7 @@ import os
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
 if myPath:
-    from cbc.offline_computations import care
+    from cbadc.offline_computations import care
 
 
 def test_diagonal_elements_of_parallel_version():

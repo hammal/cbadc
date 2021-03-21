@@ -1,8 +1,8 @@
-from cbc import AnalogSignal
+from cbadc import AnalogSignal
 
 
 def test_initialization():
-    analog_signal_without_offset = AnalogSignal()
+    AnalogSignal()
 
 
 def test_evaluate():

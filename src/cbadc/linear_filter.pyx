@@ -2,7 +2,7 @@
 The digital estimator.
 """
 #cython: language_level=3
-from cbc.offline_computations import care
+from cbadc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
 from numpy import dot as dot_product, eye, zeros, int8, double, roll, array

@@ -7,7 +7,7 @@ import sys
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
 if myPath:
-    from cbc.analog_system import AnalogSystem
+    from cbadc.analog_system import AnalogSystem
 
 
 @pytest.fixture
