@@ -30,21 +30,21 @@ def test_correct_initialization():
 def test_chain_of_integrators_fixture(chain_of_integrators):
     print(chain_of_integrators["system"])
     np.testing.assert_allclose(
-        chain_of_integrators["A"], chain_of_integrators["system"].A()
+        chain_of_integrators["A"], chain_of_integrators["system"].A
     )
     np.testing.assert_allclose(
-        chain_of_integrators["B"], chain_of_integrators["system"].B()
+        chain_of_integrators["B"], chain_of_integrators["system"].B
     )
     np.testing.assert_allclose(
-        chain_of_integrators["C"], chain_of_integrators["system"].C()
+        chain_of_integrators["C"].transpose(
+        ), chain_of_integrators["system"].CT
     )
     np.testing.assert_allclose(
-        chain_of_integrators["Gamma"], chain_of_integrators["system"].Gamma(
-        )
+        chain_of_integrators["Gamma"], chain_of_integrators["system"].Gamma
     )
     np.testing.assert_allclose(
-        chain_of_integrators["Gamma_tilde"],
-        chain_of_integrators["system"].Gamma_tilde(),
+        chain_of_integrators["Gamma_tilde"].transpose(),
+        chain_of_integrators["system"].Gamma_tildeT,
     )
 
 
@@ -73,6 +73,6 @@ def test_wrong_n_Gamma():
 
 
 def test_wrong_n_Gamma_tilde():
-    Gamma_tilde_temp = Gamma_tilde[:, 1:]
+    Gamma_tilde_temp = Gamma_tilde[1:, :]
     with pytest.raises(InvalidAnalogSystemError):
         AnalogSystem(A, B, C, Gamma, Gamma_tilde_temp)

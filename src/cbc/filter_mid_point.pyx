@@ -20,9 +20,9 @@ cdef class MidPointFilter():
             K1 (int): the batch size
             K2 (int): the lookahead size  
         """
-        self._M = analogSystem._M
-        self._N = analogSystem._N
-        self._L = analogSystem._L
+        self._M = analogSystem.M
+        self._N = analogSystem.N
+        self._L = analogSystem.L
         self._K1 = K1
         self._K2 = K2
         self._K3 = K1 + K2
@@ -60,19 +60,19 @@ cdef class MidPointFilter():
         
     cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):
         # Compute filter coefficients
-        A = array(analogSystem._A).transpose()
-        B = array(analogSystem._CT).transpose()
-        Q = dot_product(array(analogSystem._B), array(analogSystem._B).transpose())
-        R = eta2 * eye(analogSystem._N_tilde)
+        A = array(analogSystem.A).transpose()
+        B = array(analogSystem.CT).transpose()
+        Q = dot_product(array(analogSystem.B), array(analogSystem.B).transpose())
+        R = eta2 * eye(analogSystem.N_tilde)
         # Solve care
         Vf, Vb = care(A, B, Q, R)
-        cdef double T = digitalControl._Ts
-        CCT = dot_product(array(analogSystem._CT).transpose(), array(analogSystem._CT))
-        tempAf = analogSystem._A - dot_product(Vf, CCT) / eta2
-        tempAb = analogSystem._A + dot_product(Vb, CCT) / eta2
+        cdef double T = digitalControl.T
+        CCT = dot_product(array(analogSystem.CT).transpose(), array(analogSystem.CT))
+        tempAf = analogSystem.A - dot_product(Vf, CCT) / eta2
+        tempAb = analogSystem.A + dot_product(Vb, CCT) / eta2
         self._Af = expm(tempAf * T / 2.0)
         self._Ab = expm(-tempAb * T / 2.0)
-        Gamma = array(analogSystem._Gamma)
+        Gamma = array(analogSystem.Gamma)
         # Solve IVPs
         self._Bf = zeros((self._N, self._M))
         self._Bb = zeros((self._N, self._M))
@@ -92,7 +92,7 @@ cdef class MidPointFilter():
         # Solve linear system of equations
         print(f"New Bf: {array(self._Bf)}")
         print(f"New Bb: {array(self._Bb)}")
-        self._WT = solve(Vf + Vb, analogSystem._B).transpose()
+        self._WT = solve(Vf + Vb, analogSystem.B).transpose()
 
     cdef void allocate_memory_buffers(self):
         # Allocate memory buffers

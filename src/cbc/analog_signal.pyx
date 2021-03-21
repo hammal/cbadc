@@ -41,7 +41,7 @@ cdef class AnalogSignal:
 
     def __init__(self, offset = 0.0):
         """Create a constant analog signal.
-        """        
+        """
         self.offset = offset
 
     cpdef double evaluate(self, double t):

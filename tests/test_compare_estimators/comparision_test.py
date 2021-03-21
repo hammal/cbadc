@@ -1,12 +1,12 @@
+import numpy as np
+from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
+from cbc import DigitalControl
+from cbc import AnalogSystem
+from cbc import Sinusodial
 from cbc import StateSpaceSimulator
 from cbc.digital_estimator import DigitalEstimator
-from cbc.parallel_digital_estimator.digital_estimator import DigitalEstimator as ParallelDigitalEstimator
-from cbc import AnalogSignal, Sinusodial
-from cbc import AnalogSystem
-from cbc import DigitalControl
-from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
-from matplotlib import pyplot as plt
-import numpy as np
+# from cbc.parallel_digital_estimator.digital_estimator
+# import DigitalEstimator as ParallelDigitalEstimator
 
 beta = 6250.0
 rho = -6.25 * 0
@@ -50,19 +50,20 @@ def test_estimation_with_circuit_simulator():
         analogSystem, digitalControl1, analogSignals)
     estimator1 = DigitalEstimator(
         circuitSimulator1, analogSystem, digitalControl1, eta2, K1, K2)
-    digitalControl2 = DigitalControl(Ts, M)
-    circuitSimulator2 = StateSpaceSimulator(
-        analogSystem, digitalControl2, analogSignals)
-    estimator2 = ParallelDigitalEstimator(
-        circuitSimulator2, analogSystem, digitalControl1, eta2, K1, K2)
+    # digitalControl2 = DigitalControl(Ts, M)
+    # circuitSimulator2 = StateSpaceSimulator(
+    #     analogSystem, digitalControl2, analogSignals)
+    # estimator2 = ParallelDigitalEstimator(
+    #     circuitSimulator2, analogSystem, digitalControl1, eta2, K1, K2)
     digitalControl4 = DigitalControl(Ts, M)
     circuitSimulator4 = StateSpaceSimulator(
         analogSystem, digitalControl4, analogSignals)
     estimator4 = DigitalEstimator(
-        circuitSimulator4, analogSystem, digitalControl4, eta2, K1, K2, midPoint=True)
+        circuitSimulator4, analogSystem, digitalControl4, eta2, K1, K2,
+        midPoint=True)
 
     tf_1 = estimator1.transfer_function(np.array([2 * np.pi * frequency]))[0]
-    tf_2 = estimator2.transfer_function(np.array([2 * np.pi * frequency]))[0]
+    # tf_2 = estimator2.transfer_function(np.array([2 * np.pi * frequency]))[0]
     tf_4 = estimator4.transfer_function(np.array([2 * np.pi * frequency]))[0]
 
     # Old Python Framework
@@ -72,7 +73,7 @@ def test_estimation_with_circuit_simulator():
     simulator = Simulator(system, control=ctrl,
                           initalState=np.zeros(N), options={})
     t = np.linspace(0, Ts * (size - 1), size)
-    result = simulator.simulate(t, (input,))
+    simulator.simulate(t, (input,))
     filter = WienerFilter(t, system, (input,), options={
                           "eta2": np.ones(N) * eta2})
     e3 = filter.filter(ctrl)[0]
@@ -81,44 +82,48 @@ def test_estimation_with_circuit_simulator():
     #
 
     e1_array = np.zeros(size)
-    e2_array = np.zeros(size)
+    # e2_array = np.zeros(size)
     e4_array = np.zeros(size)
-    model_error = 0
     e1_error = 0
-    e2_error = 0
+    # e2_error = 0
     e3_error = 0
     e4_error = 0
 
     for index in range(size):
         e1 = estimator1.__next__()
-        e2 = estimator2.__next__()
+        # e2 = estimator2.__next__()
         e4 = estimator4.__next__()
         e1_array[index] = e1
-        e2_array[index] = e2
+        # e2_array[index] = e2
         e4_array[index] = e4
         t = index * Ts
         u = analogSignals[0].evaluate(t)
         if (index > left_w and index < right_w):
             print(
-                f"Time: {t:0.2f}, Input Signal: {u * tf_2}, e1: {e1}, e2: {e2}, e3: {e3[index]}, e4: {e4}")
+                f"""Time: {t: 0.2f}, Input Signal: {u * tf_4}, e1: {e1},
+                e3: {e3[index]}, e4: {e4}""")
             e1_error += np.abs(e1 - u * tf_1)**2
-            e2_error += np.abs(e2 - u * tf_2)**2
+            # e2_error += np.abs(e2 - u * tf_2)**2
             e3_error += np.abs(e3[index] - u * tf_1)**2
-            e4_error += np.abs(e4 - u * tf_2)**2
+            e4_error += np.abs(e4 - u * tf_4)**2
     e1_error /= window
-    e2_error /= window
+    # e2_error /= window
     e3_error /= window
     e4_error /= window
     print(
-        f"Quadratic estimator error:    {e1_error}, {10 * np.log10(e1_error)} dB")
+        f"""Quadratic estimator error:    {e1_error}, {10 *
+                                                     np.log10(e1_error)} dB""")
+    # print(
+    #     f"""Linear estimator error:       {e2_error},
+    # {10 * np.log10(e2_error)} dB""")
     print(
-        f"Linear estimator error:       {e2_error}, {10 * np.log10(e2_error)} dB")
+        f"""Python estimator error:       {e3_error}, 
+        {10 * np.log10(e3_error)} dB""")
     print(
-        f"Python estimator error:       {e3_error}, {10 * np.log10(e3_error)} dB")
-    print(
-        f"MidPoint estimator error:     {e4_error}, {10 * np.log10(e4_error)} dB")
+        f"""MidPoint estimator error:     {e4_error}, 
+        {10 * np.log10(e4_error)} dB""")
 
     assert(np.allclose(e1_error, 0, rtol=1e-3, atol=1e-3))
-    assert(np.allclose(e2_error, 0, rtol=1e-3, atol=1e-3))
+    # assert(np.allclose(e2_error, 0, rtol=1e-3, atol=1e-3))
     assert(np.allclose(e3_error, 0, rtol=1e-3, atol=1e-3))
     assert(np.allclose(e4_error, 0, rtol=1e-3, atol=1e-3))

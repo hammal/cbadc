@@ -42,11 +42,11 @@ cdef class DigitalControl:
 
     def __init__(self, T, M, t0 = 0.0):
         self.T = T
-        self._M = M
-        self._M_tilde = M
+        self.M = M
+        self.M_tilde = M
         self._t_next = t0 + self.T
-        self._s = np.zeros(self._M, dtype=np.int8)
-        self._dac_values = np.zeros(self._M, dtype=np.double)
+        self._s = np.zeros(self.M, dtype=np.int8)
+        self._dac_values = np.zeros(self.M, dtype=np.double)
 
     cpdef double [:] evaluate(self, double t, double [:] s_tilde):
         """Evaluates the control signal at time t given a control observation s_tilde
@@ -68,7 +68,7 @@ cdef class DigitalControl:
         # Check if time t has passed the next control update
         if t >= self._t_next:
             # if so update the control signal state
-            for m in range(self._M):
+            for m in range(self.M):
                 self._s[m] = s_tilde[m] > 0
                 if self._s[m]:
                     self._dac_values[m] = 1 
@@ -105,6 +105,6 @@ cdef class DigitalControl:
             the dac waveform of the digital control system.
         
         """
-        temp = np.zeros(self._M, dtype=np.double)
+        temp = np.zeros(self.M, dtype=np.double)
         temp[m] = 1
         return temp

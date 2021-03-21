@@ -38,7 +38,7 @@ cdef class C_Digital_Estimator():
         R = eta2 * eye(analogSystem.N_tilde)
         # Solve care
         Vf, Vb = care(A, B, Q, R)
-        cdef double T = digitalControl._Ts
+        cdef double T = digitalControl.T
         CCT = dot_product(array(analogSystem.CT).transpose(),array(analogSystem.CT))
         tempAf = analogSystem.A - dot_product(Vf,CCT) / eta2
         tempAb = analogSystem.A + dot_product(Vb,CCT) / eta2

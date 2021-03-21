@@ -23,11 +23,11 @@ class DigitalEstimator(C_Digital_Estimator):
         super().__init__(analogSystem, digitalControl, eta2, K1, K2)
     
     def transfer_function(self, double [:] omega):
-        result = zeros((self._analog_system.L(), omega.size))
-        eta2Matrix = eye(self._analog_system.C().shape[0]) * self._eta2
+        result = zeros((self._analog_system.L, omega.size))
+        eta2Matrix = eye(self._analog_system.CT.shape[0]) * self._eta2
         for index, o in enumerate(omega):
             G = self._analog_system.transfer_function(array([o]))
-            G = G.reshape((self._analog_system.N_tilde(), self._analog_system.L()))
+            G = G.reshape((self._analog_system.N_tilde, self._analog_system.L))
             GH = G.transpose().conjugate()
             GGH = dot_product(G, GH)
             result[:, index] = abs(dot_product(GH, dot_product(inv(GGH + eta2Matrix), G)))

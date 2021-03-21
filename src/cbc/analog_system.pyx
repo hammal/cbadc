@@ -221,7 +221,7 @@ cdef class AnalogSystem:
 
     cdef complex [:,:] _atf(self, double _omega):
             return np.dot(
-                np.linalg.inv(np.complex(0, _omega) * np.eye(self.N) - self.A),
+                np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),
                 self.B,
             )
 
@@ -248,7 +248,7 @@ cdef class AnalogSystem:
  
         """
         cdef int size = omega.size
-        cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=np.complex)
+        cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=complex)
         cdef int index
         for index in range(size):
             result[:, :, index] = self._atf(omega[index])
@@ -278,7 +278,7 @@ cdef class AnalogSystem:
         return np.asarray(resp)
 
     def __str__(self):
-        return f"The analog system is defined as:\nA: {self.A},\nB: {self.B},\nC: {self.C},\nGamma: {self.Gamma},\nand \nGamma_tilde: {self.Gamma_tilde}"
+        return f"The analog system is defined as:\nA: {self.A},\nB: {self.B},\nCT: {self.CT},\nGamma: {self.Gamma},\nand \nGamma_tildeT: {self.Gamma_tildeT}"
 
 
 class InvalidAnalogSystemError(Exception):

@@ -1193,15 +1193,6 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
 
-/* PyObjectSetAttrStr.proto */
-#if CYTHON_USE_TYPE_SLOTS
-#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o, n, NULL)
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value);
-#else
-#define __Pyx_PyObject_DelAttrStr(o,n)   PyObject_DelAttr(o,n)
-#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
-#endif
-
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
 #define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
@@ -1829,7 +1820,6 @@ static const char __pyx_k_t[] = "t";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_t0[] = "t0";
-static const char __pyx_k_M_2[] = "_M";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_base[] = "base";
@@ -1864,7 +1854,6 @@ static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
-static const char __pyx_k_M_tilde[] = "_M_tilde";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_memview[] = "memview";
 static const char __pyx_k_s_tilde[] = "s_tilde";
@@ -1940,8 +1929,6 @@ static PyObject *__pyx_kp_s_Indirect_dimensions_not_supporte;
 static PyObject *__pyx_kp_s_Invalid_mode_expected_c_or_fortr;
 static PyObject *__pyx_kp_s_Invalid_shape_in_axis_d_d;
 static PyObject *__pyx_n_s_M;
-static PyObject *__pyx_n_s_M_2;
-static PyObject *__pyx_n_s_M_tilde;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_kp_s_MemoryView_of_r_at_0x_x;
 static PyObject *__pyx_kp_s_MemoryView_of_r_object;
@@ -2122,7 +2109,7 @@ static PyObject *__pyx_codeobj__27;
  * 
  *     def __init__(self, T, M, t0 = 0.0):             # <<<<<<<<<<<<<<
  *         self.T = T
- *         self._M = M
+ *         self.M = M
  */
 
 /* Python wrapper */
@@ -2208,13 +2195,14 @@ static int __pyx_pf_3cbc_15digital_control_14DigitalControl___init__(struct __py
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
+  int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
-  __Pyx_memviewslice __pyx_t_7 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  PyObject *__pyx_t_7 = NULL;
   __Pyx_memviewslice __pyx_t_8 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_t_9 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2224,8 +2212,8 @@ static int __pyx_pf_3cbc_15digital_control_14DigitalControl___init__(struct __py
  * 
  *     def __init__(self, T, M, t0 = 0.0):
  *         self.T = T             # <<<<<<<<<<<<<<
- *         self._M = M
- *         self._M_tilde = M
+ *         self.M = M
+ *         self.M_tilde = M
  */
   __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_T); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 44, __pyx_L1_error)
   __pyx_v_self->T = __pyx_t_1;
@@ -2233,136 +2221,138 @@ static int __pyx_pf_3cbc_15digital_control_14DigitalControl___init__(struct __py
   /* "cbc/digital_control.pyx":45
  *     def __init__(self, T, M, t0 = 0.0):
  *         self.T = T
- *         self._M = M             # <<<<<<<<<<<<<<
- *         self._M_tilde = M
+ *         self.M = M             # <<<<<<<<<<<<<<
+ *         self.M_tilde = M
  *         self._t_next = t0 + self.T
  */
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_M_2, __pyx_v_M) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_M); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_v_self->M = __pyx_t_2;
 
   /* "cbc/digital_control.pyx":46
  *         self.T = T
- *         self._M = M
- *         self._M_tilde = M             # <<<<<<<<<<<<<<
+ *         self.M = M
+ *         self.M_tilde = M             # <<<<<<<<<<<<<<
  *         self._t_next = t0 + self.T
- *         self._s = np.zeros(self._M, dtype=np.int8)
+ *         self._s = np.zeros(self.M, dtype=np.int8)
  */
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_M_tilde, __pyx_v_M) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_M); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_v_self->M_tilde = __pyx_t_2;
 
   /* "cbc/digital_control.pyx":47
- *         self._M = M
- *         self._M_tilde = M
+ *         self.M = M
+ *         self.M_tilde = M
  *         self._t_next = t0 + self.T             # <<<<<<<<<<<<<<
- *         self._s = np.zeros(self._M, dtype=np.int8)
- *         self._dac_values = np.zeros(self._M, dtype=np.double)
+ *         self._s = np.zeros(self.M, dtype=np.int8)
+ *         self._dac_values = np.zeros(self.M, dtype=np.double)
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->T); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Add(__pyx_v_t0, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->T); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_4 = PyNumber_Add(__pyx_v_t0, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_self->_t_next = __pyx_t_1;
 
   /* "cbc/digital_control.pyx":48
- *         self._M_tilde = M
+ *         self.M_tilde = M
  *         self._t_next = t0 + self.T
- *         self._s = np.zeros(self._M, dtype=np.int8)             # <<<<<<<<<<<<<<
- *         self._dac_values = np.zeros(self._M, dtype=np.double)
+ *         self._s = np.zeros(self.M, dtype=np.int8)             # <<<<<<<<<<<<<<
+ *         self._dac_values = np.zeros(self.M, dtype=np.double)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_M_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
-  __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_6, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->M); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_int8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_char(__pyx_t_7, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_s, 0);
-  __pyx_v_self->_s = __pyx_t_7;
-  __pyx_t_7.memview = NULL;
-  __pyx_t_7.data = NULL;
+  __pyx_v_self->_s = __pyx_t_8;
+  __pyx_t_8.memview = NULL;
+  __pyx_t_8.data = NULL;
 
   /* "cbc/digital_control.pyx":49
  *         self._t_next = t0 + self.T
- *         self._s = np.zeros(self._M, dtype=np.int8)
- *         self._dac_values = np.zeros(self._M, dtype=np.double)             # <<<<<<<<<<<<<<
+ *         self._s = np.zeros(self.M, dtype=np.int8)
+ *         self._dac_values = np.zeros(self.M, dtype=np.double)             # <<<<<<<<<<<<<<
  * 
  *     cpdef double [:] evaluate(self, double t, double [:] s_tilde):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_M_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_6);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
-  __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_self->M); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_7);
+  __pyx_t_7 = 0;
+  __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_6, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->_dac_values, 0);
-  __pyx_v_self->_dac_values = __pyx_t_8;
-  __pyx_t_8.memview = NULL;
-  __pyx_t_8.data = NULL;
+  __pyx_v_self->_dac_values = __pyx_t_9;
+  __pyx_t_9.memview = NULL;
+  __pyx_t_9.data = NULL;
 
   /* "cbc/digital_control.pyx":43
  *     """
  * 
  *     def __init__(self, T, M, t0 = 0.0):             # <<<<<<<<<<<<<<
  *         self.T = T
- *         self._M = M
+ *         self.M = M
  */
 
   /* function exit code */
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
+  __Pyx_XDECREF(__pyx_t_7);
   __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
   __Pyx_AddTraceback("cbc.digital_control.DigitalControl.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
@@ -2371,7 +2361,7 @@ static int __pyx_pf_3cbc_15digital_control_14DigitalControl___init__(struct __py
 }
 
 /* "cbc/digital_control.pyx":51
- *         self._dac_values = np.zeros(self._M, dtype=np.double)
+ *         self._dac_values = np.zeros(self.M, dtype=np.double)
  * 
  *     cpdef double [:] evaluate(self, double t, double [:] s_tilde):             # <<<<<<<<<<<<<<
  *         """Evaluates the control signal at time t given a control observation s_tilde
@@ -2393,8 +2383,8 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evalua
   PyObject *__pyx_t_8 = NULL;
   __Pyx_memviewslice __pyx_t_9 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_t_10;
-  long __pyx_t_11;
-  long __pyx_t_12;
+  int __pyx_t_11;
+  int __pyx_t_12;
   Py_ssize_t __pyx_t_13;
   int __pyx_t_14;
   Py_ssize_t __pyx_t_15;
@@ -2495,7 +2485,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evalua
  *         # Check if time t has passed the next control update
  *         if t >= self._t_next:             # <<<<<<<<<<<<<<
  *             # if so update the control signal state
- *             for m in range(self._M):
+ *             for m in range(self.M):
  */
   __pyx_t_10 = ((__pyx_v_t >= __pyx_v_self->_t_next) != 0);
   if (__pyx_t_10) {
@@ -2503,21 +2493,18 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evalua
     /* "cbc/digital_control.pyx":71
  *         if t >= self._t_next:
  *             # if so update the control signal state
- *             for m in range(self._M):             # <<<<<<<<<<<<<<
+ *             for m in range(self.M):             # <<<<<<<<<<<<<<
  *                 self._s[m] = s_tilde[m] > 0
  *                 if self._s[m]:
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_M_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_11 = __Pyx_PyInt_As_long(__pyx_t_1); if (unlikely((__pyx_t_11 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_12 = __pyx_t_11;
-    for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_12; __pyx_t_7+=1) {
-      __pyx_v_m = __pyx_t_7;
+    __pyx_t_7 = __pyx_v_self->M;
+    __pyx_t_11 = __pyx_t_7;
+    for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
+      __pyx_v_m = __pyx_t_12;
 
       /* "cbc/digital_control.pyx":72
  *             # if so update the control signal state
- *             for m in range(self._M):
+ *             for m in range(self.M):
  *                 self._s[m] = s_tilde[m] > 0             # <<<<<<<<<<<<<<
  *                 if self._s[m]:
  *                     self._dac_values[m] = 1
@@ -2546,7 +2533,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evalua
       *((char *) ( /* dim=0 */ (__pyx_v_self->_s.data + __pyx_t_15 * __pyx_v_self->_s.strides[0]) )) = ((*((double *) ( /* dim=0 */ (__pyx_v_s_tilde.data + __pyx_t_13 * __pyx_v_s_tilde.strides[0]) ))) > 0.0);
 
       /* "cbc/digital_control.pyx":73
- *             for m in range(self._M):
+ *             for m in range(self.M):
  *                 self._s[m] = s_tilde[m] > 0
  *                 if self._s[m]:             # <<<<<<<<<<<<<<
  *                     self._dac_values[m] = 1
@@ -2587,7 +2574,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evalua
         *((double *) ( /* dim=0 */ (__pyx_v_self->_dac_values.data + __pyx_t_13 * __pyx_v_self->_dac_values.strides[0]) )) = 1.0;
 
         /* "cbc/digital_control.pyx":73
- *             for m in range(self._M):
+ *             for m in range(self.M):
  *                 self._s[m] = s_tilde[m] > 0
  *                 if self._s[m]:             # <<<<<<<<<<<<<<
  *                     self._dac_values[m] = 1
@@ -2634,7 +2621,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evalua
  *         # Check if time t has passed the next control update
  *         if t >= self._t_next:             # <<<<<<<<<<<<<<
  *             # if so update the control signal state
- *             for m in range(self._M):
+ *             for m in range(self.M):
  */
   }
 
@@ -2651,7 +2638,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_evalua
   goto __pyx_L0;
 
   /* "cbc/digital_control.pyx":51
- *         self._dac_values = np.zeros(self._M, dtype=np.double)
+ *         self._dac_values = np.zeros(self.M, dtype=np.double)
  * 
  *     cpdef double [:] evaluate(self, double t, double [:] s_tilde):             # <<<<<<<<<<<<<<
  *         """Evaluates the control signal at time t given a control observation s_tilde
@@ -2962,7 +2949,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_impuls
   /* "cbc/digital_control.pyx":108
  * 
  *         """
- *         temp = np.zeros(self._M, dtype=np.double)             # <<<<<<<<<<<<<<
+ *         temp = np.zeros(self.M, dtype=np.double)             # <<<<<<<<<<<<<<
  *         temp[m] = 1
  *         return temp
  */
@@ -2971,7 +2958,7 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_impuls
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_M_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->M); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -2997,14 +2984,14 @@ static __Pyx_memviewslice __pyx_f_3cbc_15digital_control_14DigitalControl_impuls
 
   /* "cbc/digital_control.pyx":109
  *         """
- *         temp = np.zeros(self._M, dtype=np.double)
+ *         temp = np.zeros(self.M, dtype=np.double)
  *         temp[m] = 1             # <<<<<<<<<<<<<<
  *         return temp
  */
   if (unlikely(PyObject_SetItem(__pyx_v_temp, __pyx_v_m, __pyx_int_1) < 0)) __PYX_ERR(0, 109, __pyx_L1_error)
 
   /* "cbc/digital_control.pyx":110
- *         temp = np.zeros(self._M, dtype=np.double)
+ *         temp = np.zeros(self.M, dtype=np.double)
  *         temp[m] = 1
  *         return temp             # <<<<<<<<<<<<<<
  */
@@ -17731,8 +17718,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Invalid_mode_expected_c_or_fortr, __pyx_k_Invalid_mode_expected_c_or_fortr, sizeof(__pyx_k_Invalid_mode_expected_c_or_fortr), 0, 0, 1, 0},
   {&__pyx_kp_s_Invalid_shape_in_axis_d_d, __pyx_k_Invalid_shape_in_axis_d_d, sizeof(__pyx_k_Invalid_shape_in_axis_d_d), 0, 0, 1, 0},
   {&__pyx_n_s_M, __pyx_k_M, sizeof(__pyx_k_M), 0, 0, 1, 1},
-  {&__pyx_n_s_M_2, __pyx_k_M_2, sizeof(__pyx_k_M_2), 0, 0, 1, 1},
-  {&__pyx_n_s_M_tilde, __pyx_k_M_tilde, sizeof(__pyx_k_M_tilde), 0, 0, 1, 1},
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_kp_s_MemoryView_of_r_at_0x_x, __pyx_k_MemoryView_of_r_at_0x_x, sizeof(__pyx_k_MemoryView_of_r_at_0x_x), 0, 0, 1, 0},
   {&__pyx_kp_s_MemoryView_of_r_object, __pyx_k_MemoryView_of_r_object, sizeof(__pyx_k_MemoryView_of_r_object), 0, 0, 1, 0},
@@ -18865,20 +18850,6 @@ invalid_keyword:
 bad:
     return -1;
 }
-
-/* PyObjectSetAttrStr */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
-    PyTypeObject* tp = Py_TYPE(obj);
-    if (likely(tp->tp_setattro))
-        return tp->tp_setattro(obj, attr_name, value);
-#if PY_MAJOR_VERSION < 3
-    if (likely(tp->tp_setattr))
-        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
-#endif
-    return PyObject_SetAttr(obj, attr_name, value);
-}
-#endif
 
 /* PyDictVersioning */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS

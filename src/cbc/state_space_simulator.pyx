@@ -60,9 +60,9 @@ cdef class StateSpaceSimulator(object):
         
     cdef _ordinary_differentail_function(self, t, y):
         cdef int l,
-        for l in range(self._as._L):
+        for l in range(self._as.L):
             self._input_vector[l] = self._is[l].evaluate(t)
-        self._temp_state_vector = np.dot(self._as._Gamma_tildeT, y)
+        self._temp_state_vector = np.dot(self._as.Gamma_tildeT, y)
         self._control_vector = self._dc.evaluate(t, self._temp_state_vector)
         return np.asarray(self._as.derivative(self._temp_state_vector, t, self._input_vector,self. _control_vector)).flatten()
 
@@ -73,7 +73,7 @@ cdef class StateSpaceSimulator(object):
             Ts=None,
             t_stop=math.inf
         ):
-        if analogSystem._L != len(inputSignal):
+        if analogSystem.L != len(inputSignal):
             raise """The analog system does not have as many inputs as in input
             list"""
         self._as = analogSystem
@@ -83,13 +83,13 @@ cdef class StateSpaceSimulator(object):
         if Ts:
             self._Ts = Ts
         else:
-            self._Ts = self._dc._Ts
-        if self._Ts > self._dc._Ts:
-            raise f"Simulating with a sample period ${self._Ts} that exceeds the control period of the digital control ${self._dc._Ts}"
-        self._state_vector = np.zeros(self._as._N, dtype=np.double)
-        self._temp_state_vector = np.zeros(self._as._N, dtype=np.double)
-        self._input_vector = np.zeros(self._as._L, dtype=np.double)
-        self._control_vector = np.zeros(self._as._M, dtype=np.double)
+            self._Ts = self._dc.T
+        if self._Ts > self._dc.T:
+            raise f"Simulating with a sample period ${self._Ts} that exceeds the control period of the digital control ${self._dc.T}"
+        self._state_vector = np.zeros(self._as.N, dtype=np.double)
+        self._temp_state_vector = np.zeros(self._as.N, dtype=np.double)
+        self._input_vector = np.zeros(self._as.L, dtype=np.double)
+        self._control_vector = np.zeros(self._as.M, dtype=np.double)
         self._atol = 1e-6
         self._rtol = 1e-6
         self._max_step = self._Ts / 10.

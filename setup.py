@@ -1,66 +1,72 @@
-import os
-from sys import path
-from setuptools import Extension, extension, setup, find_packages
+from setuptools import Extension, setup
 from Cython.Build import cythonize
+from glob import glob
+import os
 import numpy
+
+import os.path
+
+
+def no_cythonize(extensions, **_ignore):
+    for extension in extensions:
+        sources = []
+        for sfile in extension.sources:
+            path, ext = os.path.splitext(sfile)
+            if ext in ('.pyx', '.py'):
+                if extension.language == 'c++':
+                    ext = '.cpp'
+                else:
+                    ext = '.c'
+                sfile = path + ext
+            sources.append(sfile)
+        extension.sources[:] = sources
+    return extensions
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-# this grabs the requirements from requirements.txt
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
-# scan the 'cbc' directory for extension files, converting
-# them to extension names in dotted notation
-
-
-def scandir(dir, files=[]):
-    for file in os.listdir(dir):
-        path = os.path.join(dir, file)
-        if os.path.isfile(path) and path.endswith(".pyx"):
-            files.append(path.replace(os.path.sep, ".")[:-4])
-        elif os.path.isdir(path):
-            scandir(path, files)
-    return files
-
-
-def makeExtension(extName):
-    extPath = extName.replace(".", os.path.sep)+".pyx"
-    return Extension(
-        '.'.join(extName.split('.')[1:]),
-        [extPath],
-        # adding the '.' to include_dirs is CRUCIAL!!
-        include_dirs=[".", "src/cbc/analog_system",
-                      "src/cbc/digital_control", "src/cbc/analog_signal", "src/cbc/digital_estimator"],
-        # extra_compile_args=["-fopenmp"],
-        # extra_link_args=['-g'],
-        libraries=["m"],
-    )
-
-
-# get the list of extensions
-extNames = scandir("src/cbc")
-
-# and build up the set of Extension objects
-# extensions = [makeExtension(name) for name in extNames]
+USING_CYTHON = True
+ext = "pyx"
 
 root_path = "src/cbc"
-parallel_digital_estimator_path = "src/cbc/parallel_digital_estimator"
-extensions = [
-    Extension(
-        root_path + "/*",
-        [root_path + "/*.pyx"]
-    ),
-    Extension(
-        parallel_digital_estimator_path + "/*",
-        [parallel_digital_estimator_path + "/*.pyx"],
-        extra_compile_args=["-fopenmp"]
-    )
-]
 
+parallel_digital_estimator_path = "src/cbc/parallel_digital_estimator"
+
+
+source_files = glob(root_path + "/*.pyx")
+# for file in glob(root_path + "/*.pyx"):
+#     source_files.append(os.path.sep.join(file.split(os.path.sep)[1:]))
+# print(source_files)
+
+extensions = [
+    Extension(os.path.sep.join(source.split(os.path.sep)[1:]).split('.')[0].
+              replace(os.path.sep, '.'),
+              sources=[source],
+              ) for source in source_files]
+
+# extensions += [
+#     Extension(
+#         source.split('.')[0].replace(os.path.sep, '.'),
+#         sources=[source],
+#         # extra_compile_args=["-fopenmp"],
+#         language="c++",
+#     ) for source in glob(parallel_digital_estimator_path + "/*.pyx")
+# ]
 
 compiler_directives = {"language_level": 3, "embedsignature": True}
-print(find_packages('src'))
+
+
+if USING_CYTHON:
+    ext_modules = cythonize(extensions,
+                            compiler_directives=compiler_directives,
+                            include_path=[
+                                numpy.get_include()])
+else:
+    ext_modules = no_cythonize(extensions)
+
 
 setup(
     name="cbc",  # Replace with your own username
@@ -72,16 +78,16 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/hammal/cbc",
     packages=['cbc'],
-    package_dir={'': 'src'},
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU License",
+        "License :: OSI Approved ",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.5",
+    package_dir={'': 'src'},
+    python_requires='>=3.6',
     install_requires=REQUIREMENTS,
     include_package_data=True,
-    ext_modules=cythonize(extensions, compiler_directives=compiler_directives),
+    ext_modules=ext_modules,
     zip_safe=False,
 )
 

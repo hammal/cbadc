@@ -71,11 +71,11 @@ class DigitalEstimator:
             return transfer function evaluated at all K angular frequencies of
             the omega vector.
         """
-        result = zeros((self._analog_system.L(), omega.size))
-        eta2Matrix = eye(self._analog_system.C().shape[0]) * self._eta2
+        result = zeros((self._analog_system.L, omega.size))
+        eta2Matrix = eye(self._analog_system.CT.shape[0]) * self._eta2
         for index, o in enumerate(omega):
             G = self._analog_system.transfer_function(array([o]))
-            G = G.reshape((self._analog_system.N_tilde(), self._analog_system.L()))
+            G = G.reshape((self._analog_system.N_tilde, self._analog_system.L))
             GH = G.transpose().conjugate()
             GGH = dot(G, GH)
             result[:, index] = abs(dot(GH, dot(inv(GGH + eta2Matrix), G)))
