@@ -33,7 +33,7 @@ jobs:
         python -m pip install tox;
     - name: UnitTest with Tox
       run:
-        tox -e ${PYTHON_V};
+        tox -e py$(echo ${PYTHON_V} | sed 's/.//g');
       env:
         PYTHON_V: ${{ matrix.python-version }}
     - name: Install pypa/build
