@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8] #[3.6, 3.7, 3.8, 3.9]
-        os: [macos-latest, ubuntu-16.04 , windows-latest]
+        os: [ ubuntu-16.04] #, macos-latest, #, windows-latest]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -52,10 +52,8 @@ jobs:
         python -m
         build
         --sdist
-        --wheel
         --outdir dist/
-        . ;
-        auditwheel repair dist/*.whl -w dist;
+        . 
     - name: Publish distribution 📦 to Test PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
