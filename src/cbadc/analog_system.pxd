@@ -14,6 +14,6 @@ cdef class AnalogSystem:
     cdef readonly int N_tilde    
     cdef readonly int M_tilde  
     cpdef double [:] derivative(self, double [:] x, double t, double [:] u, double [:] s)
-    cpdef double [:] signal_output(self, double [:] x)
-    cpdef double [:] control_output(self, double [:] x)
+    cpdef double [:] signal_observation(self, double [:] x)
+    cpdef double [:] control_observation(self, double [:] x)
     cdef complex [:,:] _atf(self, double _omega)

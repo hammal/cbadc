@@ -2,7 +2,7 @@
 module: digital_estimator
 =========================
 
-.. automodule:: cbc.digital_estimator
+.. automodule:: cbadc.digital_estimator
 
-.. autoclass:: cbc.digital_estimator.DigitalEstimator
+.. autoclass:: cbadc.digital_estimator.DigitalEstimator
     :members:

@@ -2,7 +2,7 @@
 module: state_space_simulator
 =============================
 
-.. automodule:: cbc.state_space_simulator
+.. automodule:: cbadc.state_space_simulator
 
-.. autoclass:: cbc.state_space_simulator.StateSpaceSimulator
+.. autoclass:: cbadc.state_space_simulator.StateSpaceSimulator
     :members:

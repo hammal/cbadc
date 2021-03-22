@@ -1,5 +1,5 @@
 from cbadc import StateSpaceSimulator
-from cbadc import AnalogSignal, Sinusodial
+from cbadc import ConstantSignal, Sinusodial
 from cbadc import AnalogSystem
 from cbadc import DigitalControl
 import numpy as np
@@ -19,14 +19,14 @@ Ts = 1/(2 * beta)
 
 
 def test_initialization(chain_of_integrators):
-    analogSignals = [AnalogSignal(0.1)]
+    analogSignals = [ConstantSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
     StateSpaceSimulator(
         chain_of_integrators["system"], digitalControl, analogSignals)
 
 
 def test_iterator(chain_of_integrators):
-    analogSignals = [AnalogSignal(0.1)]
+    analogSignals = [ConstantSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
     statespacesimulator = StateSpaceSimulator(
         chain_of_integrators["system"], digitalControl, analogSignals, t_stop=Ts * 1000)
@@ -45,7 +45,7 @@ def test_large_integrator():
     Gamma_tilde = np.eye(N)
     Gamma = Gamma_tilde * (-beta)
     analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
-    analogSignals = [AnalogSignal(0.1)]
+    analogSignals = [ConstantSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
     statespacesimulator = StateSpaceSimulator(
         analogSystem, digitalControl, analogSignals, t_stop=Ts * 1000)

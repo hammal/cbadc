@@ -11,6 +11,29 @@ import numpy as np
 from libc.math cimport sin
 
 cdef class AnalogSignal:
+    """A default continuous-time analog signal.
+    """
+
+    def __init__(self):
+        pass
+
+    cpdef double evaluate(self, double t):
+        """Evaluate the signal at time :math:`t`.
+
+        Parameters
+        ----------
+        t : `float`
+            the time instance for evaluation.
+
+        Returns
+        -------
+        float
+            The analog signal value
+        """        
+        return 0.0
+
+
+class ConstantSignal(AnalogSignal):
     """A constant continuous-time analog signal.
     
     Parameters
@@ -27,13 +50,13 @@ cdef class AnalogSignal:
 
     See also
     ---------
-    :py:class:`cbc.analog_signal.Sinusodial`
-    :py:class:`cbc.state_space_simulator.StateSpaceSimulator`
+    :py:class:`cbadc.analog_signal.Sinusodial`
+    :py:class:`cbadc.state_space_simulator.StateSpaceSimulator`
 
     Examples
     ---------
-    >>> import cbc
-    >>> u = cbc.AnalogSignal(1.0) 
+    >>> import cbadc
+    >>> u = cbadc.ConstantSignal(1.0) 
     >>> print(u.evaluate(42))
     1.0
 
@@ -44,7 +67,7 @@ cdef class AnalogSignal:
         """
         self.offset = offset
 
-    cpdef double evaluate(self, double t):
+    def evaluate(self, double t):
         """Evaluate the signal at time :math:`t`.
 
         Parameters
@@ -59,7 +82,7 @@ cdef class AnalogSignal:
         """        
         return self.offset
 
-cdef class Sinusodial(AnalogSignal):
+class Sinusodial(AnalogSignal):
     """An analog continuous-time sinusodial signal.
 
     Parameters
@@ -88,18 +111,16 @@ cdef class Sinusodial(AnalogSignal):
 
     See also
     --------
-    cbc.analog_signal.AnalogSignal
+    cbadc.analog_signal.AnalogSignal
 
     Example
     -------
-    >>> import cbc
+    >>> from cbadc.analog_signal import Sinusodial
     >>> import numpy as np
-    >>> u = cbc.Sinudodial(1, 123, np.pi/2, 0)
-    >>> u(0)
-    0
-    >>> u(1/123.)
-    1
-
+    >>> u = Sinusodial(1, 123, np.pi/2, 0)
+    >>> print(u.evaluate(0))
+    1.0
+    
     """    
     def __init__(self, amplitude, frequency, phase=0.0, offset=0.0):
         self.amplitude = amplitude
@@ -108,7 +129,7 @@ cdef class Sinusodial(AnalogSignal):
         self.phase = phase
         self.offset = offset
 
-    cpdef double evaluate(self, double t):
+    def evaluate(self, double t):
         """Evaluate the signal at time :math:`t`.
 
         Parameters

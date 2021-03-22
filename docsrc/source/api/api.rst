@@ -9,3 +9,4 @@ of the package
     analog_system
     digital_control
     state_space_simulator
+    digital_estimator

@@ -1,6 +1,6 @@
 from cbadc import StateSpaceSimulator
 from cbadc.digital_estimator import DigitalEstimator
-from cbadc import AnalogSignal, Sinusodial
+from cbadc import ConstantSignal, Sinusodial
 from cbadc import AnalogSystem
 from cbadc import DigitalControl
 import numpy as np
@@ -68,7 +68,7 @@ def test_estimation_with_circuit_simulator():
 
     analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
     # analogSignals = [Sinusodial(0.5, 10)]
-    analogSignals = [AnalogSignal(0.25)]
+    analogSignals = [ConstantSignal(0.25)]
     digitalControl = DigitalControl(Ts, M)
     circuitSimulator = StateSpaceSimulator(
         analogSystem, digitalControl, analogSignals, t_stop=Ts * 1000)

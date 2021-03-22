@@ -1,9 +1,9 @@
 Welcome to Control-Bounded Converter Toolbox's Documentation!
 =============================================================
 
-This is the official documentation for the cbc python package which is a toolbox
-intended to ease the design of control-bounded analog-to-digital (A/D)
-converters. 
+This is the official documentation for the `cbadc
+<https://pypi.org/project/cbadc/>`_ python package which is a toolbox intended
+to ease the design of control-bounded analog-to-digital (A/D) converters. 
 
 This python module enables you to
 
@@ -29,18 +29,18 @@ Installation
 
 You simply install the package by typing::
 
-   pip install cbc
+   pip install cbadc
 
 or alternatively::
 
-   conda install cbc
+   conda install cbadc
 
 into your console.
 
 Github
 -------
 
-The projects source files can be found at `github.com/hammal/cbc <https://github.com/hammal/cbc>`_
+The projects source files can be found at `github.com/hammal/cbadc <https://github.com/hammal/cbadc>`_
 and contributions are always welcome.
 
 .. _contents:

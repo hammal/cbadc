@@ -2,7 +2,7 @@
 module: digital_control
 =======================
 
-.. automodule:: cbc.digital_control
+.. automodule:: cbadc.digital_control
 
-.. autoclass:: cbc.digital_control.DigitalControl
+.. autoclass:: cbadc.digital_control.DigitalControl
     :members:

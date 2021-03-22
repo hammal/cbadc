@@ -1,10 +1,20 @@
 module: analog_system
 =====================
 
-.. automodule:: cbc.analog_system
+.. automodule:: cbadc.analog_system
 
-.. autoclass:: cbc.analog_system.AnalogSystem
+.. autoclass:: cbadc.analog_system.AnalogSystem
     :members:
 
-.. autoclass:: cbc.analog_system.InvalidAnalogSystemError
+.. autoclass:: cbadc.analog_system.ChainOfIntegrators
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. autoclass:: cbadc.analog_system.LeapFrog
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. autoclass:: cbadc.analog_system.InvalidAnalogSystemError
     :members:

@@ -33,7 +33,7 @@ cdef class DigitalControl:
 
     See also
     ---------
-    :py:class:`cbc.state_space_simulator.StateSpaceSimulator`
+    :py:class:`cbadc.state_space_simulator.StateSpaceSimulator`
 
     Examples
     --------
@@ -48,8 +48,9 @@ cdef class DigitalControl:
         self._s = np.zeros(self.M, dtype=np.int8)
         self._dac_values = np.zeros(self.M, dtype=np.double)
 
-    cpdef double [:] evaluate(self, double t, double [:] s_tilde):
-        """Evaluates the control signal at time t given a control observation s_tilde
+    cpdef double [:] control_contribution(self, double t, double [:] s_tilde):
+        """Evaluates the control contribution at time t given a control observation
+        s_tilde.
 
         Parameters
         ----------

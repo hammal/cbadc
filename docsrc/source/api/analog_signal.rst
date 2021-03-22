@@ -2,11 +2,17 @@
 module: analog_signal
 =====================
 
-.. automodule:: cbc.analog_signal
+.. automodule:: cbadc.analog_signal
 
-.. autoclass:: cbc.analog_signal.AnalogSignal
+.. autoclass:: cbadc.analog_signal.AnalogSignal
     :members: evaluate
 
-.. autoclass:: cbc.analog_signal.Sinusodial
+.. autoclass:: cbadc.analog_signal.ConstantSignal
+    :members: evaluate
+    :show-inheritance:
+    :inherited-members:
+
+.. autoclass:: cbadc.analog_signal.Sinusodial
     :members:
     :show-inheritance:
+    :inherited-members:

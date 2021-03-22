@@ -1,7 +1,7 @@
 Digital Control
 ===================
 
-.. autoclass:: cbc.DigitalControl
+.. autoclass:: cbadc.DigitalControl
     :members:
     :undoc-members:
     :show-inheritance:
