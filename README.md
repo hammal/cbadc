@@ -1,4 +1,4 @@
-| ![cbadc](https://github.com/hammal/cbadc/actions/workflows/python-package.yml/badge.svg)![docs] | (https://readthedocs.org/projects/pip/badge/?version=latest&style=plastic) |
+![cbadc](https://github.com/hammal/cbadc/actions/workflows/python-package.yml/badge.svg) ![docs](https://readthedocs.org/projects/pip/badge/?version=latest&style=plastic)
 
 # Control-Bounded A/D Conversion (cbadc) Toolbox's Documentation
 
