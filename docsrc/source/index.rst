@@ -1,5 +1,5 @@
-Welcome to Control-Bounded Converter Toolbox's Documentation!
-=============================================================
+Welcome to Control-Bounded A/D Conversion Toolbox's Documentation
+=================================================================
 
 This is the official documentation for the `cbadc
 <https://pypi.org/project/cbadc/>`_ python package which is a toolbox intended

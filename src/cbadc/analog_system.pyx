@@ -450,7 +450,7 @@ class ChainOfIntegrators(AnalogSystem):
             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
         
         # initialize parent class
-        super().__init__(A, B, CT, Gamma, Gamma_tildeT)
+        AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)
 
 
 
@@ -584,4 +584,4 @@ class LeapFrog(AnalogSystem):
             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
         
         # initialize parent class
-        super().__init__(A, B, CT, Gamma, Gamma_tildeT)
+        AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)

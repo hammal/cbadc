@@ -11,10 +11,10 @@ M = 5
 A = np.eye(N) * rho + np.eye(N, k=-1) * beta
 B = np.zeros((N, 1))
 B[0] = beta
-C = np.zeros((1, N))
-C[-1] = 1.0
-Gamma_tilde = np.eye(M)
-Gamma = Gamma_tilde * (-beta)
+CT = np.zeros((1, N)).transpose()
+CT[-1] = 1.0
+Gamma_tildeT = np.eye(M)
+Gamma = Gamma_tildeT * (-beta)
 Ts = 1/(2 * beta)
 
 
@@ -40,11 +40,11 @@ def test_large_integrator():
     A = np.eye(N) * rho + np.eye(N, k=-1) * beta
     B = np.zeros((N, 1))
     B[0] = beta
-    C = np.zeros((N, 1))
-    C[-1] = 1.0
-    Gamma_tilde = np.eye(N)
-    Gamma = Gamma_tilde * (-beta)
-    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+    CT = np.zeros((N, 1)).transpose()
+    CT[-1] = 1.0
+    Gamma_tildeT = np.eye(N)
+    Gamma = Gamma_tildeT * (-beta)
+    analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     analogSignals = [ConstantSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
     statespacesimulator = StateSpaceSimulator(

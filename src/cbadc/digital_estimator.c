@@ -1094,15 +1094,15 @@ struct __pyx_obj_5cbadc_16filter_mid_point_MidPointFilter {
  * 
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
- *         controlSignalSequence,
- *         analogSystem, digitalControl,
+ *         control_signal_sequence,
+ *         analog_system, digital_control,
  */
 struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__ {
   PyObject_HEAD
   PyObject *__pyx_v_K1;
   PyObject *__pyx_v_K2;
-  PyObject *__pyx_v_analogSystem;
-  PyObject *__pyx_v_digitalControl;
+  PyObject *__pyx_v_analog_system;
+  PyObject *__pyx_v_digital_control;
   PyObject *__pyx_v_estimation_filter_implementations;
   PyObject *__pyx_v_estimator_type;
   PyObject *__pyx_v_eta2;
@@ -1196,7 +1196,6 @@ struct __pyx_memoryviewslice_obj {
 struct __pyx_vtabstruct_5cbadc_15digital_control_DigitalControl {
   __Pyx_memviewslice (*control_contribution)(struct __pyx_obj_5cbadc_15digital_control_DigitalControl *, double, __Pyx_memviewslice, int __pyx_skip_dispatch);
   __Pyx_memviewslice (*control_signal)(struct __pyx_obj_5cbadc_15digital_control_DigitalControl *, int __pyx_skip_dispatch);
-  __Pyx_memviewslice (*impulse_response)(struct __pyx_obj_5cbadc_15digital_control_DigitalControl *, PyObject *, PyObject *);
 };
 static struct __pyx_vtabstruct_5cbadc_15digital_control_DigitalControl *__pyx_vtabptr_5cbadc_15digital_control_DigitalControl;
 
@@ -2353,7 +2352,6 @@ static const char __pyx_k_pyx_result[] = "__pyx_result";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
-static const char __pyx_k_analogSystem[] = "analogSystem";
 static const char __pyx_k_numpy_linalg[] = "numpy.linalg";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
@@ -2363,10 +2361,10 @@ static const char __pyx_k_compute_batch[] = "compute_batch";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_control_signal[] = "control_signal";
-static const char __pyx_k_digitalControl[] = "digitalControl";
 static const char __pyx_k_estimator_type[] = "estimator_type";
 static const char __pyx_k_View_MemoryView[] = "View.MemoryView";
 static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
+static const char __pyx_k_digital_control[] = "digital_control";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static const char __pyx_k_not_implemented[] = "not_implemented";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
@@ -2381,7 +2379,6 @@ static const char __pyx_k_number_of_iterations[] = "number_of_iterations";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_The_digital_estimator[] = "\nThe digital estimator.\n";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
-static const char __pyx_k_controlSignalSequence[] = "controlSignalSequence";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
 static const char __pyx_k_DigitalEstimator___init[] = "DigitalEstimator.__init__";
 static const char __pyx_k_DigitalEstimator___iter[] = "DigitalEstimator.__iter__";
@@ -2389,6 +2386,7 @@ static const char __pyx_k_DigitalEstimator___next[] = "DigitalEstimator.__next__
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_cbadc_digital_estimator[] = "cbadc.digital_estimator";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
+static const char __pyx_k_control_signal_sequence[] = "control_signal_sequence";
 static const char __pyx_k_noise_transfer_function[] = "noise_transfer_function";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
 static const char __pyx_k_signal_transfer_function[] = "signal_transfer_function";
@@ -2400,7 +2398,7 @@ static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate 
 static const char __pyx_k_is_not_a_implemented_estimator[] = " is not a implemented estimator algorithm, currently choose from ";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
 static const char __pyx_k_DigitalEstimator_noise_transfer[] = "DigitalEstimator.noise_transfer_function";
-static const char __pyx_k_The_digital_estimator_estimates[] = "The digital estimator estimates a filtered version :math:`\\hat{\\mathbf{u}}(t)` (shaped by \n    :py:func:`signal_transfer_function`) of the \n    input signal :math:`\\mathbf{u}(t)` from a sequence of control signals :math:`\\mathbf{s}[k]`.\n\n    Parameters\n    ----------\n    controlSignalSequence : iterator\n        a generator which outputs a sequence of control signals.\n    analogSystem : :py:class:`cbadc.analog_system.AnalogSystem`\n        an analog system (necessary to compute the estimators filter coefficients).\n    digitalControl : :py:class:`cbadc.digital_control.DigitalControl`\n        a digital control (necessary to determine the corresponding DAC waveform).\n    eta2 : `float`\n        the :math:`\\eta^2` parameter determines the bandwidth of the estimator.\n    K1 : `int`\n        batch size.\n    K2 : `int`, `optional`\n        lookahead size, defaults to 0.\n    stop_after_number_of_iterations : `int`\n        determine a max number of iterations by the generator, defaults to :py:obj:`math.inf`.\n    estimator_type : `str`, `optional`\n        determine which filtering method :code:`'quadratic', 'parallel', 'mid-point'` \n        to use, defaults to :code:`'quadratic'`.\n\n    Attributes\n    ----------\n    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`\n        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or from\n        derived class.\n    eta2 : float\n        eta2, or equivalently :math:`\\eta^2`, sets the bandwidth of the estimator.\n    control_signal : :py:class:`cbadc.digital_control.DigitalControl`\n        a generator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.\n    number_of_iterations : `int`\n        number of iterations until generator raises :py:class:`StopIteration`.\n    K1 : `int`\n        number of samples per estimate batch.\n    K2 : `int`\n        number of lookahead samples per computed batch.\n    estimator_type : `str`\n        describing type of est""imator implemenation.\n\n    Yields\n    ------\n    `array_like`, shape=(L,)\n        an input estimate sample :math:`\\hat{\\mathbf{u}}(t)`\n\n    Examples\n    --------\n    TODO:\n    ";
+static const char __pyx_k_The_digital_estimator_estimates[] = "The digital estimator estimates a filtered version :math:`\\hat{\\mathbf{u}}(t)` (shaped by \n    :py:func:`signal_transfer_function`) of the \n    input signal :math:`\\mathbf{u}(t)` from a sequence of control signals :math:`\\mathbf{s}[k]`.\n\n    Parameters\n    ----------\n    control_signal_sequence : iterator\n        a generator which outputs a sequence of control signals.\n    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`\n        an analog system (necessary to compute the estimators filter coefficients).\n    digital_control : :py:class:`cbadc.digital_control.DigitalControl`\n        a digital control (necessary to determine the corresponding DAC waveform).\n    eta2 : `float`\n        the :math:`\\eta^2` parameter determines the bandwidth of the estimator.\n    K1 : `int`\n        batch size.\n    K2 : `int`, `optional`\n        lookahead size, defaults to 0.\n    stop_after_number_of_iterations : `int`\n        determine a max number of iterations by the generator, defaults to :py:obj:`math.inf`.\n    estimator_type : `str`, `optional`\n        determine which filtering method :code:`'quadratic', 'parallel', 'mid-point'` \n        to use, defaults to :code:`'quadratic'`.\n\n    Attributes\n    ----------\n    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`\n        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or from\n        derived class.\n    eta2 : float\n        eta2, or equivalently :math:`\\eta^2`, sets the bandwidth of the estimator.\n    control_signal : :py:class:`cbadc.digital_control.DigitalControl`\n        a generator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.\n    number_of_iterations : `int`\n        number of iterations until generator raises :py:class:`StopIteration`.\n    K1 : `int`\n        number of samples per estimate batch.\n    K2 : `int`\n        number of lookahead samples per computed batch.\n    estimator_type : `str`\n        describing type of"" estimator implemenation.\n\n    Yields\n    ------\n    `array_like`, shape=(L,)\n        an input estimate sample :math:`\\hat{\\mathbf{u}}(t)`\n\n    Examples\n    --------\n    TODO:\n    ";
 static const char __pyx_k_src_cbadc_digital_estimator_pyx[] = "src/cbadc/digital_estimator.pyx";
 static const char __pyx_k_stop_after_number_of_iterations[] = "stop_after_number_of_iterations";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -2467,7 +2465,6 @@ static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_View_MemoryView;
 static PyObject *__pyx_n_s_abs;
 static PyObject *__pyx_n_s_allocate_buffer;
-static PyObject *__pyx_n_s_analogSystem;
 static PyObject *__pyx_n_s_analog_system;
 static PyObject *__pyx_n_s_array;
 static PyObject *__pyx_n_s_base;
@@ -2481,10 +2478,10 @@ static PyObject *__pyx_n_s_compute_batch;
 static PyObject *__pyx_n_s_conjugate;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
-static PyObject *__pyx_n_s_controlSignalSequence;
 static PyObject *__pyx_n_s_control_signal;
+static PyObject *__pyx_n_s_control_signal_sequence;
 static PyObject *__pyx_n_s_dict;
-static PyObject *__pyx_n_s_digitalControl;
+static PyObject *__pyx_n_s_digital_control;
 static PyObject *__pyx_n_s_doc;
 static PyObject *__pyx_n_s_dot;
 static PyObject *__pyx_n_s_dtype_is_object;
@@ -2586,7 +2583,7 @@ static PyObject *__pyx_n_s_zeros;
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_8__init___not_implemented(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_controlSignalSequence, PyObject *__pyx_v_analogSystem, PyObject *__pyx_v_digitalControl, PyObject *__pyx_v_eta2, PyObject *__pyx_v_K1, PyObject *__pyx_v_K2, PyObject *__pyx_v_stop_after_number_of_iterations, PyObject *__pyx_v_estimator_type); /* proto */
+static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_control_signal_sequence, PyObject *__pyx_v_analog_system, PyObject *__pyx_v_digital_control, PyObject *__pyx_v_eta2, PyObject *__pyx_v_K1, PyObject *__pyx_v_K2, PyObject *__pyx_v_stop_after_number_of_iterations, PyObject *__pyx_v_estimator_type); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_transfer_function(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, __Pyx_memviewslice __pyx_v_omega); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_transfer_function(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, __Pyx_memviewslice __pyx_v_omega); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_6__iter__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
@@ -2687,19 +2684,19 @@ static PyObject *__pyx_codeobj__37;
  * 
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
- *         controlSignalSequence,
- *         analogSystem, digitalControl,
+ *         control_signal_sequence,
+ *         analog_system, digital_control,
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5cbadc_17digital_estimator_16DigitalEstimator___init__[] = "DigitalEstimator.__init__(self, controlSignalSequence, analogSystem, digitalControl, eta2, K1, K2=0, stop_after_number_of_iterations=0, estimator_type=u'quadratic')";
+static char __pyx_doc_5cbadc_17digital_estimator_16DigitalEstimator___init__[] = "DigitalEstimator.__init__(self, control_signal_sequence, analog_system, digital_control, eta2, K1, K2=0, stop_after_number_of_iterations=0, estimator_type=u'quadratic')";
 static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_16DigitalEstimator_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5cbadc_17digital_estimator_16DigitalEstimator___init__};
 static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_controlSignalSequence = 0;
-  PyObject *__pyx_v_analogSystem = 0;
-  PyObject *__pyx_v_digitalControl = 0;
+  PyObject *__pyx_v_control_signal_sequence = 0;
+  PyObject *__pyx_v_analog_system = 0;
+  PyObject *__pyx_v_digital_control = 0;
   PyObject *__pyx_v_eta2 = 0;
   PyObject *__pyx_v_K1 = 0;
   PyObject *__pyx_v_K2 = 0;
@@ -2712,7 +2709,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__ (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_controlSignalSequence,&__pyx_n_s_analogSystem,&__pyx_n_s_digitalControl,&__pyx_n_s_eta2,&__pyx_n_s_K1,&__pyx_n_s_K2,&__pyx_n_s_stop_after_number_of_iterations,&__pyx_n_s_estimator_type,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_control_signal_sequence,&__pyx_n_s_analog_system,&__pyx_n_s_digital_control,&__pyx_n_s_eta2,&__pyx_n_s_K1,&__pyx_n_s_K2,&__pyx_n_s_stop_after_number_of_iterations,&__pyx_n_s_estimator_type,0};
     PyObject* values[9] = {0,0,0,0,0,0,0,0,0};
     values[6] = ((PyObject *)((PyObject *)__pyx_int_0));
     values[7] = ((PyObject *)((PyObject *)__pyx_int_0));
@@ -2749,19 +2746,19 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init_
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_controlSignalSequence)) != 0)) kw_args--;
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_control_signal_sequence)) != 0)) kw_args--;
         else {
           __Pyx_RaiseArgtupleInvalid("__init__", 0, 6, 9, 1); __PYX_ERR(0, 65, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_analogSystem)) != 0)) kw_args--;
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_analog_system)) != 0)) kw_args--;
         else {
           __Pyx_RaiseArgtupleInvalid("__init__", 0, 6, 9, 2); __PYX_ERR(0, 65, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_digitalControl)) != 0)) kw_args--;
+        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_digital_control)) != 0)) kw_args--;
         else {
           __Pyx_RaiseArgtupleInvalid("__init__", 0, 6, 9, 3); __PYX_ERR(0, 65, __pyx_L3_error)
         }
@@ -2818,9 +2815,9 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init_
       }
     }
     __pyx_v_self = values[0];
-    __pyx_v_controlSignalSequence = values[1];
-    __pyx_v_analogSystem = values[2];
-    __pyx_v_digitalControl = values[3];
+    __pyx_v_control_signal_sequence = values[1];
+    __pyx_v_analog_system = values[2];
+    __pyx_v_digital_control = values[3];
     __pyx_v_eta2 = values[4];
     __pyx_v_K1 = values[5];
     __pyx_v_K2 = values[6];
@@ -2835,7 +2832,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init_
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__(__pyx_self, __pyx_v_self, __pyx_v_controlSignalSequence, __pyx_v_analogSystem, __pyx_v_digitalControl, __pyx_v_eta2, __pyx_v_K1, __pyx_v_K2, __pyx_v_stop_after_number_of_iterations, __pyx_v_estimator_type);
+  __pyx_r = __pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__(__pyx_self, __pyx_v_self, __pyx_v_control_signal_sequence, __pyx_v_analog_system, __pyx_v_digital_control, __pyx_v_eta2, __pyx_v_K1, __pyx_v_K2, __pyx_v_stop_after_number_of_iterations, __pyx_v_estimator_type);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
@@ -2843,7 +2840,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init_
 }
 
 /* "cbadc/digital_estimator.pyx":90
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}"
@@ -2927,7 +2924,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_8__init_
   __PYX_ERR(0, 91, __pyx_L1_error)
 
   /* "cbadc/digital_estimator.pyx":90
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}"
@@ -2949,8 +2946,8 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_8__init_
 /* "cbadc/digital_estimator.pyx":87
  * 
  *         estimation_filter_implementations = {
- *             'quadratic': lambda : LinearFilter(analogSystem, digitalControl, eta2, K1, K2 = K2),             # <<<<<<<<<<<<<<
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+ *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2),             # <<<<<<<<<<<<<<
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)
  *         }
  */
 
@@ -2983,18 +2980,18 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self) {
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_analogSystem)) { __Pyx_RaiseClosureNameError("analogSystem"); __PYX_ERR(0, 87, __pyx_L1_error) }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 87, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_analog_system)) { __Pyx_RaiseClosureNameError("analog_system"); __PYX_ERR(0, 87, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_digital_control)) { __Pyx_RaiseClosureNameError("digital_control"); __PYX_ERR(0, 87, __pyx_L1_error) }
   if (unlikely(!__pyx_cur_scope->__pyx_v_eta2)) { __Pyx_RaiseClosureNameError("eta2"); __PYX_ERR(0, 87, __pyx_L1_error) }
   if (unlikely(!__pyx_cur_scope->__pyx_v_K1)) { __Pyx_RaiseClosureNameError("K1"); __PYX_ERR(0, 87, __pyx_L1_error) }
   __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_analogSystem);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_analogSystem);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_analogSystem);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_digitalControl);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_digitalControl);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_digitalControl);
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_analog_system);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_analog_system);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_analog_system);
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_digital_control);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_digital_control);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_digital_control);
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_eta2);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_eta2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_cur_scope->__pyx_v_eta2);
@@ -3028,8 +3025,8 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self) {
 
 /* "cbadc/digital_estimator.pyx":88
  *         estimation_filter_implementations = {
- *             'quadratic': lambda : LinearFilter(analogSystem, digitalControl, eta2, K1, K2 = K2),
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)             # <<<<<<<<<<<<<<
+ *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2),
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)             # <<<<<<<<<<<<<<
  *         }
  *         def not_implemented():
  */
@@ -3063,18 +3060,18 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self) {
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_analogSystem)) { __Pyx_RaiseClosureNameError("analogSystem"); __PYX_ERR(0, 88, __pyx_L1_error) }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_digitalControl)) { __Pyx_RaiseClosureNameError("digitalControl"); __PYX_ERR(0, 88, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_analog_system)) { __Pyx_RaiseClosureNameError("analog_system"); __PYX_ERR(0, 88, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_v_digital_control)) { __Pyx_RaiseClosureNameError("digital_control"); __PYX_ERR(0, 88, __pyx_L1_error) }
   if (unlikely(!__pyx_cur_scope->__pyx_v_eta2)) { __Pyx_RaiseClosureNameError("eta2"); __PYX_ERR(0, 88, __pyx_L1_error) }
   if (unlikely(!__pyx_cur_scope->__pyx_v_K1)) { __Pyx_RaiseClosureNameError("K1"); __PYX_ERR(0, 88, __pyx_L1_error) }
   __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_analogSystem);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_analogSystem);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_analogSystem);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_digitalControl);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_digitalControl);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_digitalControl);
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_analog_system);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_analog_system);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_analog_system);
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_digital_control);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_digital_control);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_digital_control);
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_eta2);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_eta2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_cur_scope->__pyx_v_eta2);
@@ -3110,11 +3107,11 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self) {
  * 
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
- *         controlSignalSequence,
- *         analogSystem, digitalControl,
+ *         control_signal_sequence,
+ *         analog_system, digital_control,
  */
 
-static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_controlSignalSequence, PyObject *__pyx_v_analogSystem, PyObject *__pyx_v_digitalControl, PyObject *__pyx_v_eta2, PyObject *__pyx_v_K1, PyObject *__pyx_v_K2, PyObject *__pyx_v_stop_after_number_of_iterations, PyObject *__pyx_v_estimator_type) {
+static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_control_signal_sequence, PyObject *__pyx_v_analog_system, PyObject *__pyx_v_digital_control, PyObject *__pyx_v_eta2, PyObject *__pyx_v_K1, PyObject *__pyx_v_K2, PyObject *__pyx_v_stop_after_number_of_iterations, PyObject *__pyx_v_estimator_type) {
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__ *__pyx_cur_scope;
   PyObject *__pyx_v_not_implemented = 0;
   PyObject *__pyx_r = NULL;
@@ -3136,12 +3133,12 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
-  __pyx_cur_scope->__pyx_v_analogSystem = __pyx_v_analogSystem;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_analogSystem);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_analogSystem);
-  __pyx_cur_scope->__pyx_v_digitalControl = __pyx_v_digitalControl;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_digitalControl);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_digitalControl);
+  __pyx_cur_scope->__pyx_v_analog_system = __pyx_v_analog_system;
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_analog_system);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_analog_system);
+  __pyx_cur_scope->__pyx_v_digital_control = __pyx_v_digital_control;
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_digital_control);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_digital_control);
   __pyx_cur_scope->__pyx_v_eta2 = __pyx_v_eta2;
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_eta2);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_eta2);
@@ -3212,7 +3209,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
  *         if (K2 < 0):
  *             raise "K2 must be a non negative integer."             # <<<<<<<<<<<<<<
  *         self.K2 = K2
- *         self.analog_system = analogSystem
+ *         self.analog_system = analog_system
  */
     __Pyx_Raise(__pyx_kp_u_K2_must_be_a_non_negative_intege, 0, 0, 0);
     __PYX_ERR(0, 78, __pyx_L1_error)
@@ -3230,7 +3227,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
  *         if (K2 < 0):
  *             raise "K2 must be a non negative integer."
  *         self.K2 = K2             # <<<<<<<<<<<<<<
- *         self.analog_system = analogSystem
+ *         self.analog_system = analog_system
  *         if(eta2 < 0):
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_K2, __pyx_cur_scope->__pyx_v_K2) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
@@ -3238,15 +3235,15 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
   /* "cbadc/digital_estimator.pyx":80
  *             raise "K2 must be a non negative integer."
  *         self.K2 = K2
- *         self.analog_system = analogSystem             # <<<<<<<<<<<<<<
+ *         self.analog_system = analog_system             # <<<<<<<<<<<<<<
  *         if(eta2 < 0):
  *             raise "eta2 must be non negative."
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_analog_system, __pyx_cur_scope->__pyx_v_analogSystem) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_analog_system, __pyx_cur_scope->__pyx_v_analog_system) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
 
   /* "cbadc/digital_estimator.pyx":81
  *         self.K2 = K2
- *         self.analog_system = analogSystem
+ *         self.analog_system = analog_system
  *         if(eta2 < 0):             # <<<<<<<<<<<<<<
  *             raise "eta2 must be non negative."
  *         self.eta2 = eta2
@@ -3257,18 +3254,18 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
   if (unlikely(__pyx_t_2)) {
 
     /* "cbadc/digital_estimator.pyx":82
- *         self.analog_system = analogSystem
+ *         self.analog_system = analog_system
  *         if(eta2 < 0):
  *             raise "eta2 must be non negative."             # <<<<<<<<<<<<<<
  *         self.eta2 = eta2
- *         self.control_signal = controlSignalSequence
+ *         self.control_signal = control_signal_sequence
  */
     __Pyx_Raise(__pyx_kp_u_eta2_must_be_non_negative, 0, 0, 0);
     __PYX_ERR(0, 82, __pyx_L1_error)
 
     /* "cbadc/digital_estimator.pyx":81
  *         self.K2 = K2
- *         self.analog_system = analogSystem
+ *         self.analog_system = analog_system
  *         if(eta2 < 0):             # <<<<<<<<<<<<<<
  *             raise "eta2 must be non negative."
  *         self.eta2 = eta2
@@ -3279,7 +3276,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
  *         if(eta2 < 0):
  *             raise "eta2 must be non negative."
  *         self.eta2 = eta2             # <<<<<<<<<<<<<<
- *         self.control_signal = controlSignalSequence
+ *         self.control_signal = control_signal_sequence
  * 
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_eta2, __pyx_cur_scope->__pyx_v_eta2) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
@@ -3287,17 +3284,17 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
   /* "cbadc/digital_estimator.pyx":84
  *             raise "eta2 must be non negative."
  *         self.eta2 = eta2
- *         self.control_signal = controlSignalSequence             # <<<<<<<<<<<<<<
+ *         self.control_signal = control_signal_sequence             # <<<<<<<<<<<<<<
  * 
  *         estimation_filter_implementations = {
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_control_signal, __pyx_v_controlSignalSequence) < 0) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_control_signal, __pyx_v_control_signal_sequence) < 0) __PYX_ERR(0, 84, __pyx_L1_error)
 
   /* "cbadc/digital_estimator.pyx":87
  * 
  *         estimation_filter_implementations = {
- *             'quadratic': lambda : LinearFilter(analogSystem, digitalControl, eta2, K1, K2 = K2),             # <<<<<<<<<<<<<<
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+ *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2),             # <<<<<<<<<<<<<<
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)
  *         }
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
@@ -3309,8 +3306,8 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
 
   /* "cbadc/digital_estimator.pyx":88
  *         estimation_filter_implementations = {
- *             'quadratic': lambda : LinearFilter(analogSystem, digitalControl, eta2, K1, K2 = K2),
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)             # <<<<<<<<<<<<<<
+ *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2),
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)             # <<<<<<<<<<<<<<
  *         }
  *         def not_implemented():
  */
@@ -3323,7 +3320,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
   __pyx_t_1 = 0;
 
   /* "cbadc/digital_estimator.pyx":90
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}"
@@ -3467,8 +3464,8 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
  * 
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
- *         controlSignalSequence,
- *         analogSystem, digitalControl,
+ *         control_signal_sequence,
+ *         analog_system, digital_control,
  */
 
   /* function exit code */
@@ -18199,8 +18196,8 @@ static void __pyx_tp_dealloc_5cbadc_17digital_estimator___pyx_scope_struct____in
   PyObject_GC_UnTrack(o);
   Py_CLEAR(p->__pyx_v_K1);
   Py_CLEAR(p->__pyx_v_K2);
-  Py_CLEAR(p->__pyx_v_analogSystem);
-  Py_CLEAR(p->__pyx_v_digitalControl);
+  Py_CLEAR(p->__pyx_v_analog_system);
+  Py_CLEAR(p->__pyx_v_digital_control);
   Py_CLEAR(p->__pyx_v_estimation_filter_implementations);
   Py_CLEAR(p->__pyx_v_estimator_type);
   Py_CLEAR(p->__pyx_v_eta2);
@@ -18220,11 +18217,11 @@ static int __pyx_tp_traverse_5cbadc_17digital_estimator___pyx_scope_struct____in
   if (p->__pyx_v_K2) {
     e = (*v)(p->__pyx_v_K2, a); if (e) return e;
   }
-  if (p->__pyx_v_analogSystem) {
-    e = (*v)(p->__pyx_v_analogSystem, a); if (e) return e;
+  if (p->__pyx_v_analog_system) {
+    e = (*v)(p->__pyx_v_analog_system, a); if (e) return e;
   }
-  if (p->__pyx_v_digitalControl) {
-    e = (*v)(p->__pyx_v_digitalControl, a); if (e) return e;
+  if (p->__pyx_v_digital_control) {
+    e = (*v)(p->__pyx_v_digital_control, a); if (e) return e;
   }
   if (p->__pyx_v_estimation_filter_implementations) {
     e = (*v)(p->__pyx_v_estimation_filter_implementations, a); if (e) return e;
@@ -18247,11 +18244,11 @@ static int __pyx_tp_clear_5cbadc_17digital_estimator___pyx_scope_struct____init_
   tmp = ((PyObject*)p->__pyx_v_K2);
   p->__pyx_v_K2 = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_analogSystem);
-  p->__pyx_v_analogSystem = Py_None; Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->__pyx_v_analog_system);
+  p->__pyx_v_analog_system = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_digitalControl);
-  p->__pyx_v_digitalControl = Py_None; Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->__pyx_v_digital_control);
+  p->__pyx_v_digital_control = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_estimation_filter_implementations);
   p->__pyx_v_estimation_filter_implementations = ((PyObject*)Py_None); Py_INCREF(Py_None);
@@ -19141,7 +19138,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_View_MemoryView, __pyx_k_View_MemoryView, sizeof(__pyx_k_View_MemoryView), 0, 0, 1, 1},
   {&__pyx_n_s_abs, __pyx_k_abs, sizeof(__pyx_k_abs), 0, 0, 1, 1},
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
-  {&__pyx_n_s_analogSystem, __pyx_k_analogSystem, sizeof(__pyx_k_analogSystem), 0, 0, 1, 1},
   {&__pyx_n_s_analog_system, __pyx_k_analog_system, sizeof(__pyx_k_analog_system), 0, 0, 1, 1},
   {&__pyx_n_s_array, __pyx_k_array, sizeof(__pyx_k_array), 0, 0, 1, 1},
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
@@ -19155,10 +19151,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_conjugate, __pyx_k_conjugate, sizeof(__pyx_k_conjugate), 0, 0, 1, 1},
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
-  {&__pyx_n_s_controlSignalSequence, __pyx_k_controlSignalSequence, sizeof(__pyx_k_controlSignalSequence), 0, 0, 1, 1},
   {&__pyx_n_s_control_signal, __pyx_k_control_signal, sizeof(__pyx_k_control_signal), 0, 0, 1, 1},
+  {&__pyx_n_s_control_signal_sequence, __pyx_k_control_signal_sequence, sizeof(__pyx_k_control_signal_sequence), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
-  {&__pyx_n_s_digitalControl, __pyx_k_digitalControl, sizeof(__pyx_k_digitalControl), 0, 0, 1, 1},
+  {&__pyx_n_s_digital_control, __pyx_k_digital_control, sizeof(__pyx_k_digital_control), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
   {&__pyx_n_s_dot, __pyx_k_dot, sizeof(__pyx_k_dot), 0, 0, 1, 1},
   {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
@@ -19279,7 +19275,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
   /* "cbadc/digital_estimator.pyx":90
- *             'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+ *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}"
@@ -19483,10 +19479,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
- *         controlSignalSequence,
- *         analogSystem, digitalControl,
+ *         control_signal_sequence,
+ *         analog_system, digital_control,
  */
-  __pyx_tuple__20 = PyTuple_Pack(12, __pyx_n_s_self, __pyx_n_s_controlSignalSequence, __pyx_n_s_analogSystem, __pyx_n_s_digitalControl, __pyx_n_s_eta2, __pyx_n_s_K1, __pyx_n_s_K2, __pyx_n_s_stop_after_number_of_iterations, __pyx_n_s_estimator_type, __pyx_n_s_estimation_filter_implementation, __pyx_n_s_not_implemented, __pyx_n_s_not_implemented); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(12, __pyx_n_s_self, __pyx_n_s_control_signal_sequence, __pyx_n_s_analog_system, __pyx_n_s_digital_control, __pyx_n_s_eta2, __pyx_n_s_K1, __pyx_n_s_K2, __pyx_n_s_stop_after_number_of_iterations, __pyx_n_s_estimator_type, __pyx_n_s_estimation_filter_implementation, __pyx_n_s_not_implemented, __pyx_n_s_not_implemented); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
   __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(9, 0, 12, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_digital_estimator_pyx, __pyx_n_s_init, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 65, __pyx_L1_error)
@@ -20080,8 +20076,8 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  *     def __init__(self,             # <<<<<<<<<<<<<<
- *         controlSignalSequence,
- *         analogSystem, digitalControl,
+ *         control_signal_sequence,
+ *         analog_system, digital_control,
  */
   __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_16DigitalEstimator_1__init__, 0, __pyx_n_s_DigitalEstimator___init, NULL, __pyx_n_s_cbadc_digital_estimator, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);

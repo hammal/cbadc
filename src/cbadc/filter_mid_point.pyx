@@ -90,8 +90,8 @@ cdef class MidPointFilter():
                 self._Bb[n, m] = solBb[n]
 
         # Solve linear system of equations
-        print(f"New Bf: {array(self._Bf)}")
-        print(f"New Bb: {array(self._Bb)}")
+        # print(f"New Bf: {array(self._Bf)}")
+        # print(f"New Bb: {array(self._Bb)}")
         self._WT = solve(Vf + Vb, analogSystem.B).transpose()
 
     cdef void allocate_memory_buffers(self):

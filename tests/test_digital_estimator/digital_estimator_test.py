@@ -13,9 +13,9 @@ A = np.eye(N) * rho + np.eye(N, k=-1) * beta
 B = np.zeros((N, 1))
 B[0, 0] = beta
 # B[0, 1] = -beta
-C = np.eye(N)
-Gamma_tilde = np.eye(M)
-Gamma = Gamma_tilde * (-beta)
+CT = np.eye(N)
+Gamma_tildeT = np.eye(M)
+Gamma = Gamma_tildeT * (-beta)
 Ts = 1/(2 * beta)
 
 
@@ -39,7 +39,7 @@ def test_estimation():
     K1 = 100
     K2 = 10
 
-    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+    analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
     estimator = DigitalEstimator(
         controlSequence(), analogSystem, digitalControl, eta2, K1, K2, stop_after_number_of_iterations=25)
@@ -53,7 +53,7 @@ def test_batch_iterations():
     K1 = 25
     K2 = 1000
 
-    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+    analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     estimator = DigitalEstimator(controlSequence(
     ), analogSystem, digitalControl, eta2, K1, K2=K2, stop_after_number_of_iterations=200)
     for est in estimator:
@@ -66,7 +66,7 @@ def test_estimation_with_circuit_simulator():
     K1 = 1000
     K2 = 0
 
-    analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
+    analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     # analogSignals = [Sinusodial(0.5, 10)]
     analogSignals = [ConstantSignal(0.25)]
     digitalControl = DigitalControl(Ts, M)

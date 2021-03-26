@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath("../../cbc/"))
 
 # -- Project information -----------------------------------------------------
 
-project = "Control-Bounded Converter Toolbox"
+project = "Control-Bounded A/D Conversion Toolbox"
 copyright = "2021, Hampus Malmberg"
 author = "Hampus Malmberg"
 

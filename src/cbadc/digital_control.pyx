@@ -37,7 +37,15 @@ cdef class DigitalControl:
 
     Examples
     --------
-    TODO: this needs doing
+    >>> from cbadc import DigitalControl
+    >>> T = 1e-6
+    >>> M = 4
+    >>> dc = DigitalControl(T, M)
+    >>> print(dc)
+    The Digital Control is parameterized as:
+    T = 1e-06,
+    M = 4,
+    Next update at t = 1e-06
     """
 
     def __init__(self, T, M, t0 = 0.0):
@@ -59,6 +67,19 @@ cdef class DigitalControl:
         s_tilde : `array_like`, shape=(M_tilde,)
             state vector evaluated at time t
 
+        Examples
+        --------
+        >>> from cbadc import DigitalControl
+        >>> import numpy as np
+        >>> T = 1e-6
+        >>> M = 4
+        >>> dc = DigitalControl(T, M)
+        >>> res = dc.control_contribution(T + 1e-100, np.array([0.1, -0.2, 0.3, -99]))
+        >>> print(np.array(res))
+        [ 1. -1.  1. -1.]
+
+
+
         Returns
         -------
         `array_like`, shape=(M,)
@@ -70,7 +91,7 @@ cdef class DigitalControl:
         if t >= self._t_next:
             # if so update the control signal state
             for m in range(self.M):
-                self._s[m] = s_tilde[m] > 0
+                self._s[m] = s_tilde[m] >= 0
                 if self._s[m]:
                     self._dac_values[m] = 1 
                 else: 
@@ -82,6 +103,19 @@ cdef class DigitalControl:
     cpdef char [:] control_signal(self):
         """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
 
+        Examples
+        --------
+        >>> from cbadc import DigitalControl
+        >>> import numpy as np
+        >>> T = 1e-6
+        >>> M = 4
+        >>> dc = DigitalControl(T, M)
+        >>> _ = dc.control_contribution(T, np.array([-0.1, -0.2, 0.3, 99]))
+        >>> res = dc.control_signal()
+        >>> print(np.array(res))
+        [0 0 1 1]
+
+
         Returns
         -------
         `array_like`, shape=(M,), dtype=numpy.int8
@@ -89,7 +123,7 @@ cdef class DigitalControl:
         """
         return self._s
 
-    cdef double [:] impulse_response(self, m, t):
+    def impulse_response(self, int m, double t):
         """The impulse response of the corresponding DAC waveform
 
         Parameters
@@ -109,3 +143,7 @@ cdef class DigitalControl:
         temp = np.zeros(self.M, dtype=np.double)
         temp[m] = 1
         return temp
+
+    def __str__(self):
+        return f"The Digital Control is parameterized as:\nT = {self.T},\nM = {self.M},\nNext update at t = {self._t_next}"
+

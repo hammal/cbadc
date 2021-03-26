@@ -10,23 +10,23 @@ from numpy import dot as dot_product, eye, zeros, int8, double, roll, array
 
 cdef class LinearFilter():
 
-    def __cinit__(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2, int K1, int K2 = 0):
+    def __cinit__(self, AnalogSystem analog_system, DigitalControl digital_control, double eta2, int K1, int K2 = 0):
         """Initializes filter object by computing filter coefficents and allocation buffer memory.
 
         Args:
-            analogSystem (:obj:`AnalogSystem`): an anlog system
-            digitalControl (:obj:`DigitalControl`): a digital control
+            analog_system (:obj:`AnalogSystem`): an anlog system
+            digital_control (:obj:`DigitalControl`): a digital control
             eta2 (float): the bandwidth parameter.
             K1 (int): the batch size
             K2 (int): the lookahead size  
         """
-        self._M = analogSystem.M
-        self._N = analogSystem.N
-        self._L = analogSystem.L
+        self._M = analog_system.M
+        self._N = analog_system.N
+        self._L = analog_system.L
         self._K1 = K1
         self._K2 = K2
         self._K3 = K1 + K2
-        self.compute_filter_coefficients(analogSystem, digitalControl, eta2)
+        self.compute_filter_coefficients(analog_system, digital_control, eta2)
         self.allocate_memory_buffers()
     
     cpdef void compute_batch(self):
@@ -70,21 +70,21 @@ cdef class LinearFilter():
         self._control_signal = roll(self._control_signal, -self._K1, axis=0)
         self._control_signal_in_buffer -= self._K1
         
-    cdef void compute_filter_coefficients(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2):
+    cdef void compute_filter_coefficients(self, AnalogSystem analog_system, DigitalControl digital_control, double eta2):
         # Compute filter coefficients
-        A = array(analogSystem.A).transpose()
-        B = array(analogSystem.CT).transpose()
-        Q = dot_product(array(analogSystem.B), array(analogSystem.B).transpose())
-        R = eta2 * eye(analogSystem.N_tilde)
+        A = array(analog_system.A).transpose()
+        B = array(analog_system.CT).transpose()
+        Q = dot_product(array(analog_system.B), array(analog_system.B).transpose())
+        R = eta2 * eye(analog_system.N_tilde)
         # Solve care
         Vf, Vb = care(A, B, Q, R)
-        cdef double T = digitalControl.T
-        CCT = dot_product(array(analogSystem.CT).transpose(), array(analogSystem.CT))
-        tempAf = analogSystem.A - dot_product(Vf,CCT) / eta2
-        tempAb = analogSystem.A + dot_product(Vb,CCT) / eta2
+        cdef double T = digital_control.T
+        CCT = dot_product(array(analog_system.CT).transpose(), array(analog_system.CT))
+        tempAf = analog_system.A - dot_product(Vf,CCT) / eta2
+        tempAb = analog_system.A + dot_product(Vb,CCT) / eta2
         self._Af = expm(tempAf * T)
         self._Ab = expm(-tempAb * T)
-        Gamma = array(analogSystem.Gamma)
+        Gamma = array(analog_system.Gamma)
         # Solve IVPs
         self._Bf = zeros((self._N, self._M))
         self._Bb = zeros((self._N, self._M))
@@ -93,18 +93,18 @@ cdef class LinearFilter():
         rtol = 1e-10
         max_step = T/1000.0
         for m in range(self._M):
-            derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+            derivative = lambda t, x: dot_product(tempAf, x) + dot_product(Gamma, digital_control.impulse_response(m, t))
             solBf = solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
-            derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digitalControl.impulse_response(m, t))
+            derivative = lambda t, x: - dot_product(tempAb, x) + dot_product(Gamma, digital_control.impulse_response(m, t))
             solBb = -solve_ivp(derivative, (0, T), zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
             for n in range (self._N):
                 self._Bf[n, m] = solBf[n]
                 self._Bb[n, m] = solBb[n]
 
         # Solve linear system of equations
-        print(f"New Bf: {array(self._Bf)}")
-        print(f"New Bb: {array(self._Bb)}")
-        self._WT = solve(Vf + Vb, analogSystem.B).transpose()
+        # print(f"New Bf: {array(self._Bf)}")
+        # print(f"New Bb: {array(self._Bb)}")
+        self._WT = solve(Vf + Vb, analog_system.B).transpose()
 
     cdef void allocate_memory_buffers(self):
         # Allocate memory buffers

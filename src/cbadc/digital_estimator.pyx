@@ -15,11 +15,11 @@ class DigitalEstimator:
 
     Parameters
     ----------
-    controlSignalSequence : iterator
+    control_signal_sequence : iterator
         a generator which outputs a sequence of control signals.
-    analogSystem : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
-    digitalControl : :py:class:`cbadc.digital_control.DigitalControl`
+    digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         a digital control (necessary to determine the corresponding DAC waveform).
     eta2 : `float`
         the :math:`\eta^2` parameter determines the bandwidth of the estimator.
@@ -63,8 +63,8 @@ class DigitalEstimator:
 
 
     def __init__(self, 
-        controlSignalSequence, 
-        analogSystem, digitalControl, 
+        control_signal_sequence, 
+        analog_system, digital_control, 
         eta2, 
         K1, 
         K2 = 0, 
@@ -77,15 +77,15 @@ class DigitalEstimator:
         if (K2 < 0):
             raise "K2 must be a non negative integer."
         self.K2 = K2
-        self.analog_system = analogSystem
+        self.analog_system = analog_system
         if(eta2 < 0):
             raise "eta2 must be non negative."
         self.eta2 = eta2
-        self.control_signal = controlSignalSequence
+        self.control_signal = control_signal_sequence
 
         estimation_filter_implementations = {
-            'quadratic': lambda : LinearFilter(analogSystem, digitalControl, eta2, K1, K2 = K2),
-            'mid-point': lambda : MidPointFilter(analogSystem, digitalControl, eta2, K1, K2 = K2)
+            'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2),
+            'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2)
         }
         def not_implemented():
             raise f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}"

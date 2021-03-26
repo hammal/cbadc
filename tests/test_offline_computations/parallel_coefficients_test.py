@@ -26,14 +26,14 @@ def test_diagonal_elements_of_parallel_version():
     B[0, 0] = beta
     Ts = 1e-3
 
-    C = np.zeros((1, N))
-    C[0, -1] = 1.0
+    CT = np.zeros((N,1))
+    CT[0, -1] = 1.0
     R = np.array([[eta2]])
 
-    C = np.eye(N)
+    CT = np.eye(N)
     R = np.eye(N) * eta2
 
-    Vf, Vb = care(A.transpose(), C.transpose(), np.outer(B, B), R)
+    Vf, Vb = care(A.transpose(), CT, np.outer(B, B), R)
     eta2inv = np.eye(N) / eta2
     tempAf = A - np.dot(Vf, eta2inv)
     tempAb = A + np.dot(Vb, eta2inv)
