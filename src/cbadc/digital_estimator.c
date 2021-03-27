@@ -3582,8 +3582,6 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
   int __pyx_t_11;
   PyObject *__pyx_t_12 = NULL;
   PyObject *__pyx_t_13 = NULL;
-  PyObject *__pyx_t_14 = NULL;
-  PyObject *__pyx_t_15 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3809,7 +3807,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
  *             G = G.reshape((self.analog_system.N, self.analog_system.L))
  *             GH = G.transpose().conjugate()             # <<<<<<<<<<<<<<
  *             GGH = dot(G, GH)
- *             result[:, :, index] = abs(dot(GH, dot(inv(GGH + self.eta2Matrix))))
+ *             result[:, :, index] = abs(dot(GH, inv(GGH + self.eta2Matrix)))
  */
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_transpose); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 126, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -3853,7 +3851,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
  *             G = G.reshape((self.analog_system.N, self.analog_system.L))
  *             GH = G.transpose().conjugate()
  *             GGH = dot(G, GH)             # <<<<<<<<<<<<<<
- *             result[:, :, index] = abs(dot(GH, dot(inv(GGH + self.eta2Matrix))))
+ *             result[:, :, index] = abs(dot(GH, inv(GGH + self.eta2Matrix)))
  *         return result
  */
     __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_dot); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 127, __pyx_L1_error)
@@ -3909,7 +3907,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
     /* "cbadc/digital_estimator.pyx":128
  *             GH = G.transpose().conjugate()
  *             GGH = dot(G, GH)
- *             result[:, :, index] = abs(dot(GH, dot(inv(GGH + self.eta2Matrix))))             # <<<<<<<<<<<<<<
+ *             result[:, :, index] = abs(dot(GH, inv(GGH + self.eta2Matrix)))             # <<<<<<<<<<<<<<
  *         return result
  * 
  */
@@ -3917,44 +3915,26 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_dot); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_dot); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_inv); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_inv); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 128, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_eta2Matrix); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 128, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_15 = PyNumber_Add(__pyx_v_GGH, __pyx_t_14); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 128, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_15);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __pyx_t_14 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_13))) {
-      __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_13);
-      if (likely(__pyx_t_14)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_13);
-        __Pyx_INCREF(__pyx_t_14);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_13, function);
-      }
-    }
-    __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_t_15) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_15);
-    __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_eta2Matrix); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_13 = NULL;
+    __pyx_t_13 = PyNumber_Add(__pyx_v_GGH, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 128, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
+    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __pyx_t_12 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_10))) {
-      __pyx_t_13 = PyMethod_GET_SELF(__pyx_t_10);
-      if (likely(__pyx_t_13)) {
+      __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_10);
+      if (likely(__pyx_t_12)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
-        __Pyx_INCREF(__pyx_t_13);
+        __Pyx_INCREF(__pyx_t_12);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_10, function);
       }
     }
-    __pyx_t_4 = (__pyx_t_13) ? __Pyx_PyObject_Call2Args(__pyx_t_10, __pyx_t_13, __pyx_t_12) : __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_12);
-    __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __pyx_t_4 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_10, __pyx_t_12, __pyx_t_13) : __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_13);
+    __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -3989,20 +3969,20 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
     } else
     #endif
     {
-      __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 128, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_13 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 128, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_13);
       if (__pyx_t_10) {
-        __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_10); __pyx_t_10 = NULL;
+        __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_10); __pyx_t_10 = NULL;
       }
       __Pyx_INCREF(__pyx_v_GH);
       __Pyx_GIVEREF(__pyx_v_GH);
-      PyTuple_SET_ITEM(__pyx_t_12, 0+__pyx_t_11, __pyx_v_GH);
+      PyTuple_SET_ITEM(__pyx_t_13, 0+__pyx_t_11, __pyx_v_GH);
       __Pyx_GIVEREF(__pyx_t_4);
-      PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_t_4);
+      PyTuple_SET_ITEM(__pyx_t_13, 1+__pyx_t_11, __pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_12, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 128, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_13, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = NULL;
@@ -4049,7 +4029,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
 
   /* "cbadc/digital_estimator.pyx":129
  *             GGH = dot(G, GH)
- *             result[:, :, index] = abs(dot(GH, dot(inv(GGH + self.eta2Matrix))))
+ *             result[:, :, index] = abs(dot(GH, inv(GGH + self.eta2Matrix)))
  *         return result             # <<<<<<<<<<<<<<
  * 
  * 
@@ -4079,8 +4059,6 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_XDECREF(__pyx_t_14);
-  __Pyx_XDECREF(__pyx_t_15);
   __Pyx_AddTraceback("cbadc.digital_estimator.DigitalEstimator.noise_transfer_function", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -19286,7 +19264,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "cbadc/digital_estimator.pyx":128
  *             GH = G.transpose().conjugate()
  *             GGH = dot(G, GH)
- *             result[:, :, index] = abs(dot(GH, dot(inv(GGH + self.eta2Matrix))))             # <<<<<<<<<<<<<<
+ *             result[:, :, index] = abs(dot(GH, inv(GGH + self.eta2Matrix)))             # <<<<<<<<<<<<<<
  *         return result
  * 
  */

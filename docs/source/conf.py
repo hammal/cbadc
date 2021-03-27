@@ -13,7 +13,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../cbc/"))
+sys.path.insert(0, os.path.abspath("../../src"))
 
 
 # -- Project information -----------------------------------------------------
@@ -37,7 +37,8 @@ extensions = ["sphinx.ext.autodoc",
               "sphinx_rtd_theme", 
               "nbsphinx", 
               "sphinx.ext.napoleon",
-              "sphinx.ext.intersphinx"]
+              "sphinx.ext.intersphinx",
+              "sphinx_gallery.gen_gallery"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -64,3 +65,9 @@ html_theme = "sphinx_rtd_theme"
 # intershpinx
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                         'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None)}
+
+# Sphinx-gallery
+sphinx_gallery_conf = {
+     'examples_dirs': '../code_examples',   # path to your example scripts
+     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+}

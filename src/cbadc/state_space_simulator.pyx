@@ -70,7 +70,7 @@ cdef class StateSpaceSimulator(object):
     >>> _ = simulator.__next__()
     >>> _ = simulator.__next__()
     >>> print(np.array(simulator.__next__()))
-    [1 1]
+    [0 0]
     
     See also
     --------
@@ -151,7 +151,7 @@ cdef class StateSpaceSimulator(object):
         >>> _ = simulator.__next__()
         >>> _ = simulator.__next__()
         >>> print(np.array(simulator.state_vector()))
-        [0.01217279 0.01222796]
+        [-0.00622858 -0.00626943]
 
         Returns
         -------
@@ -221,7 +221,7 @@ cdef class StateSpaceSimulator(object):
             np.zeros((self.analog_system.N * self.analog_system.M)), 
             atol=atol, rtol=rtol, max_step=max_step
             ).y[:,-1].reshape((self.analog_system.N, self.analog_system.M), order='C')
-        print(f"self._pre_computed_control_matrix: {np.asarray(self._pre_computed_control_matrix)}")
+        # print(f"self._pre_computed_control_matrix: {np.asarray(self._pre_computed_control_matrix)}")
     
     cdef double [:] _ordinary_differential_solution(self, t_span):
         """Computes system ivp in three parts:

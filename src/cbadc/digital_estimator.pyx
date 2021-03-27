@@ -125,7 +125,7 @@ class DigitalEstimator:
             G = G.reshape((self.analog_system.N, self.analog_system.L))
             GH = G.transpose().conjugate()
             GGH = dot(G, GH)
-            result[:, :, index] = abs(dot(GH, dot(inv(GGH + self.eta2Matrix))))
+            result[:, :, index] = abs(dot(GH, inv(GGH + self.eta2Matrix)))
         return result
 
 

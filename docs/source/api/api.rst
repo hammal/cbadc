@@ -10,3 +10,4 @@ of the package
     digital_control
     state_space_simulator
     digital_estimator
+    utilities
