@@ -8,6 +8,7 @@ cdef class MidPointFilter:
     cdef double [:,:] _WT
     cdef char [:,:]  _control_signal
     cdef double [:,:] _estimate
+    cdef double Ts
     cdef double [:] temp_forward_mean
     cdef double [:] temp_backward_mean
     cdef int _K1, _K2, _K3, _control_signal_in_buffer

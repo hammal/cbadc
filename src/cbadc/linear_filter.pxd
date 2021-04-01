@@ -9,6 +9,7 @@ cdef class LinearFilter:
     cdef char [:,:]  _control_signal
     cdef double [:,:] _estimate
     cdef double [:,:] _mean
+    cdef double _Ts
     cdef int _K1, _K2, _K3, _control_signal_in_buffer
     cdef int _N, _M, _L
     # cdef int input(self, char [:] s)

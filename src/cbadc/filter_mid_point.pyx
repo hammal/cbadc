@@ -10,7 +10,7 @@ from numpy import dot as dot_product, eye, zeros, int8, double, roll, array
 
 cdef class MidPointFilter():
 
-    def __cinit__(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2, int K1, int K2 = 0):
+    def __cinit__(self, AnalogSystem analogSystem, DigitalControl digitalControl, double eta2, int K1, double Ts, int K2 = 0,):
         """Initializes filter object by computing filter coefficents and allocation buffer memory.
 
         Args:
@@ -26,6 +26,7 @@ cdef class MidPointFilter():
         self._K1 = K1
         self._K2 = K2
         self._K3 = K1 + K2
+        self._Ts = Ts
         self.compute_filter_coefficients(analogSystem, digitalControl, eta2)
         self.allocate_memory_buffers()
     

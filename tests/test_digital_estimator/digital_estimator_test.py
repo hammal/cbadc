@@ -1,8 +1,8 @@
-from cbadc import StateSpaceSimulator
+from cbadc.simulator import StateSpaceSimulator
 from cbadc.digital_estimator import DigitalEstimator
-from cbadc import ConstantSignal, Sinusodial
-from cbadc import AnalogSystem
-from cbadc import DigitalControl
+from cbadc.analog_signal import ConstantSignal, Sinusodial
+from cbadc.analog_system import AnalogSystem
+from cbadc.digital_control import DigitalControl
 import numpy as np
 from tests.test_analog_system.chain_of_integrators import chain_of_integrators
 beta = 6250.0

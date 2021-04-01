@@ -1,3 +1,9 @@
+"""Digital control
+
+This module provides a general :py:class:`cbadc.digital_control.DigitalControl`
+class to enabled the creation of a general indepedently controlled digital
+control system.
+"""
 #cython: language_level=3
 import numpy as np
 
@@ -33,11 +39,11 @@ cdef class DigitalControl:
 
     See also
     ---------
-    :py:class:`cbadc.state_space_simulator.StateSpaceSimulator`
+    :py:class:`cbadc.simulator.StateSpaceSimulator`
 
     Examples
     --------
-    >>> from cbadc import DigitalControl
+    >>> from cbadc.digital_control import DigitalControl
     >>> T = 1e-6
     >>> M = 4
     >>> dc = DigitalControl(T, M)
@@ -48,7 +54,7 @@ cdef class DigitalControl:
     Next update at t = 1e-06
     """
 
-    def __init__(self, T, M, t0 = 0.0):
+    def __init__(self, double T, int M, double t0 = 0.0):
         self.T = T
         self.M = M
         self.M_tilde = M
@@ -69,7 +75,7 @@ cdef class DigitalControl:
 
         Examples
         --------
-        >>> from cbadc import DigitalControl
+        >>> from cbadc.digital_control import DigitalControl
         >>> import numpy as np
         >>> T = 1e-6
         >>> M = 4
@@ -105,7 +111,7 @@ cdef class DigitalControl:
 
         Examples
         --------
-        >>> from cbadc import DigitalControl
+        >>> from cbadc.digital_control import DigitalControl
         >>> import numpy as np
         >>> T = 1e-6
         >>> M = 4
@@ -145,5 +151,5 @@ cdef class DigitalControl:
         return temp
 
     def __str__(self):
-        return f"The Digital Control is parameterized as:\nT = {self.T},\nM = {self.M},\nNext update at t = {self._t_next}"
+        return f"The Digital Control is parameterized as:\nT = {self.T},\nM = {self.M}, and next update at\nt = {self._t_next}"
 

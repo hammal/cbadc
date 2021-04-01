@@ -1,4 +1,4 @@
-from cbadc import ConstantSignal
+from cbadc.analog_signal import ConstantSignal
 
 
 def test_initialization():

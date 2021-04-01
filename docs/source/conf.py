@@ -12,6 +12,12 @@
 #
 import os
 import sys
+import warnings
+
+
+warnings.filterwarnings("ignore", category=UserWarning,
+                        message='Matplotlib is currently using agg, which is a'
+                                ' non-GUI backend, so cannot show the figure.')
 
 sys.path.insert(0, os.path.abspath("../../src"))
 
@@ -32,13 +38,15 @@ version = "0.0.1"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc",
-              "sphinx.ext.mathjax", 
-              "sphinx_rtd_theme", 
-              "nbsphinx", 
-              "sphinx.ext.napoleon",
-              "sphinx.ext.intersphinx",
-              "sphinx_gallery.gen_gallery"]
+extensions = [
+          "sphinx.ext.autodoc",
+          "sphinx.ext.autosummary",
+          "sphinx.ext.mathjax", 
+          "sphinx_rtd_theme", 
+          "nbsphinx", 
+          "sphinx.ext.napoleon",
+          "sphinx.ext.intersphinx",
+          "sphinx_gallery.gen_gallery"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -66,8 +74,27 @@ html_theme = "sphinx_rtd_theme"
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                         'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None)}
 
+
 # Sphinx-gallery
+from sphinx_gallery.sorting import FileNameSortKey
 sphinx_gallery_conf = {
      'examples_dirs': '../code_examples',   # path to your example scripts
      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+     
+     # directory where function/class granular galleries are stored
+     'backreferences_dir'  : 'backreferences',
+     # Modules for which function/class level galleries are created. In
+     # this case sphinx_gallery and numpy in a tuple of strings.
+     'doc_module' : ('cbadc.analog_system', 
+          'cbadc.analog_signal', 
+          'cbadc.digital_control', 
+          'cbadc.digital_estimator', 
+          'cbadc.simulator',
+          'cbadc.utilities'),
+     'line_numbers': True,
+     'remove_config_comments': True,
+     'within_subsection_order': FileNameSortKey,
 }
+
+# generate autosummary even if no references
+autosummary_generate = True

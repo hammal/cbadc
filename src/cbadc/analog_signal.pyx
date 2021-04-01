@@ -1,9 +1,9 @@
-"""This module contains various analog signal classes
+"""Predefined common analog signals
 
-Specifically, we represent analog signals, i.e., mappings from the time :math:`t`
-to a signal value :math:`u(t)`. Typically we are used to handeling discrete time
-signals for various signal processing tasks. However, since the control-bounded A/D
-converters are converting continuous-time signals we need to define signals that 
+This module focues on representing analog signals, i.e., mappings from the time :math:`t`
+to a signal value :math:`u(t)`. Typically for signal processing algorithms, we are used to 
+handeling discrete-time signals, i.e. samples of signals. However, since the control-bounded A/D
+converters are converting continuous-time signals we need tools to define signals that 
 can be evaluated over their whole continuous domain.
 """
 
@@ -31,6 +31,9 @@ cdef class AnalogSignal:
             The analog signal value
         """        
         return 0.0
+    
+    def __str__(self):
+        return f"Analog signal returns constant 0, i.e., maps t |-> 0."
 
 
 class ConstantSignal(AnalogSignal):
@@ -51,12 +54,12 @@ class ConstantSignal(AnalogSignal):
     See also
     ---------
     :py:class:`cbadc.analog_signal.Sinusodial`
-    :py:class:`cbadc.state_space_simulator.StateSpaceSimulator`
+    :py:class:`cbadc.simulator.StateSpaceSimulator`
 
     Examples
     ---------
-    >>> import cbadc
-    >>> u = cbadc.ConstantSignal(1.0) 
+    >>> from cbadc.analog_signal import ConstantSignal
+    >>> u = ConstantSignal(1.0) 
     >>> print(u.evaluate(42))
     1.0
 
@@ -81,6 +84,9 @@ class ConstantSignal(AnalogSignal):
             The analog signal value
         """        
         return self.offset
+
+    def __str__(self):
+        return f"ConstantSignal has an offset = {self.offset}."
 
 class Sinusodial(AnalogSignal):
     """An analog continuous-time sinusodial signal.
@@ -128,6 +134,9 @@ class Sinusodial(AnalogSignal):
         self.angluarFrequency = 2 * np.pi * self.frequency
         self.phase = phase
         self.offset = offset
+
+    def __str__(self):
+        return f"Sinusodial parameterized as:\namplitude = {self.amplitude},\nfrequency = {self.frequency},\nphase = {self.phase}, and\noffset = {self.offset}"
 
     def evaluate(self, double t):
         """Evaluate the signal at time :math:`t`.

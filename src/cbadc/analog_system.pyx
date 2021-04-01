@@ -1,3 +1,11 @@
+""" Analog systems
+
+This module provides a general :py:class:`cbadc.analog_system.AnalogSystem`
+class with the necessary functionality to do transient simulations, compute 
+transfer functions, and exposing the relevant system parameters as 
+attributes. Additionally, several derived convenience classes are defined 
+to quikly initalize analog systems of particular structures.
+"""
 #cython: language_level=3
 import numpy as np
 
@@ -63,7 +71,7 @@ cdef class AnalogSystem:
 
     See also
     --------
-    :py:class:`cbadc.state_space_simulator.StateSpaceSimulator`
+    :py:class:`cbadc.simulator.StateSpaceSimulator`
 
     Example
     -------
@@ -102,7 +110,8 @@ cdef class AnalogSystem:
         """Create an analog system.
         """
 
-        self.A = np.array(A, dtype=np.double)    
+        
+        self.A = np.array(A, dtype=np.double)
         self.B = np.array(B, dtype=np.double)
         self.CT = np.array(CT, dtype=np.double)
         self.Gamma = np.array(Gamma, dtype=np.double)
@@ -243,7 +252,7 @@ cdef class AnalogSystem:
 
     cdef complex [:,:] _atf(self, double _omega):
             return np.dot(
-                np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),
+                np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
                 self.B,
             )
 
@@ -300,7 +309,7 @@ cdef class AnalogSystem:
         return np.asarray(resp)
 
     def __str__(self):
-        return f"The analog system is defined as:\nA:\n{np.array(self.A)},\nB:\n{np.array(self.B)},\nCT:\n{np.array(self.CT)},\nGamma:\n{np.array(self.Gamma)},\nand Gamma_tildeT:\n{np.array(self.Gamma_tildeT)}"
+        return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nand Gamma_tildeT =\n{np.array(self.Gamma_tildeT)}"
 
 
 class InvalidAnalogSystemError(Exception):
@@ -379,7 +388,7 @@ class ChainOfIntegrators(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.state_space_simulator.AnalogSystem`
+    :py:class:`cbadc.analog_system.AnalogSystem`
 
     Example
     -------
@@ -512,7 +521,7 @@ class LeapFrog(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.state_space_simulator.ChainOfIntegrators`
+    :py:class:`cbadc.analog_system.ChainOfIntegrators`
 
     Example
     -------

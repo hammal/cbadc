@@ -1087,7 +1087,7 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "cbadc/analog_system.pyx":5
+/* "cbadc/analog_system.pyx":13
  * 
  * 
  * cdef class AnalogSystem:             # <<<<<<<<<<<<<<
@@ -2083,15 +2083,14 @@ static const char __pyx_k_x[] = "x";
 static const char __pyx_k_CT[] = "CT";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_np[] = "np";
-static const char __pyx_k_B_2[] = ",\nB:\n";
+static const char __pyx_k_B_2[] = ",\nB =\n";
 static const char __pyx_k_doc[] = "__doc__";
 static const char __pyx_k_dot[] = "dot";
 static const char __pyx_k_eye[] = "eye";
-static const char __pyx_k_inv[] = "inv";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_rho[] = "rho";
-static const char __pyx_k_CT_2[] = ",\nCT:\n";
+static const char __pyx_k_CT_2[] = ",\nCT = \n";
 static const char __pyx_k_base[] = "base";
 static const char __pyx_k_beta[] = "beta";
 static const char __pyx_k_diag[] = "diag";
@@ -2103,6 +2102,7 @@ static const char __pyx_k_name[] = "name";
 static const char __pyx_k_ndim[] = "ndim";
 static const char __pyx_k_norm[] = "norm";
 static const char __pyx_k_pack[] = "pack";
+static const char __pyx_k_pinv[] = "pinv";
 static const char __pyx_k_self[] = "self";
 static const char __pyx_k_size[] = "size";
 static const char __pyx_k_step[] = "step";
@@ -2136,7 +2136,7 @@ static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_system[] = "system";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
-static const char __pyx_k_Gamma_2[] = ",\nGamma:\n";
+static const char __pyx_k_Gamma_2[] = ",\nGamma =\n";
 static const char __pyx_k_asarray[] = "asarray";
 static const char __pyx_k_flatten[] = "flatten";
 static const char __pyx_k_fortran[] = "fortran";
@@ -2179,7 +2179,7 @@ static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_and_Gamma_tildeT[] = ",\nand Gamma_tildeT:\n";
+static const char __pyx_k_and_Gamma_tildeT[] = ",\nand Gamma_tildeT =\n";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_ChainOfIntegrators[] = "ChainOfIntegrators";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
@@ -2202,8 +2202,8 @@ static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cyt
 static const char __pyx_k_src_cbadc_analog_system_pyx[] = "src/cbadc/analog_system.pyx";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
+static const char __pyx_k_Analog_systems_This_module_prov[] = " Analog systems\n\nThis module provides a general :py:class:`cbadc.analog_system.AnalogSystem`\nclass with the necessary functionality to do transient simulations, compute \ntransfer functions, and exposing the relevant system parameters as \nattributes. Additionally, several derived convenience classes are defined \nto quikly initalize analog systems of particular structures.\n";
 static const char __pyx_k_InvalidAnalogSystemError___init[] = "InvalidAnalogSystemError.__init__";
-static const char __pyx_k_The_analog_system_is_defined_as[] = "The analog system is defined as:\nA:\n";
 static const char __pyx_k_analog_transfer_function_matrix[] = "analog_transfer_function_matrix";
 static const char __pyx_k_kappa_must_be_a_one_dimensional[] = "kappa must be a one dimensional vector of size N or matrix with N rows";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -2221,8 +2221,9 @@ static const char __pyx_k_N_does_not_agree_with_control_ob[] = "N does not agree
 static const char __pyx_k_N_does_not_agree_with_input_matr[] = "N does not agree with input matrix B.";
 static const char __pyx_k_N_does_not_agree_with_signal_obs[] = "N does not agree with signal observation matrix C.";
 static const char __pyx_k_Out_of_bounds_on_buffer_access_a[] = "Out of bounds on buffer access (axis %d)";
-static const char __pyx_k_Represents_an_chain_of_integrato[] = "Represents an chain-of-integrators analog system.\n\n    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient\n    way of creating chain-of-integrator A/D analog systems. For more information about \n    chain-of-integrator ADCs see \n    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=96/>`_..\n\n\n    Chain-of-integrators analog systems are sytem goverened by the differential equations,\n\n    :math:`\\dot{\\mathbf{x}}(t) = \\mathbf{A} \\mathbf{x}(t) + \\mathbf{B} \\mathbf{u}(t) + \\mathbf{\\Gamma} \\mathbf{s}(t)`\n    \n    where \n\n    :math:`\\mathbf{A} = \\begin{pmatrix} \\rho_1 & \\\\ \\beta_2 & \\rho_2  \\\\ & \\ddots & \\ddots \\\\ & & \\beta_N & \\rho_N \\end{pmatrix}`\n    \n    :math:`\\mathbf{B} = \\begin{pmatrix} \\beta_1 & 0 & \\cdots & 0 \\end{pmatrix}^\\mathsf{T}`\n    \n    :math:`\\mathbf{C}^\\mathsf{T} = \\mathbf{I}_N`\n\n    :math:`\\mathbf{\\Gamma} = \\begin{pmatrix} \\kappa_1  \\\\  & \\ddots \\\\ & & \\kappa_N  \\end{pmatrix}`\n\n    :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T} = \\mathbf{I}_N`\n\n    Parameters\n    ----------\n    beta : `array_like`, shape=(N,)\n        vector with per integrator signal amplification :math:`\\begin{pmatrix}\\beta_1 & \\cdots & \\beta_N \\end{pmatrix}`.\n    rho : `array_like`, shape=(N,)\n        local feedback factor vector :math:`\\begin{pmatrix}\\rho_1 & \\cdots & \\rho_N \\end{pmatrix}`.\n    kappa : `array_like`, shape=(N,) or shape=(M, N),\n        control gain vector :math:`\\begin{pmatrix}\\kappa_1 & \\cdots & \\kappa_N \\end{pmatrix}`.\n    kappa_tilde : `array_like`, shape=(N, M_tilde), `optional`\n\n    Attributes\n    ----------\n    N : `int`\n        state space order :math:`N`.\n    N_tilde : `int`\n        number of signal observations :math:`\\tilde{N}`.\n    M : `int`\n        number of digital contr""ol signals :math:`M`.\n    M_tilde : `int`\n        number of control signal observations :math:`\\tilde{M}`.\n    L : `int`\n        number of input signals :math:`L`.\n    A : `array_like`, shape=(N, N)\n        system matrix :math:`\\mathbf{A}`.\n    B : `array_like`, shape=(N, L)\n        input matrix :math:`\\mathbf{B}`.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix :math:`\\mathbf{C}^\\mathsf{T}`.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix :math:`\\mathbf{\\Gamma}`.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}`.\n\n    See also\n    --------\n    :py:class:`cbadc.state_space_simulator.AnalogSystem`\n\n    Example\n    -------\n    >>> import numpy as np\n    >>> from cbadc.analog_system import ChainOfIntegrators\n    >>> beta = np.array([100, 100, 100])\n    >>> rho = np.array([-1, -1, -1])\n    >>> kappa = np.array([[100, 100, 100]]).transpose()\n    >>> print(ChainOfIntegrators(beta, rho, kappa))\n    The analog system is defined as:\n    A:\n    [[ -1.   0.   0.]\n     [100.  -1.   0.]\n     [  0. 100.  -1.]],\n    B:\n    [[100.]\n     [  0.]\n     [  0.]],\n    CT:\n    [[1. 0. 0.]\n     [0. 1. 0.]\n     [0. 0. 1.]],\n    Gamma:\n    [[100.   0.   0.]\n     [  0. 100.   0.]\n     [  0.   0. 100.]],\n    and Gamma_tildeT:\n    [[-1.  0.  0.]\n     [ 0. -1.  0.]\n     [ 0.  0. -1.]]\n\n\n    Raises\n    ------\n    :py:class:`InvalidAnalogSystemError`\n        For faulty analog system parametrization.\n    ";
-static const char __pyx_k_Represents_an_leap_frog_analog_s[] = "Represents an leap-frog analog system.\n\n    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient\n    way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see \n    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=126/>`_..\n\n\n    A leap-frog analog system is goverened by the differential equations,\n\n    :math:`\\dot{\\mathbf{x}}(t) = \\mathbf{A} \\mathbf{x}(t) + \\mathbf{B} \\mathbf{u}(t) + \\mathbf{\\Gamma} \\mathbf{s}(t)`\n    \n    where \n\n    :math:`\\mathbf{A} = \\begin{pmatrix} \\rho_1 & \\rho_2 \\\\ \\beta_2 & 0 & \\rho_3 \\\\ & \\ddots & \\ddots & \\ddots \\\\ & & \\beta_N & 0 & \\rho_{N+1} \\end{pmatrix}`\n    \n    :math:`\\mathbf{B} = \\begin{pmatrix} \\beta_1 & 0 & \\cdots & 0 \\end{pmatrix}^\\mathsf{T}`\n    \n    :math:`\\mathbf{C}^\\mathsf{T} = \\mathbf{I}_N`\n\n    :math:`\\mathbf{\\Gamma} = \\begin{pmatrix} \\kappa_1  \\\\  & \\ddots \\\\ & & \\kappa_N  \\end{pmatrix}`\n\n    :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T} = \\mathbf{I}_N`\n\n    Parameters\n    ----------\n    beta : `array_like`, shape=(N,)\n        vector with per integrator signal amplification :math:`\\begin{pmatrix}\\beta_1 & \\cdots & \\beta_N \\end{pmatrix}`.\n    rho : `array_like`, shape=(N,)\n        local feedback factor vector :math:`\\begin{pmatrix}\\rho_1 & \\cdots & \\rho_N \\end{pmatrix}`.\n    kappa : `array_like`, shape=(N,)\n        control gain vector :math:`\\begin{pmatrix}\\kappa_1 & \\cdots & \\kappa_N \\end{pmatrix}`.\n\n    Attributes\n    ----------\n    N : `int`\n        state space order :math:`N`.\n    N_tilde : `int`\n        number of signal observations :math:`\\tilde{N}`.\n    M : `int`\n        number of digital control signals :math:`M`.\n    M_tilde : `int`\n        number of control signal observations :math:`\\tilde{M}`.\n    ""L : `int`\n        number of input signals :math:`L`.\n    A : `array_like`, shape=(N, N)\n        system matrix :math:`\\mathbf{A}`.\n    B : `array_like`, shape=(N, L)\n        input matrix :math:`\\mathbf{B}`.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix :math:`\\mathbf{C}^\\mathsf{T}`.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix :math:`\\mathbf{\\Gamma}`.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}`.\n\n    See also\n    --------\n    :py:class:`cbadc.state_space_simulator.ChainOfIntegrators`\n\n    Example\n    -------\n    >>> import numpy as np\n    >>> from cbadc.analog_system import LeapFrog\n    >>> beta = np.array([101, 102, 103])\n    >>> rho = np.array([-1, -2, -3])\n    >>> kappa = np.arange(100,109).reshape((3, 3))\n    >>> print(LeapFrog(beta, rho, kappa))\n    The analog system is defined as:\n    A:\n    [[ -1.  -2.   0.]\n     [102.   0.  -3.]\n     [  0. 103.   0.]],\n    B:\n    [[101.]\n     [  0.]\n     [  0.]],\n    CT:\n    [[1. 0. 0.]\n     [0. 1. 0.]\n     [0. 0. 1.]],\n    Gamma:\n    [[100. 101. 102.]\n     [103. 104. 105.]\n     [106. 107. 108.]],\n    and Gamma_tildeT:\n    [[-0.5603758  -0.57718708 -0.59399835]\n     [-0.56054048 -0.5771902  -0.59383992]\n     [-0.560702   -0.57719323 -0.59368447]]\n\n\n    Raises\n    ------\n    :py:class:`InvalidAnalogSystemError`\n        For faulty analog system parametrization.\n    ";
+static const char __pyx_k_Represents_an_chain_of_integrato[] = "Represents an chain-of-integrators analog system.\n\n    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient\n    way of creating chain-of-integrator A/D analog systems. For more information about \n    chain-of-integrator ADCs see \n    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=96/>`_..\n\n\n    Chain-of-integrators analog systems are sytem goverened by the differential equations,\n\n    :math:`\\dot{\\mathbf{x}}(t) = \\mathbf{A} \\mathbf{x}(t) + \\mathbf{B} \\mathbf{u}(t) + \\mathbf{\\Gamma} \\mathbf{s}(t)`\n    \n    where \n\n    :math:`\\mathbf{A} = \\begin{pmatrix} \\rho_1 & \\\\ \\beta_2 & \\rho_2  \\\\ & \\ddots & \\ddots \\\\ & & \\beta_N & \\rho_N \\end{pmatrix}`\n    \n    :math:`\\mathbf{B} = \\begin{pmatrix} \\beta_1 & 0 & \\cdots & 0 \\end{pmatrix}^\\mathsf{T}`\n    \n    :math:`\\mathbf{C}^\\mathsf{T} = \\mathbf{I}_N`\n\n    :math:`\\mathbf{\\Gamma} = \\begin{pmatrix} \\kappa_1  \\\\  & \\ddots \\\\ & & \\kappa_N  \\end{pmatrix}`\n\n    :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T} = \\mathbf{I}_N`\n\n    Parameters\n    ----------\n    beta : `array_like`, shape=(N,)\n        vector with per integrator signal amplification :math:`\\begin{pmatrix}\\beta_1 & \\cdots & \\beta_N \\end{pmatrix}`.\n    rho : `array_like`, shape=(N,)\n        local feedback factor vector :math:`\\begin{pmatrix}\\rho_1 & \\cdots & \\rho_N \\end{pmatrix}`.\n    kappa : `array_like`, shape=(N,) or shape=(M, N),\n        control gain vector :math:`\\begin{pmatrix}\\kappa_1 & \\cdots & \\kappa_N \\end{pmatrix}`.\n    kappa_tilde : `array_like`, shape=(N, M_tilde), `optional`\n\n    Attributes\n    ----------\n    N : `int`\n        state space order :math:`N`.\n    N_tilde : `int`\n        number of signal observations :math:`\\tilde{N}`.\n    M : `int`\n        number of digital contr""ol signals :math:`M`.\n    M_tilde : `int`\n        number of control signal observations :math:`\\tilde{M}`.\n    L : `int`\n        number of input signals :math:`L`.\n    A : `array_like`, shape=(N, N)\n        system matrix :math:`\\mathbf{A}`.\n    B : `array_like`, shape=(N, L)\n        input matrix :math:`\\mathbf{B}`.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix :math:`\\mathbf{C}^\\mathsf{T}`.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix :math:`\\mathbf{\\Gamma}`.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}`.\n\n    See also\n    --------\n    :py:class:`cbadc.analog_system.AnalogSystem`\n\n    Example\n    -------\n    >>> import numpy as np\n    >>> from cbadc.analog_system import ChainOfIntegrators\n    >>> beta = np.array([100, 100, 100])\n    >>> rho = np.array([-1, -1, -1])\n    >>> kappa = np.array([[100, 100, 100]]).transpose()\n    >>> print(ChainOfIntegrators(beta, rho, kappa))\n    The analog system is defined as:\n    A:\n    [[ -1.   0.   0.]\n     [100.  -1.   0.]\n     [  0. 100.  -1.]],\n    B:\n    [[100.]\n     [  0.]\n     [  0.]],\n    CT:\n    [[1. 0. 0.]\n     [0. 1. 0.]\n     [0. 0. 1.]],\n    Gamma:\n    [[100.   0.   0.]\n     [  0. 100.   0.]\n     [  0.   0. 100.]],\n    and Gamma_tildeT:\n    [[-1.  0.  0.]\n     [ 0. -1.  0.]\n     [ 0.  0. -1.]]\n\n\n    Raises\n    ------\n    :py:class:`InvalidAnalogSystemError`\n        For faulty analog system parametrization.\n    ";
+static const char __pyx_k_Represents_an_leap_frog_analog_s[] = "Represents an leap-frog analog system.\n\n    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient\n    way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see \n    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=126/>`_..\n\n\n    A leap-frog analog system is goverened by the differential equations,\n\n    :math:`\\dot{\\mathbf{x}}(t) = \\mathbf{A} \\mathbf{x}(t) + \\mathbf{B} \\mathbf{u}(t) + \\mathbf{\\Gamma} \\mathbf{s}(t)`\n    \n    where \n\n    :math:`\\mathbf{A} = \\begin{pmatrix} \\rho_1 & \\rho_2 \\\\ \\beta_2 & 0 & \\rho_3 \\\\ & \\ddots & \\ddots & \\ddots \\\\ & & \\beta_N & 0 & \\rho_{N+1} \\end{pmatrix}`\n    \n    :math:`\\mathbf{B} = \\begin{pmatrix} \\beta_1 & 0 & \\cdots & 0 \\end{pmatrix}^\\mathsf{T}`\n    \n    :math:`\\mathbf{C}^\\mathsf{T} = \\mathbf{I}_N`\n\n    :math:`\\mathbf{\\Gamma} = \\begin{pmatrix} \\kappa_1  \\\\  & \\ddots \\\\ & & \\kappa_N  \\end{pmatrix}`\n\n    :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T} = \\mathbf{I}_N`\n\n    Parameters\n    ----------\n    beta : `array_like`, shape=(N,)\n        vector with per integrator signal amplification :math:`\\begin{pmatrix}\\beta_1 & \\cdots & \\beta_N \\end{pmatrix}`.\n    rho : `array_like`, shape=(N,)\n        local feedback factor vector :math:`\\begin{pmatrix}\\rho_1 & \\cdots & \\rho_N \\end{pmatrix}`.\n    kappa : `array_like`, shape=(N,)\n        control gain vector :math:`\\begin{pmatrix}\\kappa_1 & \\cdots & \\kappa_N \\end{pmatrix}`.\n\n    Attributes\n    ----------\n    N : `int`\n        state space order :math:`N`.\n    N_tilde : `int`\n        number of signal observations :math:`\\tilde{N}`.\n    M : `int`\n        number of digital control signals :math:`M`.\n    M_tilde : `int`\n        number of control signal observations :math:`\\tilde{M}`.\n    ""L : `int`\n        number of input signals :math:`L`.\n    A : `array_like`, shape=(N, N)\n        system matrix :math:`\\mathbf{A}`.\n    B : `array_like`, shape=(N, L)\n        input matrix :math:`\\mathbf{B}`.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix :math:`\\mathbf{C}^\\mathsf{T}`.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix :math:`\\mathbf{\\Gamma}`.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}`.\n\n    See also\n    --------\n    :py:class:`cbadc.analog_system.ChainOfIntegrators`\n\n    Example\n    -------\n    >>> import numpy as np\n    >>> from cbadc.analog_system import LeapFrog\n    >>> beta = np.array([101, 102, 103])\n    >>> rho = np.array([-1, -2, -3])\n    >>> kappa = np.arange(100,109).reshape((3, 3))\n    >>> print(LeapFrog(beta, rho, kappa))\n    The analog system is defined as:\n    A:\n    [[ -1.  -2.   0.]\n     [102.   0.  -3.]\n     [  0. 103.   0.]],\n    B:\n    [[101.]\n     [  0.]\n     [  0.]],\n    CT:\n    [[1. 0. 0.]\n     [0. 1. 0.]\n     [0. 0. 1.]],\n    Gamma:\n    [[100. 101. 102.]\n     [103. 104. 105.]\n     [106. 107. 108.]],\n    and Gamma_tildeT:\n    [[-0.5603758  -0.57718708 -0.59399835]\n     [-0.56054048 -0.5771902  -0.59383992]\n     [-0.560702   -0.57719323 -0.59368447]]\n\n\n    Raises\n    ------\n    :py:class:`InvalidAnalogSystemError`\n        For faulty analog system parametrization.\n    ";
+static const char __pyx_k_The_analog_system_is_parameteriz[] = "The analog system is parameterized as:\nA =\n";
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
 static const char __pyx_k_beta_must_be_a_one_dimensional_v[] = "beta must be a one dimensional vector";
 static const char __pyx_k_beta_rho_kappa_vector_must_be_of[] = "beta, rho, kappa vector must be of same size";
@@ -2274,7 +2275,7 @@ static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
 static PyObject *__pyx_n_s_PickleError;
 static PyObject *__pyx_kp_s_Represents_an_chain_of_integrato;
 static PyObject *__pyx_kp_s_Represents_an_leap_frog_analog_s;
-static PyObject *__pyx_kp_u_The_analog_system_is_defined_as;
+static PyObject *__pyx_kp_u_The_analog_system_is_parameteriz;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
 static PyObject *__pyx_n_s_ValueError;
@@ -2321,7 +2322,6 @@ static PyObject *__pyx_n_s_id;
 static PyObject *__pyx_kp_u_ij_jkl;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_init;
-static PyObject *__pyx_n_s_inv;
 static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_s_k;
@@ -2346,6 +2346,7 @@ static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_n_s_obj;
 static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_pickle;
+static PyObject *__pyx_n_s_pinv;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_pyx_PickleError;
 static PyObject *__pyx_n_s_pyx_checksum;
@@ -2507,7 +2508,7 @@ static PyObject *__pyx_codeobj__29;
 static PyObject *__pyx_codeobj__36;
 /* Late includes */
 
-/* "cbadc/analog_system.pyx":101
+/* "cbadc/analog_system.pyx":109
  *     """
  * 
  *     def __init__(self, A, B, CT, Gamma, Gamma_tildeT):             # <<<<<<<<<<<<<<
@@ -2562,29 +2563,29 @@ static int __pyx_pw_5cbadc_13analog_system_12AnalogSystem_1__init__(PyObject *__
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_B)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); __PYX_ERR(0, 101, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); __PYX_ERR(0, 109, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_CT)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); __PYX_ERR(0, 101, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); __PYX_ERR(0, 109, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_Gamma)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); __PYX_ERR(0, 101, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); __PYX_ERR(0, 109, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_Gamma_tildeT)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); __PYX_ERR(0, 101, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); __PYX_ERR(0, 109, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 101, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 109, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -2603,7 +2604,7 @@ static int __pyx_pw_5cbadc_13analog_system_12AnalogSystem_1__init__(PyObject *__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 101, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 109, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbadc.analog_system.AnalogSystem.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2634,226 +2635,226 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbadc/analog_system.pyx":105
- *         """
+  /* "cbadc/analog_system.pyx":114
+ * 
  * 
  *         self.A = np.array(A, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self.B = np.array(B, dtype=np.double)
  *         self.CT = np.array(CT, dtype=np.double)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_array); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_A);
   __Pyx_GIVEREF(__pyx_v_A);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_A);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->A, 0);
   __pyx_v_self->A = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbadc/analog_system.pyx":106
+  /* "cbadc/analog_system.pyx":115
  * 
  *         self.A = np.array(A, dtype=np.double)
  *         self.B = np.array(B, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self.CT = np.array(CT, dtype=np.double)
  *         self.Gamma = np.array(Gamma, dtype=np.double)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_v_B);
   __Pyx_GIVEREF(__pyx_v_B);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v_B);
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->B, 0);
   __pyx_v_self->B = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbadc/analog_system.pyx":107
+  /* "cbadc/analog_system.pyx":116
  *         self.A = np.array(A, dtype=np.double)
  *         self.B = np.array(B, dtype=np.double)
  *         self.CT = np.array(CT, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self.Gamma = np.array(Gamma, dtype=np.double)
  *         self.Gamma_tildeT = np.array(Gamma_tildeT, dtype=np.double)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_v_CT);
   __Pyx_GIVEREF(__pyx_v_CT);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_CT);
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->CT, 0);
   __pyx_v_self->CT = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbadc/analog_system.pyx":108
+  /* "cbadc/analog_system.pyx":117
  *         self.B = np.array(B, dtype=np.double)
  *         self.CT = np.array(CT, dtype=np.double)
  *         self.Gamma = np.array(Gamma, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self.Gamma_tildeT = np.array(Gamma_tildeT, dtype=np.double)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_Gamma);
   __Pyx_GIVEREF(__pyx_v_Gamma);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_Gamma);
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->Gamma, 0);
   __pyx_v_self->Gamma = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbadc/analog_system.pyx":109
+  /* "cbadc/analog_system.pyx":118
  *         self.CT = np.array(CT, dtype=np.double)
  *         self.Gamma = np.array(Gamma, dtype=np.double)
  *         self.Gamma_tildeT = np.array(Gamma_tildeT, dtype=np.double)             # <<<<<<<<<<<<<<
  * 
  *         self.N = self.A.shape[0]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_v_Gamma_tildeT);
   __Pyx_GIVEREF(__pyx_v_Gamma_tildeT);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_Gamma_tildeT);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_double); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_double); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 109, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->Gamma_tildeT, 0);
   __pyx_v_self->Gamma_tildeT = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "cbadc/analog_system.pyx":111
+  /* "cbadc/analog_system.pyx":120
  *         self.Gamma_tildeT = np.array(Gamma_tildeT, dtype=np.double)
  * 
  *         self.N = self.A.shape[0]             # <<<<<<<<<<<<<<
  * 
  *         if self.A.shape[0] != self.A.shape[1]:
  */
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 111, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 120, __pyx_L1_error)}
   __pyx_v_self->N = (__pyx_v_self->A.shape[0]);
 
-  /* "cbadc/analog_system.pyx":113
+  /* "cbadc/analog_system.pyx":122
  *         self.N = self.A.shape[0]
  * 
  *         if self.A.shape[0] != self.A.shape[1]:             # <<<<<<<<<<<<<<
  *             raise InvalidAnalogSystemError(self, "system matrix not square")
  * 
  */
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 113, __pyx_L1_error)}
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 113, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 122, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 122, __pyx_L1_error)}
   __pyx_t_7 = (((__pyx_v_self->A.shape[0]) != (__pyx_v_self->A.shape[1])) != 0);
   if (unlikely(__pyx_t_7)) {
 
-    /* "cbadc/analog_system.pyx":114
+    /* "cbadc/analog_system.pyx":123
  * 
  *         if self.A.shape[0] != self.A.shape[1]:
  *             raise InvalidAnalogSystemError(self, "system matrix not square")             # <<<<<<<<<<<<<<
  * 
  *         # ensure matrices
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = NULL;
     __pyx_t_8 = 0;
@@ -2870,7 +2871,7 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, ((PyObject *)__pyx_v_self), __pyx_kp_u_system_matrix_not_square};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -2878,13 +2879,13 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, ((PyObject *)__pyx_v_self), __pyx_kp_u_system_matrix_not_square};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 114, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -2895,16 +2896,16 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
       __Pyx_INCREF(__pyx_kp_u_system_matrix_not_square);
       __Pyx_GIVEREF(__pyx_kp_u_system_matrix_not_square);
       PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_8, __pyx_kp_u_system_matrix_not_square);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 114, __pyx_L1_error)
+    __PYX_ERR(0, 123, __pyx_L1_error)
 
-    /* "cbadc/analog_system.pyx":113
+    /* "cbadc/analog_system.pyx":122
  *         self.N = self.A.shape[0]
  * 
  *         if self.A.shape[0] != self.A.shape[1]:             # <<<<<<<<<<<<<<
@@ -2913,37 +2914,37 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
  */
   }
 
-  /* "cbadc/analog_system.pyx":117
+  /* "cbadc/analog_system.pyx":126
  * 
  *         # ensure matrices
  *         if len(self.B.shape) == 1:             # <<<<<<<<<<<<<<
  *             self.B = self.B.reshape((self.N, 1))
  *         if len(self.CT.shape) == 1:
  */
-  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 117, __pyx_L1_error)}
-  __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_self->B.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 126, __pyx_L1_error)}
+  __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_self->B.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_9 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_9 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_7 = ((__pyx_t_9 == 1) != 0);
   if (__pyx_t_7) {
 
-    /* "cbadc/analog_system.pyx":118
+    /* "cbadc/analog_system.pyx":127
  *         # ensure matrices
  *         if len(self.B.shape) == 1:
  *             self.B = self.B.reshape((self.N, 1))             # <<<<<<<<<<<<<<
  *         if len(self.CT.shape) == 1:
  *             self.CT = self.CT.reshape((1, self.N))
  */
-    if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 118, __pyx_L1_error)}
-    __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_self->B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 127, __pyx_L1_error)}
+    __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_self->B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_reshape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_reshape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
@@ -2964,17 +2965,17 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __PYX_XDEC_MEMVIEW(&__pyx_v_self->B, 0);
     __pyx_v_self->B = __pyx_t_6;
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "cbadc/analog_system.pyx":117
+    /* "cbadc/analog_system.pyx":126
  * 
  *         # ensure matrices
  *         if len(self.B.shape) == 1:             # <<<<<<<<<<<<<<
@@ -2983,37 +2984,37 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
  */
   }
 
-  /* "cbadc/analog_system.pyx":119
+  /* "cbadc/analog_system.pyx":128
  *         if len(self.B.shape) == 1:
  *             self.B = self.B.reshape((self.N, 1))
  *         if len(self.CT.shape) == 1:             # <<<<<<<<<<<<<<
  *             self.CT = self.CT.reshape((1, self.N))
  * 
  */
-  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 119, __pyx_L1_error)}
-  __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_self->CT.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 128, __pyx_L1_error)}
+  __pyx_t_1 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_self->CT.shape, 8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_9 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_9 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_7 = ((__pyx_t_9 == 1) != 0);
   if (__pyx_t_7) {
 
-    /* "cbadc/analog_system.pyx":120
+    /* "cbadc/analog_system.pyx":129
  *             self.B = self.B.reshape((self.N, 1))
  *         if len(self.CT.shape) == 1:
  *             self.CT = self.CT.reshape((1, self.N))             # <<<<<<<<<<<<<<
  * 
  *         self.M = self.Gamma.shape[1]
  */
-    if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 120, __pyx_L1_error)}
-    __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 129, __pyx_L1_error)}
+    __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_reshape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_reshape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_int_1);
     __Pyx_GIVEREF(__pyx_int_1);
@@ -3034,17 +3035,17 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 129, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __PYX_XDEC_MEMVIEW(&__pyx_v_self->CT, 0);
     __pyx_v_self->CT = __pyx_t_6;
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "cbadc/analog_system.pyx":119
+    /* "cbadc/analog_system.pyx":128
  *         if len(self.B.shape) == 1:
  *             self.B = self.B.reshape((self.N, 1))
  *         if len(self.CT.shape) == 1:             # <<<<<<<<<<<<<<
@@ -3053,189 +3054,189 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
  */
   }
 
-  /* "cbadc/analog_system.pyx":122
+  /* "cbadc/analog_system.pyx":131
  *             self.CT = self.CT.reshape((1, self.N))
  * 
  *         self.M = self.Gamma.shape[1]             # <<<<<<<<<<<<<<
  *         self.M_tilde = self.Gamma_tildeT.shape[0]
  *         self.L = self.B.shape[1]
  */
-  if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 122, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 131, __pyx_L1_error)}
   __pyx_v_self->M = (__pyx_v_self->Gamma.shape[1]);
 
-  /* "cbadc/analog_system.pyx":123
+  /* "cbadc/analog_system.pyx":132
  * 
  *         self.M = self.Gamma.shape[1]
  *         self.M_tilde = self.Gamma_tildeT.shape[0]             # <<<<<<<<<<<<<<
  *         self.L = self.B.shape[1]
  *         self.N_tilde = self.CT.shape[0]
  */
-  if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 123, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 132, __pyx_L1_error)}
   __pyx_v_self->M_tilde = (__pyx_v_self->Gamma_tildeT.shape[0]);
 
-  /* "cbadc/analog_system.pyx":124
+  /* "cbadc/analog_system.pyx":133
  *         self.M = self.Gamma.shape[1]
  *         self.M_tilde = self.Gamma_tildeT.shape[0]
  *         self.L = self.B.shape[1]             # <<<<<<<<<<<<<<
  *         self.N_tilde = self.CT.shape[0]
  * 
  */
-  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 124, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 133, __pyx_L1_error)}
   __pyx_v_self->L = (__pyx_v_self->B.shape[1]);
 
-  /* "cbadc/analog_system.pyx":125
+  /* "cbadc/analog_system.pyx":134
  *         self.M_tilde = self.Gamma_tildeT.shape[0]
  *         self.L = self.B.shape[1]
  *         self.N_tilde = self.CT.shape[0]             # <<<<<<<<<<<<<<
  * 
  *         self.temp_derivative = np.zeros(self.N,dtype=np.double)
  */
-  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 125, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 134, __pyx_L1_error)}
   __pyx_v_self->N_tilde = (__pyx_v_self->CT.shape[0]);
 
-  /* "cbadc/analog_system.pyx":127
+  /* "cbadc/analog_system.pyx":136
  *         self.N_tilde = self.CT.shape[0]
  * 
  *         self.temp_derivative = np.zeros(self.N,dtype=np.double)             # <<<<<<<<<<<<<<
  *         self.temp_y = np.zeros(self.N_tilde, dtype=np.double)
  *         self.temp_s_tilde = np.zeros(self.M_tilde, dtype=np.double)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_double); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->temp_derivative, 0);
   __pyx_v_self->temp_derivative = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "cbadc/analog_system.pyx":128
+  /* "cbadc/analog_system.pyx":137
  * 
  *         self.temp_derivative = np.zeros(self.N,dtype=np.double)
  *         self.temp_y = np.zeros(self.N_tilde, dtype=np.double)             # <<<<<<<<<<<<<<
  *         self.temp_s_tilde = np.zeros(self.M_tilde, dtype=np.double)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_self->N_tilde); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_self->N_tilde); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 137, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->temp_y, 0);
   __pyx_v_self->temp_y = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "cbadc/analog_system.pyx":129
+  /* "cbadc/analog_system.pyx":138
  *         self.temp_derivative = np.zeros(self.N,dtype=np.double)
  *         self.temp_y = np.zeros(self.N_tilde, dtype=np.double)
  *         self.temp_s_tilde = np.zeros(self.M_tilde, dtype=np.double)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->M_tilde); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->M_tilde); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_3, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->temp_s_tilde, 0);
   __pyx_v_self->temp_s_tilde = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "cbadc/analog_system.pyx":132
+  /* "cbadc/analog_system.pyx":141
  * 
  * 
  *         if self.B.shape[0] != self.A.shape[0]:             # <<<<<<<<<<<<<<
  *             raise InvalidAnalogSystemError(
  *                 self, "N does not agree with input matrix B."
  */
-  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 132, __pyx_L1_error)}
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 132, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 141, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 141, __pyx_L1_error)}
   __pyx_t_7 = (((__pyx_v_self->B.shape[0]) != (__pyx_v_self->A.shape[0])) != 0);
   if (unlikely(__pyx_t_7)) {
 
-    /* "cbadc/analog_system.pyx":133
+    /* "cbadc/analog_system.pyx":142
  * 
  *         if self.B.shape[0] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(             # <<<<<<<<<<<<<<
  *                 self, "N does not agree with input matrix B."
  *             )
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 142, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
 
-    /* "cbadc/analog_system.pyx":134
+    /* "cbadc/analog_system.pyx":143
  *         if self.B.shape[0] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(
  *                 self, "N does not agree with input matrix B."             # <<<<<<<<<<<<<<
@@ -3257,7 +3258,7 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_input_matr};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 142, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -3265,13 +3266,13 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_input_matr};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 142, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 142, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       if (__pyx_t_2) {
         __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -3282,16 +3283,16 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
       __Pyx_INCREF(__pyx_kp_u_N_does_not_agree_with_input_matr);
       __Pyx_GIVEREF(__pyx_kp_u_N_does_not_agree_with_input_matr);
       PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_8, __pyx_kp_u_N_does_not_agree_with_input_matr);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 142, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 133, __pyx_L1_error)
+    __PYX_ERR(0, 142, __pyx_L1_error)
 
-    /* "cbadc/analog_system.pyx":132
+    /* "cbadc/analog_system.pyx":141
  * 
  * 
  *         if self.B.shape[0] != self.A.shape[0]:             # <<<<<<<<<<<<<<
@@ -3300,29 +3301,29 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
  */
   }
 
-  /* "cbadc/analog_system.pyx":137
+  /* "cbadc/analog_system.pyx":146
  *             )
  * 
  *         if self.CT.shape[1] != self.A.shape[0]:             # <<<<<<<<<<<<<<
  *             raise InvalidAnalogSystemError(
  *                 self, "N does not agree with signal observation matrix C."
  */
-  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 137, __pyx_L1_error)}
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 137, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 146, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 146, __pyx_L1_error)}
   __pyx_t_7 = (((__pyx_v_self->CT.shape[1]) != (__pyx_v_self->A.shape[0])) != 0);
   if (unlikely(__pyx_t_7)) {
 
-    /* "cbadc/analog_system.pyx":138
+    /* "cbadc/analog_system.pyx":147
  * 
  *         if self.CT.shape[1] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(             # <<<<<<<<<<<<<<
  *                 self, "N does not agree with signal observation matrix C."
  *             )
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 138, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
 
-    /* "cbadc/analog_system.pyx":139
+    /* "cbadc/analog_system.pyx":148
  *         if self.CT.shape[1] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(
  *                 self, "N does not agree with signal observation matrix C."             # <<<<<<<<<<<<<<
@@ -3344,7 +3345,7 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_5, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_signal_obs};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -3352,13 +3353,13 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_5, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_signal_obs};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       if (__pyx_t_5) {
         __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -3369,16 +3370,16 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
       __Pyx_INCREF(__pyx_kp_u_N_does_not_agree_with_signal_obs);
       __Pyx_GIVEREF(__pyx_kp_u_N_does_not_agree_with_signal_obs);
       PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_8, __pyx_kp_u_N_does_not_agree_with_signal_obs);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 138, __pyx_L1_error)
+    __PYX_ERR(0, 147, __pyx_L1_error)
 
-    /* "cbadc/analog_system.pyx":137
+    /* "cbadc/analog_system.pyx":146
  *             )
  * 
  *         if self.CT.shape[1] != self.A.shape[0]:             # <<<<<<<<<<<<<<
@@ -3387,29 +3388,29 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
  */
   }
 
-  /* "cbadc/analog_system.pyx":142
+  /* "cbadc/analog_system.pyx":151
  *             )
  * 
  *         if self.Gamma.shape[0] != self.A.shape[0]:             # <<<<<<<<<<<<<<
  *             raise InvalidAnalogSystemError(
  *                 self, "N does not agree with control input matrix Gamma."
  */
-  if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 142, __pyx_L1_error)}
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 142, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 151, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 151, __pyx_L1_error)}
   __pyx_t_7 = (((__pyx_v_self->Gamma.shape[0]) != (__pyx_v_self->A.shape[0])) != 0);
   if (unlikely(__pyx_t_7)) {
 
-    /* "cbadc/analog_system.pyx":143
+    /* "cbadc/analog_system.pyx":152
  * 
  *         if self.Gamma.shape[0] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(             # <<<<<<<<<<<<<<
  *                 self, "N does not agree with control input matrix Gamma."
  *             )
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 143, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 152, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
 
-    /* "cbadc/analog_system.pyx":144
+    /* "cbadc/analog_system.pyx":153
  *         if self.Gamma.shape[0] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(
  *                 self, "N does not agree with control input matrix Gamma."             # <<<<<<<<<<<<<<
@@ -3431,7 +3432,7 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_control_in};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -3439,13 +3440,13 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_control_in};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 143, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 152, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       if (__pyx_t_2) {
         __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -3456,16 +3457,16 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
       __Pyx_INCREF(__pyx_kp_u_N_does_not_agree_with_control_in);
       __Pyx_GIVEREF(__pyx_kp_u_N_does_not_agree_with_control_in);
       PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_8, __pyx_kp_u_N_does_not_agree_with_control_in);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 143, __pyx_L1_error)
+    __PYX_ERR(0, 152, __pyx_L1_error)
 
-    /* "cbadc/analog_system.pyx":142
+    /* "cbadc/analog_system.pyx":151
  *             )
  * 
  *         if self.Gamma.shape[0] != self.A.shape[0]:             # <<<<<<<<<<<<<<
@@ -3474,29 +3475,29 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
  */
   }
 
-  /* "cbadc/analog_system.pyx":147
+  /* "cbadc/analog_system.pyx":156
  *             )
  * 
  *         if self.Gamma_tildeT.shape[1] != self.A.shape[0]:             # <<<<<<<<<<<<<<
  *             raise InvalidAnalogSystemError(
  *                 self,
  */
-  if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 147, __pyx_L1_error)}
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 147, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 156, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 156, __pyx_L1_error)}
   __pyx_t_7 = (((__pyx_v_self->Gamma_tildeT.shape[1]) != (__pyx_v_self->A.shape[0])) != 0);
   if (unlikely(__pyx_t_7)) {
 
-    /* "cbadc/analog_system.pyx":148
+    /* "cbadc/analog_system.pyx":157
  * 
  *         if self.Gamma_tildeT.shape[1] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(             # <<<<<<<<<<<<<<
  *                 self,
  *                 "N does not agree with control observation matrix Gamma_tilde.",
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
 
-    /* "cbadc/analog_system.pyx":149
+    /* "cbadc/analog_system.pyx":158
  *         if self.Gamma_tildeT.shape[1] != self.A.shape[0]:
  *             raise InvalidAnalogSystemError(
  *                 self,             # <<<<<<<<<<<<<<
@@ -3518,7 +3519,7 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_5, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_control_ob};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -3526,13 +3527,13 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[3] = {__pyx_t_5, ((PyObject *)__pyx_v_self), __pyx_kp_u_N_does_not_agree_with_control_ob};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_2 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 157, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       if (__pyx_t_5) {
         __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -3543,16 +3544,16 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
       __Pyx_INCREF(__pyx_kp_u_N_does_not_agree_with_control_ob);
       __Pyx_GIVEREF(__pyx_kp_u_N_does_not_agree_with_control_ob);
       PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_8, __pyx_kp_u_N_does_not_agree_with_control_ob);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 157, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 148, __pyx_L1_error)
+    __PYX_ERR(0, 157, __pyx_L1_error)
 
-    /* "cbadc/analog_system.pyx":147
+    /* "cbadc/analog_system.pyx":156
  *             )
  * 
  *         if self.Gamma_tildeT.shape[1] != self.A.shape[0]:             # <<<<<<<<<<<<<<
@@ -3561,7 +3562,7 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
  */
   }
 
-  /* "cbadc/analog_system.pyx":101
+  /* "cbadc/analog_system.pyx":109
  *     """
  * 
  *     def __init__(self, A, B, CT, Gamma, Gamma_tildeT):             # <<<<<<<<<<<<<<
@@ -3587,7 +3588,7 @@ static int __pyx_pf_5cbadc_13analog_system_12AnalogSystem___init__(struct __pyx_
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":154
+/* "cbadc/analog_system.pyx":163
  * 
  * 
  *     cpdef double [:] derivative(self, double [:] x, double t, double [:] u, double [:] s):             # <<<<<<<<<<<<<<
@@ -3637,19 +3638,19 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_derivative); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_derivative); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5cbadc_13analog_system_12AnalogSystem_3derivative)) {
-        if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 154, __pyx_L1_error) }
-        __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_x, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 154, __pyx_L1_error)
+        if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 163, __pyx_L1_error) }
+        __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_x, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_4 = PyFloat_FromDouble(__pyx_v_t); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        if (unlikely(!__pyx_v_u.memview)) { __Pyx_RaiseUnboundLocalError("u"); __PYX_ERR(0, 154, __pyx_L1_error) }
-        __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_u, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 154, __pyx_L1_error)
+        if (unlikely(!__pyx_v_u.memview)) { __Pyx_RaiseUnboundLocalError("u"); __PYX_ERR(0, 163, __pyx_L1_error) }
+        __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_u, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        if (unlikely(!__pyx_v_s.memview)) { __Pyx_RaiseUnboundLocalError("s"); __PYX_ERR(0, 154, __pyx_L1_error) }
-        __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_s, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 154, __pyx_L1_error)
+        if (unlikely(!__pyx_v_s.memview)) { __Pyx_RaiseUnboundLocalError("s"); __PYX_ERR(0, 163, __pyx_L1_error) }
+        __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_s, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_7 = __pyx_t_1; __pyx_t_8 = NULL;
@@ -3667,7 +3668,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_7)) {
           PyObject *__pyx_temp[5] = {__pyx_t_8, __pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6};
-          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 4+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 4+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3679,7 +3680,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
           PyObject *__pyx_temp[5] = {__pyx_t_8, __pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_t_6};
-          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 4+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_9, 4+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3689,7 +3690,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
         } else
         #endif
         {
-          __pyx_t_10 = PyTuple_New(4+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_10 = PyTuple_New(4+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 163, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
           if (__pyx_t_8) {
             __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -3706,12 +3707,12 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
           __pyx_t_4 = 0;
           __pyx_t_5 = 0;
           __pyx_t_6 = 0;
-          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_10, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_10, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         }
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_11;
         __pyx_t_11.memview = NULL;
@@ -3732,7 +3733,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
     #endif
   }
 
-  /* "cbadc/analog_system.pyx":182
+  /* "cbadc/analog_system.pyx":191
  *         """
  *         cdef int n, nn, l, m
  *         for n in range(self.N):             # <<<<<<<<<<<<<<
@@ -3744,14 +3745,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
   for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
     __pyx_v_n = __pyx_t_13;
 
-    /* "cbadc/analog_system.pyx":183
+    /* "cbadc/analog_system.pyx":192
  *         cdef int n, nn, l, m
  *         for n in range(self.N):
  *             self.temp_derivative[n] = 0             # <<<<<<<<<<<<<<
  *             for nn in range(self.N):
  *                 self.temp_derivative[n] += self.A[n,nn] * x[nn]
  */
-    if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 183, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 192, __pyx_L1_error)}
     __pyx_t_14 = __pyx_v_n;
     __pyx_t_15 = -1;
     if (__pyx_t_14 < 0) {
@@ -3760,11 +3761,11 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
     } else if (unlikely(__pyx_t_14 >= __pyx_v_self->temp_derivative.shape[0])) __pyx_t_15 = 0;
     if (unlikely(__pyx_t_15 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_15);
-      __PYX_ERR(0, 183, __pyx_L1_error)
+      __PYX_ERR(0, 192, __pyx_L1_error)
     }
     *((double *) ( /* dim=0 */ (__pyx_v_self->temp_derivative.data + __pyx_t_14 * __pyx_v_self->temp_derivative.strides[0]) )) = 0.0;
 
-    /* "cbadc/analog_system.pyx":184
+    /* "cbadc/analog_system.pyx":193
  *         for n in range(self.N):
  *             self.temp_derivative[n] = 0
  *             for nn in range(self.N):             # <<<<<<<<<<<<<<
@@ -3776,14 +3777,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_nn = __pyx_t_17;
 
-      /* "cbadc/analog_system.pyx":185
+      /* "cbadc/analog_system.pyx":194
  *             self.temp_derivative[n] = 0
  *             for nn in range(self.N):
  *                 self.temp_derivative[n] += self.A[n,nn] * x[nn]             # <<<<<<<<<<<<<<
  *             for l in range(self.L):
  *                 self.temp_derivative[n] += self.B[n,l] * u[l]
  */
-      if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 185, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 194, __pyx_L1_error)}
       __pyx_t_14 = __pyx_v_n;
       __pyx_t_18 = __pyx_v_nn;
       __pyx_t_19 = -1;
@@ -3797,7 +3798,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_18 >= __pyx_v_self->A.shape[1])) __pyx_t_19 = 1;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 185, __pyx_L1_error)
+        __PYX_ERR(0, 194, __pyx_L1_error)
       }
       __pyx_t_20 = __pyx_v_nn;
       __pyx_t_19 = -1;
@@ -3807,9 +3808,9 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_20 >= __pyx_v_x.shape[0])) __pyx_t_19 = 0;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 185, __pyx_L1_error)
+        __PYX_ERR(0, 194, __pyx_L1_error)
       }
-      if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 185, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 194, __pyx_L1_error)}
       __pyx_t_21 = __pyx_v_n;
       __pyx_t_19 = -1;
       if (__pyx_t_21 < 0) {
@@ -3818,12 +3819,12 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_21 >= __pyx_v_self->temp_derivative.shape[0])) __pyx_t_19 = 0;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 185, __pyx_L1_error)
+        __PYX_ERR(0, 194, __pyx_L1_error)
       }
       *((double *) ( /* dim=0 */ (__pyx_v_self->temp_derivative.data + __pyx_t_21 * __pyx_v_self->temp_derivative.strides[0]) )) += ((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->A.data + __pyx_t_14 * __pyx_v_self->A.strides[0]) ) + __pyx_t_18 * __pyx_v_self->A.strides[1]) ))) * (*((double *) ( /* dim=0 */ (__pyx_v_x.data + __pyx_t_20 * __pyx_v_x.strides[0]) ))));
     }
 
-    /* "cbadc/analog_system.pyx":186
+    /* "cbadc/analog_system.pyx":195
  *             for nn in range(self.N):
  *                 self.temp_derivative[n] += self.A[n,nn] * x[nn]
  *             for l in range(self.L):             # <<<<<<<<<<<<<<
@@ -3835,14 +3836,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_l = __pyx_t_17;
 
-      /* "cbadc/analog_system.pyx":187
+      /* "cbadc/analog_system.pyx":196
  *                 self.temp_derivative[n] += self.A[n,nn] * x[nn]
  *             for l in range(self.L):
  *                 self.temp_derivative[n] += self.B[n,l] * u[l]             # <<<<<<<<<<<<<<
  *             for m in range(self.M):
  *                 self.temp_derivative[n] += self.Gamma[n,m] * s[m]
  */
-      if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 187, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 196, __pyx_L1_error)}
       __pyx_t_20 = __pyx_v_n;
       __pyx_t_18 = __pyx_v_l;
       __pyx_t_19 = -1;
@@ -3856,7 +3857,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_18 >= __pyx_v_self->B.shape[1])) __pyx_t_19 = 1;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 187, __pyx_L1_error)
+        __PYX_ERR(0, 196, __pyx_L1_error)
       }
       __pyx_t_14 = __pyx_v_l;
       __pyx_t_19 = -1;
@@ -3866,9 +3867,9 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_14 >= __pyx_v_u.shape[0])) __pyx_t_19 = 0;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 187, __pyx_L1_error)
+        __PYX_ERR(0, 196, __pyx_L1_error)
       }
-      if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 187, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 196, __pyx_L1_error)}
       __pyx_t_21 = __pyx_v_n;
       __pyx_t_19 = -1;
       if (__pyx_t_21 < 0) {
@@ -3877,12 +3878,12 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_21 >= __pyx_v_self->temp_derivative.shape[0])) __pyx_t_19 = 0;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 187, __pyx_L1_error)
+        __PYX_ERR(0, 196, __pyx_L1_error)
       }
       *((double *) ( /* dim=0 */ (__pyx_v_self->temp_derivative.data + __pyx_t_21 * __pyx_v_self->temp_derivative.strides[0]) )) += ((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->B.data + __pyx_t_20 * __pyx_v_self->B.strides[0]) ) + __pyx_t_18 * __pyx_v_self->B.strides[1]) ))) * (*((double *) ( /* dim=0 */ (__pyx_v_u.data + __pyx_t_14 * __pyx_v_u.strides[0]) ))));
     }
 
-    /* "cbadc/analog_system.pyx":188
+    /* "cbadc/analog_system.pyx":197
  *             for l in range(self.L):
  *                 self.temp_derivative[n] += self.B[n,l] * u[l]
  *             for m in range(self.M):             # <<<<<<<<<<<<<<
@@ -3894,14 +3895,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_m = __pyx_t_17;
 
-      /* "cbadc/analog_system.pyx":189
+      /* "cbadc/analog_system.pyx":198
  *                 self.temp_derivative[n] += self.B[n,l] * u[l]
  *             for m in range(self.M):
  *                 self.temp_derivative[n] += self.Gamma[n,m] * s[m]             # <<<<<<<<<<<<<<
  *         return self.temp_derivative
  * 
  */
-      if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 189, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 198, __pyx_L1_error)}
       __pyx_t_14 = __pyx_v_n;
       __pyx_t_18 = __pyx_v_m;
       __pyx_t_19 = -1;
@@ -3915,7 +3916,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_18 >= __pyx_v_self->Gamma.shape[1])) __pyx_t_19 = 1;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 189, __pyx_L1_error)
+        __PYX_ERR(0, 198, __pyx_L1_error)
       }
       __pyx_t_20 = __pyx_v_m;
       __pyx_t_19 = -1;
@@ -3925,9 +3926,9 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_20 >= __pyx_v_s.shape[0])) __pyx_t_19 = 0;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 189, __pyx_L1_error)
+        __PYX_ERR(0, 198, __pyx_L1_error)
       }
-      if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 189, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 198, __pyx_L1_error)}
       __pyx_t_21 = __pyx_v_n;
       __pyx_t_19 = -1;
       if (__pyx_t_21 < 0) {
@@ -3936,25 +3937,25 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivati
       } else if (unlikely(__pyx_t_21 >= __pyx_v_self->temp_derivative.shape[0])) __pyx_t_19 = 0;
       if (unlikely(__pyx_t_19 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_19);
-        __PYX_ERR(0, 189, __pyx_L1_error)
+        __PYX_ERR(0, 198, __pyx_L1_error)
       }
       *((double *) ( /* dim=0 */ (__pyx_v_self->temp_derivative.data + __pyx_t_21 * __pyx_v_self->temp_derivative.strides[0]) )) += ((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->Gamma.data + __pyx_t_14 * __pyx_v_self->Gamma.strides[0]) ) + __pyx_t_18 * __pyx_v_self->Gamma.strides[1]) ))) * (*((double *) ( /* dim=0 */ (__pyx_v_s.data + __pyx_t_20 * __pyx_v_s.strides[0]) ))));
     }
   }
 
-  /* "cbadc/analog_system.pyx":190
+  /* "cbadc/analog_system.pyx":199
  *             for m in range(self.M):
  *                 self.temp_derivative[n] += self.Gamma[n,m] * s[m]
  *         return self.temp_derivative             # <<<<<<<<<<<<<<
  * 
  *     cpdef double [:] signal_observation(self, double [:] x):
  */
-  if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 190, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->temp_derivative.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 199, __pyx_L1_error)}
   __PYX_INC_MEMVIEW(&__pyx_v_self->temp_derivative, 0);
   __pyx_r = __pyx_v_self->temp_derivative;
   goto __pyx_L0;
 
-  /* "cbadc/analog_system.pyx":154
+  /* "cbadc/analog_system.pyx":163
  * 
  * 
  *     cpdef double [:] derivative(self, double [:] x, double t, double [:] u, double [:] s):             # <<<<<<<<<<<<<<
@@ -4028,23 +4029,23 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_12AnalogSystem_3derivative(PyOb
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_t)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, 1); __PYX_ERR(0, 154, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, 1); __PYX_ERR(0, 163, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_u)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, 2); __PYX_ERR(0, 154, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, 2); __PYX_ERR(0, 163, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, 3); __PYX_ERR(0, 154, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, 3); __PYX_ERR(0, 163, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "derivative") < 0)) __PYX_ERR(0, 154, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "derivative") < 0)) __PYX_ERR(0, 163, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -4054,14 +4055,14 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_12AnalogSystem_3derivative(PyOb
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
     }
-    __pyx_v_x = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_x.memview)) __PYX_ERR(0, 154, __pyx_L3_error)
-    __pyx_v_t = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 154, __pyx_L3_error)
-    __pyx_v_u = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_u.memview)) __PYX_ERR(0, 154, __pyx_L3_error)
-    __pyx_v_s = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_s.memview)) __PYX_ERR(0, 154, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_x.memview)) __PYX_ERR(0, 163, __pyx_L3_error)
+    __pyx_v_t = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_t == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 163, __pyx_L3_error)
+    __pyx_v_u = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_u.memview)) __PYX_ERR(0, 163, __pyx_L3_error)
+    __pyx_v_s = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_s.memview)) __PYX_ERR(0, 163, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 154, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("derivative", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 163, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbadc.analog_system.AnalogSystem.derivative", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4084,11 +4085,11 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_2derivative(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("derivative", 0);
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 154, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_u.memview)) { __Pyx_RaiseUnboundLocalError("u"); __PYX_ERR(0, 154, __pyx_L1_error) }
-  if (unlikely(!__pyx_v_s.memview)) { __Pyx_RaiseUnboundLocalError("s"); __PYX_ERR(0, 154, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivative(__pyx_v_self, __pyx_v_x, __pyx_v_t, __pyx_v_u, __pyx_v_s, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 163, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_u.memview)) { __Pyx_RaiseUnboundLocalError("u"); __PYX_ERR(0, 163, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_s.memview)) { __Pyx_RaiseUnboundLocalError("s"); __PYX_ERR(0, 163, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_f_5cbadc_13analog_system_12AnalogSystem_derivative(__pyx_v_self, __pyx_v_x, __pyx_v_t, __pyx_v_u, __pyx_v_s, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 163, __pyx_L1_error)
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __pyx_t_1.memview = NULL;
@@ -4112,7 +4113,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_2derivative(stru
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":192
+/* "cbadc/analog_system.pyx":201
  *         return self.temp_derivative
  * 
  *     cpdef double [:] signal_observation(self, double [:] x):             # <<<<<<<<<<<<<<
@@ -4156,11 +4157,11 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_signal_observation); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_signal_observation); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5cbadc_13analog_system_12AnalogSystem_5signal_observation)) {
-        if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 192, __pyx_L1_error) }
-        __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_x, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 192, __pyx_L1_error)
+        if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 201, __pyx_L1_error) }
+        __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_x, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -4176,10 +4177,10 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
         __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 192, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 192, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 201, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_6;
         __pyx_t_6.memview = NULL;
@@ -4200,7 +4201,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
     #endif
   }
 
-  /* "cbadc/analog_system.pyx":212
+  /* "cbadc/analog_system.pyx":221
  *         """
  *         cdef int n, n_tilde
  *         for n_tilde in range(self.N_tilde):             # <<<<<<<<<<<<<<
@@ -4212,14 +4213,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_n_tilde = __pyx_t_9;
 
-    /* "cbadc/analog_system.pyx":213
+    /* "cbadc/analog_system.pyx":222
  *         cdef int n, n_tilde
  *         for n_tilde in range(self.N_tilde):
  *             self.temp_y[n_tilde] = 0             # <<<<<<<<<<<<<<
  *             for n in range(self.N):
  *                 self.temp_y[n_tilde] += self.CT[n_tilde, n] * x[n]
  */
-    if (unlikely(!__pyx_v_self->temp_y.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 213, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->temp_y.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 222, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_n_tilde;
     __pyx_t_11 = -1;
     if (__pyx_t_10 < 0) {
@@ -4228,11 +4229,11 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
     } else if (unlikely(__pyx_t_10 >= __pyx_v_self->temp_y.shape[0])) __pyx_t_11 = 0;
     if (unlikely(__pyx_t_11 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_11);
-      __PYX_ERR(0, 213, __pyx_L1_error)
+      __PYX_ERR(0, 222, __pyx_L1_error)
     }
     *((double *) ( /* dim=0 */ (__pyx_v_self->temp_y.data + __pyx_t_10 * __pyx_v_self->temp_y.strides[0]) )) = 0.0;
 
-    /* "cbadc/analog_system.pyx":214
+    /* "cbadc/analog_system.pyx":223
  *         for n_tilde in range(self.N_tilde):
  *             self.temp_y[n_tilde] = 0
  *             for n in range(self.N):             # <<<<<<<<<<<<<<
@@ -4244,14 +4245,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_n = __pyx_t_13;
 
-      /* "cbadc/analog_system.pyx":215
+      /* "cbadc/analog_system.pyx":224
  *             self.temp_y[n_tilde] = 0
  *             for n in range(self.N):
  *                 self.temp_y[n_tilde] += self.CT[n_tilde, n] * x[n]             # <<<<<<<<<<<<<<
  *         return self.temp_y
  * 
  */
-      if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 215, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 224, __pyx_L1_error)}
       __pyx_t_10 = __pyx_v_n_tilde;
       __pyx_t_14 = __pyx_v_n;
       __pyx_t_15 = -1;
@@ -4265,7 +4266,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
       } else if (unlikely(__pyx_t_14 >= __pyx_v_self->CT.shape[1])) __pyx_t_15 = 1;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 215, __pyx_L1_error)
+        __PYX_ERR(0, 224, __pyx_L1_error)
       }
       __pyx_t_16 = __pyx_v_n;
       __pyx_t_15 = -1;
@@ -4275,9 +4276,9 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
       } else if (unlikely(__pyx_t_16 >= __pyx_v_x.shape[0])) __pyx_t_15 = 0;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 215, __pyx_L1_error)
+        __PYX_ERR(0, 224, __pyx_L1_error)
       }
-      if (unlikely(!__pyx_v_self->temp_y.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 215, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->temp_y.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 224, __pyx_L1_error)}
       __pyx_t_17 = __pyx_v_n_tilde;
       __pyx_t_15 = -1;
       if (__pyx_t_17 < 0) {
@@ -4286,25 +4287,25 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_o
       } else if (unlikely(__pyx_t_17 >= __pyx_v_self->temp_y.shape[0])) __pyx_t_15 = 0;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 215, __pyx_L1_error)
+        __PYX_ERR(0, 224, __pyx_L1_error)
       }
       *((double *) ( /* dim=0 */ (__pyx_v_self->temp_y.data + __pyx_t_17 * __pyx_v_self->temp_y.strides[0]) )) += ((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->CT.data + __pyx_t_10 * __pyx_v_self->CT.strides[0]) ) + __pyx_t_14 * __pyx_v_self->CT.strides[1]) ))) * (*((double *) ( /* dim=0 */ (__pyx_v_x.data + __pyx_t_16 * __pyx_v_x.strides[0]) ))));
     }
   }
 
-  /* "cbadc/analog_system.pyx":216
+  /* "cbadc/analog_system.pyx":225
  *             for n in range(self.N):
  *                 self.temp_y[n_tilde] += self.CT[n_tilde, n] * x[n]
  *         return self.temp_y             # <<<<<<<<<<<<<<
  * 
  *     cpdef double [:] control_observation(self, double [:] x):
  */
-  if (unlikely(!__pyx_v_self->temp_y.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 216, __pyx_L1_error)}
+  if (unlikely(!__pyx_v_self->temp_y.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 225, __pyx_L1_error)}
   __PYX_INC_MEMVIEW(&__pyx_v_self->temp_y, 0);
   __pyx_r = __pyx_v_self->temp_y;
   goto __pyx_L0;
 
-  /* "cbadc/analog_system.pyx":192
+  /* "cbadc/analog_system.pyx":201
  *         return self.temp_derivative
  * 
  *     cpdef double [:] signal_observation(self, double [:] x):             # <<<<<<<<<<<<<<
@@ -4345,7 +4346,7 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_12AnalogSystem_5signal_observat
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("signal_observation (wrapper)", 0);
   assert(__pyx_arg_x); {
-    __pyx_v_x = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_x, PyBUF_WRITABLE); if (unlikely(!__pyx_v_x.memview)) __PYX_ERR(0, 192, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_x, PyBUF_WRITABLE); if (unlikely(!__pyx_v_x.memview)) __PYX_ERR(0, 201, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4370,9 +4371,9 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_4signal_observat
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("signal_observation", 0);
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 192, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_observation(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 192, __pyx_L1_error)
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 192, __pyx_L1_error)
+  if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 201, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_observation(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __pyx_t_1.memview = NULL;
@@ -4394,7 +4395,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_4signal_observat
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":218
+/* "cbadc/analog_system.pyx":227
  *         return self.temp_y
  * 
  *     cpdef double [:] control_observation(self, double [:] x):             # <<<<<<<<<<<<<<
@@ -4438,11 +4439,11 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_control_observation); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_control_observation); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_5cbadc_13analog_system_12AnalogSystem_7control_observation)) {
-        if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 218, __pyx_L1_error) }
-        __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_x, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
+        if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 227, __pyx_L1_error) }
+        __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_x, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 227, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -4458,10 +4459,10 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
         __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 218, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 227, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 218, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 227, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_6;
         __pyx_t_6.memview = NULL;
@@ -4482,7 +4483,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
     #endif
   }
 
-  /* "cbadc/analog_system.pyx":238
+  /* "cbadc/analog_system.pyx":247
  *         """
  *         cdef int n, m_tilde
  *         for m_tilde in range(self.M_tilde):             # <<<<<<<<<<<<<<
@@ -4494,14 +4495,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_m_tilde = __pyx_t_9;
 
-    /* "cbadc/analog_system.pyx":239
+    /* "cbadc/analog_system.pyx":248
  *         cdef int n, m_tilde
  *         for m_tilde in range(self.M_tilde):
  *             self.temp_s_tilde[m_tilde] = 0             # <<<<<<<<<<<<<<
  *             for n in range(self.N):
  *                 self.temp_s_tilde[m_tilde] = self.Gamma_tildeT[m_tilde, n] * x[n]
  */
-    if (unlikely(!__pyx_v_self->temp_s_tilde.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 239, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->temp_s_tilde.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 248, __pyx_L1_error)}
     __pyx_t_10 = __pyx_v_m_tilde;
     __pyx_t_11 = -1;
     if (__pyx_t_10 < 0) {
@@ -4510,11 +4511,11 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
     } else if (unlikely(__pyx_t_10 >= __pyx_v_self->temp_s_tilde.shape[0])) __pyx_t_11 = 0;
     if (unlikely(__pyx_t_11 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_11);
-      __PYX_ERR(0, 239, __pyx_L1_error)
+      __PYX_ERR(0, 248, __pyx_L1_error)
     }
     *((double *) ( /* dim=0 */ (__pyx_v_self->temp_s_tilde.data + __pyx_t_10 * __pyx_v_self->temp_s_tilde.strides[0]) )) = 0.0;
 
-    /* "cbadc/analog_system.pyx":240
+    /* "cbadc/analog_system.pyx":249
  *         for m_tilde in range(self.M_tilde):
  *             self.temp_s_tilde[m_tilde] = 0
  *             for n in range(self.N):             # <<<<<<<<<<<<<<
@@ -4526,14 +4527,14 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_n = __pyx_t_13;
 
-      /* "cbadc/analog_system.pyx":241
+      /* "cbadc/analog_system.pyx":250
  *             self.temp_s_tilde[m_tilde] = 0
  *             for n in range(self.N):
  *                 self.temp_s_tilde[m_tilde] = self.Gamma_tildeT[m_tilde, n] * x[n]             # <<<<<<<<<<<<<<
  *         return self.tem_s_tilde
  * 
  */
-      if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 241, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 250, __pyx_L1_error)}
       __pyx_t_10 = __pyx_v_m_tilde;
       __pyx_t_14 = __pyx_v_n;
       __pyx_t_15 = -1;
@@ -4547,7 +4548,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
       } else if (unlikely(__pyx_t_14 >= __pyx_v_self->Gamma_tildeT.shape[1])) __pyx_t_15 = 1;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 241, __pyx_L1_error)
+        __PYX_ERR(0, 250, __pyx_L1_error)
       }
       __pyx_t_16 = __pyx_v_n;
       __pyx_t_15 = -1;
@@ -4557,9 +4558,9 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
       } else if (unlikely(__pyx_t_16 >= __pyx_v_x.shape[0])) __pyx_t_15 = 0;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 241, __pyx_L1_error)
+        __PYX_ERR(0, 250, __pyx_L1_error)
       }
-      if (unlikely(!__pyx_v_self->temp_s_tilde.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 241, __pyx_L1_error)}
+      if (unlikely(!__pyx_v_self->temp_s_tilde.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 250, __pyx_L1_error)}
       __pyx_t_17 = __pyx_v_m_tilde;
       __pyx_t_15 = -1;
       if (__pyx_t_17 < 0) {
@@ -4568,29 +4569,29 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_
       } else if (unlikely(__pyx_t_17 >= __pyx_v_self->temp_s_tilde.shape[0])) __pyx_t_15 = 0;
       if (unlikely(__pyx_t_15 != -1)) {
         __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 241, __pyx_L1_error)
+        __PYX_ERR(0, 250, __pyx_L1_error)
       }
       *((double *) ( /* dim=0 */ (__pyx_v_self->temp_s_tilde.data + __pyx_t_17 * __pyx_v_self->temp_s_tilde.strides[0]) )) = ((*((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_self->Gamma_tildeT.data + __pyx_t_10 * __pyx_v_self->Gamma_tildeT.strides[0]) ) + __pyx_t_14 * __pyx_v_self->Gamma_tildeT.strides[1]) ))) * (*((double *) ( /* dim=0 */ (__pyx_v_x.data + __pyx_t_16 * __pyx_v_x.strides[0]) ))));
     }
   }
 
-  /* "cbadc/analog_system.pyx":242
+  /* "cbadc/analog_system.pyx":251
  *             for n in range(self.N):
  *                 self.temp_s_tilde[m_tilde] = self.Gamma_tildeT[m_tilde, n] * x[n]
  *         return self.tem_s_tilde             # <<<<<<<<<<<<<<
  * 
  *     cdef complex [:,:] _atf(self, double _omega):
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_tem_s_tilde); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_tem_s_tilde); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
   goto __pyx_L0;
 
-  /* "cbadc/analog_system.pyx":218
+  /* "cbadc/analog_system.pyx":227
  *         return self.temp_y
  * 
  *     cpdef double [:] control_observation(self, double [:] x):             # <<<<<<<<<<<<<<
@@ -4631,7 +4632,7 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_12AnalogSystem_7control_observa
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("control_observation (wrapper)", 0);
   assert(__pyx_arg_x); {
-    __pyx_v_x = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_x, PyBUF_WRITABLE); if (unlikely(!__pyx_v_x.memview)) __PYX_ERR(0, 218, __pyx_L3_error)
+    __pyx_v_x = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_x, PyBUF_WRITABLE); if (unlikely(!__pyx_v_x.memview)) __PYX_ERR(0, 227, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4656,9 +4657,9 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_6control_observa
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("control_observation", 0);
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 218, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_observation(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 218, __pyx_L1_error)
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 218, __pyx_L1_error)
+  if (unlikely(!__pyx_v_x.memview)) { __Pyx_RaiseUnboundLocalError("x"); __PYX_ERR(0, 227, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_f_5cbadc_13analog_system_12AnalogSystem_control_observation(__pyx_v_self, __pyx_v_x, 1); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_t_1, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 227, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __pyx_t_1.memview = NULL;
@@ -4680,12 +4681,12 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_6control_observa
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":244
+/* "cbadc/analog_system.pyx":253
  *         return self.tem_s_tilde
  * 
  *     cdef complex [:,:] _atf(self, double _omega):             # <<<<<<<<<<<<<<
  *             return np.dot(
- *                 np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),
+ *                 np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
  */
 
 static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(struct __pyx_obj_5cbadc_13analog_system_AnalogSystem *__pyx_v_self, double __pyx_v__omega) {
@@ -4707,37 +4708,37 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_atf", 0);
 
-  /* "cbadc/analog_system.pyx":245
+  /* "cbadc/analog_system.pyx":254
  * 
  *     cdef complex [:,:] _atf(self, double _omega):
  *             return np.dot(             # <<<<<<<<<<<<<<
- *                 np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),
+ *                 np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
  *                 self.B,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dot); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dot); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":246
+  /* "cbadc/analog_system.pyx":255
  *     cdef complex [:,:] _atf(self, double _omega):
  *             return np.dot(
- *                 np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),             # <<<<<<<<<<<<<<
+ *                 np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),             # <<<<<<<<<<<<<<
  *                 self.B,
  *             )
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_linalg); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_linalg); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_inv); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_pinv); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v__omega); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v__omega); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -4745,15 +4746,15 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyComplex_Type)), __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyComplex_Type)), __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_eye); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_eye); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_9 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
@@ -4768,17 +4769,17 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   __pyx_t_6 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_9, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_7);
   __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = PyNumber_Multiply(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_8 = PyNumber_Multiply(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 246, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_self->A, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 255, __pyx_L1_error)}
+  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_self->A, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = PyNumber_Subtract(__pyx_t_8, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_5 = PyNumber_Subtract(__pyx_t_8, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -4795,19 +4796,19 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "cbadc/analog_system.pyx":247
+  /* "cbadc/analog_system.pyx":256
  *             return np.dot(
- *                 np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),
+ *                 np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
  *                 self.B,             # <<<<<<<<<<<<<<
  *             )
  * 
  */
-  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 247, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 247, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 256, __pyx_L1_error)}
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_10 = 0;
@@ -4824,7 +4825,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_2, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4834,7 +4835,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_2, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4842,7 +4843,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -4853,32 +4854,32 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
     PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_10, __pyx_t_4);
     __pyx_t_2 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbadc/analog_system.pyx":245
+  /* "cbadc/analog_system.pyx":254
  * 
  *     cdef complex [:,:] _atf(self, double _omega):
  *             return np.dot(             # <<<<<<<<<<<<<<
- *                 np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),
+ *                 np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
  *                 self.B,
  */
-  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_dsds___pyx_t_double_complex(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_dsds___pyx_t_double_complex(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_11;
   __pyx_t_11.memview = NULL;
   __pyx_t_11.data = NULL;
   goto __pyx_L0;
 
-  /* "cbadc/analog_system.pyx":244
+  /* "cbadc/analog_system.pyx":253
  *         return self.tem_s_tilde
  * 
  *     cdef complex [:,:] _atf(self, double _omega):             # <<<<<<<<<<<<<<
  *             return np.dot(
- *                 np.linalg.inv(complex(0, _omega) * np.eye(self.N) - self.A),
+ *                 np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
  */
 
   /* function exit code */
@@ -4906,7 +4907,7 @@ static __Pyx_memviewslice __pyx_f_5cbadc_13analog_system_12AnalogSystem__atf(str
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":250
+/* "cbadc/analog_system.pyx":259
  *             )
  * 
  *     def analog_transfer_function_matrix(self, double [:] omega):             # <<<<<<<<<<<<<<
@@ -4926,7 +4927,7 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_12AnalogSystem_9analog_transfer
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("analog_transfer_function_matrix (wrapper)", 0);
   assert(__pyx_arg_omega); {
-    __pyx_v_omega = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_omega, PyBUF_WRITABLE); if (unlikely(!__pyx_v_omega.memview)) __PYX_ERR(0, 250, __pyx_L3_error)
+    __pyx_v_omega = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_arg_omega, PyBUF_WRITABLE); if (unlikely(!__pyx_v_omega.memview)) __PYX_ERR(0, 259, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4965,41 +4966,41 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_8analog_transfer
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("analog_transfer_function_matrix", 0);
 
-  /* "cbadc/analog_system.pyx":272
+  /* "cbadc/analog_system.pyx":281
  * 
  *         """
  *         cdef int size = omega.size             # <<<<<<<<<<<<<<
  *         cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=complex)
  *         cdef int index
  */
-  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_omega, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_omega, 1, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_size = __pyx_t_3;
 
-  /* "cbadc/analog_system.pyx":273
+  /* "cbadc/analog_system.pyx":282
  *         """
  *         cdef int size = omega.size
  *         cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=complex)             # <<<<<<<<<<<<<<
  *         cdef int index
  *         for index in range(size):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->N); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->L); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->L); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_size); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_size); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
@@ -5010,26 +5011,26 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_8analog_transfer
   __pyx_t_2 = 0;
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, ((PyObject *)(&PyComplex_Type))) < 0) __PYX_ERR(0, 273, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 273, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, ((PyObject *)(&PyComplex_Type))) < 0) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds___pyx_t_double_complex(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds___pyx_t_double_complex(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_result = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "cbadc/analog_system.pyx":275
+  /* "cbadc/analog_system.pyx":284
  *         cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=complex)
  *         cdef int index
  *         for index in range(size):             # <<<<<<<<<<<<<<
@@ -5041,7 +5042,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_8analog_transfer
   for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
     __pyx_v_index = __pyx_t_9;
 
-    /* "cbadc/analog_system.pyx":276
+    /* "cbadc/analog_system.pyx":285
  *         cdef int index
  *         for index in range(size):
  *             result[:, :, index] = self._atf(omega[index])             # <<<<<<<<<<<<<<
@@ -5056,9 +5057,9 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_8analog_transfer
     } else if (unlikely(__pyx_t_10 >= __pyx_v_omega.shape[0])) __pyx_t_11 = 0;
     if (unlikely(__pyx_t_11 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_11);
-      __PYX_ERR(0, 276, __pyx_L1_error)
+      __PYX_ERR(0, 285, __pyx_L1_error)
     }
-    __pyx_t_12 = ((struct __pyx_vtabstruct_5cbadc_13analog_system_AnalogSystem *)__pyx_v_self->__pyx_vtab)->_atf(__pyx_v_self, (*((double *) ( /* dim=0 */ (__pyx_v_omega.data + __pyx_t_10 * __pyx_v_omega.strides[0]) )))); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __pyx_t_12 = ((struct __pyx_vtabstruct_5cbadc_13analog_system_AnalogSystem *)__pyx_v_self->__pyx_vtab)->_atf(__pyx_v_self, (*((double *) ( /* dim=0 */ (__pyx_v_omega.data + __pyx_t_10 * __pyx_v_omega.strides[0]) )))); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
     __pyx_t_13.data = __pyx_v_result.data;
     __pyx_t_13.memview = __pyx_v_result.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_13, 0);
@@ -5079,12 +5080,12 @@ __pyx_t_13.strides[1] = __pyx_v_result.strides[1];
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 2)");
-            __PYX_ERR(0, 276, __pyx_L1_error)
+            __PYX_ERR(0, 285, __pyx_L1_error)
         }
         __pyx_t_13.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_12, __pyx_t_13, 2, 2, 0) < 0)) __PYX_ERR(0, 276, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_12, __pyx_t_13, 2, 2, 0) < 0)) __PYX_ERR(0, 285, __pyx_L1_error)
     __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
@@ -5093,7 +5094,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_12, __pyx_t_13, 2, 2, 0) < 0
     __pyx_t_12.data = NULL;
   }
 
-  /* "cbadc/analog_system.pyx":277
+  /* "cbadc/analog_system.pyx":286
  *         for index in range(size):
  *             result[:, :, index] = self._atf(omega[index])
  *         return result             # <<<<<<<<<<<<<<
@@ -5101,13 +5102,13 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_12, __pyx_t_13, 2, 2, 0) < 0
  *     def transfer_function(self, omega):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_result, 3, (PyObject *(*)(char *)) __pyx_memview_get___pyx_t_double_complex, (int (*)(char *, PyObject *)) __pyx_memview_set___pyx_t_double_complex, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_result, 3, (PyObject *(*)(char *)) __pyx_memview_get___pyx_t_double_complex, (int (*)(char *, PyObject *)) __pyx_memview_set___pyx_t_double_complex, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "cbadc/analog_system.pyx":250
+  /* "cbadc/analog_system.pyx":259
  *             )
  * 
  *     def analog_transfer_function_matrix(self, double [:] omega):             # <<<<<<<<<<<<<<
@@ -5135,7 +5136,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_12, __pyx_t_13, 2, 2, 0) < 0
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":279
+/* "cbadc/analog_system.pyx":288
  *         return result
  * 
  *     def transfer_function(self, omega):             # <<<<<<<<<<<<<<
@@ -5173,22 +5174,22 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("transfer_function", 0);
 
-  /* "cbadc/analog_system.pyx":299
+  /* "cbadc/analog_system.pyx":308
  *             the signal transfer function evaluated at K different angular frequencies.
  *         """
  *         resp = np.einsum('ij,jkl', self.CT, self.analog_transfer_function_matrix(omega))             # <<<<<<<<<<<<<<
  *         return np.asarray(resp)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_einsum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_einsum); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 299, __pyx_L1_error)}
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_self->CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 299, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 308, __pyx_L1_error)}
+  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_self->CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_analog_transfer_function_matrix); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 299, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_analog_transfer_function_matrix); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -5202,7 +5203,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   }
   __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_v_omega) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_omega);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 299, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 308, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -5220,7 +5221,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_kp_u_ij_jkl, __pyx_t_2, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 308, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5230,7 +5231,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_kp_u_ij_jkl, __pyx_t_2, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 308, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5238,7 +5239,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 308, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -5252,7 +5253,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
     PyTuple_SET_ITEM(__pyx_t_6, 2+__pyx_t_7, __pyx_t_4);
     __pyx_t_2 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 308, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
@@ -5260,7 +5261,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   __pyx_v_resp = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbadc/analog_system.pyx":300
+  /* "cbadc/analog_system.pyx":309
  *         """
  *         resp = np.einsum('ij,jkl', self.CT, self.analog_transfer_function_matrix(omega))
  *         return np.asarray(resp)             # <<<<<<<<<<<<<<
@@ -5268,9 +5269,9 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
  *     def __str__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_asarray); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_asarray); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -5285,14 +5286,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_3, __pyx_v_resp) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_resp);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "cbadc/analog_system.pyx":279
+  /* "cbadc/analog_system.pyx":288
  *         return result
  * 
  *     def transfer_function(self, omega):             # <<<<<<<<<<<<<<
@@ -5317,11 +5318,11 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_10transfer_funct
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":302
+/* "cbadc/analog_system.pyx":311
  *         return np.asarray(resp)
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"The analog system is defined as:\nA:\n{np.array(self.A)},\nB:\n{np.array(self.B)},\nCT:\n{np.array(self.CT)},\nGamma:\n{np.array(self.Gamma)},\nand Gamma_tildeT:\n{np.array(self.Gamma_tildeT)}"
+ *         return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nand Gamma_tildeT =\n{np.array(self.Gamma_tildeT)}"
  * 
  */
 
@@ -5353,29 +5354,29 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "cbadc/analog_system.pyx":303
+  /* "cbadc/analog_system.pyx":312
  * 
  *     def __str__(self):
- *         return f"The analog system is defined as:\nA:\n{np.array(self.A)},\nB:\n{np.array(self.B)},\nCT:\n{np.array(self.CT)},\nGamma:\n{np.array(self.Gamma)},\nand Gamma_tildeT:\n{np.array(self.Gamma_tildeT)}"             # <<<<<<<<<<<<<<
+ *         return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nand Gamma_tildeT =\n{np.array(self.Gamma_tildeT)}"             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
-  __Pyx_INCREF(__pyx_kp_u_The_analog_system_is_defined_as);
-  __pyx_t_2 += 36;
-  __Pyx_GIVEREF(__pyx_kp_u_The_analog_system_is_defined_as);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_The_analog_system_is_defined_as);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __Pyx_INCREF(__pyx_kp_u_The_analog_system_is_parameteriz);
+  __pyx_t_2 += 43;
+  __Pyx_GIVEREF(__pyx_kp_u_The_analog_system_is_parameteriz);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_The_analog_system_is_parameteriz);
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 303, __pyx_L1_error)}
-  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->A, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->A.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 312, __pyx_L1_error)}
+  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->A, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
@@ -5390,10 +5391,10 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_3;
@@ -5402,16 +5403,16 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_6);
   __pyx_t_6 = 0;
   __Pyx_INCREF(__pyx_kp_u_B_2);
-  __pyx_t_2 += 5;
+  __pyx_t_2 += 6;
   __Pyx_GIVEREF(__pyx_kp_u_B_2);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_B_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 303, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->B.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 312, __pyx_L1_error)}
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->B, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -5426,10 +5427,10 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   __pyx_t_6 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_3;
@@ -5438,16 +5439,16 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_5);
   __pyx_t_5 = 0;
   __Pyx_INCREF(__pyx_kp_u_CT_2);
-  __pyx_t_2 += 6;
+  __pyx_t_2 += 8;
   __Pyx_GIVEREF(__pyx_kp_u_CT_2);
   PyTuple_SET_ITEM(__pyx_t_1, 4, __pyx_kp_u_CT_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 303, __pyx_L1_error)}
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_self->CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->CT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 312, __pyx_L1_error)}
+  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_self->CT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -5462,10 +5463,10 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   __pyx_t_5 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
@@ -5474,16 +5475,16 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_t_4);
   __pyx_t_4 = 0;
   __Pyx_INCREF(__pyx_kp_u_Gamma_2);
-  __pyx_t_2 += 9;
+  __pyx_t_2 += 10;
   __Pyx_GIVEREF(__pyx_kp_u_Gamma_2);
   PyTuple_SET_ITEM(__pyx_t_1, 6, __pyx_kp_u_Gamma_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 303, __pyx_L1_error)}
-  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->Gamma, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->Gamma.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 312, __pyx_L1_error)}
+  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_self->Gamma, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
@@ -5498,10 +5499,10 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_3;
@@ -5510,16 +5511,16 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   PyTuple_SET_ITEM(__pyx_t_1, 7, __pyx_t_6);
   __pyx_t_6 = 0;
   __Pyx_INCREF(__pyx_kp_u_and_Gamma_tildeT);
-  __pyx_t_2 += 20;
+  __pyx_t_2 += 21;
   __Pyx_GIVEREF(__pyx_kp_u_and_Gamma_tildeT);
   PyTuple_SET_ITEM(__pyx_t_1, 8, __pyx_kp_u_and_Gamma_tildeT);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 303, __pyx_L1_error)}
-  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->Gamma_tildeT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_v_self->Gamma_tildeT.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 312, __pyx_L1_error)}
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->Gamma_tildeT, 2, (PyObject *(*)(char *)) __pyx_memview_get_double, (int (*)(char *, PyObject *)) __pyx_memview_set_double, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -5534,10 +5535,10 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   __pyx_t_6 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_3;
@@ -5545,18 +5546,18 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_12__str__(struct
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_1, 9, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 10, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 303, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 10, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 312, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "cbadc/analog_system.pyx":302
+  /* "cbadc/analog_system.pyx":311
  *         return np.asarray(resp)
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"The analog system is defined as:\nA:\n{np.array(self.A)},\nB:\n{np.array(self.B)},\nCT:\n{np.array(self.CT)},\nGamma:\n{np.array(self.Gamma)},\nand Gamma_tildeT:\n{np.array(self.Gamma_tildeT)}"
+ *         return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nand Gamma_tildeT =\n{np.array(self.Gamma_tildeT)}"
  * 
  */
 
@@ -6436,7 +6437,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_12AnalogSystem_16__setstate_cyt
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":317
+/* "cbadc/analog_system.pyx":326
  *     """
  * 
  *     def __init__(self, system, message):             # <<<<<<<<<<<<<<
@@ -6483,17 +6484,17 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_24InvalidAnalogSystemError_1__i
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_system)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 1); __PYX_ERR(0, 317, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 1); __PYX_ERR(0, 326, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_message)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 2); __PYX_ERR(0, 317, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 2); __PYX_ERR(0, 326, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 317, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 326, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -6508,7 +6509,7 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_24InvalidAnalogSystemError_1__i
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 317, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 326, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbadc.analog_system.InvalidAnalogSystemError.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6529,25 +6530,25 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_24InvalidAnalogSystemError___in
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbadc/analog_system.pyx":318
+  /* "cbadc/analog_system.pyx":327
  * 
  *     def __init__(self, system, message):
  *         self.analog_system = system             # <<<<<<<<<<<<<<
  *         self.message = message
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_analog_system, __pyx_v_system) < 0) __PYX_ERR(0, 318, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_analog_system, __pyx_v_system) < 0) __PYX_ERR(0, 327, __pyx_L1_error)
 
-  /* "cbadc/analog_system.pyx":319
+  /* "cbadc/analog_system.pyx":328
  *     def __init__(self, system, message):
  *         self.analog_system = system
  *         self.message = message             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 319, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_message, __pyx_v_message) < 0) __PYX_ERR(0, 328, __pyx_L1_error)
 
-  /* "cbadc/analog_system.pyx":317
+  /* "cbadc/analog_system.pyx":326
  *     """
  * 
  *     def __init__(self, system, message):             # <<<<<<<<<<<<<<
@@ -6567,7 +6568,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_24InvalidAnalogSystemError___in
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":421
+/* "cbadc/analog_system.pyx":430
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
@@ -6617,23 +6618,23 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_18ChainOfIntegrators_1__init__(
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_beta)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 421, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 430, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rho)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 421, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 430, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_kappa)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 421, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 430, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 421, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 430, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -6650,7 +6651,7 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_18ChainOfIntegrators_1__init__(
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 421, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 430, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbadc.analog_system.ChainOfIntegrators.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6689,35 +6690,35 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbadc/analog_system.pyx":424
+  /* "cbadc/analog_system.pyx":433
  *         """Create an chain-of-integrators analog system.
  *         """
  *         if (beta.shape[0] != beta.size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":425
+    /* "cbadc/analog_system.pyx":434
  *         """
  *         if (beta.shape[0] != beta.size):
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")             # <<<<<<<<<<<<<<
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 425, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_2 = NULL;
     __pyx_t_5 = 0;
@@ -6734,7 +6735,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_self, __pyx_kp_u_beta_must_be_a_one_dimensional_v};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 425, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -6742,13 +6743,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_self, __pyx_kp_u_beta_must_be_a_one_dimensional_v};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 425, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 425, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       if (__pyx_t_2) {
         __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -6759,14 +6760,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
       __Pyx_INCREF(__pyx_kp_u_beta_must_be_a_one_dimensional_v);
       __Pyx_GIVEREF(__pyx_kp_u_beta_must_be_a_one_dimensional_v);
       PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_kp_u_beta_must_be_a_one_dimensional_v);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 425, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "cbadc/analog_system.pyx":424
+    /* "cbadc/analog_system.pyx":433
  *         """Create an chain-of-integrators analog system.
  *         """
  *         if (beta.shape[0] != beta.size):             # <<<<<<<<<<<<<<
@@ -6775,35 +6776,35 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
  */
   }
 
-  /* "cbadc/analog_system.pyx":426
+  /* "cbadc/analog_system.pyx":435
  *         if (beta.shape[0] != beta.size):
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != rho.size):
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":427
+    /* "cbadc/analog_system.pyx":436
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")             # <<<<<<<<<<<<<<
  *         if (kappa.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 427, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 436, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_1 = NULL;
     __pyx_t_5 = 0;
@@ -6820,7 +6821,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_rho_must_be_a_one_dimensional_ve};
-      __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 427, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_6);
     } else
@@ -6828,13 +6829,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_rho_must_be_a_one_dimensional_ve};
-      __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 427, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_6);
     } else
     #endif
     {
-      __pyx_t_2 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 427, __pyx_L1_error)
+      __pyx_t_2 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 436, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       if (__pyx_t_1) {
         __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1); __pyx_t_1 = NULL;
@@ -6845,14 +6846,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
       __Pyx_INCREF(__pyx_kp_u_rho_must_be_a_one_dimensional_ve);
       __Pyx_GIVEREF(__pyx_kp_u_rho_must_be_a_one_dimensional_ve);
       PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_5, __pyx_kp_u_rho_must_be_a_one_dimensional_ve);
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 427, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 436, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "cbadc/analog_system.pyx":426
+    /* "cbadc/analog_system.pyx":435
  *         if (beta.shape[0] != beta.size):
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):             # <<<<<<<<<<<<<<
@@ -6861,35 +6862,35 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
  */
   }
 
-  /* "cbadc/analog_system.pyx":428
+  /* "cbadc/analog_system.pyx":437
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != rho.size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")
  *         if( beta.size != rho.size and rho.size != kappa[:,0].size):
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_6, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_6, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":429
+    /* "cbadc/analog_system.pyx":438
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")             # <<<<<<<<<<<<<<
  *         if( beta.size != rho.size and rho.size != kappa[:,0].size):
  *             InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 429, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 438, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_3 = NULL;
     __pyx_t_5 = 0;
@@ -6906,7 +6907,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self, __pyx_kp_u_kappa_must_be_a_one_dimensional};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 429, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 438, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -6914,13 +6915,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self, __pyx_kp_u_kappa_must_be_a_one_dimensional};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 429, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 438, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_1 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 429, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 438, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -6931,14 +6932,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
       __Pyx_INCREF(__pyx_kp_u_kappa_must_be_a_one_dimensional);
       __Pyx_GIVEREF(__pyx_kp_u_kappa_must_be_a_one_dimensional);
       PyTuple_SET_ITEM(__pyx_t_1, 1+__pyx_t_5, __pyx_kp_u_kappa_must_be_a_one_dimensional);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 429, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 438, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "cbadc/analog_system.pyx":428
+    /* "cbadc/analog_system.pyx":437
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != rho.size):             # <<<<<<<<<<<<<<
@@ -6947,51 +6948,51 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
  */
   }
 
-  /* "cbadc/analog_system.pyx":430
+  /* "cbadc/analog_system.pyx":439
  *         if (kappa.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")
  *         if( beta.size != rho.size and rho.size != kappa[:,0].size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_7) {
   } else {
     __pyx_t_4 = __pyx_t_7;
     goto __pyx_L7_bool_binop_done;
   }
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_kappa, __pyx_tuple__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_v_kappa, __pyx_tuple__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_4 = __pyx_t_7;
   __pyx_L7_bool_binop_done:;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":431
+    /* "cbadc/analog_system.pyx":440
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")
  *         if( beta.size != rho.size and rho.size != kappa[:,0].size):
  *             InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")             # <<<<<<<<<<<<<<
  * 
  *         # State space order
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 431, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 440, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_1 = NULL;
     __pyx_t_5 = 0;
@@ -7008,7 +7009,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_beta_rho_kappa_vector_must_be_of};
-      __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 431, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 440, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_6);
     } else
@@ -7016,13 +7017,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_beta_rho_kappa_vector_must_be_of};
-      __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 431, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 440, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_6);
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 431, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 440, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       if (__pyx_t_1) {
         __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1); __pyx_t_1 = NULL;
@@ -7033,14 +7034,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
       __Pyx_INCREF(__pyx_kp_u_beta_rho_kappa_vector_must_be_of);
       __Pyx_GIVEREF(__pyx_kp_u_beta_rho_kappa_vector_must_be_of);
       PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_5, __pyx_kp_u_beta_rho_kappa_vector_must_be_of);
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 431, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 440, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "cbadc/analog_system.pyx":430
+    /* "cbadc/analog_system.pyx":439
  *         if (kappa.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")
  *         if( beta.size != rho.size and rho.size != kappa[:,0].size):             # <<<<<<<<<<<<<<
@@ -7049,28 +7050,28 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
  */
   }
 
-  /* "cbadc/analog_system.pyx":434
+  /* "cbadc/analog_system.pyx":443
  * 
  *         # State space order
  *         N = beta.size             # <<<<<<<<<<<<<<
  * 
  *         # Analog system parameters
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 434, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 443, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_v_N = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "cbadc/analog_system.pyx":437
+  /* "cbadc/analog_system.pyx":446
  * 
  *         # Analog system parameters
  *         A = np.diag(rho) + np.diag(beta[1:], k=-1)             # <<<<<<<<<<<<<<
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_diag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_diag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -7085,49 +7086,49 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   }
   __pyx_t_6 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_v_rho) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_rho);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 437, __pyx_L1_error)
+  if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_diag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_diag); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetSlice(__pyx_v_beta, 1, 0, NULL, NULL, &__pyx_slice__3, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetSlice(__pyx_v_beta, 1, 0, NULL, NULL, &__pyx_slice__3, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_k, __pyx_int_neg_1) < 0) __PYX_ERR(0, 437, __pyx_L1_error)
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 437, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_k, __pyx_int_neg_1) < 0) __PYX_ERR(0, 446, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_6, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Add(__pyx_t_6, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_A = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "cbadc/analog_system.pyx":438
+  /* "cbadc/analog_system.pyx":447
  *         # Analog system parameters
  *         A = np.diag(rho) + np.diag(beta[1:], k=-1)
  *         B = np.zeros((N, 1))             # <<<<<<<<<<<<<<
  *         B[0] = beta[0]
  *         CT = np.eye(N)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_zeros); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_zeros); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_v_N);
   __Pyx_GIVEREF(__pyx_v_N);
@@ -7148,34 +7149,34 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_t_8) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_8);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 438, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_v_B = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "cbadc/analog_system.pyx":439
+  /* "cbadc/analog_system.pyx":448
  *         A = np.diag(rho) + np.diag(beta[1:], k=-1)
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]             # <<<<<<<<<<<<<<
  *         CT = np.eye(N)
  * 
  */
-  __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_beta, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 439, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_beta, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 448, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_B, 0, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_B, 0, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 448, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbadc/analog_system.pyx":440
+  /* "cbadc/analog_system.pyx":449
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]
  *         CT = np.eye(N)             # <<<<<<<<<<<<<<
  * 
  *         # Check if Kappa is specified as a vector
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 440, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 449, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_eye); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 440, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_eye); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 449, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_6 = NULL;
@@ -7190,44 +7191,44 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   }
   __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_6, __pyx_v_N) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_N);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 440, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 449, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_CT = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "cbadc/analog_system.pyx":443
+  /* "cbadc/analog_system.pyx":452
  * 
  *         # Check if Kappa is specified as a vector
  *         if kappa.shape[1] == 1:             # <<<<<<<<<<<<<<
  *             Gamma = np.diag(kappa.flatten())
  *         else:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 443, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 452, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_8 = __Pyx_GetItemInt(__pyx_t_3, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 443, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_GetItemInt(__pyx_t_3, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 452, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_t_8, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 443, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_EqObjC(__pyx_t_8, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 452, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 443, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":444
+    /* "cbadc/analog_system.pyx":453
  *         # Check if Kappa is specified as a vector
  *         if kappa.shape[1] == 1:
  *             Gamma = np.diag(kappa.flatten())             # <<<<<<<<<<<<<<
  *         else:
  *             Gamma = np.array(kappa, dtype=np.double)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 444, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 453, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_diag); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 444, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_diag); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 453, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_flatten); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 444, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_flatten); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 453, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_2 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -7241,7 +7242,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     }
     __pyx_t_8 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 444, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 453, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -7257,13 +7258,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_t_8) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_8);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 444, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 453, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_v_Gamma = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "cbadc/analog_system.pyx":443
+    /* "cbadc/analog_system.pyx":452
  * 
  *         # Check if Kappa is specified as a vector
  *         if kappa.shape[1] == 1:             # <<<<<<<<<<<<<<
@@ -7273,7 +7274,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     goto __pyx_L9;
   }
 
-  /* "cbadc/analog_system.pyx":446
+  /* "cbadc/analog_system.pyx":455
  *             Gamma = np.diag(kappa.flatten())
  *         else:
  *             Gamma = np.array(kappa, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -7281,26 +7282,26 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
  *         Gamma_tildeT = -Gamma.transpose()
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_kappa);
     __Pyx_GIVEREF(__pyx_v_kappa);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_kappa);
-    __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_double); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 446, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 455, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -7310,14 +7311,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   }
   __pyx_L9:;
 
-  /* "cbadc/analog_system.pyx":448
+  /* "cbadc/analog_system.pyx":457
  *             Gamma = np.array(kappa, dtype=np.double)
  * 
  *         Gamma_tildeT = -Gamma.transpose()             # <<<<<<<<<<<<<<
  *         for row_index in range(Gamma_tildeT.shape[0]):
  *             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
  */
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma, __pyx_n_s_transpose); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma, __pyx_n_s_transpose); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 457, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
@@ -7331,37 +7332,37 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   }
   __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 448, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 457, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_8 = PyNumber_Negative(__pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 457, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_Gamma_tildeT = __pyx_t_8;
   __pyx_t_8 = 0;
 
-  /* "cbadc/analog_system.pyx":449
+  /* "cbadc/analog_system.pyx":458
  * 
  *         Gamma_tildeT = -Gamma.transpose()
  *         for row_index in range(Gamma_tildeT.shape[0]):             # <<<<<<<<<<<<<<
  *             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
  * 
  */
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma_tildeT, __pyx_n_s_shape); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma_tildeT, __pyx_n_s_shape); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 458, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_8, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_8, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 458, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 458, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_8)) || PyTuple_CheckExact(__pyx_t_8)) {
     __pyx_t_2 = __pyx_t_8; __Pyx_INCREF(__pyx_t_2); __pyx_t_9 = 0;
     __pyx_t_10 = NULL;
   } else {
-    __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 449, __pyx_L1_error)
+    __pyx_t_9 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 458, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_10 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 449, __pyx_L1_error)
+    __pyx_t_10 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 458, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   for (;;) {
@@ -7369,17 +7370,17 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_8 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 449, __pyx_L1_error)
+        __pyx_t_8 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
         #else
-        __pyx_t_8 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 449, __pyx_L1_error)
+        __pyx_t_8 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         #endif
       } else {
         if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 449, __pyx_L1_error)
+        __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
         #else
-        __pyx_t_8 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 449, __pyx_L1_error)
+        __pyx_t_8 = PySequence_ITEM(__pyx_t_2, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         #endif
       }
@@ -7389,7 +7390,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 449, __pyx_L1_error)
+          else __PYX_ERR(0, 458, __pyx_L1_error)
         }
         break;
       }
@@ -7398,14 +7399,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     __Pyx_XDECREF_SET(__pyx_v_row_index, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "cbadc/analog_system.pyx":450
+    /* "cbadc/analog_system.pyx":459
  *         Gamma_tildeT = -Gamma.transpose()
  *         for row_index in range(Gamma_tildeT.shape[0]):
  *             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])             # <<<<<<<<<<<<<<
  * 
  *         # initialize parent class
  */
-    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_v_row_index);
     __Pyx_GIVEREF(__pyx_v_row_index);
@@ -7413,18 +7414,18 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     __Pyx_INCREF(__pyx_slice_);
     __Pyx_GIVEREF(__pyx_slice_);
     PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_slice_);
-    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_linalg); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_linalg); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_norm); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_row_index);
     __Pyx_GIVEREF(__pyx_v_row_index);
@@ -7432,7 +7433,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     __Pyx_INCREF(__pyx_slice_);
     __Pyx_GIVEREF(__pyx_slice_);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_slice_);
-    __pyx_t_11 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -7448,14 +7449,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     __pyx_t_8 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_1, __pyx_t_11) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_11);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 450, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyNumber_Divide(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyNumber_Divide(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_v_row_index);
     __Pyx_GIVEREF(__pyx_v_row_index);
@@ -7463,11 +7464,11 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     __Pyx_INCREF(__pyx_slice_);
     __Pyx_GIVEREF(__pyx_slice_);
     PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_slice_);
-    if (unlikely(PyObject_SetItem(__pyx_v_Gamma_tildeT, __pyx_t_8, __pyx_t_6) < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_Gamma_tildeT, __pyx_t_8, __pyx_t_6) < 0)) __PYX_ERR(0, 459, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "cbadc/analog_system.pyx":449
+    /* "cbadc/analog_system.pyx":458
  * 
  *         Gamma_tildeT = -Gamma.transpose()
  *         for row_index in range(Gamma_tildeT.shape[0]):             # <<<<<<<<<<<<<<
@@ -7477,14 +7478,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":453
+  /* "cbadc/analog_system.pyx":462
  * 
  *         # initialize parent class
  *         AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem), __pyx_n_s_init); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 453, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem), __pyx_n_s_init); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_8 = NULL;
   __pyx_t_5 = 0;
@@ -7501,7 +7502,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_6)) {
     PyObject *__pyx_temp[7] = {__pyx_t_8, __pyx_v_self, __pyx_v_A, __pyx_v_B, __pyx_v_CT, __pyx_v_Gamma, __pyx_v_Gamma_tildeT};
-    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 453, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_GOTREF(__pyx_t_2);
   } else
@@ -7509,13 +7510,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
     PyObject *__pyx_temp[7] = {__pyx_t_8, __pyx_v_self, __pyx_v_A, __pyx_v_B, __pyx_v_CT, __pyx_v_Gamma, __pyx_v_Gamma_tildeT};
-    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 453, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_GOTREF(__pyx_t_2);
   } else
   #endif
   {
-    __pyx_t_3 = PyTuple_New(6+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 453, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(6+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 462, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__pyx_t_8) {
       __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -7538,14 +7539,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
     __Pyx_INCREF(__pyx_v_Gamma_tildeT);
     __Pyx_GIVEREF(__pyx_v_Gamma_tildeT);
     PyTuple_SET_ITEM(__pyx_t_3, 5+__pyx_t_5, __pyx_v_Gamma_tildeT);
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 453, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":421
+  /* "cbadc/analog_system.pyx":430
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
@@ -7578,7 +7579,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_18ChainOfIntegrators___init__(C
   return __pyx_r;
 }
 
-/* "cbadc/analog_system.pyx":554
+/* "cbadc/analog_system.pyx":563
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
@@ -7628,23 +7629,23 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_8LeapFrog_1__init__(PyObject *_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_beta)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 554, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 1); __PYX_ERR(0, 563, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rho)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 554, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 2); __PYX_ERR(0, 563, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_kappa)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 554, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, 3); __PYX_ERR(0, 563, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 554, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 563, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -7661,7 +7662,7 @@ static PyObject *__pyx_pw_5cbadc_13analog_system_8LeapFrog_1__init__(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 554, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 563, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbadc.analog_system.LeapFrog.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7700,35 +7701,35 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "cbadc/analog_system.pyx":557
+  /* "cbadc/analog_system.pyx":566
  *         """Create an leap-frog analog system.
  *         """
  *         if (beta.shape[0] != beta.size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 557, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 557, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 557, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 557, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 557, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":558
+    /* "cbadc/analog_system.pyx":567
  *         """
  *         if (beta.shape[0] != beta.size):
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")             # <<<<<<<<<<<<<<
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 558, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 567, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_2 = NULL;
     __pyx_t_5 = 0;
@@ -7745,7 +7746,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_self, __pyx_kp_u_beta_must_be_a_one_dimensional_v};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 558, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -7753,13 +7754,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_self, __pyx_kp_u_beta_must_be_a_one_dimensional_v};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 558, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 558, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 567, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       if (__pyx_t_2) {
         __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -7770,14 +7771,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
       __Pyx_INCREF(__pyx_kp_u_beta_must_be_a_one_dimensional_v);
       __Pyx_GIVEREF(__pyx_kp_u_beta_must_be_a_one_dimensional_v);
       PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_kp_u_beta_must_be_a_one_dimensional_v);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 558, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "cbadc/analog_system.pyx":557
+    /* "cbadc/analog_system.pyx":566
  *         """Create an leap-frog analog system.
  *         """
  *         if (beta.shape[0] != beta.size):             # <<<<<<<<<<<<<<
@@ -7786,35 +7787,35 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
  */
   }
 
-  /* "cbadc/analog_system.pyx":559
+  /* "cbadc/analog_system.pyx":568
  *         if (beta.shape[0] != beta.size):
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != kappa.size):
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 559, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 559, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 568, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 559, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 568, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 559, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 568, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 559, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 568, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":560
+    /* "cbadc/analog_system.pyx":569
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")             # <<<<<<<<<<<<<<
  *         if (kappa.shape[0] != kappa.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 560, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_1 = NULL;
     __pyx_t_5 = 0;
@@ -7831,7 +7832,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_rho_must_be_a_one_dimensional_ve};
-      __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 560, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 569, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_6);
     } else
@@ -7839,13 +7840,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_rho_must_be_a_one_dimensional_ve};
-      __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 560, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 569, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_6);
     } else
     #endif
     {
-      __pyx_t_2 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 560, __pyx_L1_error)
+      __pyx_t_2 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 569, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       if (__pyx_t_1) {
         __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1); __pyx_t_1 = NULL;
@@ -7856,14 +7857,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
       __Pyx_INCREF(__pyx_kp_u_rho_must_be_a_one_dimensional_ve);
       __Pyx_GIVEREF(__pyx_kp_u_rho_must_be_a_one_dimensional_ve);
       PyTuple_SET_ITEM(__pyx_t_2, 1+__pyx_t_5, __pyx_kp_u_rho_must_be_a_one_dimensional_ve);
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 560, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 569, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "cbadc/analog_system.pyx":559
+    /* "cbadc/analog_system.pyx":568
  *         if (beta.shape[0] != beta.size):
  *             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
  *         if (rho.shape[0] != rho.size):             # <<<<<<<<<<<<<<
@@ -7872,35 +7873,35 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
  */
   }
 
-  /* "cbadc/analog_system.pyx":561
+  /* "cbadc/analog_system.pyx":570
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != kappa.size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
  *         if( beta.size != rho.size and rho.size != kappa.size):
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 561, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 570, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_6, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 561, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_6, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 570, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 561, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 570, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 561, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 561, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 570, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":562
+    /* "cbadc/analog_system.pyx":571
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != kappa.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")             # <<<<<<<<<<<<<<
  *         if( beta.size != rho.size and rho.size != kappa.size):
  *             InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 562, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_3 = NULL;
     __pyx_t_5 = 0;
@@ -7917,7 +7918,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self, __pyx_kp_u_kappa_must_be_a_one_dimensional_2};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 562, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 571, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -7925,13 +7926,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self, __pyx_kp_u_kappa_must_be_a_one_dimensional_2};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 562, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 571, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_1 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 562, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 571, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -7942,14 +7943,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
       __Pyx_INCREF(__pyx_kp_u_kappa_must_be_a_one_dimensional_2);
       __Pyx_GIVEREF(__pyx_kp_u_kappa_must_be_a_one_dimensional_2);
       PyTuple_SET_ITEM(__pyx_t_1, 1+__pyx_t_5, __pyx_kp_u_kappa_must_be_a_one_dimensional_2);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 562, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 571, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "cbadc/analog_system.pyx":561
+    /* "cbadc/analog_system.pyx":570
  *         if (rho.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
  *         if (kappa.shape[0] != kappa.size):             # <<<<<<<<<<<<<<
@@ -7958,48 +7959,48 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
  */
   }
 
-  /* "cbadc/analog_system.pyx":563
+  /* "cbadc/analog_system.pyx":572
  *         if (kappa.shape[0] != kappa.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
  *         if( beta.size != rho.size and rho.size != kappa.size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_7) {
   } else {
     __pyx_t_4 = __pyx_t_7;
     goto __pyx_L7_bool_binop_done;
   }
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rho, __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_size); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_6, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 563, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 572, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = __pyx_t_7;
   __pyx_L7_bool_binop_done:;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":564
+    /* "cbadc/analog_system.pyx":573
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
  *         if( beta.size != rho.size and rho.size != kappa.size):
  *             InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")             # <<<<<<<<<<<<<<
  * 
  *         # State space order
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 564, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidAnalogSystemError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 573, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_1 = NULL;
     __pyx_t_5 = 0;
@@ -8016,7 +8017,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_beta_rho_kappa_vector_must_be_of};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 564, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 573, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -8024,13 +8025,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_self, __pyx_kp_u_beta_rho_kappa_vector_must_be_of};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 564, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 573, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 564, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 573, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       if (__pyx_t_1) {
         __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1); __pyx_t_1 = NULL;
@@ -8041,14 +8042,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
       __Pyx_INCREF(__pyx_kp_u_beta_rho_kappa_vector_must_be_of);
       __Pyx_GIVEREF(__pyx_kp_u_beta_rho_kappa_vector_must_be_of);
       PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_5, __pyx_kp_u_beta_rho_kappa_vector_must_be_of);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 564, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 573, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "cbadc/analog_system.pyx":563
+    /* "cbadc/analog_system.pyx":572
  *         if (kappa.shape[0] != kappa.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
  *         if( beta.size != rho.size and rho.size != kappa.size):             # <<<<<<<<<<<<<<
@@ -8057,97 +8058,97 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
  */
   }
 
-  /* "cbadc/analog_system.pyx":567
+  /* "cbadc/analog_system.pyx":576
  * 
  *         # State space order
  *         N = beta.size             # <<<<<<<<<<<<<<
  * 
  *         # Analog system parameters
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 567, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_beta, __pyx_n_s_size); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 576, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_N = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":570
+  /* "cbadc/analog_system.pyx":579
  * 
  *         # Analog system parameters
  *         A = np.diag(rho[1:], k=1) + np.diag(beta[1:], k=-1)             # <<<<<<<<<<<<<<
  *         A[0,0] = rho[0]
  *         B = np.zeros((N, 1))
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_diag); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_diag); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_rho, 1, 0, NULL, NULL, &__pyx_slice__3, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_rho, 1, 0, NULL, NULL, &__pyx_slice__3, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_k, __pyx_int_1) < 0) __PYX_ERR(0, 570, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 570, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_k, __pyx_int_1) < 0) __PYX_ERR(0, 579, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_diag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_diag); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_beta, 1, 0, NULL, NULL, &__pyx_slice__3, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_beta, 1, 0, NULL, NULL, &__pyx_slice__3, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_k, __pyx_int_neg_1) < 0) __PYX_ERR(0, 570, __pyx_L1_error)
-  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 570, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_k, __pyx_int_neg_1) < 0) __PYX_ERR(0, 579, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Add(__pyx_t_1, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Add(__pyx_t_1, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_A = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":571
+  /* "cbadc/analog_system.pyx":580
  *         # Analog system parameters
  *         A = np.diag(rho[1:], k=1) + np.diag(beta[1:], k=-1)
  *         A[0,0] = rho[0]             # <<<<<<<<<<<<<<
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]
  */
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_rho, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 571, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_rho, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 580, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(PyObject_SetItem(__pyx_v_A, __pyx_tuple__4, __pyx_t_2) < 0)) __PYX_ERR(0, 571, __pyx_L1_error)
+  if (unlikely(PyObject_SetItem(__pyx_v_A, __pyx_tuple__4, __pyx_t_2) < 0)) __PYX_ERR(0, 580, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":572
+  /* "cbadc/analog_system.pyx":581
  *         A = np.diag(rho[1:], k=1) + np.diag(beta[1:], k=-1)
  *         A[0,0] = rho[0]
  *         B = np.zeros((N, 1))             # <<<<<<<<<<<<<<
  *         B[0] = beta[0]
  *         CT = np.eye(N)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 572, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 581, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 572, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_zeros); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 581, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 572, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 581, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_INCREF(__pyx_v_N);
   __Pyx_GIVEREF(__pyx_v_N);
@@ -8168,34 +8169,34 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_6, __pyx_t_8) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_8);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 572, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 581, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_B = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":573
+  /* "cbadc/analog_system.pyx":582
  *         A[0,0] = rho[0]
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]             # <<<<<<<<<<<<<<
  *         CT = np.eye(N)
  * 
  */
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_beta, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 573, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_beta, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 582, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_B, 0, __pyx_t_2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 573, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_B, 0, __pyx_t_2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 582, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":574
+  /* "cbadc/analog_system.pyx":583
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]
  *         CT = np.eye(N)             # <<<<<<<<<<<<<<
  * 
  *         # Check if Kappa is specified as a vector
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 574, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 583, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_eye); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 574, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_eye); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 583, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = NULL;
@@ -8210,44 +8211,44 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   }
   __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_1, __pyx_v_N) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_N);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 574, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 583, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __pyx_v_CT = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cbadc/analog_system.pyx":577
+  /* "cbadc/analog_system.pyx":586
  * 
  *         # Check if Kappa is specified as a vector
  *         if kappa.shape[1] == 1:             # <<<<<<<<<<<<<<
  *             Gamma = np.diag(kappa.flatten())
  *         else:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 577, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 586, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_8 = __Pyx_GetItemInt(__pyx_t_2, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 577, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_GetItemInt(__pyx_t_2, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 586, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_EqObjC(__pyx_t_8, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 577, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_EqObjC(__pyx_t_8, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 586, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 577, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 586, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_4) {
 
-    /* "cbadc/analog_system.pyx":578
+    /* "cbadc/analog_system.pyx":587
  *         # Check if Kappa is specified as a vector
  *         if kappa.shape[1] == 1:
  *             Gamma = np.diag(kappa.flatten())             # <<<<<<<<<<<<<<
  *         else:
  *             Gamma = np.array(kappa, dtype=np.double)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 578, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 587, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_diag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 578, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_diag); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 587, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_flatten); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 578, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_kappa, __pyx_n_s_flatten); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 587, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_3 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -8261,7 +8262,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     }
     __pyx_t_8 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 578, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 587, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -8277,13 +8278,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_6, __pyx_t_8) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_8);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 578, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 587, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_Gamma = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "cbadc/analog_system.pyx":577
+    /* "cbadc/analog_system.pyx":586
  * 
  *         # Check if Kappa is specified as a vector
  *         if kappa.shape[1] == 1:             # <<<<<<<<<<<<<<
@@ -8293,7 +8294,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     goto __pyx_L9;
   }
 
-  /* "cbadc/analog_system.pyx":580
+  /* "cbadc/analog_system.pyx":589
  *             Gamma = np.diag(kappa.flatten())
  *         else:
  *             Gamma = np.array(kappa, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -8301,26 +8302,26 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
  *         Gamma_tildeT = -Gamma.transpose()
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_v_kappa);
     __Pyx_GIVEREF(__pyx_v_kappa);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_kappa);
-    __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_double); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_double); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 580, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 580, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 589, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -8330,14 +8331,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   }
   __pyx_L9:;
 
-  /* "cbadc/analog_system.pyx":582
+  /* "cbadc/analog_system.pyx":591
  *             Gamma = np.array(kappa, dtype=np.double)
  * 
  *         Gamma_tildeT = -Gamma.transpose()             # <<<<<<<<<<<<<<
  *         for row_index in range(Gamma_tildeT.shape[0]):
  *             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
  */
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma, __pyx_n_s_transpose); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 582, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma, __pyx_n_s_transpose); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 591, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_2 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
@@ -8351,37 +8352,37 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   }
   __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 582, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 591, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = PyNumber_Negative(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 582, __pyx_L1_error)
+  __pyx_t_8 = PyNumber_Negative(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 591, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_Gamma_tildeT = __pyx_t_8;
   __pyx_t_8 = 0;
 
-  /* "cbadc/analog_system.pyx":583
+  /* "cbadc/analog_system.pyx":592
  * 
  *         Gamma_tildeT = -Gamma.transpose()
  *         for row_index in range(Gamma_tildeT.shape[0]):             # <<<<<<<<<<<<<<
  *             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
  * 
  */
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma_tildeT, __pyx_n_s_shape); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 583, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_Gamma_tildeT, __pyx_n_s_shape); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 592, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_8, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 583, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_8, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 592, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 583, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 592, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (likely(PyList_CheckExact(__pyx_t_8)) || PyTuple_CheckExact(__pyx_t_8)) {
     __pyx_t_3 = __pyx_t_8; __Pyx_INCREF(__pyx_t_3); __pyx_t_9 = 0;
     __pyx_t_10 = NULL;
   } else {
-    __pyx_t_9 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 583, __pyx_L1_error)
+    __pyx_t_9 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 592, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_10 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 583, __pyx_L1_error)
+    __pyx_t_10 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 592, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   for (;;) {
@@ -8389,17 +8390,17 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
       if (likely(PyList_CheckExact(__pyx_t_3))) {
         if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_8 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 583, __pyx_L1_error)
+        __pyx_t_8 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 592, __pyx_L1_error)
         #else
-        __pyx_t_8 = PySequence_ITEM(__pyx_t_3, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 583, __pyx_L1_error)
+        __pyx_t_8 = PySequence_ITEM(__pyx_t_3, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 592, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         #endif
       } else {
         if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 583, __pyx_L1_error)
+        __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_9); __Pyx_INCREF(__pyx_t_8); __pyx_t_9++; if (unlikely(0 < 0)) __PYX_ERR(0, 592, __pyx_L1_error)
         #else
-        __pyx_t_8 = PySequence_ITEM(__pyx_t_3, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 583, __pyx_L1_error)
+        __pyx_t_8 = PySequence_ITEM(__pyx_t_3, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 592, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         #endif
       }
@@ -8409,7 +8410,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 583, __pyx_L1_error)
+          else __PYX_ERR(0, 592, __pyx_L1_error)
         }
         break;
       }
@@ -8418,14 +8419,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     __Pyx_XDECREF_SET(__pyx_v_row_index, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "cbadc/analog_system.pyx":584
+    /* "cbadc/analog_system.pyx":593
  *         Gamma_tildeT = -Gamma.transpose()
  *         for row_index in range(Gamma_tildeT.shape[0]):
  *             Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])             # <<<<<<<<<<<<<<
  * 
  *         # initialize parent class
  */
-    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_v_row_index);
     __Pyx_GIVEREF(__pyx_v_row_index);
@@ -8433,18 +8434,18 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     __Pyx_INCREF(__pyx_slice_);
     __Pyx_GIVEREF(__pyx_slice_);
     PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_slice_);
-    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_linalg); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_linalg); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_norm); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_norm); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_row_index);
     __Pyx_GIVEREF(__pyx_v_row_index);
@@ -8452,7 +8453,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     __Pyx_INCREF(__pyx_slice_);
     __Pyx_GIVEREF(__pyx_slice_);
     PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_slice_);
-    __pyx_t_11 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_6); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_GetItem(__pyx_v_Gamma_tildeT, __pyx_t_6); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -8468,14 +8469,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     __pyx_t_8 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_6, __pyx_t_11) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_11);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 584, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyNumber_Divide(__pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyNumber_Divide(__pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_v_row_index);
     __Pyx_GIVEREF(__pyx_v_row_index);
@@ -8483,11 +8484,11 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     __Pyx_INCREF(__pyx_slice_);
     __Pyx_GIVEREF(__pyx_slice_);
     PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_slice_);
-    if (unlikely(PyObject_SetItem(__pyx_v_Gamma_tildeT, __pyx_t_8, __pyx_t_1) < 0)) __PYX_ERR(0, 584, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_Gamma_tildeT, __pyx_t_8, __pyx_t_1) < 0)) __PYX_ERR(0, 593, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "cbadc/analog_system.pyx":583
+    /* "cbadc/analog_system.pyx":592
  * 
  *         Gamma_tildeT = -Gamma.transpose()
  *         for row_index in range(Gamma_tildeT.shape[0]):             # <<<<<<<<<<<<<<
@@ -8497,12 +8498,12 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbadc/analog_system.pyx":587
+  /* "cbadc/analog_system.pyx":596
  * 
  *         # initialize parent class
  *         AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem), __pyx_n_s_init); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 587, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem), __pyx_n_s_init); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 596, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_8 = NULL;
   __pyx_t_5 = 0;
@@ -8519,7 +8520,7 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_1)) {
     PyObject *__pyx_temp[7] = {__pyx_t_8, __pyx_v_self, __pyx_v_A, __pyx_v_B, __pyx_v_CT, __pyx_v_Gamma, __pyx_v_Gamma_tildeT};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 587, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 596, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -8527,13 +8528,13 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
     PyObject *__pyx_temp[7] = {__pyx_t_8, __pyx_v_self, __pyx_v_A, __pyx_v_B, __pyx_v_CT, __pyx_v_Gamma, __pyx_v_Gamma_tildeT};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 587, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 6+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 596, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_2 = PyTuple_New(6+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 587, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(6+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 596, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     if (__pyx_t_8) {
       __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -8556,14 +8557,14 @@ static PyObject *__pyx_pf_5cbadc_13analog_system_8LeapFrog___init__(CYTHON_UNUSE
     __Pyx_INCREF(__pyx_v_Gamma_tildeT);
     __Pyx_GIVEREF(__pyx_v_Gamma_tildeT);
     PyTuple_SET_ITEM(__pyx_t_2, 5+__pyx_t_5, __pyx_v_Gamma_tildeT);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 587, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 596, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "cbadc/analog_system.pyx":554
+  /* "cbadc/analog_system.pyx":563
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
@@ -22511,7 +22512,7 @@ static PyTypeObject __pyx_type_5cbadc_13analog_system_AnalogSystem = {
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  "AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)\nRepresents an analog system.\n\n    The AnalogSystem class represents an analog sytem goverened by the differential equations,\n\n    :math:`\\dot{\\mathbf{x}}(t) = \\mathbf{A} \\mathbf{x}(t) + \\mathbf{B} \\mathbf{u}(t) + \\mathbf{\\Gamma} \\mathbf{s}(t)`\n    \n    where we refer to :math:`\\mathbf{A} \\in \\mathbb{R}^{N \\times N}` as the system matrix,\n    :math:`\\mathbf{B} \\in \\mathbb{R}^{N \\times L}` as the input matrix,\n    and :math:`\\mathbf{\\Gamma} \\in \\mathbb{R}^{N \\times M}` is the control input matrix. Furthermore, \n    :math:`\\mathbf{x}(t)\\in\\mathbb{R}^{N}` is the state vector of the system, :math:`\\mathbf{u}(t)\\in\\mathbb{R}^{L}`\n    is the vector valued, continuous-time, analog input signal, and :math:`\\mathbf{s}(t)\\in\\mathbb{R}^{M}` is the\n    vector valued control signal.\n\n    The analog system also has two (possibly vector valued) outputs namely:\n\n    * The control observation :math:`\\tilde{\\mathbf{s}}(t)=\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T} \\mathbf{x}(t)` and\n    * The signal observation :math:`\\mathbf{y}(t) = \\mathbf{C}^\\mathsf{T} \\mathbf{x}(t)`\n\n    where :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}\\in\\mathbb{R}^{\\tilde{M} \\times N}` is the control observation matrix \n    and :math:`\\mathbf{C}^\\mathsf{T}\\in\\mathbb{R}^{\\tilde{N} \\times N}` is the signal observation matrix.\n\n    Parameters\n    ----------\n    A : `array_like`, shape=(N, N)\n        system matrix.\n    B : `array_like`, shape=(N, L)\n        input matrix.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix.\n\n\n    Attributes\n    ----------\n    N : `int`\n        state space order :math:`N`.\n    N_tilde : `int`\n        number of signal observations :math:`\\tilde{N}`.\n    M : `int`\n        numbe""r of digital control signals :math:`M`.\n    M_tilde : `int`\n        number of control signal observations :math:`\\tilde{M}`.\n    L : `int`\n        number of input signals :math:`L`.\n    A : `array_like`, shape=(N, N)\n        system matrix :math:`\\mathbf{A}`.\n    B : `array_like`, shape=(N, L)\n        input matrix :math:`\\mathbf{B}`.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix :math:`\\mathbf{C}^\\mathsf{T}`.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix :math:`\\mathbf{\\Gamma}`.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}`.\n\n    See also\n    --------\n    :py:class:`cbadc.state_space_simulator.StateSpaceSimulator`\n\n    Example\n    -------\n    >>> import numpy as np\n    >>> from cbadc.analog_system import AnalogSystem\n    >>> A = np.array([[1, 2], [3, 4]])\n    >>> B = np.array([[1], [2]])\n    >>> CT = np.array([[1, 2], [0, 1]]).transpose()\n    >>> Gamma = np.array([[-1, 0], [0, -5]])\n    >>> Gamma_tildeT = CT.transpose()\n    >>> print(AnalogSystem(A, B, CT, Gamma, Gamma_tildeT))\n    The analog system is defined as:\n    A:\n    [[1. 2.]\n     [3. 4.]],\n    B:\n    [[1.]\n     [2.]],\n    CT:\n    [[1. 0.]\n     [2. 1.]],\n    Gamma:\n    [[-1.  0.]\n     [ 0. -5.]],\n    and Gamma_tildeT:\n    [[1. 2.]\n     [0. 1.]]\n\n    Raises\n    ------\n    :py:class:`InvalidAnalogSystemError`\n        For faulty analog system parametrization.\n    ", /*tp_doc*/
+  "AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)\nRepresents an analog system.\n\n    The AnalogSystem class represents an analog sytem goverened by the differential equations,\n\n    :math:`\\dot{\\mathbf{x}}(t) = \\mathbf{A} \\mathbf{x}(t) + \\mathbf{B} \\mathbf{u}(t) + \\mathbf{\\Gamma} \\mathbf{s}(t)`\n    \n    where we refer to :math:`\\mathbf{A} \\in \\mathbb{R}^{N \\times N}` as the system matrix,\n    :math:`\\mathbf{B} \\in \\mathbb{R}^{N \\times L}` as the input matrix,\n    and :math:`\\mathbf{\\Gamma} \\in \\mathbb{R}^{N \\times M}` is the control input matrix. Furthermore, \n    :math:`\\mathbf{x}(t)\\in\\mathbb{R}^{N}` is the state vector of the system, :math:`\\mathbf{u}(t)\\in\\mathbb{R}^{L}`\n    is the vector valued, continuous-time, analog input signal, and :math:`\\mathbf{s}(t)\\in\\mathbb{R}^{M}` is the\n    vector valued control signal.\n\n    The analog system also has two (possibly vector valued) outputs namely:\n\n    * The control observation :math:`\\tilde{\\mathbf{s}}(t)=\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T} \\mathbf{x}(t)` and\n    * The signal observation :math:`\\mathbf{y}(t) = \\mathbf{C}^\\mathsf{T} \\mathbf{x}(t)`\n\n    where :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}\\in\\mathbb{R}^{\\tilde{M} \\times N}` is the control observation matrix \n    and :math:`\\mathbf{C}^\\mathsf{T}\\in\\mathbb{R}^{\\tilde{N} \\times N}` is the signal observation matrix.\n\n    Parameters\n    ----------\n    A : `array_like`, shape=(N, N)\n        system matrix.\n    B : `array_like`, shape=(N, L)\n        input matrix.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix.\n\n\n    Attributes\n    ----------\n    N : `int`\n        state space order :math:`N`.\n    N_tilde : `int`\n        number of signal observations :math:`\\tilde{N}`.\n    M : `int`\n        numbe""r of digital control signals :math:`M`.\n    M_tilde : `int`\n        number of control signal observations :math:`\\tilde{M}`.\n    L : `int`\n        number of input signals :math:`L`.\n    A : `array_like`, shape=(N, N)\n        system matrix :math:`\\mathbf{A}`.\n    B : `array_like`, shape=(N, L)\n        input matrix :math:`\\mathbf{B}`.\n    CT : `array_like`, shape=(N_tilde, N)\n        signal observation matrix :math:`\\mathbf{C}^\\mathsf{T}`.\n    Gamma : `array_like`, shape=(N, M)\n        control input matrix :math:`\\mathbf{\\Gamma}`.\n    Gamma_tildeT : `array_like`, shape=(M_tilde, N)\n        control observation matrix :math:`\\tilde{\\mathbf{\\Gamma}}^\\mathsf{T}`.\n\n    See also\n    --------\n    :py:class:`cbadc.simulator.StateSpaceSimulator`\n\n    Example\n    -------\n    >>> import numpy as np\n    >>> from cbadc.analog_system import AnalogSystem\n    >>> A = np.array([[1, 2], [3, 4]])\n    >>> B = np.array([[1], [2]])\n    >>> CT = np.array([[1, 2], [0, 1]]).transpose()\n    >>> Gamma = np.array([[-1, 0], [0, -5]])\n    >>> Gamma_tildeT = CT.transpose()\n    >>> print(AnalogSystem(A, B, CT, Gamma, Gamma_tildeT))\n    The analog system is defined as:\n    A:\n    [[1. 2.]\n     [3. 4.]],\n    B:\n    [[1.]\n     [2.]],\n    CT:\n    [[1. 0.]\n     [2. 1.]],\n    Gamma:\n    [[-1.  0.]\n     [ 0. -5.]],\n    and Gamma_tildeT:\n    [[1. 2.]\n     [0. 1.]]\n\n    Raises\n    ------\n    :py:class:`InvalidAnalogSystemError`\n        For faulty analog system parametrization.\n    ", /*tp_doc*/
   0, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
@@ -23282,7 +23283,7 @@ static PyModuleDef_Slot __pyx_moduledef_slots[] = {
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
     "analog_system",
-    0, /* m_doc */
+    __pyx_k_Analog_systems_This_module_prov, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
   #else
@@ -23353,7 +23354,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
   {&__pyx_kp_s_Represents_an_chain_of_integrato, __pyx_k_Represents_an_chain_of_integrato, sizeof(__pyx_k_Represents_an_chain_of_integrato), 0, 0, 1, 0},
   {&__pyx_kp_s_Represents_an_leap_frog_analog_s, __pyx_k_Represents_an_leap_frog_analog_s, sizeof(__pyx_k_Represents_an_leap_frog_analog_s), 0, 0, 1, 0},
-  {&__pyx_kp_u_The_analog_system_is_defined_as, __pyx_k_The_analog_system_is_defined_as, sizeof(__pyx_k_The_analog_system_is_defined_as), 0, 1, 0, 0},
+  {&__pyx_kp_u_The_analog_system_is_parameteriz, __pyx_k_The_analog_system_is_parameteriz, sizeof(__pyx_k_The_analog_system_is_parameteriz), 0, 1, 0, 0},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
@@ -23400,7 +23401,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_ij_jkl, __pyx_k_ij_jkl, sizeof(__pyx_k_ij_jkl), 0, 1, 0, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
-  {&__pyx_n_s_inv, __pyx_k_inv, sizeof(__pyx_k_inv), 0, 0, 1, 1},
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
   {&__pyx_n_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 1},
@@ -23425,6 +23425,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_obj, __pyx_k_obj, sizeof(__pyx_k_obj), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
+  {&__pyx_n_s_pinv, __pyx_k_pinv, sizeof(__pyx_k_pinv), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
@@ -23476,7 +23477,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 182, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 191, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(2, 133, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(2, 148, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(2, 151, __pyx_L1_error)
@@ -23493,39 +23494,39 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cbadc/analog_system.pyx":430
+  /* "cbadc/analog_system.pyx":439
  *         if (kappa.shape[0] != rho.size):
  *             InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")
  *         if( beta.size != rho.size and rho.size != kappa[:,0].size):             # <<<<<<<<<<<<<<
  *             InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")
  * 
  */
-  __pyx_slice_ = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_slice_ = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice_);
   __Pyx_GIVEREF(__pyx_slice_);
-  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_slice_, __pyx_int_0); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_slice_, __pyx_int_0); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "cbadc/analog_system.pyx":437
+  /* "cbadc/analog_system.pyx":446
  * 
  *         # Analog system parameters
  *         A = np.diag(rho) + np.diag(beta[1:], k=-1)             # <<<<<<<<<<<<<<
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]
  */
-  __pyx_slice__3 = PySlice_New(__pyx_int_1, Py_None, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 437, __pyx_L1_error)
+  __pyx_slice__3 = PySlice_New(__pyx_int_1, Py_None, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__3);
   __Pyx_GIVEREF(__pyx_slice__3);
 
-  /* "cbadc/analog_system.pyx":571
+  /* "cbadc/analog_system.pyx":580
  *         # Analog system parameters
  *         A = np.diag(rho[1:], k=1) + np.diag(beta[1:], k=-1)
  *         A[0,0] = rho[0]             # <<<<<<<<<<<<<<
  *         B = np.zeros((N, 1))
  *         B[0] = beta[0]
  */
-  __pyx_tuple__4 = PyTuple_Pack(2, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 571, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(2, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 580, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
@@ -23710,41 +23711,41 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
 
-  /* "cbadc/analog_system.pyx":317
+  /* "cbadc/analog_system.pyx":326
  *     """
  * 
  *     def __init__(self, system, message):             # <<<<<<<<<<<<<<
  *         self.analog_system = system
  *         self.message = message
  */
-  __pyx_tuple__22 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_system, __pyx_n_s_message); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_tuple__22 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_system, __pyx_n_s_message); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 326, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__22);
   __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_analog_system_pyx, __pyx_n_s_init, 317, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_analog_system_pyx, __pyx_n_s_init, 326, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 326, __pyx_L1_error)
 
-  /* "cbadc/analog_system.pyx":421
+  /* "cbadc/analog_system.pyx":430
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
  *         """Create an chain-of-integrators analog system.
  *         """
  */
-  __pyx_tuple__24 = PyTuple_Pack(11, __pyx_n_s_self, __pyx_n_s_beta, __pyx_n_s_rho, __pyx_n_s_kappa, __pyx_n_s_N, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_CT, __pyx_n_s_Gamma, __pyx_n_s_Gamma_tildeT, __pyx_n_s_row_index); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(11, __pyx_n_s_self, __pyx_n_s_beta, __pyx_n_s_rho, __pyx_n_s_kappa, __pyx_n_s_N, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_CT, __pyx_n_s_Gamma, __pyx_n_s_Gamma_tildeT, __pyx_n_s_row_index); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 430, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__24);
   __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(4, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_analog_system_pyx, __pyx_n_s_init, 421, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(4, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_analog_system_pyx, __pyx_n_s_init, 430, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 430, __pyx_L1_error)
 
-  /* "cbadc/analog_system.pyx":554
+  /* "cbadc/analog_system.pyx":563
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
  *         """Create an leap-frog analog system.
  *         """
  */
-  __pyx_tuple__26 = PyTuple_Pack(11, __pyx_n_s_self, __pyx_n_s_beta, __pyx_n_s_rho, __pyx_n_s_kappa, __pyx_n_s_N, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_CT, __pyx_n_s_Gamma, __pyx_n_s_Gamma_tildeT, __pyx_n_s_row_index); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 554, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(11, __pyx_n_s_self, __pyx_n_s_beta, __pyx_n_s_rho, __pyx_n_s_kappa, __pyx_n_s_N, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_CT, __pyx_n_s_Gamma, __pyx_n_s_Gamma_tildeT, __pyx_n_s_row_index); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 563, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(4, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_analog_system_pyx, __pyx_n_s_init, 554, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 554, __pyx_L1_error)
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(4, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_analog_system_pyx, __pyx_n_s_init, 563, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 563, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_AnalogSystem(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
@@ -23888,7 +23889,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtable_5cbadc_13analog_system_AnalogSystem.signal_observation = (__Pyx_memviewslice (*)(struct __pyx_obj_5cbadc_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch))__pyx_f_5cbadc_13analog_system_12AnalogSystem_signal_observation;
   __pyx_vtable_5cbadc_13analog_system_AnalogSystem.control_observation = (__Pyx_memviewslice (*)(struct __pyx_obj_5cbadc_13analog_system_AnalogSystem *, __Pyx_memviewslice, int __pyx_skip_dispatch))__pyx_f_5cbadc_13analog_system_12AnalogSystem_control_observation;
   __pyx_vtable_5cbadc_13analog_system_AnalogSystem._atf = (__Pyx_memviewslice (*)(struct __pyx_obj_5cbadc_13analog_system_AnalogSystem *, double))__pyx_f_5cbadc_13analog_system_12AnalogSystem__atf;
-  if (PyType_Ready(&__pyx_type_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5cbadc_13analog_system_AnalogSystem.tp_print = 0;
   #endif
@@ -23897,7 +23898,7 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_5cbadc_13analog_system_AnalogSystem, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 5, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_5cbadc_13analog_system_AnalogSystem, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 13, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
       __pyx_wrapperbase_5cbadc_13analog_system_12AnalogSystem___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_5cbadc_13analog_system_12AnalogSystem___init__.doc = __pyx_doc_5cbadc_13analog_system_12AnalogSystem___init__;
@@ -23905,9 +23906,9 @@ static int __Pyx_modinit_type_init_code(void) {
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_type_5cbadc_13analog_system_AnalogSystem.tp_dict, __pyx_vtabptr_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_AnalogSystem, (PyObject *)&__pyx_type_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_5cbadc_13analog_system_AnalogSystem.tp_dict, __pyx_vtabptr_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_AnalogSystem, (PyObject *)&__pyx_type_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_5cbadc_13analog_system_AnalogSystem) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __pyx_ptype_5cbadc_13analog_system_AnalogSystem = &__pyx_type_5cbadc_13analog_system_AnalogSystem;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
@@ -24151,7 +24152,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("analog_system", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("analog_system", __pyx_methods, __pyx_k_Analog_systems_This_module_prov, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -24197,144 +24198,145 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cbadc/analog_system.pyx":2
+  /* "cbadc/analog_system.pyx":10
+ * """
  * #cython: language_level=3
  * import numpy as np             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbadc/analog_system.pyx":306
+  /* "cbadc/analog_system.pyx":315
  * 
  * 
  * class InvalidAnalogSystemError(Exception):             # <<<<<<<<<<<<<<
  *     """Error when detecting faulty analog system specification
  * 
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
   __Pyx_GIVEREF(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_InvalidAnalogSystemError, __pyx_n_s_InvalidAnalogSystemError, (PyObject *) NULL, __pyx_n_s_cbadc_analog_system, __pyx_kp_s_Error_when_detecting_faulty_anal); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_InvalidAnalogSystemError, __pyx_n_s_InvalidAnalogSystemError, (PyObject *) NULL, __pyx_n_s_cbadc_analog_system, __pyx_kp_s_Error_when_detecting_faulty_anal); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "cbadc/analog_system.pyx":317
+  /* "cbadc/analog_system.pyx":326
  *     """
  * 
  *     def __init__(self, system, message):             # <<<<<<<<<<<<<<
  *         self.analog_system = system
  *         self.message = message
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_13analog_system_24InvalidAnalogSystemError_1__init__, 0, __pyx_n_s_InvalidAnalogSystemError___init, NULL, __pyx_n_s_cbadc_analog_system, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_13analog_system_24InvalidAnalogSystemError_1__init__, 0, __pyx_n_s_InvalidAnalogSystemError___init, NULL, __pyx_n_s_cbadc_analog_system, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 326, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 317, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 326, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "cbadc/analog_system.pyx":306
+  /* "cbadc/analog_system.pyx":315
  * 
  * 
  * class InvalidAnalogSystemError(Exception):             # <<<<<<<<<<<<<<
  *     """Error when detecting faulty analog system specification
  * 
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_InvalidAnalogSystemError, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_InvalidAnalogSystemError, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_InvalidAnalogSystemError, __pyx_t_4) < 0) __PYX_ERR(0, 306, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_InvalidAnalogSystemError, __pyx_t_4) < 0) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbadc/analog_system.pyx":322
+  /* "cbadc/analog_system.pyx":331
  * 
  * 
  * class ChainOfIntegrators(AnalogSystem):             # <<<<<<<<<<<<<<
  *     """Represents an chain-of-integrators analog system.
  * 
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem));
   __Pyx_GIVEREF(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem));
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ChainOfIntegrators, __pyx_n_s_ChainOfIntegrators, (PyObject *) NULL, __pyx_n_s_cbadc_analog_system, __pyx_kp_s_Represents_an_chain_of_integrato); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ChainOfIntegrators, __pyx_n_s_ChainOfIntegrators, (PyObject *) NULL, __pyx_n_s_cbadc_analog_system, __pyx_kp_s_Represents_an_chain_of_integrato); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "cbadc/analog_system.pyx":421
+  /* "cbadc/analog_system.pyx":430
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
  *         """Create an chain-of-integrators analog system.
  *         """
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_13analog_system_18ChainOfIntegrators_1__init__, 0, __pyx_n_s_ChainOfIntegrators___init, NULL, __pyx_n_s_cbadc_analog_system, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_13analog_system_18ChainOfIntegrators_1__init__, 0, __pyx_n_s_ChainOfIntegrators___init, NULL, __pyx_n_s_cbadc_analog_system, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 430, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 430, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "cbadc/analog_system.pyx":322
+  /* "cbadc/analog_system.pyx":331
  * 
  * 
  * class ChainOfIntegrators(AnalogSystem):             # <<<<<<<<<<<<<<
  *     """Represents an chain-of-integrators analog system.
  * 
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ChainOfIntegrators, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ChainOfIntegrators, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ChainOfIntegrators, __pyx_t_4) < 0) __PYX_ERR(0, 322, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ChainOfIntegrators, __pyx_t_4) < 0) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbadc/analog_system.pyx":457
+  /* "cbadc/analog_system.pyx":466
  * 
  * 
  * class LeapFrog(AnalogSystem):             # <<<<<<<<<<<<<<
  *     """Represents an leap-frog analog system.
  * 
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 457, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem));
   __Pyx_GIVEREF(((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_ptype_5cbadc_13analog_system_AnalogSystem));
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 457, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_LeapFrog, __pyx_n_s_LeapFrog, (PyObject *) NULL, __pyx_n_s_cbadc_analog_system, __pyx_kp_s_Represents_an_leap_frog_analog_s); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 457, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_LeapFrog, __pyx_n_s_LeapFrog, (PyObject *) NULL, __pyx_n_s_cbadc_analog_system, __pyx_kp_s_Represents_an_leap_frog_analog_s); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "cbadc/analog_system.pyx":554
+  /* "cbadc/analog_system.pyx":563
  *     """
  * 
  *     def __init__(self, beta, rho, kappa):             # <<<<<<<<<<<<<<
  *         """Create an leap-frog analog system.
  *         """
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_13analog_system_8LeapFrog_1__init__, 0, __pyx_n_s_LeapFrog___init, NULL, __pyx_n_s_cbadc_analog_system, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 554, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_13analog_system_8LeapFrog_1__init__, 0, __pyx_n_s_LeapFrog___init, NULL, __pyx_n_s_cbadc_analog_system, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 563, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 554, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 563, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "cbadc/analog_system.pyx":457
+  /* "cbadc/analog_system.pyx":466
  * 
  * 
  * class LeapFrog(AnalogSystem):             # <<<<<<<<<<<<<<
  *     """Represents an leap-frog analog system.
  * 
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_LeapFrog, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 457, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_LeapFrog, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_LeapFrog, __pyx_t_4) < 0) __PYX_ERR(0, 457, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_LeapFrog, __pyx_t_4) < 0) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -24351,9 +24353,9 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "cbadc/analog_system.pyx":1
- * #cython: language_level=3             # <<<<<<<<<<<<<<
- * import numpy as np
+ * """ Analog systems             # <<<<<<<<<<<<<<
  * 
+ * This module provides a general :py:class:`cbadc.analog_system.AnalogSystem`
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

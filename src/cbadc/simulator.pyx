@@ -1,3 +1,7 @@
+"""State space simulator
+
+This module provides simulation
+"""
 from cbadc.analog_system cimport AnalogSystem
 from cbadc.digital_control cimport DigitalControl
 from cbadc.analog_signal cimport AnalogSignal
@@ -56,7 +60,10 @@ cdef class StateSpaceSimulator(object):
 
     Examples
     --------
-    >>> from cbadc import StateSpaceSimulator, Sinusodial, AnalogSystem, DigitalControl
+    >>> from cbadc.simulator import StateSpaceSimulator
+    >>> from cbadc.analog_signal import Sinusodial
+    >>> from cbadc.analog_system import AnalogSystem
+    >>> from cbadc.digital_control import DigitalControl
     >>> import numpy as np
     >>> A = np.array([[0., 0], [6250., 0.]])
     >>> B = np.array([[6250., 0]]).transpose()
@@ -115,7 +122,7 @@ cdef class StateSpaceSimulator(object):
         if Ts:
             self.Ts = Ts
         else:
-            self.Ts = self.digital_control.T
+            self.Ts = self.digital_control.T / 2.0
         if self.Ts > self.digital_control.T:
             raise f"Simulating with a sample period {self.Ts} that exceeds the control period of the digital control {self.digital_control.T}"
         self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
@@ -126,7 +133,10 @@ cdef class StateSpaceSimulator(object):
         self._res = np.zeros(self.analog_system.N, dtype=np.double)
         self._atol = atol # 1e-6
         self._rtol = rtol # 1e-6
-        self._max_step = max_step # self.Ts / 10.
+        if (max_step > self.Ts):
+            self._max_step = self.Ts / 10.
+        else:
+            self._max_step = max_step
         self._pre_computations()
         # self.solve_oder = self._ordinary_differential_solution
         # self.solve_oder = self._full_ordinary_differential_solution
@@ -137,7 +147,10 @@ cdef class StateSpaceSimulator(object):
 
         Examples
         --------
-        >>> from cbadc import StateSpaceSimulator, Sinusodial, AnalogSystem, DigitalControl
+        >>> from cbadc.simulator import StateSpaceSimulator
+        >>> from cbadc.analog_signal import Sinusodial
+        >>> from cbadc.analog_system import AnalogSystem
+        >>> from cbadc.digital_control import DigitalControl
         >>> import numpy as np
         >>> A = np.array([[0., 0], [6250., 0.]])
         >>> B = np.array([[6250., 0]]).transpose()
@@ -338,4 +351,26 @@ cdef class StateSpaceSimulator(object):
         self._control_vector = self.digital_control.control_contribution(t, self._temp_state_vector)
         return np.asarray(self.analog_system.derivative(self._temp_state_vector, t, self._input_vector, self._control_vector)).flatten()
 
+def extended_simulation_result(simulator):
+    """Extended simulation output
+
+    Used to also pass the state vector from a
+    simulator generator.
+
+    Parameters
+    ----------
+    simulator : :py:class:`cbadc.simulator.StateSpaceSimulator`
+        a iterable simulator instance.
+
+    Yields
+    ------
+    { 'control_signal', 'analog_state' } : { (array_like, shape=(M,)), (array_like, shape=(N,)) }
+        an extended output including the analog state vector.
+    """
+    for control_signal in simulator:
+        analog_state = simulator.state_vector()
+        yield { 
+            'control_signal': np.array(control_signal), 
+            'analog_state' : np.array(analog_state)
+            }
 

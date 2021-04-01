@@ -2,7 +2,7 @@
 Transfer Functions
 ==================
 
-This example demonstrates how to visualize the related tranfer functions of the 
+This example demonstrates how to visualize the related transfer functions of the 
 analog system and digital estimator.
 """
 
@@ -83,6 +83,7 @@ plt.title("Transfer functions, $G_1(\omega), \dots, G_N(\omega)$")
 plt.xlabel("$\omega / (4 \pi \\beta ) $")
 plt.ylabel("dB")
 plt.xlim((frequencies[0], frequencies[-1]))
+plt.gcf().tight_layout()
 
 ###############################################################################
 # Plotting the Estimator's Signal and Noise Transfer Function
@@ -151,7 +152,45 @@ plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(ntf[0,:,:], axis=0)), '--
 # Add labels and legends to figure
 plt.legend()
 plt.grid(which='both')
-plt.title("Signal and noise transfer function")
+plt.title("Signal and noise transfer functions")
 plt.xlabel("$\omega / (4 \pi \\beta ) $")
 plt.ylabel("dB")
 plt.xlim((frequencies[0], frequencies[-1]))
+plt.gcf().tight_layout()
+
+###############################################################################
+# Setting the Bandwidth of the Estimation Filter
+# ----------------------------------------------
+#
+# Next we will investigate the effect of eta2 on the STF and NTF as showm 
+# above.
+
+# create a vector of etas to be evaluated
+eta2_vec = np.logspace(0, 10, 11)[::2]
+
+plt.figure()
+for eta2 in eta2_vec:
+    # Instantiate an estimator for each eta.
+    digital_estimator = DigitalEstimator(control_sequence, analog_system, digital_control, eta2, K1 = 1)
+    # Compute stf and ntf
+    ntf = digital_estimator.noise_transfer_function(omega)
+    ntf_dB = 20 * np.log10(np.abs(ntf))
+    stf = digital_estimator.signal_transfer_function(omega)
+    stf_dB = 20 * np.log10(np.abs(stf.flatten()))
+
+    # Plot
+    color = next(plt.gca()._get_lines.prop_cycler)['color']
+    plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(ntf[0,:,:], axis=0)), '--', color=color)      
+    plt.semilogx(frequencies, stf_dB, label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$", color=color)
+
+# Add labels and legends to figure
+plt.legend(loc='lower left')
+plt.grid(which='both')
+plt.title("$|G(\omega)|$ - solid, $||\mathbf{H}(\omega)||_2$ - dashed")
+plt.xlabel("$\omega / (4 \pi \\beta ) $")
+plt.ylabel("dB")
+plt.xlim((3e-3, 1))
+plt.ylim((-240, 20))
+plt.gcf().tight_layout()
+
+# sphinx_gallery_thumbnail_number = 2

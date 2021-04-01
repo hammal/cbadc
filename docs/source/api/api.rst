@@ -1,13 +1,22 @@
-API
+cbadc (API Reference)
 =========================
 
-In the following sections we cover in depth the main modules
-of the package
+Next follows the documentation of the main modules of the
+cbadc package.
 
-.. toctree::
-    analog_signal
-    analog_system
-    digital_control
-    state_space_simulator
-    digital_estimator
-    utilities
+
+Modules
+^^^^^^^^^
+
+.. autosummary::
+    :toctree: autosummary
+    :recursive:
+    :template: custom-module-template.rst
+    
+    cbadc.analog_signal
+    cbadc.analog_system
+    cbadc.digital_control
+    cbadc.digital_estimator
+    cbadc.simulator
+    cbadc.utilities
+ 

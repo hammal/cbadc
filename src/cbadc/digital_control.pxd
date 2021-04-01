@@ -1,6 +1,6 @@
 cdef class DigitalControl:
     cdef double _t_next
-    cpdef double T
+    cdef readonly double T
     cdef double [:] _dac_values
     cdef char [:] _s
     cdef int M, M_tilde
