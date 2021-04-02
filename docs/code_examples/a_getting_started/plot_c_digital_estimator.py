@@ -149,18 +149,22 @@ control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
 #
 import matplotlib.pyplot as plt
 
-size = 90000
-u_hat = np.zeros(size)
-K1 = 100
-K2 = 5000
-digital_estimator = DigitalEstimator(control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+stop_after_number_of_iterations = 90000
+u_hat = np.zeros(stop_after_number_of_iterations)
+K1 = 1000
+K2 = 1000
+digital_estimator = DigitalEstimator(
+    control_signal_sequences, 
+    analog_system, digital_control, 
+    eta2, 
+    K1, 
+    K2,
+    stop_after_number_of_iterations=stop_after_number_of_iterations
+    )
 for index, u_hat_temp in enumerate(digital_estimator):
     u_hat[index] = u_hat_temp
-    if (index == (size - 1)):
-        break
 
-
-t = np.arange(size)
+t = np.arange(u_hat.size)
 plt.plot(t, u_hat)
 plt.xlabel('$t / T$')
 plt.ylabel('$\hat{u}(t)$')
@@ -184,52 +188,3 @@ plt.xlabel('frequency [Hz]')
 plt.ylabel('$ \mathrm{V}^2 \, / \, \mathrm{Hz}$')
 
 # sphinx_gallery_thumbnail_number = 2
-
-###############################################################################
-# FIR
-# ----------------
-#
-from cbadc.digital_estimator import FIRFilter
-byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
-control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
-
-size = 90000
-u_hat = np.zeros(size)
-K1 = 1000
-K2 = 1000
-digital_estimator = FIRFilter(control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
-plt.figure()
-plt.plot(np.arange(-K1, K2), 20 * np.log10(np.linalg.norm(np.array(digital_estimator.h), axis=-1).flatten()))
-plt.title("Impulse response")
-plt.xlabel("k")
-plt.ylabel("$\| \mathbf{h} [k] \|^2_2$ [dB]")
-plt.grid()
-
-for index, u_hat_temp in enumerate(digital_estimator):
-    u_hat[index] = u_hat_temp
-    if (index == (size - 1)):
-        break
-
-plt.figure()
-t = np.arange(size)
-plt.plot(t, u_hat)
-plt.xlabel('$t / T$')
-plt.ylabel('$\hat{u}(t)$')
-plt.title("Estimated input signal")
-plt.grid()
-plt.xlim((0, 10000))
-plt.tight_layout()
-
-###############################################################################
-# Plotting the PSD
-# ----------------
-#
-# As is typical for delta-sigma modulators we often visualize the performance 
-# of the estimate by plotting the power spectral density (PSD).
-from cbadc.utilities import compute_power_spectral_density
-
-f, psd = compute_power_spectral_density(u_hat, nperseg = u_hat.size )
-plt.figure()
-plt.semilogx(f, 10 * np.log10(psd))
-plt.xlabel('frequency [Hz]')
-plt.ylabel('$ \mathrm{V}^2 \, / \, \mathrm{Hz}$')

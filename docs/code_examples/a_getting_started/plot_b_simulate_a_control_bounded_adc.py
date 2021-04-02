@@ -101,6 +101,9 @@ for s in simulator:
     print(f"step:{index} -> s:{np.array(s)}")
     index += 1 
 
+# To verify the simulation parametrization we can
+print(simulator) 
+
 ###############################################################################
 # Tracking the Analog State Vector 
 # --------------------------------
@@ -118,7 +121,7 @@ for s in simulator:
 def extended_simulation_result(simulator):
     for control_signal in simulator:
         analog_state = simulator.state_vector()
-        yield { 
+        yield {
             'control_signal': np.array(control_signal), 
             'analog_state' : np.array(analog_state)
             }
@@ -168,7 +171,7 @@ write_byte_stream_to_file("sinusodial_simulation.adc", print_next_10_bytes(byte_
 # --------------------------------------------------------------------
 #
 # If we wish to simulate the analog state vector trajectory in between
-# control updates that is possible by the Ts parameter of the 
+# control updates this can be achieved using the Ts parameter of the 
 # :py:class:`cbadc.simulator.StateSpaceSimulator`. Technically you can scale
 # :math:`T_s = T / \alpha` for any postive number :math:`\alpha`. For such a
 # scaling the simulator will generate :math:`\alpha` more control signals per

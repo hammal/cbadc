@@ -2,38 +2,44 @@
 Compare Estimators
 ==================
 
+In this tutorial we investigate different estimator implementation techniques
+and compare their performance.
 """
 ###############################################################################
-# System
-# ---------
+# Analog System
+# -------------
 #
+# We will commit to a leap-frog control-bounded analog system throughtout
+# this tutorial.
 from cbadc.analog_system import LeapFrog
 from cbadc.digital_control import DigitalControl
 import numpy as np
 
+# Determine system parameters
 N = 6
 M = N
 beta = 6250
+# Set control period
 T = 1.0 / (2.0 * beta)
+# Adjust the feedback to achieve a bandwidth corresponding to OSR.
 OSR = 64
 omega_3dB = 2 * np.pi / (T * OSR)
 
+# Instantiate analog system.
 beta_vec = beta * np.ones(N)
 rho_vec = - omega_3dB ** 2 / beta * np.ones(N)
 Gamma = np.diag(-beta_vec)
-
 analog_system = LeapFrog(beta_vec, rho_vec, Gamma)
-digital_control1 = DigitalControl(T, M)
-digital_control2 = DigitalControl(T, M)
 
 print(analog_system, "\n")
-print(digital_control1)
 
 ###############################################################################
-# Signal
-# ---------
+# Analog Signal
+# -------------
 #
-from cbadc.analog_signal import Sinusodial, ConstantSignal
+# We will also need an analog signal for conversion.
+# In this tutorial we will use a Sinusodial signal.
+from cbadc.analog_signal import Sinusodial
 
 # Set the peak amplitude.
 amplitude = 1.0
@@ -46,8 +52,7 @@ offset = 0.0
 
 # Instantiate the analog signal
 analog_signal = Sinusodial(amplitude, frequency, phase, offset)
-# analog_signal = ConstantSignal(offset)
-# print to ensure correct parametrization.
+
 print(analog_signal)
 
 
@@ -55,12 +60,21 @@ print(analog_signal)
 # Simulating
 # ----------
 #
+# Each estimator will require an independent stream of control signals.
+# Therefore, we will next instantiate several digital controls and simulators.
 from cbadc.simulator import StateSpaceSimulator
+
+# Set simulation precision parameters
 atol = 1e-6
 rtol = 1e-3
 max_step= T / 10.
 
-# Instantiate two simulators.
+# Instantiate digital controls
+digital_control1 = DigitalControl(T, M)
+digital_control2 = DigitalControl(T, M)
+print(digital_control1)
+
+# Instantiate simulators.
 simulator1 = StateSpaceSimulator(
     analog_system, 
     digital_control1, 
@@ -78,13 +92,19 @@ simulator2 = StateSpaceSimulator(
     max_step = max_step
     )
 
-
+print(simulator1)
 
 ###############################################################################
-# Setup Filter
-# ------------
+# Quadratic Complexity Estimator
+# ------------------------------
 #
-from cbadc.digital_estimator import DigitalEstimator, FIRFilter
+# Next we instantiate the quadratic and default estimator
+# :py:class:`cbadc.digital_estimator.DigitalEstimator`. Note that during its
+# construction, the corresponding filter coefficients of the system will be 
+# computed. Therefore, this procedure could be computationally intense for a
+# analog system with a large analog state order or equivalently for large
+# number of independent digital controls. 
+from cbadc.digital_estimator import DigitalEstimator
 
 # Set the bandwidth of the estimator
 G_at_omega = np.linalg.norm(analog_system.transfer_function(np.array([omega_3dB])))
@@ -97,10 +117,9 @@ K2 = 1 << 12
 
 # Instantiate the digital estimator (this is where the filter coefficients are computed).
 digital_estimator_batch = DigitalEstimator(simulator1, analog_system, digital_control1, eta2, K1, K2)
-digital_estimator_fir = FIRFilter(simulator2, analog_system, digital_control2, eta2, K2, K2 + 1)
 
 print(digital_estimator_batch, "\n")
-print(digital_estimator_fir, "\n")
+
 
 ###############################################################################
 # Visualize Estimator's Transfer Function (Same for Both)
@@ -140,17 +159,56 @@ plt.xlim((frequencies[0], frequencies[-1]))
 plt.gcf().tight_layout()
 
 ###############################################################################
+# FIR Filter Estimator
+# --------------------
+#
+# Similarly as for the previous estimator the 
+# :py:class:`cbadc.digital_estimator.FIRFilter` is initalized. Additionally,
+# we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
+# fiter coefficients. This is an aid to determine if the lookahead and lookback
+# sizes L1 and L2 are set sufficiently large. 
+from cbadc.digital_estimator import FIRFilter
+
+# Determine lookback
+L1 = K2
+# Determine lookahead
+L2 = K2 + 1
+digital_estimator_fir = FIRFilter(simulator2, analog_system, digital_control2, eta2, L1, L2)
+
+print(digital_estimator_fir, "\n")
+
+
+# Next visualize the decay of the resulting filter coefficients.
+h_index = np.arange(-L1, L2)
+
+impulse_response = 20 * np.log10(np.abs(np.array(digital_estimator_fir.h[:,0,:])))
+
+plt.figure()
+for index in range(N):
+    plt.plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+plt.legend()
+plt.title(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
+plt.xlabel("filter taps k")
+plt.ylabel("$| h_\ell [k]|^2_2$ [dB]")
+plt.xlim((-K2, K2 + 1))
+plt.grid(which='both')
+
+###############################################################################
 # Estimating (Filtering)
 # ----------------------
 #
+# Next we execute all simulation and estimation tasks by iterating over the
+# estimators. Note that since no stop criteria is set for either the analog
+# signal, the simulator, or the digital estimator this iteration could
+# potentially continue until the default stop criteria of 2^63 iterations.
 
 # Set simulation length
 size = 1 << 15
 u_hat_batch = np.zeros(size)
 u_hat_fir = np.zeros(size)
 for index in range(size):
-    u_hat_batch[index] = np.array(next(digital_estimator_batch))
-    u_hat_fir[index] = np.array(next(digital_estimator_fir))
+    u_hat_batch[index] = next(digital_estimator_batch)
+    u_hat_fir[index] = next(digital_estimator_fir)
 
     
 
@@ -158,6 +216,8 @@ for index in range(size):
 # Visualizing Results
 # -------------------
 #
+# Finally, we summarize the comparision by visualizing the resulting estimate
+# in both time and frequency domain.
 from cbadc.utilities import compute_power_spectral_density
 
 t = np.arange(size)
@@ -189,22 +249,4 @@ plt.ylim((-200, 40))
 plt.xlim((f[1], f[-1]))
 plt.xlabel('frequency [Hz]')
 plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
-plt.grid(which='both')
-
-###############################################################################
-# Plot FIR Filter Attenuation
-# ---------------------------
-#
-h_index = np.arange(-K2, K2 + 1)
-
-impulse_response = 20 * np.log10(np.abs(np.array(digital_estimator_fir.h[:,0,:])))
-
-plt.figure()
-for index in range(N):
-    plt.plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
-plt.legend()
-plt.title(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
-plt.xlabel("filter taps k")
-plt.ylabel("$| h_\ell [k]|^2_2$ [dB]")
-plt.xlim((-K2, K2 + 1))
 plt.grid(which='both')

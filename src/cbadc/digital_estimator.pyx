@@ -10,8 +10,8 @@ from cbadc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
 import numpy.linalg as linalg
-import numpy as np
 cimport numpy as np
+import numpy as np
 import math
 
 class DigitalEstimator:
@@ -114,6 +114,8 @@ class DigitalEstimator:
         
         # For transfer functions
         self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
+
+        self._stop_iteration = False
     
     def noise_transfer_function(self, double [:] omega):
         """Compute the noise transfer function (NTF) at the angular frequencies of the omega array.
@@ -189,7 +191,11 @@ class DigitalEstimator:
             self._estimate_pointer += 1
             return self._filter.output(self._estimate_pointer - 1)
 
-        # If not.
+        # Check if stop iteration has been raised in previous batch
+        if (self._stop_iteration):
+            print("Warning: StopIteration recived by estimator.")
+            raise StopIteration
+        # Otherwise start reciving control signals
         full = False
 
         # Fill up batch with new control signals.
@@ -197,7 +203,11 @@ class DigitalEstimator:
             # next(self.control_signal) calls the control signal
             # generator and thus recives new control 
             # signal samples
-            control_signal_sample = next(self.control_signal)
+            try:
+                control_signal_sample = next(self.control_signal)
+            except StopIteration:
+                self._stop_iteration = True
+                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
             full = self._filter.input(control_signal_sample)
             
         # Compute new batch of K1 estimates
@@ -366,7 +376,12 @@ class FIRFilter(DigitalEstimator):
         self._control_signal_valued = np.roll(self._control_signal_valued, 1, axis=0)
 
         # insert new control signal
-        temp = self.control_signal.__next__()
+        try:
+            temp = self.control_signal.__next__()
+        except StopIteration:
+            print("Warning estimator recived Stop Iteration")
+            raise StopIteration
+
         for m in range(self._M):    
             self._control_signal_valued[0, m] = 2 * temp[m] - 1
 

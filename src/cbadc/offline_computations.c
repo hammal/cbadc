@@ -3,12 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "name": "cbc.offline_computations",
+        "name": "cbadc.offline_computations",
         "sources": [
-            "src/cbc/offline_computations.pyx"
+            "src/cbadc/offline_computations.pyx"
         ]
     },
-    "module_name": "cbc.offline_computations"
+    "module_name": "cbadc.offline_computations"
 }
 END: Cython Metadata */
 
@@ -614,8 +614,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__cbc__offline_computations
-#define __PYX_HAVE_API__cbc__offline_computations
+#define __PYX_HAVE__cbadc__offline_computations
+#define __PYX_HAVE_API__cbadc__offline_computations
 /* Early includes */
 #ifdef _OPENMP
 #include <omp.h>
@@ -825,7 +825,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/cbc/offline_computations.pyx",
+  "src/cbadc/offline_computations.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -1172,12 +1172,12 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'cbc.offline_computations' */
-#define __Pyx_MODULE_NAME "cbc.offline_computations"
-extern int __pyx_module_is_main_cbc__offline_computations;
-int __pyx_module_is_main_cbc__offline_computations = 0;
+/* Module declarations from 'cbadc.offline_computations' */
+#define __Pyx_MODULE_NAME "cbadc.offline_computations"
+extern int __pyx_module_is_main_cbadc__offline_computations;
+int __pyx_module_is_main_cbadc__offline_computations = 0;
 
-/* Implementation of 'cbc.offline_computations' */
+/* Implementation of 'cbadc.offline_computations' */
 static PyObject *__pyx_builtin_FloatingPointError;
 static PyObject *__pyx_builtin_print;
 static const char __pyx_k_A[] = "A";
@@ -1226,10 +1226,10 @@ static const char __pyx_k_V_frw_dot_V_frw[] = "V_frw.dot(V_frw):\n{}";
 static const char __pyx_k_FloatingPointError[] = "FloatingPointError";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_solve_continuous_are[] = "solve_continuous_are";
-static const char __pyx_k_cbc_offline_computations[] = "cbc.offline_computations";
+static const char __pyx_k_cbadc_offline_computations[] = "cbadc.offline_computations";
 static const char __pyx_k_Brute_Force_CARE_solver_ran_out[] = "Brute Force CARE solver ran out of time";
 static const char __pyx_k_Cholesky_Method_Failed_for_compu[] = "Cholesky Method Failed for computing the CARE of Vf.\n            Starting brute force";
-static const char __pyx_k_src_cbc_offline_computations_pyx[] = "src/cbc/offline_computations.pyx";
+static const char __pyx_k_src_cbadc_offline_computations_p[] = "src/cbadc/offline_computations.pyx";
 static const char __pyx_k_Cholesky_Method_Failed_for_compu_2[] = "Cholesky Method Failed for computing the CARE of Vb.\n            Starting brute force";
 static PyObject *__pyx_n_s_A;
 static PyObject *__pyx_n_s_B;
@@ -1252,7 +1252,7 @@ static PyObject *__pyx_n_s_array;
 static PyObject *__pyx_n_s_atol;
 static PyObject *__pyx_n_s_bruteForceCare;
 static PyObject *__pyx_n_s_care;
-static PyObject *__pyx_n_s_cbc_offline_computations;
+static PyObject *__pyx_n_s_cbadc_offline_computations;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_dot;
 static PyObject *__pyx_n_s_double;
@@ -1274,7 +1274,7 @@ static PyObject *__pyx_n_s_scipy_linalg;
 static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_solve_continuous_are;
 static PyObject *__pyx_n_s_sp;
-static PyObject *__pyx_kp_s_src_cbc_offline_computations_pyx;
+static PyObject *__pyx_kp_s_src_cbadc_offline_computations_p;
 static PyObject *__pyx_n_s_start_time;
 static PyObject *__pyx_n_s_tau;
 static PyObject *__pyx_n_s_test;
@@ -1282,8 +1282,8 @@ static PyObject *__pyx_n_s_time;
 static PyObject *__pyx_n_s_timelimit;
 static PyObject *__pyx_n_s_transpose;
 static PyObject *__pyx_n_s_zeros_like;
-static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R); /* proto */
-static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R); /* proto */
+static PyObject *__pyx_pf_5cbadc_20offline_computations_bruteForceCare(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R); /* proto */
+static PyObject *__pyx_pf_5cbadc_20offline_computations_2care(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R); /* proto */
 static PyObject *__pyx_float_1eneg_5;
 static PyObject *__pyx_float_1eneg_8;
 static PyObject *__pyx_tuple_;
@@ -1295,7 +1295,7 @@ static PyObject *__pyx_codeobj__5;
 static PyObject *__pyx_codeobj__7;
 /* Late includes */
 
-/* "cbc/offline_computations.pyx":8
+/* "cbadc/offline_computations.pyx":8
  * #cython: language_level=3
  * 
  * def bruteForceCare(A, B, Q, R):             # <<<<<<<<<<<<<<
@@ -1304,10 +1304,10 @@ static PyObject *__pyx_codeobj__7;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_20offline_computations_1bruteForceCare(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_20offline_computations_bruteForceCare[] = "bruteForceCare(A, B, Q, R)\n\n    \n    ";
-static PyMethodDef __pyx_mdef_3cbc_20offline_computations_1bruteForceCare = {"bruteForceCare", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_20offline_computations_1bruteForceCare, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_20offline_computations_bruteForceCare};
-static PyObject *__pyx_pw_3cbc_20offline_computations_1bruteForceCare(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_20offline_computations_1bruteForceCare(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5cbadc_20offline_computations_bruteForceCare[] = "bruteForceCare(A, B, Q, R)\n\n    \n    ";
+static PyMethodDef __pyx_mdef_5cbadc_20offline_computations_1bruteForceCare = {"bruteForceCare", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_20offline_computations_1bruteForceCare, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5cbadc_20offline_computations_bruteForceCare};
+static PyObject *__pyx_pw_5cbadc_20offline_computations_1bruteForceCare(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_A = 0;
   PyObject *__pyx_v_B = 0;
   PyObject *__pyx_v_Q = 0;
@@ -1380,18 +1380,18 @@ static PyObject *__pyx_pw_3cbc_20offline_computations_1bruteForceCare(PyObject *
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("bruteForceCare", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 8, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.offline_computations.bruteForceCare", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.offline_computations.bruteForceCare", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_20offline_computations_bruteForceCare(__pyx_self, __pyx_v_A, __pyx_v_B, __pyx_v_Q, __pyx_v_R);
+  __pyx_r = __pyx_pf_5cbadc_20offline_computations_bruteForceCare(__pyx_self, __pyx_v_A, __pyx_v_B, __pyx_v_Q, __pyx_v_R);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R) {
+static PyObject *__pyx_pf_5cbadc_20offline_computations_bruteForceCare(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R) {
   long __pyx_v_timelimit;
   PyObject *__pyx_v_start_time = NULL;
   PyObject *__pyx_v_V = NULL;
@@ -1424,7 +1424,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("bruteForceCare", 0);
 
-  /* "cbc/offline_computations.pyx":12
+  /* "cbadc/offline_computations.pyx":12
  * 
  *     """
  *     timelimit = 10 * 60             # <<<<<<<<<<<<<<
@@ -1433,7 +1433,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
  */
   __pyx_v_timelimit = 0x258;
 
-  /* "cbc/offline_computations.pyx":13
+  /* "cbadc/offline_computations.pyx":13
  *     """
  *     timelimit = 10 * 60
  *     start_time = time.time()             # <<<<<<<<<<<<<<
@@ -1463,7 +1463,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   __pyx_v_start_time = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbc/offline_computations.pyx":14
+  /* "cbadc/offline_computations.pyx":14
  *     timelimit = 10 * 60
  *     start_time = time.time()
  *     V = np.eye(A.shape[0])             # <<<<<<<<<<<<<<
@@ -1499,7 +1499,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   __pyx_v_V = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbc/offline_computations.pyx":15
+  /* "cbadc/offline_computations.pyx":15
  *     start_time = time.time()
  *     V = np.eye(A.shape[0])
  *     V_tmp = np.zeros_like(V)             # <<<<<<<<<<<<<<
@@ -1529,7 +1529,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   __pyx_v_V_tmp = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbc/offline_computations.pyx":16
+  /* "cbadc/offline_computations.pyx":16
  *     V = np.eye(A.shape[0])
  *     V_tmp = np.zeros_like(V)
  *     tau = 1e-5             # <<<<<<<<<<<<<<
@@ -1538,7 +1538,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
  */
   __pyx_v_tau = 1e-5;
 
-  /* "cbc/offline_computations.pyx":17
+  /* "cbadc/offline_computations.pyx":17
  *     V_tmp = np.zeros_like(V)
  *     tau = 1e-5
  *     RInv = np.linalg.inv(R)             # <<<<<<<<<<<<<<
@@ -1571,7 +1571,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   __pyx_v_RInv = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cbc/offline_computations.pyx":19
+  /* "cbadc/offline_computations.pyx":19
  *     RInv = np.linalg.inv(R)
  * 
  *     while not np.allclose(V, V_tmp, rtol=1e-5, atol=1e-8):             # <<<<<<<<<<<<<<
@@ -1606,7 +1606,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
     __pyx_t_6 = ((!__pyx_t_5) != 0);
     if (!__pyx_t_6) break;
 
-    /* "cbc/offline_computations.pyx":20
+    /* "cbadc/offline_computations.pyx":20
  * 
  *     while not np.allclose(V, V_tmp, rtol=1e-5, atol=1e-8):
  *         if time.time() - start_time > timelimit:             # <<<<<<<<<<<<<<
@@ -1645,7 +1645,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (unlikely(__pyx_t_6)) {
 
-      /* "cbc/offline_computations.pyx":21
+      /* "cbadc/offline_computations.pyx":21
  *     while not np.allclose(V, V_tmp, rtol=1e-5, atol=1e-8):
  *         if time.time() - start_time > timelimit:
  *             raise Exception("Brute Force CARE solver ran out of time")             # <<<<<<<<<<<<<<
@@ -1658,7 +1658,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __PYX_ERR(0, 21, __pyx_L1_error)
 
-      /* "cbc/offline_computations.pyx":20
+      /* "cbadc/offline_computations.pyx":20
  * 
  *     while not np.allclose(V, V_tmp, rtol=1e-5, atol=1e-8):
  *         if time.time() - start_time > timelimit:             # <<<<<<<<<<<<<<
@@ -1667,7 +1667,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
  */
     }
 
-    /* "cbc/offline_computations.pyx":22
+    /* "cbadc/offline_computations.pyx":22
  *         if time.time() - start_time > timelimit:
  *             raise Exception("Brute Force CARE solver ran out of time")
  *         V_tmp = V             # <<<<<<<<<<<<<<
@@ -1677,7 +1677,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
     __Pyx_INCREF(__pyx_v_V);
     __Pyx_DECREF_SET(__pyx_v_V_tmp, __pyx_v_V);
 
-    /* "cbc/offline_computations.pyx":23
+    /* "cbadc/offline_computations.pyx":23
  *             raise Exception("Brute Force CARE solver ran out of time")
  *         V_tmp = V
  *         try:             # <<<<<<<<<<<<<<
@@ -1693,7 +1693,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
       __Pyx_XGOTREF(__pyx_t_9);
       /*try:*/ {
 
-        /* "cbc/offline_computations.pyx":24
+        /* "cbadc/offline_computations.pyx":24
  *         V_tmp = V
  *         try:
  *             V = V + tau * (             # <<<<<<<<<<<<<<
@@ -1703,7 +1703,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         __pyx_t_2 = PyFloat_FromDouble(__pyx_v_tau); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_2);
 
-        /* "cbc/offline_computations.pyx":25
+        /* "cbadc/offline_computations.pyx":25
  *         try:
  *             V = V + tau * (
  *                 np.dot(A, V)             # <<<<<<<<<<<<<<
@@ -1761,7 +1761,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         }
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "cbc/offline_computations.pyx":26
+        /* "cbadc/offline_computations.pyx":26
  *             V = V + tau * (
  *                 np.dot(A, V)
  *                 + np.transpose(np.dot(A, V))             # <<<<<<<<<<<<<<
@@ -1844,7 +1844,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "cbc/offline_computations.pyx":27
+        /* "cbadc/offline_computations.pyx":27
  *                 np.dot(A, V)
  *                 + np.transpose(np.dot(A, V))
  *                 + Q             # <<<<<<<<<<<<<<
@@ -1855,7 +1855,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "cbc/offline_computations.pyx":28
+        /* "cbadc/offline_computations.pyx":28
  *                 + np.transpose(np.dot(A, V))
  *                 + Q
  *                 - np.dot(V, np.dot(B, np.dot(RInv, np.dot(B.transpose(), V))))             # <<<<<<<<<<<<<<
@@ -2092,7 +2092,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "cbc/offline_computations.pyx":24
+        /* "cbadc/offline_computations.pyx":24
  *         V_tmp = V
  *         try:
  *             V = V + tau * (             # <<<<<<<<<<<<<<
@@ -2109,7 +2109,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         __Pyx_DECREF_SET(__pyx_v_V, __pyx_t_11);
         __pyx_t_11 = 0;
 
-        /* "cbc/offline_computations.pyx":23
+        /* "cbadc/offline_computations.pyx":23
  *             raise Exception("Brute Force CARE solver ran out of time")
  *         V_tmp = V
  *         try:             # <<<<<<<<<<<<<<
@@ -2136,7 +2136,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "cbc/offline_computations.pyx":30
+      /* "cbadc/offline_computations.pyx":30
  *                 - np.dot(V, np.dot(B, np.dot(RInv, np.dot(B.transpose(), V))))
  *             )
  *         except FloatingPointError:             # <<<<<<<<<<<<<<
@@ -2145,13 +2145,13 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
  */
       __pyx_t_10 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_FloatingPointError);
       if (__pyx_t_10) {
-        __Pyx_AddTraceback("cbc.offline_computations.bruteForceCare", __pyx_clineno, __pyx_lineno, __pyx_filename);
+        __Pyx_AddTraceback("cbadc.offline_computations.bruteForceCare", __pyx_clineno, __pyx_lineno, __pyx_filename);
         if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_1, &__pyx_t_2) < 0) __PYX_ERR(0, 30, __pyx_L8_except_error)
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_GOTREF(__pyx_t_2);
 
-        /* "cbc/offline_computations.pyx":31
+        /* "cbadc/offline_computations.pyx":31
  *             )
  *         except FloatingPointError:
  *             print("V_frw:\n{}\n".format(V))             # <<<<<<<<<<<<<<
@@ -2180,7 +2180,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
 
-        /* "cbc/offline_computations.pyx":32
+        /* "cbadc/offline_computations.pyx":32
  *         except FloatingPointError:
  *             print("V_frw:\n{}\n".format(V))
  *             print("V_frw.dot(V_frw):\n{}".format(np.dot(V, V)))             # <<<<<<<<<<<<<<
@@ -2260,7 +2260,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "cbc/offline_computations.pyx":33
+        /* "cbadc/offline_computations.pyx":33
  *             print("V_frw:\n{}\n".format(V))
  *             print("V_frw.dot(V_frw):\n{}".format(np.dot(V, V)))
  *             raise FloatingPointError             # <<<<<<<<<<<<<<
@@ -2273,7 +2273,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
       goto __pyx_L8_except_error;
       __pyx_L8_except_error:;
 
-      /* "cbc/offline_computations.pyx":23
+      /* "cbadc/offline_computations.pyx":23
  *             raise Exception("Brute Force CARE solver ran out of time")
  *         V_tmp = V
  *         try:             # <<<<<<<<<<<<<<
@@ -2289,7 +2289,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
     }
   }
 
-  /* "cbc/offline_computations.pyx":34
+  /* "cbadc/offline_computations.pyx":34
  *             print("V_frw.dot(V_frw):\n{}".format(np.dot(V, V)))
  *             raise FloatingPointError
  *     return V             # <<<<<<<<<<<<<<
@@ -2301,7 +2301,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   __pyx_r = __pyx_v_V;
   goto __pyx_L0;
 
-  /* "cbc/offline_computations.pyx":8
+  /* "cbadc/offline_computations.pyx":8
  * #cython: language_level=3
  * 
  * def bruteForceCare(A, B, Q, R):             # <<<<<<<<<<<<<<
@@ -2324,7 +2324,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   __Pyx_XDECREF(__pyx_t_17);
   __Pyx_XDECREF(__pyx_t_18);
   __Pyx_XDECREF(__pyx_t_19);
-  __Pyx_AddTraceback("cbc.offline_computations.bruteForceCare", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.offline_computations.bruteForceCare", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_start_time);
@@ -2336,7 +2336,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "cbc/offline_computations.pyx":37
+/* "cbadc/offline_computations.pyx":37
  * 
  * 
  * def care(A, B, Q, R):             # <<<<<<<<<<<<<<
@@ -2345,10 +2345,10 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_bruteForceCare(CYTHON_UNUS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3cbc_20offline_computations_3care(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3cbc_20offline_computations_2care[] = "care(A, B, Q, R)\n\n    This function solves the forward and backward continuous Riccati equation.\n    ";
-static PyMethodDef __pyx_mdef_3cbc_20offline_computations_3care = {"care", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3cbc_20offline_computations_3care, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3cbc_20offline_computations_2care};
-static PyObject *__pyx_pw_3cbc_20offline_computations_3care(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_20offline_computations_3care(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_5cbadc_20offline_computations_2care[] = "care(A, B, Q, R)\n\n    This function solves the forward and backward continuous Riccati equation.\n    ";
+static PyMethodDef __pyx_mdef_5cbadc_20offline_computations_3care = {"care", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_20offline_computations_3care, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5cbadc_20offline_computations_2care};
+static PyObject *__pyx_pw_5cbadc_20offline_computations_3care(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_A = 0;
   PyObject *__pyx_v_B = 0;
   PyObject *__pyx_v_Q = 0;
@@ -2421,18 +2421,18 @@ static PyObject *__pyx_pw_3cbc_20offline_computations_3care(PyObject *__pyx_self
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("care", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 37, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3cbc_20offline_computations_2care(__pyx_self, __pyx_v_A, __pyx_v_B, __pyx_v_Q, __pyx_v_R);
+  __pyx_r = __pyx_pf_5cbadc_20offline_computations_2care(__pyx_self, __pyx_v_A, __pyx_v_B, __pyx_v_Q, __pyx_v_R);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R) {
+static PyObject *__pyx_pf_5cbadc_20offline_computations_2care(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_A, PyObject *__pyx_v_B, PyObject *__pyx_v_Q, PyObject *__pyx_v_R) {
   PyObject *__pyx_v_Vf = NULL;
   PyObject *__pyx_v_Vb = NULL;
   PyObject *__pyx_r = NULL;
@@ -2458,7 +2458,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
   __Pyx_INCREF(__pyx_v_Q);
   __Pyx_INCREF(__pyx_v_R);
 
-  /* "cbc/offline_computations.pyx":41
+  /* "cbadc/offline_computations.pyx":41
  *     This function solves the forward and backward continuous Riccati equation.
  *     """
  *     A = np.array(A, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -2492,7 +2492,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
   __Pyx_DECREF_SET(__pyx_v_A, __pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "cbc/offline_computations.pyx":42
+  /* "cbadc/offline_computations.pyx":42
  *     """
  *     A = np.array(A, dtype=np.double)
  *     B = np.array(B, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -2526,7 +2526,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
   __Pyx_DECREF_SET(__pyx_v_B, __pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "cbc/offline_computations.pyx":43
+  /* "cbadc/offline_computations.pyx":43
  *     A = np.array(A, dtype=np.double)
  *     B = np.array(B, dtype=np.double)
  *     Q = np.array(Q, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -2560,7 +2560,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
   __Pyx_DECREF_SET(__pyx_v_Q, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "cbc/offline_computations.pyx":44
+  /* "cbadc/offline_computations.pyx":44
  *     B = np.array(B, dtype=np.double)
  *     Q = np.array(Q, dtype=np.double)
  *     R = np.array(R, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -2594,7 +2594,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
   __Pyx_DECREF_SET(__pyx_v_R, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "cbc/offline_computations.pyx":46
+  /* "cbadc/offline_computations.pyx":46
  *     R = np.array(R, dtype=np.double)
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -2610,7 +2610,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __Pyx_XGOTREF(__pyx_t_8);
     /*try:*/ {
 
-      /* "cbc/offline_computations.pyx":47
+      /* "cbadc/offline_computations.pyx":47
  * 
  *     try:
  *         Vf = sp.linalg.solve_continuous_are(A, B, Q, R)             # <<<<<<<<<<<<<<
@@ -2679,7 +2679,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
       __pyx_v_Vf = __pyx_t_3;
       __pyx_t_3 = 0;
 
-      /* "cbc/offline_computations.pyx":46
+      /* "cbadc/offline_computations.pyx":46
  *     R = np.array(R, dtype=np.double)
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -2698,7 +2698,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "cbc/offline_computations.pyx":48
+    /* "cbadc/offline_computations.pyx":48
  *     try:
  *         Vf = sp.linalg.solve_continuous_are(A, B, Q, R)
  *     except LinAlgError:             # <<<<<<<<<<<<<<
@@ -2713,13 +2713,13 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __Pyx_ErrRestore(__pyx_t_3, __pyx_t_4, __pyx_t_5);
     __pyx_t_3 = 0; __pyx_t_4 = 0; __pyx_t_5 = 0;
     if (__pyx_t_9) {
-      __Pyx_AddTraceback("cbc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("cbadc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_4, &__pyx_t_3) < 0) __PYX_ERR(0, 48, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_3);
 
-      /* "cbc/offline_computations.pyx":49
+      /* "cbadc/offline_computations.pyx":49
  *         Vf = sp.linalg.solve_continuous_are(A, B, Q, R)
  *     except LinAlgError:
  *         print(             # <<<<<<<<<<<<<<
@@ -2730,7 +2730,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "cbc/offline_computations.pyx":53
+      /* "cbadc/offline_computations.pyx":53
  *             Starting brute force"""
  *         )
  *         Vf = bruteForceCare(A, B, Q, R)             # <<<<<<<<<<<<<<
@@ -2800,7 +2800,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "cbc/offline_computations.pyx":46
+    /* "cbadc/offline_computations.pyx":46
  *     R = np.array(R, dtype=np.double)
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -2820,7 +2820,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __pyx_L8_try_end:;
   }
 
-  /* "cbc/offline_computations.pyx":55
+  /* "cbadc/offline_computations.pyx":55
  *         Vf = bruteForceCare(A, B, Q, R)
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -2836,7 +2836,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __Pyx_XGOTREF(__pyx_t_6);
     /*try:*/ {
 
-      /* "cbc/offline_computations.pyx":56
+      /* "cbadc/offline_computations.pyx":56
  * 
  *     try:
  *         Vb = sp.linalg.solve_continuous_are(-A, B, Q, R)             # <<<<<<<<<<<<<<
@@ -2909,7 +2909,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
       __pyx_v_Vb = __pyx_t_3;
       __pyx_t_3 = 0;
 
-      /* "cbc/offline_computations.pyx":55
+      /* "cbadc/offline_computations.pyx":55
  *         Vf = bruteForceCare(A, B, Q, R)
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -2930,7 +2930,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "cbc/offline_computations.pyx":57
+    /* "cbadc/offline_computations.pyx":57
  *     try:
  *         Vb = sp.linalg.solve_continuous_are(-A, B, Q, R)
  *     except LinAlgError:             # <<<<<<<<<<<<<<
@@ -2945,13 +2945,13 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __Pyx_ErrRestore(__pyx_t_3, __pyx_t_4, __pyx_t_1);
     __pyx_t_3 = 0; __pyx_t_4 = 0; __pyx_t_1 = 0;
     if (__pyx_t_9) {
-      __Pyx_AddTraceback("cbc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("cbadc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_4, &__pyx_t_3) < 0) __PYX_ERR(0, 57, __pyx_L13_except_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_3);
 
-      /* "cbc/offline_computations.pyx":58
+      /* "cbadc/offline_computations.pyx":58
  *         Vb = sp.linalg.solve_continuous_are(-A, B, Q, R)
  *     except LinAlgError:
  *         print(             # <<<<<<<<<<<<<<
@@ -2962,7 +2962,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "cbc/offline_computations.pyx":62
+      /* "cbadc/offline_computations.pyx":62
  *             Starting brute force"""
  *         )
  *         Vb = bruteForceCare(-A, B, Q, R)             # <<<<<<<<<<<<<<
@@ -3036,7 +3036,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     goto __pyx_L13_except_error;
     __pyx_L13_except_error:;
 
-    /* "cbc/offline_computations.pyx":55
+    /* "cbadc/offline_computations.pyx":55
  *         Vf = bruteForceCare(A, B, Q, R)
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -3056,7 +3056,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
     __pyx_L16_try_end:;
   }
 
-  /* "cbc/offline_computations.pyx":80
+  /* "cbadc/offline_computations.pyx":80
  *     #         - np.dot(Vb, np.dot(B, np.dot(RInv, np.dot(B.transpose(), Vb))))
  *     #     )
  *     return np.array(Vf, dtype=np.double), np.array(Vb, dtype=np.double)             # <<<<<<<<<<<<<<
@@ -3122,7 +3122,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "cbc/offline_computations.pyx":37
+  /* "cbadc/offline_computations.pyx":37
  * 
  * 
  * def care(A, B, Q, R):             # <<<<<<<<<<<<<<
@@ -3140,7 +3140,7 @@ static PyObject *__pyx_pf_3cbc_20offline_computations_2care(CYTHON_UNUSED PyObje
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_AddTraceback("cbc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.offline_computations.care", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_Vf);
@@ -3221,7 +3221,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_atol, __pyx_k_atol, sizeof(__pyx_k_atol), 0, 0, 1, 1},
   {&__pyx_n_s_bruteForceCare, __pyx_k_bruteForceCare, sizeof(__pyx_k_bruteForceCare), 0, 0, 1, 1},
   {&__pyx_n_s_care, __pyx_k_care, sizeof(__pyx_k_care), 0, 0, 1, 1},
-  {&__pyx_n_s_cbc_offline_computations, __pyx_k_cbc_offline_computations, sizeof(__pyx_k_cbc_offline_computations), 0, 0, 1, 1},
+  {&__pyx_n_s_cbadc_offline_computations, __pyx_k_cbadc_offline_computations, sizeof(__pyx_k_cbadc_offline_computations), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_dot, __pyx_k_dot, sizeof(__pyx_k_dot), 0, 0, 1, 1},
   {&__pyx_n_s_double, __pyx_k_double, sizeof(__pyx_k_double), 0, 0, 1, 1},
@@ -3243,7 +3243,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
   {&__pyx_n_s_solve_continuous_are, __pyx_k_solve_continuous_are, sizeof(__pyx_k_solve_continuous_are), 0, 0, 1, 1},
   {&__pyx_n_s_sp, __pyx_k_sp, sizeof(__pyx_k_sp), 0, 0, 1, 1},
-  {&__pyx_kp_s_src_cbc_offline_computations_pyx, __pyx_k_src_cbc_offline_computations_pyx, sizeof(__pyx_k_src_cbc_offline_computations_pyx), 0, 0, 1, 0},
+  {&__pyx_kp_s_src_cbadc_offline_computations_p, __pyx_k_src_cbadc_offline_computations_p, sizeof(__pyx_k_src_cbadc_offline_computations_p), 0, 0, 1, 0},
   {&__pyx_n_s_start_time, __pyx_k_start_time, sizeof(__pyx_k_start_time), 0, 0, 1, 1},
   {&__pyx_n_s_tau, __pyx_k_tau, sizeof(__pyx_k_tau), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
@@ -3265,7 +3265,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cbc/offline_computations.pyx":21
+  /* "cbadc/offline_computations.pyx":21
  *     while not np.allclose(V, V_tmp, rtol=1e-5, atol=1e-8):
  *         if time.time() - start_time > timelimit:
  *             raise Exception("Brute Force CARE solver ran out of time")             # <<<<<<<<<<<<<<
@@ -3276,7 +3276,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "cbc/offline_computations.pyx":49
+  /* "cbadc/offline_computations.pyx":49
  *         Vf = sp.linalg.solve_continuous_are(A, B, Q, R)
  *     except LinAlgError:
  *         print(             # <<<<<<<<<<<<<<
@@ -3287,7 +3287,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "cbc/offline_computations.pyx":58
+  /* "cbadc/offline_computations.pyx":58
  *         Vb = sp.linalg.solve_continuous_are(-A, B, Q, R)
  *     except LinAlgError:
  *         print(             # <<<<<<<<<<<<<<
@@ -3298,7 +3298,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "cbc/offline_computations.pyx":8
+  /* "cbadc/offline_computations.pyx":8
  * #cython: language_level=3
  * 
  * def bruteForceCare(A, B, Q, R):             # <<<<<<<<<<<<<<
@@ -3308,9 +3308,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__4 = PyTuple_Pack(10, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_Q, __pyx_n_s_R, __pyx_n_s_timelimit, __pyx_n_s_start_time, __pyx_n_s_V, __pyx_n_s_V_tmp, __pyx_n_s_tau, __pyx_n_s_RInv); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(4, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_offline_computations_pyx, __pyx_n_s_bruteForceCare, 8, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(4, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_offline_computations_p, __pyx_n_s_bruteForceCare, 8, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 8, __pyx_L1_error)
 
-  /* "cbc/offline_computations.pyx":37
+  /* "cbadc/offline_computations.pyx":37
  * 
  * 
  * def care(A, B, Q, R):             # <<<<<<<<<<<<<<
@@ -3320,7 +3320,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__6 = PyTuple_Pack(6, __pyx_n_s_A, __pyx_n_s_B, __pyx_n_s_Q, __pyx_n_s_R, __pyx_n_s_Vf, __pyx_n_s_Vb); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbc_offline_computations_pyx, __pyx_n_s_care, 37, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_offline_computations_p, __pyx_n_s_care, 37, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3576,14 +3576,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_cbc__offline_computations) {
+  if (__pyx_module_is_main_cbadc__offline_computations) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "cbc.offline_computations")) {
-      if (unlikely(PyDict_SetItemString(modules, "cbc.offline_computations", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "cbadc.offline_computations")) {
+      if (unlikely(PyDict_SetItemString(modules, "cbadc.offline_computations", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -3604,7 +3604,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cbc/offline_computations.pyx":1
+  /* "cbadc/offline_computations.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * import scipy as sp
  * import scipy.linalg
@@ -3614,7 +3614,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/offline_computations.pyx":2
+  /* "cbadc/offline_computations.pyx":2
  * import numpy as np
  * import scipy as sp             # <<<<<<<<<<<<<<
  * import scipy.linalg
@@ -3625,7 +3625,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_sp, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/offline_computations.pyx":3
+  /* "cbadc/offline_computations.pyx":3
  * import numpy as np
  * import scipy as sp
  * import scipy.linalg             # <<<<<<<<<<<<<<
@@ -3637,7 +3637,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_scipy, __pyx_t_1) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "cbc/offline_computations.pyx":4
+  /* "cbadc/offline_computations.pyx":4
  * import scipy as sp
  * import scipy.linalg
  * from numpy.linalg import LinAlgError             # <<<<<<<<<<<<<<
@@ -3658,7 +3658,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/offline_computations.pyx":5
+  /* "cbadc/offline_computations.pyx":5
  * import scipy.linalg
  * from numpy.linalg import LinAlgError
  * import time             # <<<<<<<<<<<<<<
@@ -3670,31 +3670,31 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_2) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/offline_computations.pyx":8
+  /* "cbadc/offline_computations.pyx":8
  * #cython: language_level=3
  * 
  * def bruteForceCare(A, B, Q, R):             # <<<<<<<<<<<<<<
  *     """
  * 
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3cbc_20offline_computations_1bruteForceCare, NULL, __pyx_n_s_cbc_offline_computations); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5cbadc_20offline_computations_1bruteForceCare, NULL, __pyx_n_s_cbadc_offline_computations); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_bruteForceCare, __pyx_t_2) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/offline_computations.pyx":37
+  /* "cbadc/offline_computations.pyx":37
  * 
  * 
  * def care(A, B, Q, R):             # <<<<<<<<<<<<<<
  *     """
  *     This function solves the forward and backward continuous Riccati equation.
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3cbc_20offline_computations_3care, NULL, __pyx_n_s_cbc_offline_computations); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5cbadc_20offline_computations_3care, NULL, __pyx_n_s_cbadc_offline_computations); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_care, __pyx_t_2) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cbc/offline_computations.pyx":1
+  /* "cbadc/offline_computations.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * import scipy as sp
  * import scipy.linalg
@@ -3712,11 +3712,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cbc.offline_computations", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init cbadc.offline_computations", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cbc.offline_computations");
+    PyErr_SetString(PyExc_ImportError, "init cbadc.offline_computations");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

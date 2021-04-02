@@ -162,10 +162,9 @@ plt.gcf().tight_layout()
 # Setting the Bandwidth of the Estimation Filter
 # ----------------------------------------------
 #
-# Next we will investigate the effect of eta2 on the STF and NTF as showm 
-# above.
+# Next we will investigate the effect of eta2 on the STF and NTF.
 
-# create a vector of etas to be evaluated
+# create a vector of etas to be evaluated,
 eta2_vec = np.logspace(0, 10, 11)[::2]
 
 plt.figure()

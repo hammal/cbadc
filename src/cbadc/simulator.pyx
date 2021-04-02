@@ -350,6 +350,9 @@ cdef class StateSpaceSimulator(object):
         self._temp_state_vector = np.dot(self.analog_system.Gamma_tildeT, y)
         self._control_vector = self.digital_control.control_contribution(t, self._temp_state_vector)
         return np.asarray(self.analog_system.derivative(self._temp_state_vector, t, self._input_vector, self._control_vector)).flatten()
+    
+    def __str__(self):
+        return f"t = {self.t}, (current simulator time)\nTs = {self.Ts},\nt_stop = {self.t_stop},\nrtol = {self.rtol},\natol = {self.atol}, and\nmax_step = {self.max_step}\n"
 
 def extended_simulation_result(simulator):
     """Extended simulation output
