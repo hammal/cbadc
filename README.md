@@ -1,4 +1,4 @@
-![cbadc](https://github.com/hammal/cbadc/actions/workflows/python-package.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)
+![cbadc](https://github.com/hammal/cbadc/actions/workflows/unit-test.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)
 
 # Control-Bounded A/D Conversion (cbadc) Toolbox's Documentation
 
