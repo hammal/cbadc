@@ -1,6 +1,0 @@
-cython
-sphinx_rtd_theme
-nbsphinx
-sphinx-gallery
-numpy
-scipy
