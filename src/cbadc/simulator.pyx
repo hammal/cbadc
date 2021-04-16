@@ -225,9 +225,9 @@ cdef class StateSpaceSimulator(object):
                     ).flatten()
         
         cdef double [:] tspan = np.array([0, self.Ts])
-        cdef double atol = 1e-20
-        cdef double rtol = 1e-13
-        cdef double max_step = self.Ts * 1e-4
+        cdef double atol = 1e-12
+        cdef double rtol = 1e-12
+        cdef double max_step = self.Ts * 1e-3
         
         self._pre_computed_control_matrix = solve_ivp(derivative, 
             tspan, 

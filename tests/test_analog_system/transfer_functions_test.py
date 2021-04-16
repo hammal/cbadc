@@ -30,4 +30,4 @@ def test_transfer_function(chain_of_integrators):
     assert tf.shape[0] == analogSystem.N_tilde
     assert tf.shape[1] == analogSystem.L
     assert isinstance(tf, (np.ndarray, np.generic))
-    assert tf.dtype == np.complex
+    assert tf.dtype == np.complex128

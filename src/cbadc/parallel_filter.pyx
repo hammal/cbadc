@@ -80,17 +80,17 @@ cdef class ParallelFilter():
 
         # Parallelilize
         temp, Q_f = np.eig(self._Af)
-        self.forward_a = np.array(temp, dtype=np.complex, order='C')
+        self.forward_a = np.array(temp, dtype=np.complex128, order='C')
         Q_f_inv = np.pinv(Q_f, rcond=1e-20)
         temp, Q_b = np.eig(self._Ab)
-        self.backward_a = np.array(temp, dtype=np.complex, order='C')
+        self.backward_a = np.array(temp, dtype=np.complex128, order='C')
         Q_b_inv = np.pinv(Q_b, rcond=1e-20)
 
-        self.forward_b = np.array(np.dot(Q_f_inv, self._Bf).flatten(), dtype=np.complex, order='C')
-        self.backward_b = np.array(np.dot(Q_b_inv, self._Bb).flatten(), dtype=np.complex, order='C')
+        self.forward_b = np.array(np.dot(Q_f_inv, self._Bf).flatten(), dtype=np.complex128, order='C')
+        self.backward_b = np.array(np.dot(Q_b_inv, self._Bb).flatten(), dtype=np.complex128, order='C')
 
-        self.forward_w = np.array(-np.dot(Q_f.transpose(), self._W).flatten(), dtype=np.complex, order='C')
-        self.backward_w = np.array(np.dot(Q_b.transpose(), self._W).flatten(), dtype=np.complex, order='C')
+        self.forward_w = np.array(-np.dot(Q_f.transpose(), self._W).flatten(), dtype=np.complex128, order='C')
+        self.backward_w = np.array(np.dot(Q_b.transpose(), self._W).flatten(), dtype=np.complex128, order='C')
 
     def __dealloc__(self):
         del self._filter

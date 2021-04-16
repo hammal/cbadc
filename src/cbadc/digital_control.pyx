@@ -50,8 +50,8 @@ cdef class DigitalControl:
     >>> print(dc)
     The Digital Control is parameterized as:
     T = 1e-06,
-    M = 4,
-    Next update at t = 1e-06
+    M = 4, and next update at
+    t = 1e-06
     """
 
     def __init__(self, double T, int M, double t0 = 0.0):

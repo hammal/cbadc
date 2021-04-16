@@ -35,7 +35,7 @@ def test_iterator(chain_of_integrators):
 
 
 def test_large_integrator():
-    N = 100
+    N = 20
     M = N
     A = np.eye(N) * rho + np.eye(N, k=-1) * beta
     B = np.zeros((N, 1))
