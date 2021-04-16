@@ -28,7 +28,7 @@ with open("README.md", "r") as fh:
 
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
-USING_CYTHON = os.environ.get('CYTHON', False)
+USING_CYTHON = os.environ.get('CYTHON', True)
 ext = "pyx"
 
 root_path = "src/cbadc"
@@ -72,7 +72,6 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
@@ -82,5 +81,9 @@ setup(
     include_package_data=True,
     ext_modules=ext_modules,
     zip_safe=False,
-    include_dirs=[numpy.get_include()]
+    include_dirs=[numpy.get_include()],
+    define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
+    package_data = {
+        'cbadc': ['*.pxd'],
+    },
 )
