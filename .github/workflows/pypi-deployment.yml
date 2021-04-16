@@ -1,0 +1,83 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Upload cbadc to PyPI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [ubuntu-latest, macos-latest] #, windows-latest]
+    steps:
+    - name: Checkout github repo
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Initialize submodules
+      run: >-
+        git submodule init;
+        rm -rf tests/AnalogToDigital;
+        ln -s PythonADC/AnalogToDigital tests/;
+    
+    - name: Upgrade pip
+      run: >-
+        python -m
+        pip install
+        --upgrade
+        pip
+
+    - name: Install Tox
+      run:
+        python -m pip install tox;
+
+    - name: UnitTest
+      run:
+        tox -e py$(echo ${PYTHON_V} | sed 's/.//g');
+      env:
+        PYTHON_V: ${{ matrix.python-version }}
+    
+    - name: Install pypa/build
+      run: python -m pip install build 
+        
+    - name: Build a source tarball
+      run: >-
+        python -m
+        build
+        --sdist
+        --outdir dist/
+        . 
+
+    - name: Install cibuildwheel
+      run: python -m pip install cibuildwheel==1.10.0
+
+    - name: Build wheels
+      run: python -m cibuildwheel --output-dir dist
+
+    - name: Build manylinux Python wheels for x86_64
+      uses: RalfG/python-wheels-manylinux-build@v0.3.3-manylinux2010_x86_64
+      with:
+        python-versions: 'cp38-cp38'
+        build-requirements: 'cython numpy scipy'
+    - name: Publish distribution 📦 to Test PyPI
+      # if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository_url: https://test.pypi.org/legacy/
+    - name: Publish distribution 📦 to PyPI
+      # if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
