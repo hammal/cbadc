@@ -1,5 +1,6 @@
 #include "parallel_digital_estimator_filter.h"
 #include <stdio.h>
+#include <cstdlib>
 #include <stdlib.h>
 #include <iostream>
 #define control_signal_index(kTemp) (((kTemp + batch_start_position)) % (K3 + 1))
