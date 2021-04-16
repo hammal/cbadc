@@ -86,18 +86,11 @@ jobs:
     - name: Install cibuildwheel
       run: python -m pip install cibuildwheel==1.10.0
 
-    - name: Build wheels for Mac
-      if: matrix.os == 'macos-latest'
+    - name: Build wheels
       run: python -m cibuildwheel --output-dir wheelhouse
       env:
         CIBW_SKIP: pp3*
-        CYTHON: True
-
-    - name: Build wheels for Linux
-      if: matrix.os == 'ubuntu-latest'
-      run: python -m cibuildwheel --output-dir wheelhouse
-      env:
-        CYTHON: True
+        CIBW_ENVIRONMENT: "CYTHON=True"
 
     - uses: actions/upload-artifact@v2
       with:

@@ -29,6 +29,7 @@ with open("README.md", "r") as fh:
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
 USING_CYTHON = os.environ.get('CYTHON', False)
+print(f"Using Cython?: {USING_CYTHON}")
 ext = "pyx"
 
 root_path = "src/cbadc"
