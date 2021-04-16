@@ -4,51 +4,12 @@
 name: Test, build, and upload new releases
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
   release:
     # Only use the types keyword to narrow down the activity types that will trigger your workflow.
     types: [published, created, edited]
 
 jobs:
-  tox_test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout github repo
-        uses: actions/checkout@v2
-    
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Initialize submodules
-        run: >-
-          git submodule init;
-          rm -rf tests/AnalogToDigital;
-          ln -s PythonADC/AnalogToDigital tests/;
-    
-      - name: Upgrade pip
-        run: >-
-          python -m
-          pip install
-          --upgrade
-          pip
-
-      - name: Install Tox
-        run:
-          python -m pip install tox;
-
-      - name: UnitTest
-        run: tox -e py38
-        env: 
-          CYTHON: True
-
-
   build_sdist:
-    needs: [tox_test]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout github repo
@@ -72,7 +33,6 @@ jobs:
         path: dist/*.tar.gz
 
   build_wheels:
-    needs: [tox_test]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -105,7 +65,7 @@ jobs:
     # upload to PyPI on every tag starting with 'v'
     # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
     # alternatively, to publish when a GitHub Release is created, use the following rule:
-    if: github.event_name == 'release' && github.event.action == 'published'
+    # if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - uses: actions/download-artifact@v2
         with:
