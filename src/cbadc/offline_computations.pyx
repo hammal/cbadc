@@ -3,7 +3,10 @@ import scipy as sp
 import scipy.linalg
 from numpy.linalg import LinAlgError
 import time
+import logging
 #cython: language_level=3
+
+logger = logging.getLogger(__name__)
 
 def bruteForceCare(A, B, Q, R):
     """
@@ -46,7 +49,7 @@ def care(A, B, Q, R):
     try:
         Vf = sp.linalg.solve_continuous_are(A, B, Q, R)
     except LinAlgError:
-        print(
+        logger.warning(
             """Cholesky Method Failed for computing the CARE of Vf.
             Starting brute force"""
         )
@@ -55,7 +58,7 @@ def care(A, B, Q, R):
     try:
         Vb = sp.linalg.solve_continuous_are(-A, B, Q, R)
     except LinAlgError:
-        print(
+        logger.warning(
             """Cholesky Method Failed for computing the CARE of Vb.
             Starting brute force"""
         )

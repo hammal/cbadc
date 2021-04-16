@@ -1,4 +1,6 @@
 # distutils: language = c++
+"""Currently not used.
+"""
 from cbadc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp

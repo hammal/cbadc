@@ -38,37 +38,33 @@ cdef class LinearFilter():
         temp_forward_mean = np.zeros(self._N, dtype=np.double) 
         # check if ready to compute buffer
         if (self._control_signal_in_buffer < self._K3):
-            raise "Control signal buffer not full"
+            raise BaseException("Control signal buffer not full")
         # compute lookahead
-        # print(np.array(self._control_signal))
-        for k1 in range(self._K3, self._K1, -1):
-            temp = np.dot(self._Ab, self._mean[self._K1 + 1,:]) + np.dot(self._Bb, self._control_signal[k1, :])
+        for k1 in range(self._K3 - 1, self._K1 - 1, -1):
+            temp = np.dot(self._Ab, self._mean[self._K1, :]) + np.dot(self._Bb, self._control_signal[k1, :])
             for n in range(self._N):
-                self._mean[self._K1 + 1, n] = temp[n]
-        # print(np.array(self._mean[self._K1, :]))
+                self._mean[self._K1, n] = temp[n]
         # compute forward recursion
-        for k2 in range(1, self._K1 + 1):
-            temp = np.dot(self._Af, self._mean[k2 - 1, :]) + np.dot(self._Bf, self._control_signal[k2 - 1, :])
-            for n in range(self._N):
-                self._mean[k2, n] = temp[n]
-            # print(np.array(self._mean[k2, :]))
-        for n in range(self._N):
-            temp_forward_mean[n] = self._mean[self._K1, n]
+        for k2 in range(self._K1):
+            temp = np.dot(self._Af, self._mean[k2, :]) + np.dot(self._Bf, self._control_signal[k2, :])
+            if (k2 < self._K1 - 1):
+                for n in range(self._N):
+                    self._mean[k2 + 1, n] = temp[n]
+            else:
+                for n in range(self._N):
+                    temp_forward_mean[n] = temp[n]
         # compute backward recursion and estimate
-        # print("Backward")
-        for k3 in range(self._K1 + 1, 1, -1):
-            temp = np.dot(self._Ab, self._mean[k3, :]) + np.dot(self._Bb, self._control_signal[k3-1, :])
-            temp_estimate = np.dot(self._WT, temp - self._mean[k3-1, :])
+        for k3 in range(self._K1 - 1, -1, -1):
+            temp = np.dot(self._Ab, self._mean[k3 + 1, :]) + np.dot(self._Bb, self._control_signal[k3, :])
+            temp_estimate = np.dot(self._WT, temp - self._mean[k3, :])
             for l in range(self._L):
-                self._estimate[k3 - 2, l] = temp_estimate[l]
+                self._estimate[k3, l] = temp_estimate[l]
             for n in range(self._N):
-                self._mean[k3 - 1, n] = temp[n]
-            # print(np.array(self._mean[k3-1, :]))
+                self._mean[k3, n] = temp[n]
         # reset intital means
         for n in range(self._N):
             self._mean[0, n] = temp_forward_mean[n]
-            self._mean[self._K1 + 1, n] = 0
-        # print(np.array(self._mean))
+            self._mean[self._K1, n] = 0
         # rotate buffer to make place for new control signals
         self._control_signal = np.roll(self._control_signal, -self._K1, axis=0)
         self._control_signal_in_buffer -= self._K1
@@ -104,6 +100,10 @@ cdef class LinearFilter():
                 self._Bf[n, m] = solBf[n]
                 self._Bb[n, m] = solBb[n]
 
+        # print(f"Af: {np.array(self._Af)}")
+        # print(self._Ab)
+        # print(f"Bf: {np.array(self._Bf)}")
+        # print(np.array(self._Bb))
         # Solve linear system of equations
         # print(f"New Bf: {np.array(self._Bf)}")
         # print(f"New Bb: {np.array(self._Bb)}")
@@ -111,27 +111,27 @@ cdef class LinearFilter():
 
     cdef void allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self._K3 + 1, self._M), dtype=np.int8)
+        self._control_signal = np.zeros((self._K3, self._M), dtype=np.int8)
         self._estimate = np.zeros((self._K1, self._L), dtype=np.double)
         self._control_signal_in_buffer = 0
-        self._mean = np.zeros((self._K1 + 2, self._N), dtype=np.double)
+        self._mean = np.zeros((self._K1 + 1, self._N), dtype=np.double)
 
 
     def input(self, char [:] s):
-        if (self._control_signal_in_buffer == self._K3 + 1):
-            raise "Input buffer full. You must compute batch before adding more control signals"
+        if (self._control_signal_in_buffer == (self._K3)):
+            raise BaseException("Input buffer full. You must compute batch before adding more control signals")
         for m in range(self._M):
             self._control_signal[self._control_signal_in_buffer, m] = 2 * s[m] - 1
         self._control_signal_in_buffer += 1
-        return self._control_signal_in_buffer == (self._K3 + 1)
+        return self._control_signal_in_buffer > (self._K3 - 1)
 
     def output(self, int index):
         if (index < 0 or index >= self._K1):
-            raise "index out of range"
+            raise BaseException("index out of range")
         return np.array(self._estimate[index, :], dtype=np.double)
     
     cpdef int batch_size(self):
-        return self._K1
+        return self._K1 
 
     cpdef int lookahead(self):
         return self._K2

@@ -1,4 +1,6 @@
-"""This module contains various helpful functions to accomondate 
+"""Utility functions
+
+This module contains various helpful functions to accomondate 
 the cbadc toolbox.
 """
 import struct

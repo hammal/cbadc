@@ -108,8 +108,8 @@ cdef class StateSpaceSimulator(object):
             input_signal, 
             Ts=None,
             t_stop=math.inf,
-            atol = 1e-6,
-            rtol = 1e-3,
+            atol = 1e-12,
+            rtol = 1e-12,
             max_step = math.inf,
         ):
         if analog_system.L != len(input_signal):
@@ -122,7 +122,7 @@ cdef class StateSpaceSimulator(object):
         if Ts:
             self.Ts = Ts
         else:
-            self.Ts = self.digital_control.T / 2.0
+            self.Ts = self.digital_control.T
         if self.Ts > self.digital_control.T:
             raise f"Simulating with a sample period {self.Ts} that exceeds the control period of the digital control {self.digital_control.T}"
         self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
@@ -131,12 +131,12 @@ cdef class StateSpaceSimulator(object):
         self._input_vector = np.zeros(self.analog_system.L, dtype=np.double)
         self._control_vector = np.zeros(self.analog_system.M, dtype=np.double)
         self._res = np.zeros(self.analog_system.N, dtype=np.double)
-        self._atol = atol # 1e-6
-        self._rtol = rtol # 1e-6
+        self.atol = atol # 1e-6
+        self.rtol = rtol # 1e-6
         if (max_step > self.Ts):
-            self._max_step = self.Ts / 10.
+            self.max_step = self.Ts / 1e-1
         else:
-            self._max_step = max_step
+            self.max_step = max_step
         self._pre_computations()
         # self.solve_oder = self._ordinary_differential_solution
         # self.solve_oder = self._full_ordinary_differential_solution
@@ -282,9 +282,9 @@ cdef class StateSpaceSimulator(object):
             f, 
             t_span, 
             np.zeros(self.analog_system.N), 
-            atol=self._atol, 
-            rtol=self._rtol, 
-            max_step=self._max_step
+            atol=self.atol, 
+            rtol=self.rtol, 
+            max_step=self.max_step
             ).y[:,-1]
         
         for n in range(self.analog_system.N):
@@ -323,9 +323,9 @@ cdef class StateSpaceSimulator(object):
             f, 
             t_span, 
             self._state_vector, 
-            atol=self._atol, 
-            rtol=self._rtol, 
-            max_step=self._max_step
+            atol=self.atol, 
+            rtol=self.rtol, 
+            max_step=self.max_step
             ).y[:,-1]
 
     cdef _ordinary_differentail_function(self, t, y):

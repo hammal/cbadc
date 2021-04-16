@@ -1,0 +1,34 @@
+cbadc.digital\_estimator.IIRFilter
+==================================
+
+.. currentmodule:: cbadc.digital_estimator
+
+.. autoclass:: IIRFilter
+   :members:                                    
+   :show-inheritance:                           
+   :inherited-members:     
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~IIRFilter.__init__
+      ~IIRFilter.lookahead
+      ~IIRFilter.noise_transfer_function
+      ~IIRFilter.signal_transfer_function
+   
+   
+
+   
+   
+   
+
+.. _sphx_glr_backref_cbadc.digital_estimator.IIRFilter:
+
+.. minigallery:: cbadc.digital_estimator.IIRFilter
+   :add-heading:
+   :heading-level: -

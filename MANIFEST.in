@@ -3,7 +3,6 @@ include requirements.txt
 include README.md
 include src/cbadc/*.pyx
 include src/cbadc/*.pxd
-include src/cbadc/parallel_digital_estimator/*.pyx
-include src/cbadc/parallel_digital_estimator/*.pxd
-include src/cbadc/parallel_digital_estimator/*.h
-include src/cbadc/parallel_digital_estimator/*.cpp
+include src/cbadc/*.h
+include src/cbadc/*.cpp
+include src/cbadc/*.c

@@ -1,0 +1,229 @@
+:orphan:
+
+
+
+.. _sphx_glr_auto_examples:
+
+Tutorials and Examples
+======================
+
+This page demonstrates code examples and common use cases
+of the cbadc package.
+
+.. raw:: html
+
+    <div class="sphx-glr-clear"></div>
+
+
+
+.. _sphx_glr_auto_examples_a_getting_started:
+
+.. _getting_started:
+
+Getting Started Tutorials
+-------------------------
+
+Next follows three examples demonstrating the major features and workflows of
+the package.
+
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to simulate the interactions between an analog system  and a digital con...">
+
+.. only:: html
+
+ .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_b_simulate_a_control_bounded_adc_thumb.png
+     :alt: Simulating a Control-Bounded ADC
+
+     :ref:`sphx_glr_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/a_getting_started/plot_b_simulate_a_control_bounded_adc
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="How to convert a stream of control signals into a signal estimate.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_c_digital_estimator_thumb.png
+     :alt: Digital Estimation (Post Filtering)
+
+     :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/a_getting_started/plot_c_digital_estimator
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the  analog system...">
+
+.. only:: html
+
+ .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_d_transfer_function_thumb.png
+     :alt: Transfer Functions
+
+     :ref:`sphx_glr_auto_examples_a_getting_started_plot_d_transfer_function.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/a_getting_started/plot_d_transfer_function
+.. raw:: html
+
+    <div class="sphx-glr-clear"></div>
+
+
+
+.. _sphx_glr_auto_examples_b_advanced:
+
+Advanced examples
+-----------------
+  
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Digital Estimator as FIR Filter">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_advanced/images/thumb/sphx_glr_plot_FIR_Filtering_thumb.png
+     :alt: Digital Estimator as FIR Filter
+
+     :ref:`sphx_glr_auto_examples_b_advanced_plot_FIR_Filtering.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/b_advanced/plot_FIR_Filtering
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_advanced/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+     :alt: Compare Estimators
+
+     :ref:`sphx_glr_auto_examples_b_advanced_plot_a_compare_estimator.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/b_advanced/plot_a_compare_estimator
+.. raw:: html
+
+    <div class="sphx-glr-clear"></div>
+
+
+
+.. _sphx_glr_auto_examples_c_scratch_pad:
+
+Examples and Tests
+------------------
+
+These are some tests and scratch pad stuff.
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the effect of a symmetric versus non symmetric FIR filter.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/c_scratch_pad/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
+     :alt: The Mid Point Setting
+
+     :ref:`sphx_glr_auto_examples_c_scratch_pad_plot_a_mid_point.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/c_scratch_pad/plot_a_mid_point
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for down sampling.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/c_scratch_pad/images/thumb/sphx_glr_plot_b_down_sample_thumb.png
+     :alt: Down Sampling
+
+     :ref:`sphx_glr_auto_examples_c_scratch_pad_plot_b_down_sample.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/c_scratch_pad/plot_b_down_sample
+.. raw:: html
+
+    <div class="sphx-glr-clear"></div>
+
+
+
+.. only :: html
+
+ .. container:: sphx-glr-footer
+    :class: sphx-glr-footer-gallery
+
+
+  .. container:: sphx-glr-download sphx-glr-download-python
+
+    :download:`Download all examples in Python source code: auto_examples_python.zip </auto_examples/auto_examples_python.zip>`
+
+
+
+  .. container:: sphx-glr-download sphx-glr-download-jupyter
+
+    :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip </auto_examples/auto_examples_jupyter.zip>`
+
+
+.. only:: html
+
+ .. rst-class:: sphx-glr-signature
+
+    `Gallery generated by Sphinx-Gallery <https://sphinx-gallery.github.io>`_
