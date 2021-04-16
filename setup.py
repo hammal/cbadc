@@ -91,6 +91,7 @@ setup(
     include_package_data=True,
     ext_modules=ext_modules,
     zip_safe=False,
+    include_dirs=[numpy.get_include()]
 )
 
 # setuptools.install_required
