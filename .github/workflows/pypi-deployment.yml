@@ -39,7 +39,9 @@ jobs:
           python -m pip install tox;
 
       - name: UnitTest
-        run: tox
+        run: tox -e py38
+        env: 
+          CYTHON: True
 
 
   build_sdist:
