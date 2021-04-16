@@ -28,7 +28,7 @@ with open("README.md", "r") as fh:
 
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
-USING_CYTHON = os.environ.get('CYTHON', False)
+USING_CYTHON = os.environ.get('CYTHON', True)
 print(f"Using Cython?: {USING_CYTHON}")
 ext = "pyx"
 
