@@ -28,7 +28,7 @@ with open("README.md", "r") as fh:
 
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
-USING_CYTHON = True
+USING_CYTHON = os.environ['CYTHON']
 ext = "pyx"
 
 root_path = "src/cbadc"
@@ -37,9 +37,6 @@ parallel_digital_estimator_path = "src/cbadc/parallel_digital_estimator"
 
 
 source_files = glob(root_path + "/*.pyx")
-# for file in glob(root_path + "/*.pyx"):
-#     source_files.append(os.path.sep.join(file.split(os.path.sep)[1:]))
-# print(source_files)
 
 extensions = [
     Extension(os.path.sep.join(source.split(os.path.sep)[1:]).split('.')[0].
@@ -47,14 +44,6 @@ extensions = [
               sources=[source],
               ) for source in source_files]
 
-# extensions += [
-#     Extension(
-#         source.split('.')[0].replace(os.path.sep, '.'),
-#         sources=[source],
-#         # extra_compile_args=["-fopenmp"],
-#         language="c++",
-#     ) for source in glob(parallel_digital_estimator_path + "/*.pyx")
-# ]
 
 compiler_directives = {"language_level": 3, "embedsignature": True}
 
@@ -95,5 +84,3 @@ setup(
     zip_safe=False,
     include_dirs=[numpy.get_include()]
 )
-
-# setuptools.install_required
