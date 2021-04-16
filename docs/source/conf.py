@@ -18,8 +18,9 @@ import warnings
 warnings.filterwarnings("ignore", category=UserWarning,
                         message='Matplotlib is currently using agg, which is a'
                                 ' non-GUI backend, so cannot show the figure.')
-
-sys.path.insert(0, os.path.abspath("../../src"))
+print(f"from path: {os.path.abspath('.')}")
+print(f"system path: {sys.path}")
+# sys.path.insert(-1, os.path.abspath("../../src"))
 
 
 # -- Project information -----------------------------------------------------
