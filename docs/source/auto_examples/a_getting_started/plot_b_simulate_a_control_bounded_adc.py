@@ -56,7 +56,7 @@ print(digital_control)
 #
 # The final and third component of the simulation is an analog signal.
 # For this tutorial we will choose a :py:class:`cbadc.analog_signal.Sinusodial`. 
-# Again, this is one of many possible choices.
+# Again, this is one of several possible choices.
 from cbadc.analog_signal import Sinusodial
 
 # Set the peak amplitude.
@@ -113,7 +113,11 @@ print(simulator)
 # internal analog states of analog system during simulation.
 # 
 # To this end we use the :func:`cbadc.simulator.StateSpaceSimulator.state_vector`
-# and an :func:`cbadc.simulator.extended_simulation_result`
+# and an :func:`cbadc.simulator.extended_simulation_result`.
+#
+# .. note:: The convenience function extended_simulation_result that will be
+#    derived next is one of many such convenience functions found in the
+#    :py:`cbadc.simulator` module.
 
 # We can achieve this by appending yet another generator to the control signal
 # stream as:
@@ -135,9 +139,6 @@ for res in ext_simulator:
         break
     print(f"step:{index} -> s:{res['control_signal']}, x:{res['analog_state']}")
     index += 1
-
-# The convenience function extended_simulation_result and more
-# like it can be found in the cbadc.simulator module.
 
 ###############################################################################
 # Saving to File
