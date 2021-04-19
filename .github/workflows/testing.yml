@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Checkout github repo
         uses: actions/checkout@v2
+      
+      - name: Print hostname
+        run:
+          cat /etc/hostname;
 
       - name: Install Tox
         run:
