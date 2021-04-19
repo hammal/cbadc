@@ -19,11 +19,7 @@ jobs:
         run:
           cat /etc/hostname;
 
-      - name: Install Tox
-        run:
-          python3 -m pip install tox;
-
       - name: UnitTest
-        run: tox -e ${{ matrix.python-version }}
+        run: python3.8 -m tox -e ${{ matrix.python-version }}
         env: 
           CYTHON: True
