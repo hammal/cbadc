@@ -19,7 +19,6 @@ Gamma = Gamma_tildeT * (-beta)
 
 def test_correct_initialization():
     AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    assert False
 
 
 def test_chain_of_integrators_fixture(chain_of_integrators):

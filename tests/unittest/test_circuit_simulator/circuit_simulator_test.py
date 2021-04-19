@@ -3,7 +3,7 @@ from cbadc.analog_signal import ConstantSignal
 from cbadc.analog_system import AnalogSystem
 from cbadc.digital_control import DigitalControl
 import numpy as np
-from test.fixture.chain_of_integrators import chain_of_integrators
+from tests.fixture.chain_of_integrators import chain_of_integrators
 
 beta = 6250.0
 rho = -62.5
