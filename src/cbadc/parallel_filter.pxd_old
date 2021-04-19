@@ -1,5 +1,3 @@
-from cbadc.digital_control cimport DigitalControl
-from cbadc.analog_system cimport AnalogSystem
 from cbadc.parallel_digital_estimator cimport ParallelDigitalEstimator
 
 cdef class ParallelFilter:
