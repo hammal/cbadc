@@ -1,17 +1,13 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: unit test cbadc
+name: Testing and Benchmarking
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
   
 jobs:
   tox_test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout github repo
         uses: actions/checkout@v2
@@ -21,12 +17,6 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Initialize submodules
-        run: >-
-          git submodule init;
-          rm -rf tests/AnalogToDigital;
-          ln -s PythonADC/AnalogToDigital tests/;
-    
       - name: Upgrade pip
         run: >-
           python -m
@@ -39,6 +29,6 @@ jobs:
           python -m pip install tox;
 
       - name: UnitTest
-        run: tox -e py38
+        run: tox
         env: 
           CYTHON: True

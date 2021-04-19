@@ -1,13 +1,6 @@
 import numpy as np
 import pytest
-import os
-import sys
-
-# this is python madness
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + "/../")
-if myPath:
-    from cbadc.analog_system import AnalogSystem
+from cbadc.analog_system import AnalogSystem
 
 
 @pytest.fixture

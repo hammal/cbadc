@@ -1,14 +1,8 @@
-from tests.test_analog_system.chain_of_integrators import chain_of_integrators
+from tests.fixture.chain_of_integrators import chain_of_integrators
 import pytest
-import os
-import sys
 import numpy as np
 
-# this is python madness
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + "/../")
-if myPath:
-    from cbadc.analog_system import AnalogSystem, InvalidAnalogSystemError
+from cbadc.analog_system import AnalogSystem, InvalidAnalogSystemError
 
 
 beta = 6250.0
@@ -25,6 +19,7 @@ Gamma = Gamma_tildeT * (-beta)
 
 def test_correct_initialization():
     AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    assert False
 
 
 def test_chain_of_integrators_fixture(chain_of_integrators):

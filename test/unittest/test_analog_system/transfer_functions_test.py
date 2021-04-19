@@ -1,13 +1,7 @@
-from tests.test_analog_system.chain_of_integrators import chain_of_integrators
+from test.fixture.chain_of_integrators import chain_of_integrators
 import numpy as np
 import os
 import sys
-
-# this is python madness
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + "/../")
-if myPath:
-    print("hello")
 
 
 def test_analog_transfer_function_matrix(chain_of_integrators):
