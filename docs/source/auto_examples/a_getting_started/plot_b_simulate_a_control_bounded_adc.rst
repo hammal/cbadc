@@ -158,7 +158,7 @@ The Analog Signal
 
 The final and third component of the simulation is an analog signal.
 For this tutorial we will choose a :py:class:`cbadc.analog_signal.Sinusodial`. 
-Again, this is one of many possible choices.
+Again, this is one of several possible choices.
 
 .. GENERATED FROM PYTHON SOURCE LINES 60-77
 
@@ -279,7 +279,7 @@ invloved differential equations as outlined in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 108-117
+.. GENERATED FROM PYTHON SOURCE LINES 108-121
 
 Tracking the Analog State Vector 
 --------------------------------
@@ -289,12 +289,16 @@ control signals s[k]. Sometimes we are interested in also monitoring the
 internal analog states of analog system during simulation.
 
 To this end we use the :func:`cbadc.simulator.StateSpaceSimulator.state_vector`
-and an :func:`cbadc.simulator.extended_simulation_result`
+and an :func:`cbadc.simulator.extended_simulation_result`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 117-142
+.. note:: The convenience function extended_simulation_result that will be
+   derived next is one of many such convenience functions found in the
+   :py:`cbadc.simulator` module.
+
+.. GENERATED FROM PYTHON SOURCE LINES 121-143
 
 .. code-block:: default
-   :lineno-start: 118
+   :lineno-start: 122
 
 
     # We can achieve this by appending yet another generator to the control signal
@@ -317,9 +321,6 @@ and an :func:`cbadc.simulator.extended_simulation_result`
             break
         print(f"step:{index} -> s:{res['control_signal']}, x:{res['analog_state']}")
         index += 1
-
-    # The convenience function extended_simulation_result and more
-    # like it can be found in the cbadc.simulator module.
 
 
 
@@ -345,7 +346,7 @@ and an :func:`cbadc.simulator.extended_simulation_result`
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 143-154
+.. GENERATED FROM PYTHON SOURCE LINES 144-155
 
 Saving to File
 --------------------------------
@@ -359,10 +360,10 @@ For this purpose use the
 :func:`cbadc.utilities.control_signal_2_byte_stream` and 
 :func:`cbadc.utilities.write_byte_stream_to_file` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 154-174
+.. GENERATED FROM PYTHON SOURCE LINES 155-175
 
 .. code-block:: default
-   :lineno-start: 154
+   :lineno-start: 155
 
     from cbadc.utilities import control_signal_2_byte_stream
     from cbadc.utilities import write_byte_stream_to_file
@@ -386,29 +387,20 @@ For this purpose use the
 
 
 
-
-
 .. rst-class:: sphx-glr-script-out
 
- Out:
+.. code-block:: pytb
 
- .. code-block:: none
-
-    30 -> b'\x13'
-    31 -> b'\x13'
-    32 -> b'\x13'
-    33 -> b'\x13'
-    34 -> b'\x13'
-    35 -> b'\x13'
-    36 -> b'\x13'
-    37 -> b'\x13'
-    38 -> b'\x13'
-    39 -> b'\x13'
+    Traceback (most recent call last):
+      File "/nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_b_simulate_a_control_bounded_adc.py", line 155, in <module>
+        from cbadc.utilities import control_signal_2_byte_stream
+      File "src/cbadc/utilities.pyx", line 1, in init cbadc.utilities
+    ValueError: numpy.ndarray size changed, may indicate binary incompatibility. Expected 88 from C header, got 80 from PyObject
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 175-186
+.. GENERATED FROM PYTHON SOURCE LINES 176-187
 
 Evaluating the Analog State Vector in Between Control Signal Samples
 --------------------------------------------------------------------
@@ -422,10 +414,10 @@ unit of time. However, digital control is still restricted to only update
 the control signals at multiples of :math:`T`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 186-241
+.. GENERATED FROM PYTHON SOURCE LINES 187-242
 
 .. code-block:: default
-   :lineno-start: 186
+   :lineno-start: 187
 
     from cbadc.simulator import extended_simulation_result
     import matplotlib.pyplot as plt
@@ -483,28 +475,7 @@ the control signals at multiples of :math:`T`.
     fig.tight_layout()
 
 
-
-
-.. rst-class:: sphx-glr-horizontal
-
-
-    *
-
-      .. image:: /auto_examples/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_001.png
-          :alt: Analog state vectors
-          :class: sphx-glr-multi-img
-
-    *
-
-      .. image:: /auto_examples/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_002.png
-          :alt: Analog state and control contribution evolution
-          :class: sphx-glr-multi-img
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 242-249
+.. GENERATED FROM PYTHON SOURCE LINES 243-250
 
 Analog State Statistics
 ------------------------------------------------------------------
@@ -514,10 +485,10 @@ problems and possible errors. Another way of making sure that the analog states
 remain bounded is to estimate their correspoding densities 
 (assuming i.i.d samples).
 
-.. GENERATED FROM PYTHON SOURCE LINES 249-269
+.. GENERATED FROM PYTHON SOURCE LINES 250-270
 
 .. code-block:: default
-   :lineno-start: 250
+   :lineno-start: 251
 
 
     # Compute L_2 norm of analog state vector.
@@ -541,19 +512,9 @@ remain bounded is to estimate their correspoding densities
     fig.tight_layout()
 
 
-
-.. image:: /auto_examples/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_003.png
-    :alt: Estimated probability densities
-    :class: sphx-glr-single-img
-
-
-
-
-
-
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 8 minutes  50.932 seconds)
+   **Total running time of the script:** ( 0 minutes  1.536 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:
