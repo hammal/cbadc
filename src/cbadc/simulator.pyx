@@ -164,7 +164,7 @@ cdef class StateSpaceSimulator(object):
         >>> _ = simulator.__next__()
         >>> _ = simulator.__next__()
         >>> print(np.array(simulator.state_vector()))
-        [-0.00622858 -0.00626943]
+        [-0.00623036 -0.00626945]
 
         Returns
         -------

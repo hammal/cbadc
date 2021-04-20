@@ -1,4 +1,4 @@
-from tests.test_analog_system.chain_of_integrators import chain_of_integrators
+from tests.fixture.chain_of_integrators import chain_of_integrators
 import numpy as np
 import os
 import sys

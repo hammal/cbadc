@@ -635,13 +635,6 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__cbadc__digital_estimator
 #define __PYX_HAVE_API__cbadc__digital_estimator
 /* Early includes */
-#include <stdint.h>
-#include "parallel_digital_estimator_filter.cpp"
-#include "ios"
-#include "new"
-#include "stdexcept"
-#include "typeinfo"
-#include "parallel_digital_estimator_filter.h"
 #include <string.h>
 #include <stdio.h>
 #include "numpy/arrayobject.h"
@@ -892,7 +885,6 @@ static const char *__pyx_f[] = {
   "src/cbadc/analog_system.pxd",
   "src/cbadc/linear_filter.pxd",
   "src/cbadc/filter_mid_point.pxd",
-  "src/cbadc/parallel_filter.pxd",
   ".tox/.package/lib/python3.8/site-packages/Cython/Includes/cpython/type.pxd",
 };
 /* MemviewSliceStruct.proto */
@@ -1222,7 +1214,6 @@ struct __pyx_obj_5cbadc_15digital_control_DigitalControl;
 struct __pyx_obj_5cbadc_13analog_system_AnalogSystem;
 struct __pyx_obj_5cbadc_13linear_filter_LinearFilter;
 struct __pyx_obj_5cbadc_16filter_mid_point_MidPointFilter;
-struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter;
 struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__;
 struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_1___init__;
 struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__;
@@ -1365,40 +1356,6 @@ struct __pyx_obj_5cbadc_16filter_mid_point_MidPointFilter {
   int _N;
   int _M;
   int _L;
-};
-
-
-/* "cbadc/parallel_filter.pxd":5
- * from cbadc.parallel_digital_estimator cimport ParallelDigitalEstimator
- * 
- * cdef class ParallelFilter:             # <<<<<<<<<<<<<<
- *     cdef double [:,:] _Af
- *     cdef double [:,:] _Ab
- */
-struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter {
-  PyObject_HEAD
-  struct __pyx_vtabstruct_5cbadc_15parallel_filter_ParallelFilter *__pyx_vtab;
-  __Pyx_memviewslice _Af;
-  __Pyx_memviewslice _Ab;
-  __Pyx_memviewslice _Bf;
-  __Pyx_memviewslice _Bb;
-  __Pyx_memviewslice _WT;
-  __Pyx_memviewslice _estimates;
-  double _Ts;
-  __Pyx_memviewslice forward_a;
-  __Pyx_memviewslice backward_a;
-  __Pyx_memviewslice forward_b;
-  __Pyx_memviewslice backward_b;
-  __Pyx_memviewslice forward_w;
-  __Pyx_memviewslice backward_w;
-  int _K1;
-  int _K2;
-  int _K3;
-  int _control_signal_in_buffer;
-  int _N;
-  int _M;
-  int _L;
-  CBC::ParallelDigitalEstimator *_filter;
 };
 
 
@@ -1599,24 +1556,6 @@ struct __pyx_vtabstruct_5cbadc_16filter_mid_point_MidPointFilter {
   void (*compute_filter_coefficients)(struct __pyx_obj_5cbadc_16filter_mid_point_MidPointFilter *, struct __pyx_obj_5cbadc_13analog_system_AnalogSystem *, struct __pyx_obj_5cbadc_15digital_control_DigitalControl *, double);
 };
 static struct __pyx_vtabstruct_5cbadc_16filter_mid_point_MidPointFilter *__pyx_vtabptr_5cbadc_16filter_mid_point_MidPointFilter;
-
-
-/* "cbadc/parallel_filter.pxd":5
- * from cbadc.parallel_digital_estimator cimport ParallelDigitalEstimator
- * 
- * cdef class ParallelFilter:             # <<<<<<<<<<<<<<
- *     cdef double [:,:] _Af
- *     cdef double [:,:] _Ab
- */
-
-struct __pyx_vtabstruct_5cbadc_15parallel_filter_ParallelFilter {
-  void (*compute_batch)(struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter *, int __pyx_skip_dispatch);
-  int (*batch_size)(struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter *, int __pyx_skip_dispatch);
-  int (*lookahead)(struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter *, int __pyx_skip_dispatch);
-  int (*size)(struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter *, int __pyx_skip_dispatch);
-  void (*compute_filter_coefficients)(struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter *, struct __pyx_obj_5cbadc_13analog_system_AnalogSystem *, struct __pyx_obj_5cbadc_15digital_control_DigitalControl *, double);
-};
-static struct __pyx_vtabstruct_5cbadc_15parallel_filter_ParallelFilter *__pyx_vtabptr_5cbadc_15parallel_filter_ParallelFilter;
 
 
 /* "View.MemoryView":105
@@ -2630,13 +2569,6 @@ static PyTypeObject *__pyx_ptype_5cbadc_13linear_filter_LinearFilter = 0;
 /* Module declarations from 'cbadc.filter_mid_point' */
 static PyTypeObject *__pyx_ptype_5cbadc_16filter_mid_point_MidPointFilter = 0;
 
-/* Module declarations from 'libc.stdint' */
-
-/* Module declarations from 'cbadc.parallel_digital_estimator' */
-
-/* Module declarations from 'cbadc.parallel_filter' */
-static PyTypeObject *__pyx_ptype_5cbadc_15parallel_filter_ParallelFilter = 0;
-
 /* Module declarations from 'cpython.buffer' */
 
 /* Module declarations from 'libc.string' */
@@ -2882,7 +2814,6 @@ static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_itemsize[] = "itemsize";
 static const char __pyx_k_lookback[] = "lookback";
 static const char __pyx_k_max_step[] = "max_step";
-static const char __pyx_k_parallel[] = "parallel";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
 static const char __pyx_k_qualname[] = "__qualname__";
 static const char __pyx_k_setstate[] = "__setstate__";
@@ -3217,7 +3148,6 @@ static PyObject *__pyx_n_s_obj;
 static PyObject *__pyx_n_s_omega;
 static PyObject *__pyx_n_s_output;
 static PyObject *__pyx_n_s_pack;
-static PyObject *__pyx_n_u_parallel;
 static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_print;
@@ -3283,22 +3213,21 @@ static PyObject *__pyx_n_s_zeros;
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_8__init___not_implemented(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_lambda_funcdef_lambda2(PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_control_signal_sequence, PyObject *__pyx_v_analog_system, PyObject *__pyx_v_digital_control, PyObject *__pyx_v_eta2, PyObject *__pyx_v_K1, PyObject *__pyx_v_K2, PyObject *__pyx_v_stop_after_number_of_iterations, PyObject *__pyx_v_estimator_type, PyObject *__pyx_v_Ts); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_transfer_function(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, __Pyx_memviewslice __pyx_v_omega); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_transfer_function(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, __Pyx_memviewslice __pyx_v_omega); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_6__iter__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_8__next__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_10__str__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_lambda_funcdef_lambda2(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda3(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_control_signal_sequence, PyObject *__pyx_v_analog_system, PyObject *__pyx_v_digital_control, double __pyx_v_eta2, int __pyx_v_K2, PyObject *__pyx_v_stop_after_number_of_iterations, PyObject *__pyx_v_Ts); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter_2__next__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter_4lookahead(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda5(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda6(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_lambda_funcdef_lambda7(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_lambda_funcdef_lambda8(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_control_signal_sequence, PyObject *__pyx_v_analog_system, PyObject *__pyx_v_digital_control, double __pyx_v_eta2, int __pyx_v_K1, int __pyx_v_K2, PyObject *__pyx_v_stop_after_number_of_iterations, PyObject *__pyx_v_Ts, PyObject *__pyx_v_mid_point, PyObject *__pyx_v_down_sample); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter_2__next__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter_4lookback(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
@@ -3615,7 +3544,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_1__init_
 }
 
 /* "cbadc/digital_estimator.pyx":112
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise NotImplementedError(f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}")
@@ -3702,7 +3631,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_8__init_
   __PYX_ERR(0, 113, __pyx_L1_error)
 
   /* "cbadc/digital_estimator.pyx":112
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise NotImplementedError(f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}")
@@ -3726,7 +3655,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_8__init_
  *         estimation_filter_implementations = {
  *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),             # <<<<<<<<<<<<<<
  *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  */
 
 /* Python wrapper */
@@ -3810,7 +3739,7 @@ static PyObject *__pyx_lambda_funcdef_lambda(PyObject *__pyx_self) {
  *         estimation_filter_implementations = {
  *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
  *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),             # <<<<<<<<<<<<<<
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  *         }
  */
 
@@ -3884,91 +3813,6 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self) {
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("cbadc.digital_estimator.DigitalEstimator.__init__.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "cbadc/digital_estimator.pyx":110
- *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
- *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)             # <<<<<<<<<<<<<<
- *         }
- *         def not_implemented():
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_8__init___4lambda2(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_16DigitalEstimator_8__init___4lambda2 = {"lambda2", (PyCFunction)__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_8__init___4lambda2, METH_NOARGS, 0};
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_16DigitalEstimator_8__init___4lambda2(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda2 (wrapper)", 0);
-  __pyx_r = __pyx_lambda_funcdef_lambda2(__pyx_self);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_lambda_funcdef_lambda2(PyObject *__pyx_self) {
-  struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__ *__pyx_cur_scope;
-  struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__ *__pyx_outer_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda2", 0);
-  __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct____init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
-  __pyx_cur_scope = __pyx_outer_scope;
-  __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_analog_system)) { __Pyx_RaiseClosureNameError("analog_system"); __PYX_ERR(0, 110, __pyx_L1_error) }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_digital_control)) { __Pyx_RaiseClosureNameError("digital_control"); __PYX_ERR(0, 110, __pyx_L1_error) }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_eta2)) { __Pyx_RaiseClosureNameError("eta2"); __PYX_ERR(0, 110, __pyx_L1_error) }
-  if (unlikely(!__pyx_cur_scope->__pyx_v_K1)) { __Pyx_RaiseClosureNameError("K1"); __PYX_ERR(0, 110, __pyx_L1_error) }
-  __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_analog_system);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_analog_system);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_analog_system);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_digital_control);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_digital_control);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_digital_control);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_eta2);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_eta2);
-  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_cur_scope->__pyx_v_eta2);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_K1);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_K1);
-  PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_cur_scope->__pyx_v_K1);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_K2)) { __Pyx_RaiseClosureNameError("K2"); __PYX_ERR(0, 110, __pyx_L1_error) }
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_K2, __pyx_cur_scope->__pyx_v_K2) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 110, __pyx_L1_error) }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_Ts); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_Ts, __pyx_t_3) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5cbadc_15parallel_filter_ParallelFilter), __pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_3;
-  __pyx_t_3 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("cbadc.digital_estimator.DigitalEstimator.__init__.lambda2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4215,9 +4059,9 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
  *         estimation_filter_implementations = {
  *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),             # <<<<<<<<<<<<<<
  *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_16DigitalEstimator_8__init___2lambda, 0, __pyx_n_s_DigitalEstimator___init___locals, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -4228,31 +4072,19 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator___init__
  *         estimation_filter_implementations = {
  *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
  *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),             # <<<<<<<<<<<<<<
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  *         }
  */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_16DigitalEstimator_8__init___3lambda1, 0, __pyx_n_s_DigitalEstimator___init___locals, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_mid_point, __pyx_t_3) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "cbadc/digital_estimator.pyx":110
- *             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
- *             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)             # <<<<<<<<<<<<<<
- *         }
- *         def not_implemented():
- */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_16DigitalEstimator_8__init___4lambda2, 0, __pyx_n_s_DigitalEstimator___init___locals, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_parallel, __pyx_t_3) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_estimation_filter_implementations = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
   /* "cbadc/digital_estimator.pyx":112
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise NotImplementedError(f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}")
@@ -6666,9 +6498,9 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_1__init__(PyObje
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda3(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda3 = {"lambda3", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda3, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda3(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda2(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda2 = {"lambda2", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda2, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda2(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -6676,7 +6508,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda3 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("lambda2 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_t,&__pyx_n_s_x,0};
     PyObject* values[2] = {0,0};
@@ -6700,11 +6532,11 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda3", 1, 2, 2, 1); __PYX_ERR(0, 340, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda2", 1, 2, 2, 1); __PYX_ERR(0, 340, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda3") < 0)) __PYX_ERR(0, 340, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda2") < 0)) __PYX_ERR(0, 340, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6717,20 +6549,20 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda3", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 340, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda2", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 340, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda3", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_lambda_funcdef_lambda3(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_lambda_funcdef_lambda2(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda3(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+static PyObject *__pyx_lambda_funcdef_lambda2(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_1___init__ *__pyx_cur_scope;
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_1___init__ *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
@@ -6746,7 +6578,7 @@ static PyObject *__pyx_lambda_funcdef_lambda3(PyObject *__pyx_self, PyObject *__
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda3", 0);
+  __Pyx_RefNannySetupContext("lambda2", 0);
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_1___init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
@@ -6920,7 +6752,7 @@ static PyObject *__pyx_lambda_funcdef_lambda3(PyObject *__pyx_self, PyObject *__
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda3", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda2", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6937,9 +6769,9 @@ static PyObject *__pyx_lambda_funcdef_lambda3(PyObject *__pyx_self, PyObject *__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda4(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda4 = {"lambda4", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda4, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda4(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda3(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda3 = {"lambda3", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda3, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda3(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -6947,7 +6779,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambd
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda4 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("lambda3 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_t,&__pyx_n_s_x,0};
     PyObject* values[2] = {0,0};
@@ -6971,11 +6803,11 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambd
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda4", 1, 2, 2, 1); __PYX_ERR(0, 342, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda3", 1, 2, 2, 1); __PYX_ERR(0, 342, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda4") < 0)) __PYX_ERR(0, 342, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda3") < 0)) __PYX_ERR(0, 342, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6988,20 +6820,20 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambd
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda4", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 342, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda3", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 342, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda3", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_lambda_funcdef_lambda4(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_lambda_funcdef_lambda3(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+static PyObject *__pyx_lambda_funcdef_lambda3(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_1___init__ *__pyx_cur_scope;
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_1___init__ *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
@@ -7017,7 +6849,7 @@ static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda4", 0);
+  __Pyx_RefNannySetupContext("lambda3", 0);
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_1___init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
@@ -7194,7 +7026,7 @@ static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.IIRFilter.__init__.lambda3", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -8455,7 +8287,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter___init__(CYTHON_
  *             solBf = solve_ivp(derivative, (0, self.Ts), np.zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             derivative = lambda t, x: - np.dot(tempAb, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
  */
-    __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda3, 0, __pyx_n_s_IIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 340, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___lambda2, 0, __pyx_n_s_IIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 340, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_derivative, __pyx_t_3);
     __pyx_t_3 = 0;
@@ -8545,7 +8377,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter___init__(CYTHON_
  *             solBb = -solve_ivp(derivative, (0, self.Ts), np.zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *             for n in range (self._N):
  */
-    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda4, 0, __pyx_n_s_IIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 342, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_8__init___1lambda3, 0, __pyx_n_s_IIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 342, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF_SET(__pyx_v_derivative, __pyx_t_8);
     __pyx_t_8 = 0;
@@ -10167,9 +9999,9 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_1__init__(PyObje
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda5(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda5 = {"lambda5", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda5, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda5(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda4(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda4 = {"lambda4", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda4, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda4(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -10177,7 +10009,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda5 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("lambda4 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_t,&__pyx_n_s_x,0};
     PyObject* values[2] = {0,0};
@@ -10201,11 +10033,11 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda5", 1, 2, 2, 1); __PYX_ERR(0, 526, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda4", 1, 2, 2, 1); __PYX_ERR(0, 526, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda5") < 0)) __PYX_ERR(0, 526, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda4") < 0)) __PYX_ERR(0, 526, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -10218,20 +10050,20 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda5", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 526, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda4", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 526, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_lambda_funcdef_lambda5(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_lambda_funcdef_lambda4(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda5(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_cur_scope;
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
@@ -10247,7 +10079,7 @@ static PyObject *__pyx_lambda_funcdef_lambda5(PyObject *__pyx_self, PyObject *__
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda5", 0);
+  __Pyx_RefNannySetupContext("lambda4", 0);
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
@@ -10421,7 +10253,7 @@ static PyObject *__pyx_lambda_funcdef_lambda5(PyObject *__pyx_self, PyObject *__
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -10438,9 +10270,9 @@ static PyObject *__pyx_lambda_funcdef_lambda5(PyObject *__pyx_self, PyObject *__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda6(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda6 = {"lambda6", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda6, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda6(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda5(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda5 = {"lambda5", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda5, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda5(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -10448,7 +10280,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambd
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda6 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("lambda5 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_t,&__pyx_n_s_x,0};
     PyObject* values[2] = {0,0};
@@ -10472,11 +10304,11 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambd
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda6", 1, 2, 2, 1); __PYX_ERR(0, 528, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda5", 1, 2, 2, 1); __PYX_ERR(0, 528, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda6") < 0)) __PYX_ERR(0, 528, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda5") < 0)) __PYX_ERR(0, 528, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -10489,20 +10321,20 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambd
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda6", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 528, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda5", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 528, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_lambda_funcdef_lambda6(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_lambda_funcdef_lambda5(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda6(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+static PyObject *__pyx_lambda_funcdef_lambda5(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_cur_scope;
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
@@ -10518,7 +10350,7 @@ static PyObject *__pyx_lambda_funcdef_lambda6(PyObject *__pyx_self, PyObject *__
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda6", 0);
+  __Pyx_RefNannySetupContext("lambda5", 0);
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
@@ -10695,7 +10527,7 @@ static PyObject *__pyx_lambda_funcdef_lambda6(PyObject *__pyx_self, PyObject *__
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -10712,9 +10544,9 @@ static PyObject *__pyx_lambda_funcdef_lambda6(PyObject *__pyx_self, PyObject *__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda7(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda7 = {"lambda7", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda7, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda7(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda6(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda6 = {"lambda6", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda6, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda6(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -10722,7 +10554,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambd
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda7 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("lambda6 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_t,&__pyx_n_s_x,0};
     PyObject* values[2] = {0,0};
@@ -10746,11 +10578,11 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambd
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda7", 1, 2, 2, 1); __PYX_ERR(0, 538, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda6", 1, 2, 2, 1); __PYX_ERR(0, 538, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda7") < 0)) __PYX_ERR(0, 538, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda6") < 0)) __PYX_ERR(0, 538, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -10763,20 +10595,20 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambd
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda7", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 538, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda6", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 538, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda7", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_lambda_funcdef_lambda7(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_lambda_funcdef_lambda6(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda7(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+static PyObject *__pyx_lambda_funcdef_lambda6(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_cur_scope;
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
@@ -10792,7 +10624,7 @@ static PyObject *__pyx_lambda_funcdef_lambda7(PyObject *__pyx_self, PyObject *__
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda7", 0);
+  __Pyx_RefNannySetupContext("lambda6", 0);
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
@@ -10966,7 +10798,7 @@ static PyObject *__pyx_lambda_funcdef_lambda7(PyObject *__pyx_self, PyObject *__
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda7", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -10983,9 +10815,9 @@ static PyObject *__pyx_lambda_funcdef_lambda7(PyObject *__pyx_self, PyObject *__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda8(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda8 = {"lambda8", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda8, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda8(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda7(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda7 = {"lambda7", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda7, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda7(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_t = 0;
   PyObject *__pyx_v_x = 0;
   int __pyx_lineno = 0;
@@ -10993,7 +10825,7 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambd
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda8 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("lambda7 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_t,&__pyx_n_s_x,0};
     PyObject* values[2] = {0,0};
@@ -11017,11 +10849,11 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambd
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda8", 1, 2, 2, 1); __PYX_ERR(0, 540, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda7", 1, 2, 2, 1); __PYX_ERR(0, 540, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda8") < 0)) __PYX_ERR(0, 540, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda7") < 0)) __PYX_ERR(0, 540, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -11034,20 +10866,20 @@ static PyObject *__pyx_pw_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambd
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda8", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 540, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda7", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 540, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda8", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda7", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_lambda_funcdef_lambda8(__pyx_self, __pyx_v_t, __pyx_v_x);
+  __pyx_r = __pyx_lambda_funcdef_lambda7(__pyx_self, __pyx_v_t, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda8(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
+static PyObject *__pyx_lambda_funcdef_lambda7(PyObject *__pyx_self, PyObject *__pyx_v_t, PyObject *__pyx_v_x) {
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_cur_scope;
   struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *__pyx_outer_scope;
   PyObject *__pyx_r = NULL;
@@ -11063,7 +10895,7 @@ static PyObject *__pyx_lambda_funcdef_lambda8(PyObject *__pyx_self, PyObject *__
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda8", 0);
+  __Pyx_RefNannySetupContext("lambda7", 0);
   __pyx_outer_scope = (struct __pyx_obj_5cbadc_17digital_estimator___pyx_scope_struct_2___init__ *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
@@ -11240,7 +11072,7 @@ static PyObject *__pyx_lambda_funcdef_lambda8(PyObject *__pyx_self, PyObject *__
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda8", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("cbadc.digital_estimator.FIRFilter.__init__.lambda7", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -12590,7 +12422,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter___init__(CYTHON_
  *                 solBf = solve_ivp(derivative, (0, self.Ts/2.0), np.zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *                 derivative = lambda t, x: - np.dot(tempAb, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
  */
-      __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda5, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 526, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___lambda4, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 526, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_XDECREF_SET(__pyx_v_derivative, __pyx_t_3);
       __pyx_t_3 = 0;
@@ -12683,7 +12515,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter___init__(CYTHON_
  *                 solBb = -solve_ivp(derivative, (0, self.Ts/2.0), np.zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *                 for n in range (self._N):
  */
-      __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda6, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 528, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___1lambda5, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 528, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF_SET(__pyx_v_derivative, __pyx_t_5);
       __pyx_t_5 = 0;
@@ -13194,7 +13026,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter___init__(CYTHON_
  *                 solBf = solve_ivp(derivative, (0, self.Ts), np.zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *                 derivative = lambda t, x: - np.dot(tempAb, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
  */
-      __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda7, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 538, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___2lambda6, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 538, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_derivative, __pyx_t_2);
       __pyx_t_2 = 0;
@@ -13284,7 +13116,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter___init__(CYTHON_
  *                 solBb = -solve_ivp(derivative, (0, self.Ts), np.zeros(self._N), atol=atol, rtol=rtol, max_step=max_step).y[:,-1]
  *                 for n in range (self._N):
  */
-      __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda8, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 540, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_8__init___3lambda7, 0, __pyx_n_s_FIRFilter___init___locals_lambda, ((PyObject*)__pyx_cur_scope), __pyx_n_s_cbadc_digital_estimator, __pyx_d, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 540, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF_SET(__pyx_v_derivative, __pyx_t_4);
       __pyx_t_4 = 0;
@@ -30447,7 +30279,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_omega, __pyx_k_omega, sizeof(__pyx_k_omega), 0, 0, 1, 1},
   {&__pyx_n_s_output, __pyx_k_output, sizeof(__pyx_k_output), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
-  {&__pyx_n_u_parallel, __pyx_k_parallel, sizeof(__pyx_k_parallel), 0, 1, 0, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
@@ -30535,7 +30366,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
   /* "cbadc/digital_estimator.pyx":112
- *             'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+ *             # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
  *         }
  *         def not_implemented():             # <<<<<<<<<<<<<<
  *             raise NotImplementedError(f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}")
@@ -31212,13 +31043,7 @@ static int __Pyx_modinit_type_import_code(void) {
    if (!__pyx_ptype_5cbadc_16filter_mid_point_MidPointFilter) __PYX_ERR(6, 3, __pyx_L1_error)
   __pyx_vtabptr_5cbadc_16filter_mid_point_MidPointFilter = (struct __pyx_vtabstruct_5cbadc_16filter_mid_point_MidPointFilter*)__Pyx_GetVtable(__pyx_ptype_5cbadc_16filter_mid_point_MidPointFilter->tp_dict); if (unlikely(!__pyx_vtabptr_5cbadc_16filter_mid_point_MidPointFilter)) __PYX_ERR(6, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule("cbadc.parallel_filter"); if (unlikely(!__pyx_t_1)) __PYX_ERR(7, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_ptype_5cbadc_15parallel_filter_ParallelFilter = __Pyx_ImportType(__pyx_t_1, "cbadc.parallel_filter", "ParallelFilter", sizeof(struct __pyx_obj_5cbadc_15parallel_filter_ParallelFilter), __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_5cbadc_15parallel_filter_ParallelFilter) __PYX_ERR(7, 5, __pyx_L1_error)
-  __pyx_vtabptr_5cbadc_15parallel_filter_ParallelFilter = (struct __pyx_vtabstruct_5cbadc_15parallel_filter_ParallelFilter*)__Pyx_GetVtable(__pyx_ptype_5cbadc_15parallel_filter_ParallelFilter->tp_dict); if (unlikely(!__pyx_vtabptr_5cbadc_15parallel_filter_ParallelFilter)) __PYX_ERR(7, 5, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyImport_ImportModule(__Pyx_BUILTIN_MODULE_NAME); if (unlikely(!__pyx_t_1)) __PYX_ERR(8, 9, __pyx_L1_error)
+  __pyx_t_1 = PyImport_ImportModule(__Pyx_BUILTIN_MODULE_NAME); if (unlikely(!__pyx_t_1)) __PYX_ERR(7, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__pyx_t_1, __Pyx_BUILTIN_MODULE_NAME, "type", 
   #if defined(PYPY_VERSION_NUM) && PYPY_VERSION_NUM < 0x050B0000
@@ -31227,7 +31052,7 @@ static int __Pyx_modinit_type_import_code(void) {
   sizeof(PyHeapTypeObject),
   #endif
   __Pyx_ImportType_CheckSize_Warn);
-   if (!__pyx_ptype_7cpython_4type_type) __PYX_ERR(8, 9, __pyx_L1_error)
+   if (!__pyx_ptype_7cpython_4type_type) __PYX_ERR(7, 9, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("numpy"); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -31494,7 +31319,7 @@ if (!__Pyx_RefNanny) {
 
   /* "cbadc/digital_estimator.pyx":12
  * from cbadc.filter_mid_point cimport MidPointFilter
- * from cbadc.parallel_filter cimport ParallelFilter
+ * # from cbadc.parallel_filter cimport ParallelFilter
  * from cbadc.offline_computations import care             # <<<<<<<<<<<<<<
  * from scipy.linalg import expm, solve
  * from scipy.integrate import solve_ivp
@@ -31514,7 +31339,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "cbadc/digital_estimator.pyx":13
- * from cbadc.parallel_filter cimport ParallelFilter
+ * # from cbadc.parallel_filter cimport ParallelFilter
  * from cbadc.offline_computations import care
  * from scipy.linalg import expm, solve             # <<<<<<<<<<<<<<
  * from scipy.integrate import solve_ivp

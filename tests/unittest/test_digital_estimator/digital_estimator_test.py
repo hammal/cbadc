@@ -1,10 +1,11 @@
 from cbadc.simulator import StateSpaceSimulator
 from cbadc.digital_estimator import DigitalEstimator
-from cbadc.analog_signal import ConstantSignal, Sinusodial
+from cbadc.analog_signal import ConstantSignal
 from cbadc.analog_system import AnalogSystem
 from cbadc.digital_control import DigitalControl
 import numpy as np
-from tests.test_analog_system.chain_of_integrators import chain_of_integrators
+from tests.fixture.chain_of_integrators import chain_of_integrators
+
 beta = 6250.0
 rho = -62.5
 N = 5
@@ -42,7 +43,8 @@ def test_estimation():
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
     estimator = DigitalEstimator(
-        controlSequence(), analogSystem, digitalControl, eta2, K1, K2, stop_after_number_of_iterations=25)
+        controlSequence(), analogSystem, digitalControl, eta2, K1, K2,
+        stop_after_number_of_iterations=25)
     for est in estimator:
         print(np.array(est))
 
@@ -55,7 +57,8 @@ def test_batch_iterations():
 
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     estimator = DigitalEstimator(controlSequence(
-    ), analogSystem, digitalControl, eta2, K1, K2=K2, stop_after_number_of_iterations=200)
+    ), analogSystem, digitalControl, eta2, K1, K2=K2,
+    stop_after_number_of_iterations=200)
     for est in estimator:
         print(np.array(est))
     # raise "temp"
