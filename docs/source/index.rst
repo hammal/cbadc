@@ -28,7 +28,7 @@ This documentation is structured in three parts.
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
 A/D conversion's main concepts and terminology, :doc:`auto_examples/index` provides 
 code examples that demonstrate common use cases, and :doc:`api/api` contains the 
-full package documentation.
+package documentation.
 
 Installation
 ============
@@ -42,6 +42,8 @@ Install  `cbadc <https://pypi.org/project/cbadc/>`_ by typing::
 ..    conda install cbadc
 
 into your console.
+
+.. note:: Currently cbadc is only supported for Python3.6 and later.
 
 Getting Started
 ===============

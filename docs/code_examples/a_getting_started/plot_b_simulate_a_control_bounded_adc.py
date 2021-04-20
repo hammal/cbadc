@@ -124,20 +124,23 @@ print(simulator)
 #
 # Note that the :func:`cbadc.simulator.extended_simulation_result` is
 # defined like this
+#
 # .. code-block:: python
-#   :linenos:
+#
 #   def extended_simulation_result(simulator):
-#   for control_signal in simulator:
-#       analog_state = simulator.state_vector()
-#       yield {
-#           'control_signal': np.array(control_signal),
-#           'analog_state': np.array(analog_state)
-#      }
-# This is a convenient design pattern for working with generators.
+#       for control_signal in simulator:
+#           analog_state = simulator.state_vector()
+#           yield {
+#               'control_signal': np.array(control_signal),
+#               'analog_state': np.array(analog_state)
+#           }
+#
+# So in essence we are creating a new generator from the old with an extended
+# output.
 #
 # .. note:: The convenience function extended_simulation_result that will be
 #    derived next is one of many such convenience functions found in the
-#    :py:`cbadc.simulator` module.
+#    :py:mod:`cbadc.simulator` module.
 
 # We can achieve this by appending yet another generator to the control signal
 # stream as:
