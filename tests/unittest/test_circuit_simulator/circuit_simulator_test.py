@@ -1,9 +1,10 @@
 from cbadc.simulator import StateSpaceSimulator
-from cbadc.analog_signal import ConstantSignal, Sinusodial
+from cbadc.analog_signal import ConstantSignal
 from cbadc.analog_system import AnalogSystem
 from cbadc.digital_control import DigitalControl
 import numpy as np
-from tests.test_analog_system.chain_of_integrators import chain_of_integrators
+from tests.fixture.chain_of_integrators import chain_of_integrators
+
 beta = 6250.0
 rho = -62.5
 N = 5
@@ -29,7 +30,8 @@ def test_iterator(chain_of_integrators):
     analogSignals = [ConstantSignal(0.1)]
     digitalControl = DigitalControl(Ts, M)
     statespacesimulator = StateSpaceSimulator(
-        chain_of_integrators["system"], digitalControl, analogSignals, t_stop=Ts * 1000)
+        chain_of_integrators["system"], digitalControl, analogSignals,
+        t_stop=Ts * 1000)
     for control_signal in statespacesimulator:
         pass
 

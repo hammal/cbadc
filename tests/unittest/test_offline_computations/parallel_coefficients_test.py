@@ -1,20 +1,14 @@
 import numpy as np
 import scipy
 import scipy.linalg
-import sys
-import os
-
-# this is python madness
-myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + "/../")
-if myPath:
-    from cbadc.offline_computations import care
+from cbadc.offline_computations import care
 
 
 def test_diagonal_elements_of_parallel_version():
     """
-    This file was created to investigate the behavior of digitalization. especially
-    with respect to imaginary and real numbers of the resulting filter coefficients
+    This file was created to investigate the behavior of digitalization.
+    Especially with respect to imaginary and real numbers of the resulting
+    filter coefficients.
     """
     N = 2
     beta = 10.0
@@ -26,7 +20,7 @@ def test_diagonal_elements_of_parallel_version():
     B[0, 0] = beta
     Ts = 1e-3
 
-    CT = np.zeros((N,1))
+    CT = np.zeros((N, 1))
     CT[0, -1] = 1.0
     R = np.array([[eta2]])
 

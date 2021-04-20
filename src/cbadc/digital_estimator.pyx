@@ -8,7 +8,7 @@ digital estimator.
 
 from cbadc.linear_filter cimport LinearFilter
 from cbadc.filter_mid_point cimport MidPointFilter
-from cbadc.parallel_filter cimport ParallelFilter
+# from cbadc.parallel_filter cimport ParallelFilter
 from cbadc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
@@ -107,7 +107,7 @@ class DigitalEstimator:
         estimation_filter_implementations = {
             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
-            'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+            # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
         }
         def not_implemented():
             raise NotImplementedError(f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}")

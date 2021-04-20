@@ -1,17 +1,18 @@
-#cython: language_level=3
+# cython: language_level=3
 # distutils: language = c++
 """Parallel filter interface.
 """
+from cbadc.digital_control cimport DigitalControl
+from cbadc.analog_system cimport AnalogSystem
 from cbadc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
 import numpy as np
 cimport numpy as np
 
-
 cdef class ParallelFilter():
 
-    def __cinit__(self, AnalogSystem analog_system, DigitalControl digital_control, double eta2, int K1, double Ts, int K2 = 0):
+    def __init__(self, AnalogSystem analog_system, DigitalControl digital_control, double eta2, int K1, double Ts, int K2 = 0):
         """Initializes filter object by computing filter coefficents and allocation buffer memory.
 
         Args:
