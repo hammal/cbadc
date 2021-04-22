@@ -5,14 +5,14 @@ Examples using ``cbadc.analog_signal.Sinusodial.evaluate``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the effect of a symmetric versus non symmetric FIR filter.">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
 
 .. only:: html
 
- .. figure:: /auto_examples/c_scratch_pad/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
-     :alt: The Mid Point Setting
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+     :alt: Compare Estimators
 
-     :ref:`sphx_glr_auto_examples_c_scratch_pad_plot_a_mid_point.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
 
 .. raw:: html
 
@@ -20,4 +20,23 @@ Examples using ``cbadc.analog_signal.Sinusodial.evaluate``
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_c_scratch_pad_plot_a_mid_point.py`
+ * :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the effect of a symmetric versus non symmetric FIR filter.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
+     :alt: The Mid Point Setting
+
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`

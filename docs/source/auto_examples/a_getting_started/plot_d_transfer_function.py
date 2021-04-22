@@ -64,14 +64,14 @@ print(analog_system)
 #
 # :math:`\mathbf{G}(\omega) = \begin{pmatrix}G_1(\omega), \dots, G_N(\omega)\end{pmatrix}^\mathsf{T} = \mathbf{C}^\mathsf{T} \left(i \omega \mathbf{I}_N - \mathbf{A}\right)^{-1}\mathbf{B}`
 #
-# using the class method :func:`cbadc.analog_system.AnalogSystem.transfer_function`.
+# using the class method :func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
 
 # Logspace frequencies
 frequencies = np.logspace(-3, 0, 500)
 omega = 4 * np.pi * beta * frequencies
 
 # Compute transfer functions for each frequency in frequencies
-transfer_function = analog_system.transfer_function(omega)
+transfer_function = analog_system.transfer_function_matrix(omega)
 transfer_function_dB = 20 * np.log10(np.abs(transfer_function))
 
 # For each output 1,...,N compute the corresponding tranfer function seen
@@ -139,7 +139,7 @@ def control_sequence():
 
 # Compute eta2 for a given bandwidth.
 omega_3dB = (4 * np.pi * beta) / 100.
-eta2 = np.linalg.norm(analog_system.transfer_function(
+eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
     np.array([omega_3dB])).flatten()) ** 2
 
 # Instantiate estimator.

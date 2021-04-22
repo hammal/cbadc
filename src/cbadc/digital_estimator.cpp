@@ -2873,7 +2873,6 @@ static const char __pyx_k_estimate_pointer[] = "_estimate_pointer";
 static const char __pyx_k_estimator_type_2[] = ",\nestimator_type = ";
 static const char __pyx_k_impulse_response[] = "impulse_response";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
-static const char __pyx_k_transfer_function[] = "transfer_function";
 static const char __pyx_k_FIRFilter_lookback[] = "FIRFilter.lookback";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
@@ -2897,6 +2896,7 @@ static const char __pyx_k_noise_transfer_function[] = "noise_transfer_function";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
 static const char __pyx_k_and_number_of_iterations[] = ",\nand\nnumber_of_iterations = ";
 static const char __pyx_k_signal_transfer_function[] = "signal_transfer_function";
+static const char __pyx_k_transfer_function_matrix[] = "transfer_function_matrix";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
 static const char __pyx_k_eta2_must_be_non_negative[] = "eta2 must be non negative.";
 static const char __pyx_k_cbadc_offline_computations[] = "cbadc.offline_computations";
@@ -3201,7 +3201,7 @@ static PyObject *__pyx_n_s_temp2;
 static PyObject *__pyx_n_s_tempAb;
 static PyObject *__pyx_n_s_tempAf;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_n_s_transfer_function;
+static PyObject *__pyx_n_s_transfer_function_matrix;
 static PyObject *__pyx_n_s_transpose;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
@@ -4368,7 +4368,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
  *         """
  *         result = np.zeros((self.analog_system.L, self.analog_system.N, omega.size))             # <<<<<<<<<<<<<<
  *         for index, o in enumerate(omega):
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -4424,7 +4424,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
  *         """
  *         result = np.zeros((self.analog_system.L, self.analog_system.N, omega.size))
  *         for index, o in enumerate(omega):             # <<<<<<<<<<<<<<
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N, self.analog_system.L))
  */
   __Pyx_INCREF(__pyx_int_0);
@@ -4484,13 +4484,13 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
     /* "cbadc/digital_estimator.pyx":148
  *         result = np.zeros((self.analog_system.L, self.analog_system.N, omega.size))
  *         for index, o in enumerate(omega):
- *             G = self.analog_system.transfer_function(np.array([o]))             # <<<<<<<<<<<<<<
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))             # <<<<<<<<<<<<<<
  *             G = G.reshape((self.analog_system.N, self.analog_system.L))
  *             GH = G.transpose().conjugate()
  */
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_analog_system); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_transfer_function); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_transfer_function_matrix); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
@@ -4540,7 +4540,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
 
     /* "cbadc/digital_estimator.pyx":149
  *         for index, o in enumerate(omega):
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N, self.analog_system.L))             # <<<<<<<<<<<<<<
  *             GH = G.transpose().conjugate()
  *             GGH = np.dot(G, GH)
@@ -4585,7 +4585,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
     __pyx_t_3 = 0;
 
     /* "cbadc/digital_estimator.pyx":150
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N, self.analog_system.L))
  *             GH = G.transpose().conjugate()             # <<<<<<<<<<<<<<
  *             GGH = np.dot(G, GH)
@@ -4814,7 +4814,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_2noise_t
  *         """
  *         result = np.zeros((self.analog_system.L, self.analog_system.N, omega.size))
  *         for index, o in enumerate(omega):             # <<<<<<<<<<<<<<
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N, self.analog_system.L))
  */
   }
@@ -4976,7 +4976,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_
  *         """
  *         result = np.zeros((self.analog_system.L, omega.size))             # <<<<<<<<<<<<<<
  *         for index, o in enumerate(omega):
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -5024,7 +5024,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_
  *         """
  *         result = np.zeros((self.analog_system.L, omega.size))
  *         for index, o in enumerate(omega):             # <<<<<<<<<<<<<<
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
  */
   __Pyx_INCREF(__pyx_int_0);
@@ -5084,13 +5084,13 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_
     /* "cbadc/digital_estimator.pyx":178
  *         result = np.zeros((self.analog_system.L, omega.size))
  *         for index, o in enumerate(omega):
- *             G = self.analog_system.transfer_function(np.array([o]))             # <<<<<<<<<<<<<<
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))             # <<<<<<<<<<<<<<
  *             G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
  *             GH = G.transpose().conjugate()
  */
     __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_analog_system); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 178, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_transfer_function); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 178, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_transfer_function_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 178, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 178, __pyx_L1_error)
@@ -5140,7 +5140,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_
 
     /* "cbadc/digital_estimator.pyx":179
  *         for index, o in enumerate(omega):
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))             # <<<<<<<<<<<<<<
  *             GH = G.transpose().conjugate()
  *             GGH = np.dot(G, GH)
@@ -5185,7 +5185,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_
     __pyx_t_3 = 0;
 
     /* "cbadc/digital_estimator.pyx":180
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
  *             GH = G.transpose().conjugate()             # <<<<<<<<<<<<<<
  *             GGH = np.dot(G, GH)
@@ -5463,7 +5463,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_4signal_
  *         """
  *         result = np.zeros((self.analog_system.L, omega.size))
  *         for index, o in enumerate(omega):             # <<<<<<<<<<<<<<
- *             G = self.analog_system.transfer_function(np.array([o]))
+ *             G = self.analog_system.transfer_function_matrix(np.array([o]))
  *             G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
  */
   }
@@ -30332,7 +30332,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_tempAb, __pyx_k_tempAb, sizeof(__pyx_k_tempAb), 0, 0, 1, 1},
   {&__pyx_n_s_tempAf, __pyx_k_tempAf, sizeof(__pyx_k_tempAf), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_n_s_transfer_function, __pyx_k_transfer_function, sizeof(__pyx_k_transfer_function), 0, 0, 1, 1},
+  {&__pyx_n_s_transfer_function_matrix, __pyx_k_transfer_function_matrix, sizeof(__pyx_k_transfer_function_matrix), 0, 0, 1, 1},
   {&__pyx_n_s_transpose, __pyx_k_transpose, sizeof(__pyx_k_transpose), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
