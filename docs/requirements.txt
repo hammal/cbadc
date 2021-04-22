@@ -1,4 +1,3 @@
 sphinx_rtd_theme
 nbsphinx
 sphinx-gallery
-cbadc

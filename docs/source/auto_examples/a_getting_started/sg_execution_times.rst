@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**00:01.536** total execution time for **auto_examples_a_getting_started** files:
+**07:50.670** total execution time for **auto_examples_a_getting_started** files:
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py` (``plot_b_simulate_a_control_bounded_adc.py``) | 00:01.536 | 0.0 MB |
+| :ref:`sphx_glr_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py` (``plot_b_simulate_a_control_bounded_adc.py``) | 07:50.670 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py` (``plot_c_digital_estimator.py``)                           | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+

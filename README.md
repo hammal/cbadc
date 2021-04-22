@@ -1,4 +1,4 @@
-![cbadc](https://github.com/hammal/cbadc/actions/workflows/unit-test.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)
+![cbadc](https://github.com/hammal/cbadc/actions/workflows/testing.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)
 
 # Control-Bounded A/D Conversion (cbadc) Toolbox's Documentation
 
@@ -17,6 +17,8 @@ The projects official documentation can be found at [Read the Docs](https://cbad
 
 For a in depth description of the control-bounded conversion concept, check out [Control-Bounded Converters](https://doi.org/10.3929/ethz-b-000469192).
 
+# Building from Source Code
+...
 # Changelog
 
 ## 0.0.1

@@ -1,5 +1,5 @@
+**********************
 Tutorials and Examples
-======================
+**********************
 
-This page demonstrates code examples and common use cases
-of the cbadc package.
+Here we demonstrate common use cases for the cbadc package.

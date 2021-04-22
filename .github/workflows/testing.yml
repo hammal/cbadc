@@ -1,0 +1,25 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Testing and Benchmarking
+
+on: [push, pull_request]
+  
+jobs:
+  tox_test:
+    strategy:
+      matrix:
+        python-version: [ 'py36', 'py37', 'py38', 'py39']
+    runs-on: [self-hosted, ARM64]
+    steps:
+      - name: Checkout github repo
+        uses: actions/checkout@v2
+      
+      - name: Print hostname
+        run:
+          cat /etc/hostname;
+
+      - name: UnitTest
+        run: python3.8 -m tox -e ${{ matrix.python-version }}
+        env: 
+          CYTHON: True

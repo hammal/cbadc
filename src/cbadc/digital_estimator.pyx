@@ -8,7 +8,7 @@ digital estimator.
 
 from cbadc.linear_filter cimport LinearFilter
 from cbadc.filter_mid_point cimport MidPointFilter
-from cbadc.parallel_filter cimport ParallelFilter
+# from cbadc.parallel_filter cimport ParallelFilter
 from cbadc.offline_computations import care
 from scipy.linalg import expm, solve
 from scipy.integrate import solve_ivp
@@ -107,7 +107,7 @@ class DigitalEstimator:
         estimation_filter_implementations = {
             'quadratic': lambda : LinearFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
             'mid-point': lambda : MidPointFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts),
-            'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
+            # 'parallel': lambda : ParallelFilter(analog_system, digital_control, eta2, K1, K2 = K2, Ts = self.Ts)
         }
         def not_implemented():
             raise NotImplementedError(f"{estimator_type} is not a implemented estimator algorithm, currently choose from {estimation_filter_implementations.keys()}")
@@ -145,7 +145,7 @@ class DigitalEstimator:
         """
         result = np.zeros((self.analog_system.L, self.analog_system.N, omega.size))
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function(np.array([o]))
+            G = self.analog_system.transfer_function_matrix(np.array([o]))
             G = G.reshape((self.analog_system.N, self.analog_system.L))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
@@ -175,7 +175,7 @@ class DigitalEstimator:
         """
         result = np.zeros((self.analog_system.L, omega.size))
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function(np.array([o]))
+            G = self.analog_system.transfer_function_matrix(np.array([o]))
             G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
