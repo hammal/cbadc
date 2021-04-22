@@ -24,10 +24,15 @@ Simulating a Control-Bounded ADC
 This example shows how to simulate the interactions between an analog system
 and a digital control while the former is excited by an analog signal.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-17
+.. GENERATED FROM PYTHON SOURCE LINES 9-22
 
 The Analog System
 -----------------
+
+.. image:: /images/chainOfIntegratorsGeneral.svg
+   :width: 500
+   :align: center
+   :alt: The chain of integrators ADC.
 
 First we have to decide on an analog system. For this tutorial we will
 commit to a chain-of-integrators ADC,
@@ -35,20 +40,14 @@ see :py:class:`cbadc.analog_system.ChainOfIntegrators`, as our analog
 system. This is an arbitrary choice and all following steps could be
 repeated for any relevant analog system.
 
-.. GENERATED FROM PYTHON SOURCE LINES 17-41
+.. GENERATED FROM PYTHON SOURCE LINES 22-40
 
 .. code-block:: default
-   :lineno-start: 17
+   :lineno-start: 22
 
-    from cbadc.simulator import extended_simulation_result
-    import matplotlib.pyplot as plt
-    from cbadc.utilities import write_byte_stream_to_file
-    from cbadc.utilities import control_signal_2_byte_stream
-    from cbadc.simulator import StateSpaceSimulator
-    from cbadc.analog_signal import Sinusodial
-    from cbadc.digital_control import DigitalControl
     from cbadc.analog_system import ChainOfIntegrators
     import numpy as np
+
     # We fix the number of analog states.
     N = 6
     # Set the amplification factor.
@@ -114,7 +113,7 @@ repeated for any relevant analog system.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 42-48
+.. GENERATED FROM PYTHON SOURCE LINES 41-47
 
 The Digital Control
 -------------------
@@ -123,11 +122,12 @@ In addition to the analog system our simulation will require us to specify a
 digital control. For this tutorial we will use
 :py:class:`cbadc.digital_control.DigitalControl`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 48-59
+.. GENERATED FROM PYTHON SOURCE LINES 47-59
 
 .. code-block:: default
-   :lineno-start: 49
+   :lineno-start: 47
 
+    from cbadc.digital_control import DigitalControl
 
     # Set the time period which determines how often the digital control updates.
     T = 1.0/(2 * beta)
@@ -167,11 +167,12 @@ For this tutorial we will choose a
 :py:class:`cbadc.analog_signal.Sinusodial`. Again, this is one of several
 possible choices.
 
-.. GENERATED FROM PYTHON SOURCE LINES 67-83
+.. GENERATED FROM PYTHON SOURCE LINES 67-84
 
 .. code-block:: default
-   :lineno-start: 68
+   :lineno-start: 67
 
+    from cbadc.analog_signal import Sinusodial
 
     # Set the peak amplitude.
     amplitude = 0.5
@@ -207,7 +208,7 @@ possible choices.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-92
+.. GENERATED FROM PYTHON SOURCE LINES 85-93
 
 Simulating
 -------------
@@ -218,11 +219,12 @@ invloved differential equations as outlined in
 :py:class:`cbadc.analog_system.AnalogSystem`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 92-113
+.. GENERATED FROM PYTHON SOURCE LINES 93-115
 
 .. code-block:: default
    :lineno-start: 93
 
+    from cbadc.simulator import StateSpaceSimulator
 
     # Simulate for 2^17 control cycles.
     end_time = T * (1 << 17)
@@ -285,7 +287,7 @@ invloved differential equations as outlined in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 114-144
+.. GENERATED FROM PYTHON SOURCE LINES 116-149
 
 Tracking the Analog State Vector
 --------------------------------
@@ -314,21 +316,23 @@ defined like this
 So in essence we are creating a new generator from the old with an extended
 output.
 
-.. note:: The convenience function extended_simulation_result that will be
-   derived next is one of many such convenience functions found in the
-   :py:mod:`cbadc.simulator` module.
+.. note:: The convenience function extended_simulation_result is one of many
+          such convenience functions found in the
+          :py:mod:`cbadc.simulator` module.
 
-.. GENERATED FROM PYTHON SOURCE LINES 144-158
+We can achieve this by appending yet another generator to the control signal
+stream as:
+
+.. GENERATED FROM PYTHON SOURCE LINES 149-162
 
 .. code-block:: default
-   :lineno-start: 145
+   :lineno-start: 149
 
-
-    # We can achieve this by appending yet another generator to the control signal
-    # stream as:
+    from cbadc.simulator import extended_simulation_result
 
     # Repeating the steps above we now get for the following
     # ten control cycles.
+
     ext_simulator = extended_simulation_result(simulator)
     for res in ext_simulator:
         if (index > 29):
@@ -361,8 +365,11 @@ output.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 159-170
+.. GENERATED FROM PYTHON SOURCE LINES 163-177
 
+.. _default_simulation:
+
+--------------------------------
 Saving to File
 --------------------------------
 
@@ -375,10 +382,13 @@ For this purpose use the
 :func:`cbadc.utilities.control_signal_2_byte_stream` and
 :func:`cbadc.utilities.write_byte_stream_to_file` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 170-192
+.. GENERATED FROM PYTHON SOURCE LINES 177-202
 
 .. code-block:: default
-   :lineno-start: 171
+   :lineno-start: 177
+
+    from cbadc.utilities import write_byte_stream_to_file
+    from cbadc.utilities import control_signal_2_byte_stream
 
 
     # Instantiate a new simulator and control.
@@ -426,7 +436,7 @@ For this purpose use the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 193-204
+.. GENERATED FROM PYTHON SOURCE LINES 203-214
 
 Evaluating the Analog State Vector in Between Control Signal Samples
 --------------------------------------------------------------------
@@ -440,11 +450,12 @@ unit of time. However, digital control is still restricted to only update
 the control signals at multiples of :math:`T`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 204-259
+.. GENERATED FROM PYTHON SOURCE LINES 214-270
 
 .. code-block:: default
-   :lineno-start: 205
+   :lineno-start: 214
 
+    import matplotlib.pyplot as plt
 
     # Set sampling time three orders of magnitude smaller than the control period
     Ts = T / 1000.0
@@ -522,7 +533,7 @@ the control signals at multiples of :math:`T`.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 260-267
+.. GENERATED FROM PYTHON SOURCE LINES 271-278
 
 Analog State Statistics
 ------------------------------------------------------------------
@@ -532,10 +543,10 @@ identifying problems and possible errors. Another way of making sure that
 the analog states remain bounded is to estimate their correspoding densities
 (assuming i.i.d samples).
 
-.. GENERATED FROM PYTHON SOURCE LINES 267-288
+.. GENERATED FROM PYTHON SOURCE LINES 278-299
 
 .. code-block:: default
-   :lineno-start: 268
+   :lineno-start: 279
 
 
     # Compute L_2 norm of analog state vector.
@@ -572,7 +583,7 @@ the analog states remain bounded is to estimate their correspoding densities
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 13 minutes  27.460 seconds)
+   **Total running time of the script:** ( 7 minutes  50.670 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:

@@ -145,7 +145,7 @@ class DigitalEstimator:
         """
         result = np.zeros((self.analog_system.L, self.analog_system.N, omega.size))
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function(np.array([o]))
+            G = self.analog_system.transfer_function_matrix(np.array([o]))
             G = G.reshape((self.analog_system.N, self.analog_system.L))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
@@ -175,7 +175,7 @@ class DigitalEstimator:
         """
         result = np.zeros((self.analog_system.L, omega.size))
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function(np.array([o]))
+            G = self.analog_system.transfer_function_matrix(np.array([o]))
             G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)

@@ -5,14 +5,14 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator.noise_transfer_functio
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Digital Estimator as FIR Filter">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
 
 .. only:: html
 
- .. figure:: /auto_examples/b_advanced/images/thumb/sphx_glr_plot_FIR_Filtering_thumb.png
-     :alt: Digital Estimator as FIR Filter
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+     :alt: Compare Estimators
 
-     :ref:`sphx_glr_auto_examples_b_advanced_plot_FIR_Filtering.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
 
 .. raw:: html
 
@@ -20,4 +20,42 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator.noise_transfer_functio
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_b_advanced_plot_FIR_Filtering.py`
+ * :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the effect of a symmetric versus non symmetric FIR filter.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
+     :alt: The Mid Point Setting
+
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to setup the FIR filter implementation.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
+     :alt: Digital Estimator as FIR Filter
+
+     :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`

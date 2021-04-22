@@ -1,5 +1,6 @@
+#################################################################
 Welcome to Control-Bounded A/D Conversion Toolbox's Documentation
-=================================================================
+#################################################################
 
 This is the official documentation for the `cbadc
 <https://pypi.org/project/cbadc/>`_ python package which is a **toolbox** intended
@@ -27,8 +28,8 @@ This documentation is structured in three parts.
 
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
 A/D conversion's main concepts and terminology, :doc:`auto_examples/index` provides 
-code examples that demonstrate common use cases, and :doc:`api/api` contains the 
-package documentation.
+code examples that demonstrate common use cases, and the :doc:`api/api` chapter 
+contains the package documentation.
 
 Installation
 ============
@@ -51,7 +52,7 @@ If you are familiar with the basics of control-bounded A/D conversion a good pla
 to start is the :ref:`getting_started`.
 
 Alternatively, for a brief crash course on control-bounded A/D conversion first 
-check out :doc:`control-bounded_converters`.
+check out the :doc:`control-bounded_converters` chapter.
 
 Github
 ======

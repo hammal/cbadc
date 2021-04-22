@@ -1,12 +1,12 @@
-cbadc (API Reference)
-=========================
+*******************************************
+API
+*******************************************
 
-Next follows the documentation of the main modules of the
-cbadc package.
+Next follows the cbadc package documentation. 
 
-
-Modules
-^^^^^^^^^
+============
+Root Modules
+============
 
 .. autosummary::
     :toctree: autosummary

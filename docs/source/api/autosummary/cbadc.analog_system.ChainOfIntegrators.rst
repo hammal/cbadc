@@ -1,4 +1,4 @@
-cbadc.analog\_system.ChainOfIntegrators
+﻿cbadc.analog\_system.ChainOfIntegrators
 =======================================
 
 .. currentmodule:: cbadc.analog_system
@@ -17,11 +17,10 @@ cbadc.analog\_system.ChainOfIntegrators
    .. autosummary::
    
       ~ChainOfIntegrators.__init__
-      ~ChainOfIntegrators.analog_transfer_function_matrix
       ~ChainOfIntegrators.control_observation
       ~ChainOfIntegrators.derivative
       ~ChainOfIntegrators.signal_observation
-      ~ChainOfIntegrators.transfer_function
+      ~ChainOfIntegrators.transfer_function_matrix
    
    
 

@@ -4,11 +4,11 @@
 
 .. _sphx_glr_auto_examples:
 
+**********************
 Tutorials and Examples
-======================
+**********************
 
-This page demonstrates code examples and common use cases
-of the cbadc package.
+Here we demonstrate common use cases for the cbadc package.
 
 .. raw:: html
 
@@ -19,12 +19,15 @@ of the cbadc package.
 .. _sphx_glr_auto_examples_a_getting_started:
 
 .. _getting_started:
-
-Getting Started Tutorials
+-------------------------
+Getting Started
 -------------------------
 
-Next follows three examples demonstrating the major features and workflows of
-the package.
+Next follows three basic examples demonstrating how to
+
+1. simulate analog system and digital control interactions,
+2. estimate samples :math:`\hat{\mathbf{u}}(t)` from control signals :math:`\mathbf{s}[k]`,
+3. and evaluate and visualize transfer functions from analog systems and digital estimators.
 
 
 
@@ -96,33 +99,15 @@ the package.
 
 
 
-.. _sphx_glr_auto_examples_b_advanced:
+.. _sphx_glr_auto_examples_b_general:
 
-Advanced examples
------------------
+----------------
+General Examples
+----------------
+
+Next we highlight various common features of the cbadc package 
   
 
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Digital Estimator as FIR Filter">
-
-.. only:: html
-
- .. figure:: /auto_examples/b_advanced/images/thumb/sphx_glr_plot_FIR_Filtering_thumb.png
-     :alt: Digital Estimator as FIR Filter
-
-     :ref:`sphx_glr_auto_examples_b_advanced_plot_FIR_Filtering.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/b_advanced/plot_FIR_Filtering
 
 .. raw:: html
 
@@ -130,10 +115,10 @@ Advanced examples
 
 .. only:: html
 
- .. figure:: /auto_examples/b_advanced/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
      :alt: Compare Estimators
 
-     :ref:`sphx_glr_auto_examples_b_advanced_plot_a_compare_estimator.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
 
 .. raw:: html
 
@@ -143,20 +128,7 @@ Advanced examples
 .. toctree::
    :hidden:
 
-   /auto_examples/b_advanced/plot_a_compare_estimator
-.. raw:: html
-
-    <div class="sphx-glr-clear"></div>
-
-
-
-.. _sphx_glr_auto_examples_c_scratch_pad:
-
-Examples and Tests
-------------------
-
-These are some tests and scratch pad stuff.
-
+   /auto_examples/b_general/plot_a_compare_estimator
 
 .. raw:: html
 
@@ -164,10 +136,10 @@ These are some tests and scratch pad stuff.
 
 .. only:: html
 
- .. figure:: /auto_examples/c_scratch_pad/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
      :alt: The Mid Point Setting
 
-     :ref:`sphx_glr_auto_examples_c_scratch_pad_plot_a_mid_point.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`
 
 .. raw:: html
 
@@ -177,18 +149,18 @@ These are some tests and scratch pad stuff.
 .. toctree::
    :hidden:
 
-   /auto_examples/c_scratch_pad/plot_a_mid_point
+   /auto_examples/b_general/plot_a_mid_point
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for down sampling.">
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to setup the FIR filter implementation.">
 
 .. only:: html
 
- .. figure:: /auto_examples/c_scratch_pad/images/thumb/sphx_glr_plot_b_down_sample_thumb.png
-     :alt: Down Sampling
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
+     :alt: Digital Estimator as FIR Filter
 
-     :ref:`sphx_glr_auto_examples_c_scratch_pad_plot_b_down_sample.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`
 
 .. raw:: html
 
@@ -198,7 +170,28 @@ These are some tests and scratch pad stuff.
 .. toctree::
    :hidden:
 
-   /auto_examples/c_scratch_pad/plot_b_down_sample
+   /auto_examples/b_general/plot_b_FIR_Filtering
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for downsampling.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_c_down_sample_thumb.png
+     :alt: Downsampling
+
+     :ref:`sphx_glr_auto_examples_b_general_plot_c_down_sample.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/b_general/plot_c_down_sample
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
