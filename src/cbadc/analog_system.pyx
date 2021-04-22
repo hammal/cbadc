@@ -256,36 +256,7 @@ cdef class AnalogSystem:
                 self.B,
             )
 
-    def analog_transfer_function_matrix(self, double [:] omega):
-        """Evaluates the analog transfer function (ATF) matrix at the angular frequencies of the omega array.
-
-        Specifically, evaluates
-        
-        :math:`\mathbf{G}(\omega) = \\left(\mathbf{A} - i \omega \mathbf{I}_N\\right)^{-1} \mathbf{B}`
-
-        for each angular frequency in omega where :math:`\mathbf{I}_N` represents
-        a square identity matrix of the same dimensions as :math:`\mathbf{A}` and :math:`i=\sqrt{-1}`.
-
-
-        Parameters
-        ----------
-        omega: `array_like`, shape=(:,)
-            a array_like object containing the angular frequencies for evaluation.
-        
-        Returns
-        -------
-        `array_like`, shape=(N, L, K)
-            the ATF matrix evaluated at K different angular frequencies.
- 
-        """
-        cdef int size = omega.size
-        cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=complex)
-        cdef int index
-        for index in range(size):
-            result[:, :, index] = self._atf(omega[index])
-        return result
-
-    def transfer_function(self, omega):
+    def transfer_function_matrix(self, double [:] omega):
         """Evaluate the analog signal transfer function at the angular frequencies of the omega array.
 
         Specifically, evaluates
@@ -305,7 +276,12 @@ cdef class AnalogSystem:
         `array_like`, shape=(N_tilde, L, K)
             the signal transfer function evaluated at K different angular frequencies.
         """
-        resp = np.einsum('ij,jkl', self.CT, self.analog_transfer_function_matrix(omega))
+        cdef int size = omega.size
+        cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=complex)
+        cdef int index
+        for index in range(size):
+            result[:, :, index] = self._atf(omega[index])
+        resp = np.einsum('ij,jkl', self.CT, result)
         return np.asarray(resp)
 
     def __str__(self):

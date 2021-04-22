@@ -9,6 +9,11 @@ and a digital control while the former is excited by an analog signal.
 # The Analog System
 # -----------------
 #
+# .. image:: /images/chainOfIntegratorsGeneral.svg
+#    :width: 500
+#    :align: center
+#    :alt: The chain of integrators ADC.
+#
 # First we have to decide on an analog system. For this tutorial we will
 # commit to a chain-of-integrators ADC,
 # see :py:class:`cbadc.analog_system.ChainOfIntegrators`, as our analog
@@ -138,10 +143,10 @@ print(simulator)
 # So in essence we are creating a new generator from the old with an extended
 # output.
 #
-# .. note:: The convenience function extended_simulation_result that will be
-#    derived next is one of many such convenience functions found in the
-#    :py:mod:`cbadc.simulator` module.
-
+# .. note:: The convenience function extended_simulation_result is one of many
+#           such convenience functions found in the
+#           :py:mod:`cbadc.simulator` module.
+#
 # We can achieve this by appending yet another generator to the control signal
 # stream as:
 

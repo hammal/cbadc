@@ -1,72 +1,125 @@
+******************************
 Control-Bounded A/D Conversion
-==========================================================
+******************************
 
-The control-bounded converter concept...
+Analog-to-digital (A/D) conversion is an ubiquities part of most of todays 
+electronic devices as it interfaces the analog world we live in with the
+digital domain. Control-bounded A/D conversion is a type of A/D conversion 
+that indirectly converts analog signals into their digital counterpart by 
+stabilizing an analog system using digital control.
 
-The control-bounded A/D conversion concept is a new A/D conversion paradigm
-reminiscent of the delta-sigma modulator conversion architecture. An in depth
-introduction to control-bounded A/D conversion can be found here 
-`control-bounded converters
-<https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=28/>`_.
+===========================
+Conventional A/D Conversion
+===========================
+Traditionally, the A/D conversion process is divided into three steps,
+were we convert a given an analog input signal :math:`u(t)` into a
+digital estimate :math:`\hat{u}[k]` by applying
 
-The general structure of this documentation is given in. Regardless, we want to make
-the reader aware of the two main sections:
+1. an analog preconditioning (anti-aliasing) filter,
+2. a sampler (sampling in time),
+3. and a quantizer, i.e., mapping discrete-time samples into bits.
 
-* :doc:`control-bounded_converters` which gives a detailed documentation of the included classes and structure of the package
-   as well as describing the control-bounded conversion concepts.  
-* :doc:`tutorials/tutorials` which provides plenty of code examples demonstrating the main functionality of the package.
-* something with transfer functions and analytical...
-
-
-.. image:: images/controlBoundedConverterOverview.png
+.. image:: images/conventionalConversion.svg
    :width: 400
-   :alt: A control-bounded A/D converter overview.
+   :alt: Conventional A/D conversion.
+   :align: center
+
+The three steps are additionally shown in the figure above where we see the 
+preconditioning, sampling and quantization steps from
+left to right. 
+
+===================
+A new A/D interface
+===================
+
+The control-bounded A/D conversion concept approaches this conversion process
+differently as outlined in the figure below.
+
+.. image:: images/controlBoundedConverterOverview.svg
+   :width: 600
+   :alt: A general control-bounded A/D converter.
+   :align: center
+
+Specifically, the conversion process is divided into three main components.
+
+The :doc:`analog system (AS) <analog_system>`, which preconditions the input signal 
+by amplifying desired signal characteristics while suppressing undesired signal 
+characteristics. Note that the AS is fully analog system. Additionally, the A/D 
+converter's overall conversion performance is directly linked to the amount of
+amplification provided in this stage. 
+
+The :doc:`digital control (DC) <digital_control>`, stabilizes the AS by observing
+a sampled and quantized version of the internal AS states and based on these
+observations provide a control signal :math:`\mathbf{s}[k]` which is feed back 
+into the AS (via a digital-to-analog (D/A) conversion step). The goal of DC is to
+(physically) bound the internal AS states. The DC ability to bound the AS states 
+will directly affect the overall conversion performance. In contrast to the AS, 
+the DC is a fully digital system, operating in synchronization with a global clock, 
+with the exception of the control signal contribution :math:`\mathbf{s}(t)` which 
+is a continuous-time analog version of the control signal :math:`\mathbf{s}[k]`.
+
+Finally, the :doc:`digital estimator (DE) <digital_estimator>` provides samples of a
+continuous-time estimate :math:`\hat{u}(t)` given the control signal 
+:math:`\mathbf{s}[k]` and the knowledge of the general AS and DC parametrization.
+In many ways, the DE is the heart of the control-bounded A/D conversion scheme as it
+is able to produce estimates for essentially arbitrary AS and DC combinations. The
+internals of the DE might seem overwhelmingly complicated at first glance. After all,
+this is the result of many years theoretical work (see references). However, the good
+new are:
+
+- For uniform samples the DE reduces to a linear filter and can therefore be implemented
+  with an complexity comparable to a :math:`\Delta\Sigma` decimation filter.
+- :py:mod:`cbadc.digital_estimator` implements all the necessary computations and can 
+  therefore, for a given AS and DC, provide you with the resulting filter coefficient
+  of a DE.
+
+In summary, the control-bounded A/D converter principle approaches A/D 
+conversion in an unconventional way as, instead of breaking down the conversion 
+into sampling and quantization steps, we focus on stabilizing an analog system 
+using a digital control. In this view, conversion performance takes on a new shape as 
+increasing the AS amplification in combination with a DC that enforces tighter control, 
+implies an increased A/D conversion performance. Fundamentally, this results in 
+a whole new analog design space with considerable more unconstrained A/D interface 
+which inturn provides design opportunities for the analog designer.
+
+-------------------------------------------
+Relation to :math:`\Delta\Sigma` Modulators
+-------------------------------------------
+
+But wait, the figure above looks like a continuous-time :math:`\Delta\Sigma` modulator?
+Is it just the same? 
+
+Not quite. It is true that...
+
+:doc:`MASH Delta-Sigma Converter<MASH_delta_sigma>`
+
+======================
+References
+======================
+
+This was a brief introduction to the control-bounded A/D conversion concept.
+For a more in depth description consider the following references.
 
 
-Analog Signal
--------------
-the analog signal...
+* `H. Malmberg, Control-bounded converters, Ph.D. dissertation, Dept. Inf. Technol. Elect. Eng., ETH Zurich, 2020.  <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf>`_
+* `H.-A. Loeliger, H. Malmberg, and G. Wilckens, Control-bounded analog-to-digital conversion: transfer function analysis, proof of concept, and digital filter implementation," arXiv:2001.05929 <https://arxiv.org/abs/2001.05929>`_
+* `H.-A. Loeliger and G. Wilckens, Control-based analog-to-digital conversion without sampling and quantization, 2015 Information Theory & Applications Workshop (ITA), UCSD, La Jolla, CA, USA, Feb. 1-6, 2015 <https://ieeexplore.ieee.org/document/7308975>`_
+* `H.-A. Loeliger, L. Bolliger, G. Wilckens, and J. Biveroni, Analog-to-digital conversion using unstable filters, 2011 Information Theory & Applications Workshop (ITA), UCSD, La Jolla, CA, USA, Feb. 6-11, 2011 <https://ieeexplore.ieee.org/abstract/document/5743620>`_
 
+======================
+What's next
+======================
 
-Analog System
--------------
+Next follows a series of tutorials demonstrating common use cases of the cbadc package.
+In particular consider the :ref:`getting_started`.
 
-The analog system is defined by the linear differential equation
-
-:math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B}
-\mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)` 
-
-where :math:`\mathbf{A}` is the system matrix, :math:`\mathbf{B}` is the
-input matrix, and :math:`\mathbf{\Gamma}` is the control matrix.
-
->>> 5 
-5
-
-To create a Analog system we use the class 
-
-
-.. image:: images/generalSSM.png
-    :width: 1000
-
-Digital Control
----------------
-
-
-
-.. _digital_estimator:
-
-Digital Estimator
------------------
-
-.. minigallery:: cbadc.DigitalEstimator
-    :add-heading:
-
-
-Terminology and Acronyms
-------------------------
-
-+---------------------------------------+---------------------------------------------------------------------------------------+-------------------------------------------------------------------+
-|Name                                   |Descritption                                                                           |See also                                                           |
-+=======================================+=======================================================================================+===================================================================+
-|A/D                                    |analog-to-digital                                                                      |                                                                   |
-+---------------------------------------+---------------------------------------------------------------------------------------+-------------------------------------------------------------------+
+.. toctree::
+  :hidden:
+  :depth: 0
+  
+  analog_system
+  digital_control
+  digital_estimator
+  MASH_delta_sigma
+  terminology
+  old
