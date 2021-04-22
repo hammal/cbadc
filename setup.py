@@ -60,14 +60,14 @@ else:
 
 setup(
     name="cbadc",
-    version="0.0.4",
+    version="0.0.5",
     author="Hampus Malmberg",
     author_email="hampus.malmberg88@gmail.com",
     description="A toolbox for simulating control-bounded converters.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/hammal/cbadc",
-    
+
     packages=['cbadc'],
     license="GPL",
     classifiers=[
@@ -84,7 +84,7 @@ setup(
     zip_safe=False,
     include_dirs=[numpy.get_include()],
     define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
-    package_data = {
+    package_data={
         'cbadc': ['*.pxd'],
     },
 )
