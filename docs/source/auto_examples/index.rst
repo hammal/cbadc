@@ -54,7 +54,7 @@ Next follows three basic examples demonstrating how to
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="How to convert a stream of control signals into a signal estimate.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Converting a stream of control signals into a estimate samples.">
 
 .. only:: html
 
@@ -111,49 +111,7 @@ Next we highlight various common features of the cbadc package
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
-
-.. only:: html
-
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
-     :alt: Compare Estimators
-
-     :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/b_general/plot_a_compare_estimator
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the effect of a symmetric versus non symmetric FIR filter.">
-
-.. only:: html
-
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
-     :alt: The Mid Point Setting
-
-     :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/b_general/plot_a_mid_point
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to setup the FIR filter implementation.">
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to set up the FIR filter implementation.">
 
 .. only:: html
 

@@ -22,7 +22,7 @@
 Digital Estimator as FIR Filter
 ===============================
 
-We demonstrate how to setup the FIR filter implementation.
+We demonstrate how to set up the FIR filter implementation.
 
 .. GENERATED FROM PYTHON SOURCE LINES 10-17
 
@@ -30,8 +30,8 @@ We demonstrate how to setup the FIR filter implementation.
 Analog System and Digital Control Setup
 ---------------------------------------
 
-To initialize a digital estimator we need to specify which analog system and
-digital control that is used. Here we default to the chain-of-integrators
+To initialize a digital estimator, we need to specify which analog system and
+digital control are used. Here we default to the chain-of-integrators
 example.
 
 .. GENERATED FROM PYTHON SOURCE LINES 17-50
@@ -258,12 +258,12 @@ Additionally, we plot the corresponding transfer functions of the estimator.
 Impulse Response and :math:`\eta^2`
 -----------------------------------
 
-The rate at which the estimators impulse response decays depends on our
-bandwidth parameter :math:`\eta^2`. Specifically, as we increse
-:math:`\eta^2` we seek a higher resolution, at a smaller bandwidth. As
-expected decreasing the bandwidth requires 'more' filtering and therefore a
-slower decaying impulse response. Equivalently, we require more filter taps,
-for a given precision, as we increse :math:`\eta^2`.
+The rate at which the estimator's impulse response decays depends on our
+bandwidth parameter :math:`\eta^2`. Specifically, as we increase
+:math:`\eta^2` we seek a higher resolution at a smaller bandwidth. As
+expected, decreasing the bandwidth requires 'more' filtering and, therefore,
+a slower decaying impulse response. Equivalently, we require more filter taps
+for a given precision as we increase :math:`\eta^2`.
 
 .. GENERATED FROM PYTHON SOURCE LINES 141-161
 
@@ -301,24 +301,23 @@ for a given precision, as we increse :math:`\eta^2`.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-173
+.. GENERATED FROM PYTHON SOURCE LINES 162-172
 
 Filter length
 -------------
 
 We can confirm the intuition from the previous section by considering
-different number of filter taps for a given simulation. Specifically, we
-use the control signal from :ref:`default_simulation` to compare differt
+a different number of filter taps for a given simulation. Specifically, we
 FIRFilter parametrizations.
 
 Conducting such a simulation is a good way of determining a minimum number
 of filter taps for a specific analog system, digital control, and :math:`\eta^2`
 combination.
 
-.. GENERATED FROM PYTHON SOURCE LINES 173-226
+.. GENERATED FROM PYTHON SOURCE LINES 172-225
 
 .. code-block:: default
-   :lineno-start: 173
+   :lineno-start: 172
 
     from cbadc.utilities import compute_power_spectral_density
 
@@ -434,7 +433,7 @@ combination.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  35.846 seconds)
+   **Total running time of the script:** ( 2 minutes  50.980 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_b_FIR_Filtering.py:

@@ -2,9 +2,9 @@
 Analog System Model
 -------------------
 
-The analog system (AS) purpose is to amplify the signal characteristics of the class of signal we are converting. 
-This typically means amplifying a frequency band of interest while suppressing out of band signals. To this
-end the analog system is implemented as a continuous-time analog filter governed by the differential equations
+The analog system (AS) purpose is to amplify the characteristics of the class of signals we are converting. 
+This typically means amplifying a frequency band of interest while suppressing out-of-band signals. To this
+end, the analog system is implemented as a continuous-time analog filter governed by the differential equations
 
 :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
 
@@ -14,11 +14,11 @@ where we refer to
 * :math:`\mathbf{B} \in \mathbb{R}^{N \times L}` as the input matrix,
 * :math:`\mathbf{\Gamma} \in \mathbb{R}^{N \times M}` as the control input matrix,
 * :math:`\mathbf{x}(t)\in\mathbb{R}^{N}` as the state vector of the system, 
-* :math:`\mathbf{u}(t)\in\mathbb{R}^{L}` as the vector valued, continuous-time, analog input signal, 
-* and :math:`\mathbf{s}(t)\in\mathbb{R}^{M}` as the vector valued control signal.
+* :math:`\mathbf{u}(t)\in\mathbb{R}^{L}` as the vector-valued, continuous-time, analog input signal, 
+* and :math:`\mathbf{s}(t)\in\mathbb{R}^{M}` as the vector-valued control signal.
 
 
-The analog system also has two (possibly vector valued) outputs namely:
+The analog system also has two (possibly vector-valued) outputs, namely
 
 * The control observation :math:`\tilde{\mathbf{s}}(t)=\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
 * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`

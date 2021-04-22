@@ -40,11 +40,11 @@ author = "Hampus Malmberg"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-          "sphinx.ext.autodoc",
+    "sphinx.ext.autodoc",
           "sphinx.ext.autosummary",
-          "sphinx.ext.mathjax", 
-          "sphinx_rtd_theme", 
-          "nbsphinx", 
+          "sphinx.ext.mathjax",
+          "sphinx_rtd_theme",
+          "nbsphinx",
           "sphinx.ext.napoleon",
           "sphinx.ext.intersphinx",
           "sphinx_gallery.gen_gallery"]
@@ -73,25 +73,27 @@ html_theme = "sphinx_rtd_theme"
 
 # intershpinx
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                        'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None)}
+                       'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None)}
 
 
 # Sphinx-gallery
 from sphinx_gallery.sorting import FileNameSortKey
 sphinx_gallery_conf = {
-     'examples_dirs': '../code_examples',   # path to your example scripts
+    # path to your example scripts
+     'examples_dirs': '../code_examples',
      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
-     
+
+     'compress_images': ('images', 'thumbnails', '-o7'),
      # directory where function/class granular galleries are stored
-     'backreferences_dir'  : 'backreferences',
+     'backreferences_dir': 'backreferences',
      # Modules for which function/class level galleries are created. In
      # this case sphinx_gallery and numpy in a tuple of strings.
-     'doc_module' : ('cbadc.analog_system', 
-          'cbadc.analog_signal', 
-          'cbadc.digital_control', 
-          'cbadc.digital_estimator', 
-          'cbadc.simulator',
-          'cbadc.utilities'),
+     'doc_module': ('cbadc.analog_system',
+                    'cbadc.analog_signal',
+                    'cbadc.digital_control',
+                    'cbadc.digital_estimator',
+                    'cbadc.simulator',
+                    'cbadc.utilities'),
      'line_numbers': True,
      'remove_config_comments': True,
      'within_subsection_order': FileNameSortKey,

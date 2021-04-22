@@ -16,11 +16,11 @@ analog system and digital estimator.
 #    :align: center
 #    :alt: The chain of integrators ADC.
 #
-# In this example we will use the chain-of-integrators ADC analog system for
+# In this example, we will use the chain-of-integrators ADC analog system for
 # demonstrational purposes. However, except for the analog system creation,
 # the steps for a generic analog system and digital estimator.
 #
-# for an in depth details regarding the chain-of-integrators transfer function see
+# For in-depth details regarding the chain-of-integrators transfer function see,
 # `chain-of-integrators <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=97/>`_
 #
 # First we will import dependent modules and initialize a chain-of-integrators
@@ -60,7 +60,7 @@ print(analog_system)
 # Plotting the Analog System's Transfer Function
 # ----------------------------------------------
 #
-# Next we plot the transfer function of the analog system
+# Next, we plot the transfer function of the analog system
 #
 # :math:`\mathbf{G}(\omega) = \begin{pmatrix}G_1(\omega), \dots, G_N(\omega)\end{pmatrix}^\mathsf{T} = \mathbf{C}^\mathsf{T} \left(i \omega \mathbf{I}_N - \mathbf{A}\right)^{-1}\mathbf{B}`
 #
@@ -97,17 +97,17 @@ plt.gcf().tight_layout()
 # Plotting the Estimator's Signal and Noise Transfer Function
 # -----------------------------------------------------------
 #
-# To determine the estimate's signal and noise transfer function we must
+# To determine the estimate's signal and noise transfer function, we must
 # instantiate a digital estimator
 # :py:class:`cbadc.digital_estimator.DigitalEstimator`. The bandwidth of the
-# digital estimation filter is mainly goverened by the parameter :math:`\eta^2`
+# digital estimation filter is mainly determined by the parameter :math:`\eta^2`
 # as the noise transfer function (NTF) follows as
 #
 # :math:`\text{NTF}( \omega) = \mathbf{G}( \omega)^\mathsf{H} \left(
 # \mathbf{G}( \omega)\mathbf{G}( \omega)^\mathsf{H} + \eta^2 \mathbf{I}_N
 # \right)^{-1}`
 #
-# and similarly the signal transfer function (STF) follows as
+# and similarly, the signal transfer function (STF) follows as
 #
 # :math:`\text{STF}( \omega) = \text{NTF}( \omega) \mathbf{G}( \omega)`.
 #
@@ -119,7 +119,7 @@ plt.gcf().tight_layout()
 # the digital estimator requires us to also instantiate a digital control
 # :py:class:`cbadc.digital_control.DigitalControl`.
 #
-# For the chain-of-integrators example the noise transfer function
+# For the chain-of-integrators example, the noise transfer function
 # results in a row vector
 # :math:`\text{NTF}(\omega) = \begin{pmatrix} \text{NTF}_1(\omega), \dots, \text{NTF}_N(\omega)\end{pmatrix} \in \mathbb{C}^{1 \times \tilde{N}}`
 # where :math:`\text{NTF}_\ell(\omega)` refers to the noise transfer function
@@ -176,7 +176,7 @@ plt.gcf().tight_layout()
 # Setting the Bandwidth of the Estimation Filter
 # ----------------------------------------------
 #
-# Next we will investigate the effect of eta2 on the STF and NTF.
+# Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 # create a vector of etas to be evaluated,
 eta2_vec = np.logspace(0, 10, 11)[::2]

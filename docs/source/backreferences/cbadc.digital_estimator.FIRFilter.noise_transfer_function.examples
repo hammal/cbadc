@@ -5,26 +5,7 @@ Examples using ``cbadc.digital_estimator.FIRFilter.noise_transfer_function``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the effect of a symmetric versus non symmetric FIR filter.">
-
-.. only:: html
-
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_mid_point_thumb.png
-     :alt: The Mid Point Setting
-
-     :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
- * :ref:`sphx_glr_auto_examples_b_general_plot_a_mid_point.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to setup the FIR filter implementation.">
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to set up the FIR filter implementation.">
 
 .. only:: html
 

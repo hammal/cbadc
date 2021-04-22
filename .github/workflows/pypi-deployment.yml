@@ -54,7 +54,7 @@ jobs:
       env:
         CIBW_SKIP: pp3*
         CIBW_ENVIRONMENT: "CYTHON=True"
-        CIBW_TEST_COMMAND: pytest {project}/tests
+        # CIBW_TEST_COMMAND: pytest {project}/tests
 
     - uses: actions/upload-artifact@v2
       with:

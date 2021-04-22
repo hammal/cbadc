@@ -14,11 +14,10 @@ and a digital control while the former is excited by an analog signal.
 #    :align: center
 #    :alt: The chain of integrators ADC.
 #
-# First we have to decide on an analog system. For this tutorial we will
+# First, we have to decide on an analog system. For this tutorial, we will
 # commit to a chain-of-integrators ADC,
 # see :py:class:`cbadc.analog_system.ChainOfIntegrators`, as our analog
-# system. This is an arbitrary choice and all following steps could be
-# repeated for any relevant analog system.
+# system.
 from cbadc.analog_system import ChainOfIntegrators
 import numpy as np
 
@@ -41,8 +40,8 @@ print(analog_system)
 # The Digital Control
 # -------------------
 #
-# In addition to the analog system our simulation will require us to specify a
-# digital control. For this tutorial we will use
+# In addition to the analog system, our simulation will require us to specify a
+# digital control. For this tutorial, we will use
 # :py:class:`cbadc.digital_control.DigitalControl`.
 from cbadc.digital_control import DigitalControl
 
@@ -61,7 +60,7 @@ print(digital_control)
 # -----------------
 #
 # The final and third component of the simulation is an analog signal.
-# For this tutorial we will choose a
+# For this tutorial, we will choose a
 # :py:class:`cbadc.analog_signal.Sinusodial`. Again, this is one of several
 # possible choices.
 from cbadc.analog_signal import Sinusodial
@@ -85,9 +84,9 @@ print(analog_signal)
 # Simulating
 # -------------
 #
-# Next we setup the simulator. Here we use the
+# Next, we set up the simulator. Here we use the
 # :py:class:`cbadc.simulator.StateSpaceSimulator` for simulating the
-# invloved differential equations as outlined in
+# involved differential equations as outlined in
 # :py:class:`cbadc.analog_system.AnalogSystem`.
 #
 from cbadc.simulator import StateSpaceSimulator
@@ -118,7 +117,7 @@ print(simulator)
 #
 # Clearly the output type of the generator simulator above is the sequence of
 # control signals s[k]. Sometimes we are interested in also monitoring the
-# internal analog states of analog system during simulation.
+# internal states of analog system during simulation.
 #
 # To this end we use the
 # :func:`cbadc.simulator.StateSpaceSimulator.state_vector` and an
@@ -137,7 +136,7 @@ print(simulator)
 #               'analog_state': np.array(analog_state)
 #           }
 #
-# So in essence we are creating a new generator from the old with an extended
+# So, in essence, we are creating a new generator from the old with an extended
 # output.
 #
 # .. note:: The convenience function extended_simulation_result is one of many
@@ -166,7 +165,7 @@ for res in ext_simulator:
 # Saving to File
 # --------------------------------
 #
-# In general simulating the analog system and digital control interaction
+# In general, simulating the analog system and digital control interaction
 # is a computationally much more intense procedure compared to the digital
 # estimation step. This is one reason, and there are more, why
 # you would want to store the intermediate control signal sequence to a file.
@@ -203,11 +202,11 @@ write_byte_stream_to_file("sinusodial_simulation.adc",
 # Evaluating the Analog State Vector in Between Control Signal Samples
 # --------------------------------------------------------------------
 #
-# If we wish to simulate the analog state vector trajectory in between
-# control updates this can be achieved using the Ts parameter of the
+# If we wish to simulate the analog state vector trajectory between
+# control updates, this can be achieved using the Ts parameter of the
 # :py:class:`cbadc.simulator.StateSpaceSimulator`. Technically you can scale
-# :math:`T_s = T / \alpha` for any postive number :math:`\alpha`. For such a
-# scaling the simulator will generate :math:`\alpha` more control signals per
+# :math:`T_s = T / \alpha` for any positive number :math:`\alpha`. For such a
+# scaling, the simulator will generate :math:`\alpha` more control signals per
 # unit of time. However, digital control is still restricted to only update
 # the control signals at multiples of :math:`T`.
 #
@@ -271,10 +270,10 @@ fig.tight_layout()
 # Analog State Statistics
 # ------------------------------------------------------------------
 #
-# Producing time plots, as in the previous section, is a good way of
-# identifying problems and possible errors. Another way of making sure that
-# the analog states remain bounded is to estimate their correspoding densities
-# (assuming i.i.d samples).
+# As in the previous section, visualizing the analog state trajectory is a
+# good way of identifying problems and possible errors. Another way of making
+# sure that the analog states remain bounded is to estimate their
+# corresponding densities (assuming i.i.d samples).
 
 # Compute L_2 norm of analog state vector.
 L_2_norm = np.linalg.norm(states, ord=2, axis=0)

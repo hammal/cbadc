@@ -5,7 +5,7 @@ Examples using ``cbadc.utilities.random_control_signal``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="How to convert a stream of control signals into a signal estimate.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Converting a stream of control signals into a estimate samples.">
 
 .. only:: html
 

@@ -114,8 +114,7 @@ Next follows a series of tutorials demonstrating common use cases of the cbadc p
 In particular, consider the :ref:`getting_started`.
 
 .. toctree::
-  :hidden:
-  :depth: 0
+   :depth: 0
   
   analog_system
   digital_control

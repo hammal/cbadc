@@ -3,7 +3,7 @@
 Digital Estimator as FIR Filter
 ===============================
 
-We demonstrate how to setup the FIR filter implementation.
+We demonstrate how to set up the FIR filter implementation.
 """
 
 ###############################################################################
@@ -11,8 +11,8 @@ We demonstrate how to setup the FIR filter implementation.
 # Analog System and Digital Control Setup
 # ---------------------------------------
 #
-# To initialize a digital estimator we need to specify which analog system and
-# digital control that is used. Here we default to the chain-of-integrators
+# To initialize a digital estimator, we need to specify which analog system and
+# digital control are used. Here we default to the chain-of-integrators
 # example.
 
 from cbadc.analog_system import AnalogSystem
@@ -132,12 +132,12 @@ plt.gcf().tight_layout()
 # Impulse Response and :math:`\eta^2`
 # -----------------------------------
 #
-# The rate at which the estimators impulse response decays depends on our
-# bandwidth parameter :math:`\eta^2`. Specifically, as we increse
-# :math:`\eta^2` we seek a higher resolution, at a smaller bandwidth. As
-# expected decreasing the bandwidth requires 'more' filtering and therefore a
-# slower decaying impulse response. Equivalently, we require more filter taps,
-# for a given precision, as we increse :math:`\eta^2`.
+# The rate at which the estimator's impulse response decays depends on our
+# bandwidth parameter :math:`\eta^2`. Specifically, as we increase
+# :math:`\eta^2` we seek a higher resolution at a smaller bandwidth. As
+# expected, decreasing the bandwidth requires 'more' filtering and, therefore,
+# a slower decaying impulse response. Equivalently, we require more filter taps
+# for a given precision as we increase :math:`\eta^2`.
 Eta2 = np.logspace(0, 7, 8)
 K1 = 250
 K2 = 250
@@ -163,8 +163,7 @@ plt.grid(which="both")
 # -------------
 #
 # We can confirm the intuition from the previous section by considering
-# different number of filter taps for a given simulation. Specifically, we
-# use the control signal from :ref:`default_simulation` to compare differt
+# a different number of filter taps for a given simulation. Specifically, we
 # FIRFilter parametrizations.
 #
 # Conducting such a simulation is a good way of determining a minimum number

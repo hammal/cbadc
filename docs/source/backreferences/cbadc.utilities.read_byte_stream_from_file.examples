@@ -5,7 +5,26 @@ Examples using ``cbadc.utilities.read_byte_stream_from_file``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to setup the FIR filter implementation.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Converting a stream of control signals into a estimate samples.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_c_digital_estimator_thumb.png
+     :alt: Digital Estimation (Post Filtering)
+
+     :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to set up the FIR filter implementation.">
 
 .. only:: html
 
