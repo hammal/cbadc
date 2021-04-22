@@ -12,7 +12,7 @@ stabilizing an analog system using digital control.
 Conventional A/D Conversion
 ===========================
 Traditionally, the A/D conversion process is divided into three steps,
-were we convert a given an analog input signal :math:`u(t)` into a
+where we convert a given analog input signal :math:`u(t)` into a
 digital estimate :math:`\hat{u}[k]` by applying
 
 1. an analog preconditioning (anti-aliasing) filter,
@@ -24,8 +24,8 @@ digital estimate :math:`\hat{u}[k]` by applying
    :alt: Conventional A/D conversion.
    :align: center
 
-The three steps are additionally shown in the figure above where we see the 
-preconditioning, sampling and quantization steps from
+The three steps are additionally shown in the figure above, where we see the 
+preconditioning, sampling, and quantization steps from
 left to right. 
 
 ===================
@@ -33,7 +33,7 @@ A new A/D interface
 ===================
 
 The control-bounded A/D conversion concept approaches this conversion process
-differently as outlined in the figure below.
+differently, as outlined in the figure below.
 
 .. image:: images/controlBoundedConverterOverview.svg
    :width: 600
@@ -42,15 +42,15 @@ differently as outlined in the figure below.
 
 Specifically, the conversion process is divided into three main components.
 
-The :doc:`analog system (AS) <analog_system>`, which preconditions the input signal 
-by amplifying desired signal characteristics while suppressing undesired signal 
-characteristics. Note that the AS is fully analog system. Additionally, the A/D 
+The :doc:`analog system (AS) <analog_system>`, preconditions the input signal 
+by amplifying desired, while suppressing undesired, signal characteristics. 
+Note that the AS is a fully analog system. Additionally, the A/D 
 converter's overall conversion performance is directly linked to the amount of
 amplification provided in this stage. 
 
-The :doc:`digital control (DC) <digital_control>`, stabilizes the AS by observing
-a sampled and quantized version of the internal AS states and based on these
-observations provide a control signal :math:`\mathbf{s}[k]` which is feed back 
+The :doc:`digital control (DC) <digital_control>` stabilizes the AS by observing
+a sampled and quantized version of the internal AS states and, based on these
+observations, provide a control signal :math:`\mathbf{s}[k]` which is fed back 
 into the AS (via a digital-to-analog (D/A) conversion step). The goal of DC is to
 (physically) bound the internal AS states. The DC ability to bound the AS states 
 will directly affect the overall conversion performance. In contrast to the AS, 
@@ -64,23 +64,23 @@ continuous-time estimate :math:`\hat{u}(t)` given the control signal
 In many ways, the DE is the heart of the control-bounded A/D conversion scheme as it
 is able to produce estimates for essentially arbitrary AS and DC combinations. The
 internals of the DE might seem overwhelmingly complicated at first glance. After all,
-this is the result of many years theoretical work (see references). However, the good
-new are:
+this is the result of many years of theoretical work (see references). However, the good
+news are:
 
-- For uniform samples the DE reduces to a linear filter and can therefore be implemented
-  with an complexity comparable to a :math:`\Delta\Sigma` decimation filter.
-- :py:mod:`cbadc.digital_estimator` implements all the necessary computations and can 
+- For uniform samples, the DE reduces to a linear filter and can therefore be implemented
+  with a complexity comparable to a :math:`\Delta\Sigma` decimation filter.
+- :py:mod:`cbadc.digital_estimator` implements all the necessary computations and can,
   therefore, for a given AS and DC, provide you with the resulting filter coefficient
   of a DE.
 
 In summary, the control-bounded A/D converter principle approaches A/D 
-conversion in an unconventional way as, instead of breaking down the conversion 
+conversion unconventionally as, instead of breaking down the conversion 
 into sampling and quantization steps, we focus on stabilizing an analog system 
 using a digital control. In this view, conversion performance takes on a new shape as 
-increasing the AS amplification in combination with a DC that enforces tighter control, 
-implies an increased A/D conversion performance. Fundamentally, this results in 
-a whole new analog design space with considerable more unconstrained A/D interface 
-which inturn provides design opportunities for the analog designer.
+increasing the AS amplification in combination with a DC that enforces tighter control 
+implies an increased A/D conversion performance. This results in 
+a whole new analog design space with a considerable more unconstrained A/D interface,
+which in turn provides design opportunities for the analog designer.
 
 -------------------------------------------
 Relation to :math:`\Delta\Sigma` Modulators
@@ -98,7 +98,7 @@ References
 ======================
 
 This was a brief introduction to the control-bounded A/D conversion concept.
-For a more in depth description consider the following references.
+For a more in-depth description, consider the following references.
 
 
 * `H. Malmberg, Control-bounded converters, Ph.D. dissertation, Dept. Inf. Technol. Elect. Eng., ETH Zurich, 2020.  <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf>`_
@@ -111,7 +111,7 @@ What's next
 ======================
 
 Next follows a series of tutorials demonstrating common use cases of the cbadc package.
-In particular consider the :ref:`getting_started`.
+In particular, consider the :ref:`getting_started`.
 
 .. toctree::
   :hidden:

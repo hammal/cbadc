@@ -3,12 +3,12 @@ Welcome to Control-Bounded A/D Conversion Toolbox's Documentation
 #################################################################
 
 This is the official documentation for the `cbadc
-<https://pypi.org/project/cbadc/>`_ python package which is a **toolbox** intended
+<https://pypi.org/project/cbadc/>`_ python package, which is a **toolbox** intended
 to aid and inspire the **creation** of **control-bounded analog-to-digital (A/D) converters**. 
 
 The cbadc toolbox enables you to:
 
-* **Generate** transfer functions of analog systems and/or digital estimator parametrizations.
+* **Generate** transfer functions of analog systems and digital estimator parametrizations.
 * **Estimate** samples :math:`\hat{\mathbf{u}}(t)` from control signals :math:`\mathbf{s}[k]`.
 * **Simulate** analog system and digital control interactions.
 
@@ -27,7 +27,7 @@ This documentation is structured in three parts.
    api/api
 
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
-A/D conversion's main concepts and terminology, :doc:`auto_examples/index` provides 
+A/D conversion's main concepts and terminology, :doc:`auto_examples/index` provide
 code examples that demonstrate common use cases, and the :doc:`api/api` chapter 
 contains the package documentation.
 
