@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         python-version: [ 'py36', 'py37', 'py38', 'py39']
-    runs-on: [self-hosted, ARM64]
+    runs-on: [self-hosted]
     steps:
       - name: Checkout github repo
         uses: actions/checkout@v2
