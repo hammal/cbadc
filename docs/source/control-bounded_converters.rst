@@ -110,14 +110,15 @@ For a more in-depth description, consider the following references.
 What's next
 ======================
 
-.. Next follows a series of tutorials demonstrating common use cases of the cbadc package.
-.. In particular, consider the :ref:`getting_started`.
+Next follows a series of tutorials demonstrating common use cases of the cbadc package.
+In particular, consider the :ref:`getting_started`.
 
 .. toctree::
    :depth: 0
+   :hidden:
   
-  analog_system
-  digital_control
-  digital_estimator
-  MASH_delta_sigma
-  terminology
+   analog_system
+   digital_control
+   digital_estimator
+   MASH_delta_sigma
+   terminology

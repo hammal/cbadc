@@ -19,6 +19,7 @@ Here we demonstrate common use cases for the cbadc package.
 .. _sphx_glr_auto_examples_a_getting_started:
 
 .. _getting_started:
+
 -------------------------
 Getting Started
 -------------------------
@@ -108,6 +109,27 @@ General Examples
 Next we highlight various common features of the cbadc package 
   
 
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+     :alt: Compare Estimators
+
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/b_general/plot_a_compare_estimator
 
 .. raw:: html
 
