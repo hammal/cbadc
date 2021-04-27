@@ -243,7 +243,7 @@ which then defaults to 1, i.e., no downsampling.
     print(f"eta2 = {eta2}, {20 * np.log10(eta2)} [dB]")
 
     # Set the filter size
-    L1 = 1 << 12
+    L1 = 1 << 13
     L2 = L1
 
     # Instantiate the digital estimator.
@@ -267,25 +267,25 @@ which then defaults to 1, i.e., no downsampling.
     FIR estimator is parameterized as 
     eta2 = 115878063.84, 161 [dB],
     Ts = 8e-05,
-    K1 = 4096,
-    K2 = 4096,
+    K1 = 8192,
+    K2 = 8192,
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
     h = 
-    [[[-2.45633103e-14  2.77920413e-15  3.61008746e-16 -3.20109883e-17]]
+    [[[-1.23187868e-26 -2.39473543e-26  5.80493210e-28  1.51037337e-28]]
 
-     [[-2.59982865e-14  2.46960234e-15  3.89538044e-16 -3.07690960e-17]]
+     [[-3.00992717e-28 -2.42199830e-26  3.86730978e-28  1.59530864e-28]]
 
-     [[-2.72798670e-14  2.13972804e-15  4.15858851e-16 -2.93080665e-17]]
+     [[ 1.18724466e-26 -2.43361020e-26  1.87936626e-28  1.67079138e-28]]
 
      ...
 
-     [[-2.72798670e-14 -2.66559044e-15  3.69555595e-16  3.68286915e-17]]
+     [[ 1.18724466e-26  2.45649663e-26  6.59216255e-28 -1.59258676e-28]]
 
-     [[-2.59982865e-14 -2.97076034e-15  3.37114191e-16  3.77324091e-17]]
+     [[-3.00992696e-28  2.42141852e-26  8.53514394e-28 -1.47956841e-28]]
 
-     [[-2.45633103e-14 -3.25270078e-15  3.02883500e-16  3.83786068e-17]]]. 
+     [[-1.23187868e-26  2.37098947e-26  1.03979256e-27 -1.35832631e-28]]]. 
 
 
 
@@ -385,25 +385,25 @@ Next we repeat the initalization steps above but for a downsampled estimator
     FIR estimator is parameterized as 
     eta2 = 115878063.84, 161 [dB],
     Ts = 8e-05,
-    K1 = 4096,
-    K2 = 4096,
+    K1 = 8192,
+    K2 = 8192,
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
     h = 
-    [[[-2.45633103e-14  2.77920413e-15  3.61008746e-16 -3.20109883e-17]]
+    [[[-1.23187868e-26 -2.39473543e-26  5.80493210e-28  1.51037337e-28]]
 
-     [[-2.59982865e-14  2.46960234e-15  3.89538044e-16 -3.07690960e-17]]
+     [[-3.00992717e-28 -2.42199830e-26  3.86730978e-28  1.59530864e-28]]
 
-     [[-2.72798670e-14  2.13972804e-15  4.15858851e-16 -2.93080665e-17]]
+     [[ 1.18724466e-26 -2.43361020e-26  1.87936626e-28  1.67079138e-28]]
 
      ...
 
-     [[-2.72798670e-14 -2.66559044e-15  3.69555595e-16  3.68286915e-17]]
+     [[ 1.18724466e-26  2.45649663e-26  6.59216255e-28 -1.59258676e-28]]
 
-     [[-2.59982865e-14 -2.97076034e-15  3.37114191e-16  3.77324091e-17]]
+     [[-3.00992696e-28  2.42141852e-26  8.53514394e-28 -1.47956841e-28]]
 
-     [[-2.45633103e-14 -3.25270078e-15  3.02883500e-16  3.83786068e-17]]]. 
+     [[-1.23187868e-26  2.37098947e-26  1.03979256e-27 -1.35832631e-28]]]. 
 
 
 
@@ -415,40 +415,29 @@ Estimating (Filtering)
 ----------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-197
+.. GENERATED FROM PYTHON SOURCE LINES 185-195
 
 .. code-block:: default
    :lineno-start: 186
 
 
     # Set simulation length
-    size = L2 << 2
+    size = L2 << 4
     u_hat_ref = np.zeros(size)
     u_hat_dow = np.zeros(size // OSR)
     for index in range(size):
         u_hat_ref[index] = next(digital_estimator_ref)
-    print("T1")
     for index in range(size // OSR):
         u_hat_dow[index] = next(digital_estimator_dow)
-    print("T2")
 
 
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    T1
-    T2
 
 
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 198-203
+.. GENERATED FROM PYTHON SOURCE LINES 196-201
 
 Visualizing Results
 -------------------
@@ -456,10 +445,10 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 203-237
+.. GENERATED FROM PYTHON SOURCE LINES 201-235
 
 .. code-block:: default
-   :lineno-start: 203
+   :lineno-start: 201
 
     from cbadc.utilities import compute_power_spectral_density
 
@@ -476,7 +465,7 @@ in both time and frequency domain.
     plt.legend()
     plt.title("Estimated input signal")
     plt.grid(which='both')
-    plt.xlim((-100, 500))
+    # plt.xlim((-100, 500))
     plt.tight_layout()
 
     plt.figure()
@@ -520,7 +509,7 @@ in both time and frequency domain.
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 4096 is greater than input length  = 64, using nperseg = 64
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 4096 is greater than input length  = 896, using nperseg = 896
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
@@ -529,7 +518,7 @@ in both time and frequency domain.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  4.054 seconds)
+   **Total running time of the script:** ( 5 minutes  53.276 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_c_downsample.py:
