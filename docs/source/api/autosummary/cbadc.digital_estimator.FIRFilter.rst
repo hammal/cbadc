@@ -9,7 +9,7 @@ cbadc.digital\_estimator.FIRFilter
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods
@@ -17,7 +17,6 @@ cbadc.digital\_estimator.FIRFilter
    .. autosummary::
    
       ~FIRFilter.__init__
-      ~FIRFilter.lookahead
       ~FIRFilter.lookback
       ~FIRFilter.noise_transfer_function
       ~FIRFilter.signal_transfer_function

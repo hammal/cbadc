@@ -1,6 +1,12 @@
-"""State space simulator
+"""Analog System and Digital Control Simulator
 
-This module provides simulation
+This module provides simulator tools to simulate the hardware
+interaction between an analog system and digital control. 
+These are mainly intended to produce control signals 
+:math:`\mathbf{s}[k]` and evaluate state vector trajectories 
+:math:`\mathbf{x}(t)` for various Analog system
+:py:class:`cbadc.analog_system.AnalogSystem` and 
+:py:class:`cbadc.digital_control.DigitalControl` interactions. 
 """
 from cbadc.analog_system cimport AnalogSystem
 from cbadc.digital_control cimport DigitalControl

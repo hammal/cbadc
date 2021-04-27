@@ -1901,6 +1901,7 @@ static const char __pyx_k_m[] = "m";
 static const char __pyx_k_q[] = "q";
 static const char __pyx_k_s[] = "s";
 static const char __pyx_k_bs[] = "bs";
+static const char __pyx_k_fs[] = "fs";
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_rb[] = "rb";
 static const char __pyx_k_wb[] = "wb";
@@ -2011,6 +2012,7 @@ static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_format_marker;
 static PyObject *__pyx_n_u_format_marker;
 static PyObject *__pyx_n_s_freq;
+static PyObject *__pyx_n_s_fs;
 static PyObject *__pyx_n_u_h;
 static PyObject *__pyx_n_u_hanning;
 static PyObject *__pyx_n_u_i;
@@ -2077,11 +2079,12 @@ static PyObject *__pyx_pf_5cbadc_9utilities_5byte_stream_2_control_signal(CYTHON
 static PyObject *__pyx_pf_5cbadc_9utilities_8write_byte_stream_to_file(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_filename, PyObject *__pyx_v_iterator); /* proto */
 static PyObject *__pyx_pf_5cbadc_9utilities_10read_byte_stream_from_file(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_filename, PyObject *__pyx_v_M); /* proto */
 static PyObject *__pyx_pf_5cbadc_9utilities_13random_control_signal(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_M, int __pyx_v_stop_after_number_of_iterations, int __pyx_v_random_seed); /* proto */
-static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sequence, PyObject *__pyx_v_nperseg); /* proto */
+static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sequence, PyObject *__pyx_v_nperseg, PyObject *__pyx_v_fs); /* proto */
 static PyObject *__pyx_tp_new_5cbadc_9utilities___pyx_scope_struct__control_signal_2_byte_stream(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5cbadc_9utilities___pyx_scope_struct_1_byte_stream_2_control_signal(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5cbadc_9utilities___pyx_scope_struct_2_read_byte_stream_from_file(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5cbadc_9utilities___pyx_scope_struct_3_random_control_signal(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_float_1_0;
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
@@ -4503,18 +4506,19 @@ static PyObject *__pyx_gb_5cbadc_9utilities_15generator3(__pyx_CoroutineObject *
 /* "cbadc/utilities.pyx":184
  * 
  * 
- * def compute_power_spectral_density(sequence, nperseg = 1 << 14):             # <<<<<<<<<<<<<<
+ * def compute_power_spectral_density(sequence, nperseg = 1 << 14, fs = 1.0):             # <<<<<<<<<<<<<<
  *     """Compute power spectral density of sequence.
  * 
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_5cbadc_9utilities_17compute_power_spectral_density(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_5cbadc_9utilities_16compute_power_spectral_density[] = "compute_power_spectral_density(sequence, nperseg=16384)\nCompute power spectral density of sequence.\n\n    Parameters\n    ----------\n    sequence : array_like, shape=(L, K)\n\n    Returns\n    -------\n    ((array_like, shape=(K,)), (array_like, shape=(L, K)))\n        frequenceis [Hz] and PSD [:math:`V^2/\\mathrm{Hz}`] of sequence.\n    ";
+static char __pyx_doc_5cbadc_9utilities_16compute_power_spectral_density[] = "compute_power_spectral_density(sequence, nperseg=16384, fs=1.0)\nCompute power spectral density of sequence.\n\n    Parameters\n    ----------\n    sequence : array_like, shape=(L, K)\n        determine length of each fft sequence\n    fs : `double`, `optional`\n        sampling frequency, defaults to 1.0\n\n    Returns\n    -------\n    ((array_like, shape=(K,)), (array_like, shape=(L, K)))\n        frequenceis [Hz] and PSD [:math:`V^2/\\mathrm{Hz}`] of sequence.\n    ";
 static PyMethodDef __pyx_mdef_5cbadc_9utilities_17compute_power_spectral_density = {"compute_power_spectral_density", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5cbadc_9utilities_17compute_power_spectral_density, METH_VARARGS|METH_KEYWORDS, __pyx_doc_5cbadc_9utilities_16compute_power_spectral_density};
 static PyObject *__pyx_pw_5cbadc_9utilities_17compute_power_spectral_density(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_sequence = 0;
   PyObject *__pyx_v_nperseg = 0;
+  PyObject *__pyx_v_fs = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4522,13 +4526,16 @@ static PyObject *__pyx_pw_5cbadc_9utilities_17compute_power_spectral_density(PyO
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("compute_power_spectral_density (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_sequence,&__pyx_n_s_nperseg,0};
-    PyObject* values[2] = {0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_sequence,&__pyx_n_s_nperseg,&__pyx_n_s_fs,0};
+    PyObject* values[3] = {0,0,0};
     values[1] = ((PyObject *)__pyx_int_16384);
+    values[2] = ((PyObject *)__pyx_float_1_0);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         CYTHON_FALLTHROUGH;
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -4547,12 +4554,20 @@ static PyObject *__pyx_pw_5cbadc_9utilities_17compute_power_spectral_density(PyO
           PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_nperseg);
           if (value) { values[1] = value; kw_args--; }
         }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_fs);
+          if (value) { values[2] = value; kw_args--; }
+        }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "compute_power_spectral_density") < 0)) __PYX_ERR(0, 184, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         CYTHON_FALLTHROUGH;
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -4562,23 +4577,24 @@ static PyObject *__pyx_pw_5cbadc_9utilities_17compute_power_spectral_density(PyO
     }
     __pyx_v_sequence = values[0];
     __pyx_v_nperseg = values[1];
+    __pyx_v_fs = values[2];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("compute_power_spectral_density", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 184, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("compute_power_spectral_density", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 184, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cbadc.utilities.compute_power_spectral_density", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(__pyx_self, __pyx_v_sequence, __pyx_v_nperseg);
+  __pyx_r = __pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(__pyx_self, __pyx_v_sequence, __pyx_v_nperseg, __pyx_v_fs);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sequence, PyObject *__pyx_v_nperseg) {
+static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_sequence, PyObject *__pyx_v_nperseg, PyObject *__pyx_v_fs) {
   PyObject *__pyx_v_freq = NULL;
   PyObject *__pyx_v_spectrum = NULL;
   PyObject *__pyx_r = NULL;
@@ -4593,85 +4609,94 @@ static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYT
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compute_power_spectral_density", 0);
 
-  /* "cbadc/utilities.pyx":196
+  /* "cbadc/utilities.pyx":199
  *         frequenceis [Hz] and PSD [:math:`V^2/\mathrm{Hz}`] of sequence.
  *     """
  *     freq, spectrum = welch(             # <<<<<<<<<<<<<<
  *         sequence,
  *         window='hanning',
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_welch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_welch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "cbadc/utilities.pyx":197
+  /* "cbadc/utilities.pyx":200
  *     """
  *     freq, spectrum = welch(
  *         sequence,             # <<<<<<<<<<<<<<
  *         window='hanning',
  *         nperseg=nperseg,
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_sequence);
   __Pyx_GIVEREF(__pyx_v_sequence);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_sequence);
 
-  /* "cbadc/utilities.pyx":198
+  /* "cbadc/utilities.pyx":201
  *     freq, spectrum = welch(
  *         sequence,
  *         window='hanning',             # <<<<<<<<<<<<<<
  *         nperseg=nperseg,
  *         noverlap=None,
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_window, __pyx_n_u_hanning) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_window, __pyx_n_u_hanning) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
 
-  /* "cbadc/utilities.pyx":199
+  /* "cbadc/utilities.pyx":202
  *         sequence,
  *         window='hanning',
  *         nperseg=nperseg,             # <<<<<<<<<<<<<<
  *         noverlap=None,
  *         nfft=None,
  */
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_nperseg, __pyx_v_nperseg) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_nperseg, __pyx_v_nperseg) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
 
-  /* "cbadc/utilities.pyx":200
+  /* "cbadc/utilities.pyx":203
  *         window='hanning',
  *         nperseg=nperseg,
  *         noverlap=None,             # <<<<<<<<<<<<<<
  *         nfft=None,
  *         return_onesided=True,
  */
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_noverlap, Py_None) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_noverlap, Py_None) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
 
-  /* "cbadc/utilities.pyx":201
+  /* "cbadc/utilities.pyx":204
  *         nperseg=nperseg,
  *         noverlap=None,
  *         nfft=None,             # <<<<<<<<<<<<<<
  *         return_onesided=True,
- *         scaling='density'
+ *         scaling='density',
  */
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_nfft, Py_None) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_nfft, Py_None) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
 
-  /* "cbadc/utilities.pyx":202
+  /* "cbadc/utilities.pyx":205
  *         noverlap=None,
  *         nfft=None,
  *         return_onesided=True,             # <<<<<<<<<<<<<<
- *         scaling='density'
- *         )
+ *         scaling='density',
+ *         fs = fs
  */
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_return_onesided, Py_True) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_scaling, __pyx_n_u_density) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_return_onesided, Py_True) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_scaling, __pyx_n_u_density) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
 
-  /* "cbadc/utilities.pyx":196
+  /* "cbadc/utilities.pyx":207
+ *         return_onesided=True,
+ *         scaling='density',
+ *         fs = fs             # <<<<<<<<<<<<<<
+ *         )
+ *     return (freq, spectrum)
+ */
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_fs, __pyx_v_fs) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
+
+  /* "cbadc/utilities.pyx":199
  *         frequenceis [Hz] and PSD [:math:`V^2/\mathrm{Hz}`] of sequence.
  *     """
  *     freq, spectrum = welch(             # <<<<<<<<<<<<<<
  *         sequence,
  *         window='hanning',
  */
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4682,7 +4707,7 @@ static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYT
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 196, __pyx_L1_error)
+      __PYX_ERR(0, 199, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -4695,15 +4720,15 @@ static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYT
     __Pyx_INCREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_t_2);
     #else
-    __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 196, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 196, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     #endif
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_1 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+    __pyx_t_1 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext;
@@ -4711,7 +4736,7 @@ static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYT
     __Pyx_GOTREF(__pyx_t_3);
     index = 1; __pyx_t_2 = __pyx_t_5(__pyx_t_1); if (unlikely(!__pyx_t_2)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_2);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_5(__pyx_t_1), 2) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_5(__pyx_t_1), 2) < 0) __PYX_ERR(0, 199, __pyx_L1_error)
     __pyx_t_5 = NULL;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     goto __pyx_L4_unpacking_done;
@@ -4719,7 +4744,7 @@ static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYT
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_5 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 196, __pyx_L1_error)
+    __PYX_ERR(0, 199, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_freq = __pyx_t_3;
@@ -4727,13 +4752,13 @@ static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYT
   __pyx_v_spectrum = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "cbadc/utilities.pyx":205
- *         scaling='density'
+  /* "cbadc/utilities.pyx":209
+ *         fs = fs
  *         )
  *     return (freq, spectrum)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_v_freq);
   __Pyx_GIVEREF(__pyx_v_freq);
@@ -4748,7 +4773,7 @@ static PyObject *__pyx_pf_5cbadc_9utilities_16compute_power_spectral_density(CYT
   /* "cbadc/utilities.pyx":184
  * 
  * 
- * def compute_power_spectral_density(sequence, nperseg = 1 << 14):             # <<<<<<<<<<<<<<
+ * def compute_power_spectral_density(sequence, nperseg = 1 << 14, fs = 1.0):             # <<<<<<<<<<<<<<
  *     """Compute power spectral density of sequence.
  * 
  */
@@ -6370,6 +6395,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_format_marker, __pyx_k_format_marker, sizeof(__pyx_k_format_marker), 0, 0, 1, 1},
   {&__pyx_n_u_format_marker, __pyx_k_format_marker, sizeof(__pyx_k_format_marker), 0, 1, 0, 1},
   {&__pyx_n_s_freq, __pyx_k_freq, sizeof(__pyx_k_freq), 0, 0, 1, 1},
+  {&__pyx_n_s_fs, __pyx_k_fs, sizeof(__pyx_k_fs), 0, 0, 1, 1},
   {&__pyx_n_u_h, __pyx_k_h, sizeof(__pyx_k_h), 0, 1, 0, 1},
   {&__pyx_n_u_hanning, __pyx_k_hanning, sizeof(__pyx_k_hanning), 0, 1, 0, 1},
   {&__pyx_n_u_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 1, 0, 1},
@@ -6565,14 +6591,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "cbadc/utilities.pyx":184
  * 
  * 
- * def compute_power_spectral_density(sequence, nperseg = 1 << 14):             # <<<<<<<<<<<<<<
+ * def compute_power_spectral_density(sequence, nperseg = 1 << 14, fs = 1.0):             # <<<<<<<<<<<<<<
  *     """Compute power spectral density of sequence.
  * 
  */
-  __pyx_tuple__17 = PyTuple_Pack(4, __pyx_n_s_sequence, __pyx_n_s_nperseg, __pyx_n_s_freq, __pyx_n_s_spectrum); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_tuple__17 = PyTuple_Pack(5, __pyx_n_s_sequence, __pyx_n_s_nperseg, __pyx_n_s_fs, __pyx_n_s_freq, __pyx_n_s_spectrum); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_utilities_pyx, __pyx_n_s_compute_power_spectral_density, 184, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_cbadc_utilities_pyx, __pyx_n_s_compute_power_spectral_density, 184, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -6582,6 +6608,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_float_1_0 = PyFloat_FromDouble(1.0); if (unlikely(!__pyx_float_1_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -7082,7 +7109,7 @@ if (!__Pyx_RefNanny) {
   /* "cbadc/utilities.pyx":184
  * 
  * 
- * def compute_power_spectral_density(sequence, nperseg = 1 << 14):             # <<<<<<<<<<<<<<
+ * def compute_power_spectral_density(sequence, nperseg = 1 << 14, fs = 1.0):             # <<<<<<<<<<<<<<
  *     """Compute power spectral density of sequence.
  * 
  */

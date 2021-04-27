@@ -9,7 +9,7 @@ cbadc.digital\_control.DigitalControl
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods

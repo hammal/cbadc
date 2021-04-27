@@ -183,6 +183,7 @@ plt.ylabel('$\hat{u}(t)$')
 plt.title("Estimated input signal")
 plt.grid()
 plt.xlim((0, 1500))
+plt.ylim((-1, 1))
 plt.tight_layout()
 
 ###############################################################################

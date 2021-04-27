@@ -1,4 +1,4 @@
-"""Digital control
+"""Digital controls
 
 This module provides a general :py:class:`cbadc.digital_control.DigitalControl`
 class to enabled the creation of a general indepedently controlled digital

@@ -582,7 +582,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 7 minutes  54.428 seconds)
+   **Total running time of the script:** ( 7 minutes  38.908 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:

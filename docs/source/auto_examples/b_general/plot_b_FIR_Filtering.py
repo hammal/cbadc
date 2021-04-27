@@ -58,7 +58,7 @@ print(digital_control)
 import matplotlib.pyplot as plt
 from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
 
-eta2 = 1e5
+eta2 = 1e6
 
 from cbadc.digital_estimator import FIRFilter
 byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
@@ -171,7 +171,7 @@ plt.grid(which="both")
 # combination.
 from cbadc.utilities import compute_power_spectral_density
 
-filter_lengths = [1, 1 << 4, 1 << 6, 1 << 8]
+filter_lengths = [1 << 4, 1 << 6, 1 << 7, 1 << 8]
 print(f"filter_lengths: {filter_lengths}")
 
 eta2 = 1e6
@@ -191,6 +191,17 @@ digital_estimators = [FIRFilter(
     stop_after_number_of_iterations=stop_after_number_of_iterations
 ) for index, cs in enumerate(control_signal_sequences)]
 
+digital_estimators.append(DigitalEstimator(
+    byte_stream_2_control_signal(read_byte_stream_from_file(
+    '../a_getting_started/sinusodial_simulation.adc', M), M),
+    analog_system,
+    digital_control,
+    eta2,
+    stop_after_number_of_iterations >> 2,
+    1 << 14,
+    stop_after_number_of_iterations=stop_after_number_of_iterations
+))
+
 fig_frequency_spectrum = 4
 fig_time_domain = 5
 for index_de, de in enumerate(digital_estimators):
@@ -198,15 +209,28 @@ for index_de, de in enumerate(digital_estimators):
     print(de)
     for index, estimate in enumerate(de):
         u_hat[index] = estimate
-    f, psd = compute_power_spectral_density(u_hat[filter_lengths[index_de]:])
-    plt.figure(fig_frequency_spectrum)
-    plt.semilogx(f, 10 * np.log10(psd),
-                 label=f'K1=K2={filter_lengths[index_de]}')
-    plt.figure(fig_time_domain)
-    t_fir = np.arange(-filter_lengths[index_de] + 1,
-                      stop_after_number_of_iterations - filter_lengths[index_de] + 1)
-    plt.plot(t_fir, u_hat, label=f'K1=K2={filter_lengths[index_de]}')
 
+    plt.figure(fig_frequency_spectrum)
+
+    if(index_de < len(filter_lengths)):
+        # Plot the FIR filters
+        f, psd = compute_power_spectral_density(
+            u_hat[filter_lengths[index_de]:])
+        plt.semilogx(f, 10 * np.log10(psd),
+                     label=f'K1=K2={filter_lengths[index_de]}')
+        plt.figure(fig_time_domain)
+        t_fir = np.arange(-filter_lengths[index_de] + 1,
+                          stop_after_number_of_iterations - filter_lengths[index_de] + 1)
+        plt.plot(t_fir, u_hat, label=f'K1=K2={filter_lengths[index_de]}')
+    else:
+        # Plot reference
+        f, psd = compute_power_spectral_density(
+            u_hat)
+        plt.semilogx(f, 10 * np.log10(psd),
+                     label=f'DigitalEstimator')
+        plt.figure(fig_time_domain)
+        t_fir = np.arange(0, u_hat.size)
+        plt.plot(t_fir, u_hat, label=f'DigitalEstimator')
 plt.xlabel('$t / T$')
 plt.ylabel('$\hat{u}(t)$')
 plt.legend()

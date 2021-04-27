@@ -181,12 +181,15 @@ def random_control_signal(int M, int stop_after_number_of_iterations=(1 << 63), 
         raise StopIteration
 
 
-def compute_power_spectral_density(sequence, nperseg = 1 << 14):
+def compute_power_spectral_density(sequence, nperseg = 1 << 14, fs = 1.0):
     """Compute power spectral density of sequence.
 
     Parameters
     ----------
     sequence : array_like, shape=(L, K)
+        determine length of each fft sequence
+    fs : `double`, `optional`
+        sampling frequency, defaults to 1.0
 
     Returns
     -------
@@ -200,6 +203,7 @@ def compute_power_spectral_density(sequence, nperseg = 1 << 14):
         noverlap=None, 
         nfft=None, 
         return_onesided=True, 
-        scaling='density' 
+        scaling='density',
+        fs = fs
         )
     return (freq, spectrum)

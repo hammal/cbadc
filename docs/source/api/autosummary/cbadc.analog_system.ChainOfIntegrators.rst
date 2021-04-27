@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.ChainOfIntegrators
+cbadc.analog\_system.ChainOfIntegrators
 =======================================
 
 .. currentmodule:: cbadc.analog_system
@@ -9,7 +9,7 @@
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods

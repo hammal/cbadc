@@ -9,7 +9,7 @@ cbadc.simulator.StateSpaceSimulator
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods

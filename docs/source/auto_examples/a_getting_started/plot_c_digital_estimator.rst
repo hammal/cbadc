@@ -219,9 +219,64 @@ such as eta2, the batch size K1, and possible the lookahead K2.
     Ts = 8e-05,
     K1 = 10,
     K2 = 0,
-    estimator_type = quadratic,
     and
-    number_of_iterations = 9223372036854775808. 
+    number_of_iterations = 9223372036854775808
+    Resulting in the filter coefficients
+    Af = 
+    [[ 9.95012474e-01 -6.52575462e-08 -6.42118440e-07 -5.01286977e-06
+      -2.88559805e-05 -1.05886070e-04]
+     [ 4.97506158e-01  9.95011508e-01 -9.56770627e-06 -7.48255323e-05
+      -4.32040749e-04 -1.59582071e-03]
+     [ 1.24375947e-01  4.97498960e-01  9.94940686e-01 -5.62457185e-04
+      -3.25746716e-03 -1.21106393e-02]
+     [ 2.07264917e-02  1.24341653e-01  4.97161510e-01  9.92306292e-01
+      -1.57270281e-02 -5.89033604e-02]
+     [ 2.58168848e-03  2.06164165e-02  1.23258540e-01  4.88705899e-01
+       9.43632587e-01 -1.94333587e-01]
+     [ 2.39289279e-04  2.35454851e-03  1.83814143e-02  1.05810395e-01
+       3.88267759e-01  5.75078140e-01]],
+    Ab = 
+    [[ 1.00501251e+00  8.77436590e-08 -8.61621467e-07  6.70567894e-06
+      -3.83956519e-05  1.39283979e-04]
+     [-5.02506150e-01  1.00501121e+00  1.28385281e-05 -1.00096227e-04
+       5.74907261e-04 -2.09960241e-03]
+     [ 1.25625752e-01 -5.02496612e-01  1.00491755e+00  7.41774780e-04
+      -4.27386936e-03  1.57156771e-02]
+     [-2.09339839e-02  1.25581705e-01 -5.02064077e-01  1.00155130e+00
+       2.00164295e-02 -7.41945627e-02]
+     [ 2.60561741e-03 -2.07997590e-02  1.24263649e-01 -4.91806139e-01
+       9.42815973e-01  2.33084553e-01]
+     [-2.39289279e-04  2.34976272e-03 -1.82873280e-02  1.04710334e-01
+      -3.79846967e-01  5.36673137e-01]],
+    Bf = 
+    [[-4.98752080e-01  5.50486500e-09  6.53125949e-08  6.42771566e-07
+       5.01929749e-06  2.89061735e-05]
+     [-1.24584108e-01 -4.98751999e-01  9.72039300e-07  9.57742666e-06
+       7.49213066e-05  4.32789962e-04]
+     [-2.07553203e-02 -1.24583500e-01 -4.98744795e-01  7.18658889e-05
+       5.63175844e-04  3.26309892e-03]
+     [-2.59356050e-03 -2.07524273e-02 -1.24549177e-01 -4.98407002e-01
+       2.70963772e-03  1.57541245e-02]
+     [-2.58651751e-04 -2.58427500e-03 -2.06422593e-02 -1.23464962e-01
+      -4.89940549e-01  5.14680079e-02]
+     [-2.01854843e-05 -2.39491133e-04 -2.35694342e-03 -1.84049837e-02
+      -1.05994445e-01 -3.89327703e-01]],
+    Bb = 
+    [[ 5.01252085e-01  7.40170334e-09 -8.76696420e-08  8.60744770e-07
+      -6.69707149e-06  3.83286812e-05]
+     [-1.25417441e-01  5.01251976e-01  1.30478895e-06 -1.28254802e-05
+       9.99679725e-05 -5.73907581e-04]
+     [ 2.09115563e-02 -1.25416636e-01  5.01242446e-01  9.48714617e-05
+      -7.40826065e-04  4.26646110e-03]
+     [-2.61433338e-03  2.09078406e-02 -1.25372626e-01  5.00810351e-01
+       3.45680789e-03 -1.99818615e-02]
+     [ 2.60670299e-04 -2.60301071e-03  2.07737289e-02 -1.24055911e-01
+       4.90565580e-01  6.20896833e-02]
+     [-2.01854843e-05  2.39087424e-04 -2.34737185e-03  1.82638543e-02
+      -1.04527695e-01  3.78801690e-01]],
+    and WT = 
+    [[ 8.39789066e-02  8.39789066e-04 -2.08312400e-03 -6.26616779e-05
+       1.02954027e-04  5.18949821e-06]]. 
 
 
 
@@ -374,7 +429,7 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-188
+.. GENERATED FROM PYTHON SOURCE LINES 162-189
 
 .. code-block:: default
    :lineno-start: 162
@@ -403,6 +458,7 @@ analog system and digital controls as in this example so
     plt.title("Estimated input signal")
     plt.grid()
     plt.xlim((0, 1500))
+    plt.ylim((-1, 1))
     plt.tight_layout()
 
 
@@ -424,7 +480,7 @@ analog system and digital controls as in this example so
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 189-194
+.. GENERATED FROM PYTHON SOURCE LINES 190-195
 
 Plotting the PSD
 ----------------
@@ -432,10 +488,10 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 194-204
+.. GENERATED FROM PYTHON SOURCE LINES 195-205
 
 .. code-block:: default
-   :lineno-start: 194
+   :lineno-start: 195
 
     from cbadc.utilities import compute_power_spectral_density
 
@@ -461,7 +517,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  25.275 seconds)
+   **Total running time of the script:** ( 0 minutes  22.323 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_c_digital_estimator.py:

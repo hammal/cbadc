@@ -1957,7 +1957,7 @@ static const char __pyx_k_Cannot_assign_to_read_only_memor[] = "Cannot assign to
 static const char __pyx_k_Cannot_create_writable_memory_vi[] = "Cannot create writable memory view from read-only memoryview";
 static const char __pyx_k_DigitalControl_control_contribut[] = "DigitalControl.control_contribution (line 65)";
 static const char __pyx_k_DigitalControl_control_signal_li[] = "DigitalControl.control_signal (line 109)";
-static const char __pyx_k_Digital_control_This_module_prov[] = "Digital control\n\nThis module provides a general :py:class:`cbadc.digital_control.DigitalControl`\nclass to enabled the creation of a general indepedently controlled digital\ncontrol system.\n";
+static const char __pyx_k_Digital_controls_This_module_pro[] = "Digital controls\n\nThis module provides a general :py:class:`cbadc.digital_control.DigitalControl`\nclass to enabled the creation of a general indepedently controlled digital\ncontrol system.\n";
 static const char __pyx_k_Empty_shape_tuple_for_cython_arr[] = "Empty shape tuple for cython.array";
 static const char __pyx_k_Evaluates_the_control_contributi[] = "Evaluates the control contribution at time t given a control observation\n        s_tilde.\n\n        Parameters\n        ----------\n        t : `float`\n            time at which the digital control i evaluated.\n        s_tilde : `array_like`, shape=(M_tilde,)\n            state vector evaluated at time t\n\n        Examples\n        --------\n        >>> from cbadc.digital_control import DigitalControl\n        >>> import numpy as np\n        >>> T = 1e-6\n        >>> M = 4\n        >>> dc = DigitalControl(T, M)\n        >>> res = dc.control_contribution(T + 1e-100, np.array([0.1, -0.2, 0.3, -99]))\n        >>> print(np.array(res))\n        [ 1. -1.  1. -1.]\n\n\n\n        Returns\n        -------\n        `array_like`, shape=(M,)\n            the control signal :math:`\\mathbf{s}(t)`\n\n        ";
 static const char __pyx_k_Incompatible_checksums_s_vs_0x02[] = "Incompatible checksums (%s vs 0x02737c8 = (M, M_tilde, T, _dac_values, _s, _t_next))";
@@ -17961,7 +17961,7 @@ static PyModuleDef_Slot __pyx_moduledef_slots[] = {
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
     "digital_control",
-    __pyx_k_Digital_control_This_module_prov, /* m_doc */
+    __pyx_k_Digital_controls_This_module_pro, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
   #else
@@ -18702,7 +18702,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("digital_control", __pyx_methods, __pyx_k_Digital_control_This_module_prov, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("digital_control", __pyx_methods, __pyx_k_Digital_controls_This_module_pro, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -18771,7 +18771,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "cbadc/digital_control.pyx":1
- * """Digital control             # <<<<<<<<<<<<<<
+ * """Digital controls             # <<<<<<<<<<<<<<
  * 
  * This module provides a general :py:class:`cbadc.digital_control.DigitalControl`
  */

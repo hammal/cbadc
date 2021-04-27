@@ -9,7 +9,7 @@ cbadc.digital\_estimator.IIRFilter
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods

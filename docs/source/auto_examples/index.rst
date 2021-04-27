@@ -158,10 +158,10 @@ Next we highlight various common features of the cbadc package
 
 .. only:: html
 
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_c_down_sample_thumb.png
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_c_downsample_thumb.png
      :alt: Downsampling
 
-     :ref:`sphx_glr_auto_examples_b_general_plot_c_down_sample.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`
 
 .. raw:: html
 
@@ -171,7 +171,7 @@ Next we highlight various common features of the cbadc package
 .. toctree::
    :hidden:
 
-   /auto_examples/b_general/plot_c_down_sample
+   /auto_examples/b_general/plot_c_downsample
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
