@@ -3335,7 +3335,7 @@ static PyObject *__pyx_float_1eneg_20;
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
-static PyObject *__pyx_int_20;
+static PyObject *__pyx_int_10;
 static PyObject *__pyx_int_184977713;
 static PyObject *__pyx_int_9223372036854775808;
 static PyObject *__pyx_int_neg_1;
@@ -11391,7 +11391,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_16signal
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
+ *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
  * 
  */
 
@@ -11428,7 +11428,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_18__str_
   /* "cbadc/digital_estimator.pyx":399
  * 
  *     def __str__(self):
- *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."             # <<<<<<<<<<<<<<
+ *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -11478,7 +11478,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_18__str_
   if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyNumber_Multiply(__pyx_int_20, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Multiply(__pyx_int_10, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_6, __pyx_kp_u_0f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
@@ -11630,7 +11630,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_16DigitalEstimator_18__str_
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
+ *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
  * 
  */
 
@@ -18385,7 +18385,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_17ParallelEstimator_16signa
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
+ *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
  * 
  */
 
@@ -18422,7 +18422,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_17ParallelEstimator_18__str
   /* "cbadc/digital_estimator.pyx":758
  * 
  *     def __str__(self):
- *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."             # <<<<<<<<<<<<<<
+ *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -18472,7 +18472,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_17ParallelEstimator_18__str
   if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 758, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyNumber_Multiply(__pyx_int_20, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 758, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Multiply(__pyx_int_10, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 758, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_6, __pyx_kp_u_0f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 758, __pyx_L1_error)
@@ -18638,7 +18638,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_17ParallelEstimator_18__str
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
+ *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
  * 
  */
 
@@ -23678,7 +23678,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter_10signal_transfe
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
+ *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
  * 
  */
 
@@ -23715,7 +23715,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter_12__str__(CYTHON
   /* "cbadc/digital_estimator.pyx":1032
  * 
  *     def __str__(self):
- *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."             # <<<<<<<<<<<<<<
+ *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."             # <<<<<<<<<<<<<<
  * 
  * 
  */
@@ -23765,7 +23765,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter_12__str__(CYTHON
   if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1032, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyNumber_Multiply(__pyx_int_20, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1032, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Multiply(__pyx_int_10, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1032, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_6, __pyx_kp_u_0f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1032, __pyx_L1_error)
@@ -23889,7 +23889,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9IIRFilter_12__str__(CYTHON
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
+ *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
  * 
  */
 
@@ -30225,7 +30225,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter_10signal_transfe
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
+ *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
  */
 
 /* Python wrapper */
@@ -30261,7 +30261,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter_12__str__(CYTHON
   /* "cbadc/digital_estimator.pyx":1328
  * 
  *     def __str__(self):
- *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."             # <<<<<<<<<<<<<<
+ *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyTuple_New(15); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1328, __pyx_L1_error)
@@ -30309,7 +30309,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter_12__str__(CYTHON
   if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1328, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyNumber_Multiply(__pyx_int_20, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1328, __pyx_L1_error)
+  __pyx_t_6 = PyNumber_Multiply(__pyx_int_10, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1328, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_6, __pyx_kp_u_0f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1328, __pyx_L1_error)
@@ -30405,7 +30405,7 @@ static PyObject *__pyx_pf_5cbadc_17digital_estimator_9FIRFilter_12__str__(CYTHON
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
+ *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
  */
 
   /* function exit code */
@@ -46632,7 +46632,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
+ *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
  * 
  */
   __pyx_tuple__57 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 398, __pyx_L1_error)
@@ -46755,7 +46755,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
+ *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
  * 
  */
   __pyx_tuple__78 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__78)) __PYX_ERR(0, 757, __pyx_L1_error)
@@ -46842,7 +46842,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
+ *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
  * 
  */
   __pyx_tuple__93 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__93)) __PYX_ERR(0, 1031, __pyx_L1_error)
@@ -46929,7 +46929,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
+ *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
  */
   __pyx_tuple__108 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__108)) __PYX_ERR(0, 1327, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__108);
@@ -47017,7 +47017,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_20 = PyInt_FromLong(20); if (unlikely(!__pyx_int_20)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_10 = PyInt_FromLong(10); if (unlikely(!__pyx_int_10)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_9223372036854775808 = PyInt_FromString((char *)"9223372036854775808", 0, 0); if (unlikely(!__pyx_int_9223372036854775808)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -47740,7 +47740,7 @@ if (!__Pyx_RefNanny) {
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
+ *         return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
  * 
  */
   __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_16DigitalEstimator_19__str__, 0, __pyx_n_s_DigitalEstimator___str, NULL, __pyx_n_s_cbadc_digital_estimator, __pyx_d, ((PyObject *)__pyx_codeobj__58)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 398, __pyx_L1_error)
@@ -47884,7 +47884,7 @@ if (!__Pyx_RefNanny) {
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
+ *         return f"Parallel estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nf_a = \n{self.forward_a},\nb_a = \n{self.backward_b},\nf_b = \n{self.forward_b},\nb_b = \n{self.backward_b},\nf_w = \n{self.forward_w},\nand b_w = \n{self.backward_w}."
  * 
  */
   __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_17ParallelEstimator_19__str__, 0, __pyx_n_s_ParallelEstimator___str, NULL, __pyx_n_s_cbadc_digital_estimator, __pyx_d, ((PyObject *)__pyx_codeobj__79)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 757, __pyx_L1_error)
@@ -47992,7 +47992,7 @@ if (!__Pyx_RefNanny) {
  *         return result
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
+ *         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
  * 
  */
   __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9IIRFilter_13__str__, 0, __pyx_n_s_IIRFilter___str, NULL, __pyx_n_s_cbadc_digital_estimator, __pyx_d, ((PyObject *)__pyx_codeobj__94)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1031, __pyx_L1_error)
@@ -48100,7 +48100,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {20 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
+ *         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
  */
   __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5cbadc_17digital_estimator_9FIRFilter_13__str__, 0, __pyx_n_s_FIRFilter___str, NULL, __pyx_n_s_cbadc_digital_estimator, __pyx_d, ((PyObject *)__pyx_codeobj__109)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1327, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

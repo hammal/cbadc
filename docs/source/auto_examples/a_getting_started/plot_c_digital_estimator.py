@@ -1,6 +1,6 @@
 """
-Digital Estimation (Post Filtering)
-===================================
+Digital Estimation
+===================
 
 Converting a stream of control signals into a estimate samples.
 """
@@ -22,6 +22,8 @@ Converting a stream of control signals into a estimate samples.
 from cbadc.analog_system import AnalogSystem
 from cbadc.digital_control import DigitalControl
 from cbadc.digital_estimator import DigitalEstimator
+import numpy as np
+
 N = 6
 M = N
 beta = 6250.
@@ -33,19 +35,14 @@ A = [[rho, 0, 0, 0, 0, 0],
      [0, 0, 0, beta, rho, 0],
      [0, 0, 0, 0, beta, rho]]
 B = [[beta], [0], [0], [0], [0], [0]]
-CT = [[0, 0, 0, 0, 0, 1]]
+CT = np.eye(N)
 Gamma = [[-beta, 0, 0, 0, 0, 0],
          [0, -beta, 0, 0, 0, 0],
          [0, 0, -beta, 0, 0, 0],
          [0, 0, 0, -beta, 0, 0],
          [0, 0, 0, 0, -beta, 0],
          [0, 0, 0, 0, 0, -beta]]
-Gamma_tildeT = [[1, 0, 0, 0, 0, 0],
-                [0, 1, 0, 0, 0, 0],
-                [0, 0, 1, 0, 0, 0],
-                [0, 0, 0, 1, 0, 0],
-                [0, 0, 0, 0, 1, 0],
-                [0, 0, 0, 0, 0, 1]]
+Gamma_tildeT = np.eye(N)
 T = 1.0/(2 * beta)
 
 analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)

@@ -91,8 +91,8 @@ print(analog_signal)
 #
 from cbadc.simulator import StateSpaceSimulator
 
-# Simulate for 2^17 control cycles.
-end_time = T * (1 << 17)
+# Simulate for 2^18 control cycles.
+end_time = T * (1 << 18)
 
 # Instantiate the simulator.
 simulator = StateSpaceSimulator(analog_system, digital_control, [

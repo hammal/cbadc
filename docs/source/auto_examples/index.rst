@@ -60,7 +60,7 @@ Next follows three basic examples demonstrating how to
 .. only:: html
 
  .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_c_digital_estimator_thumb.png
-     :alt: Digital Estimation (Post Filtering)
+     :alt: Digital Estimation
 
      :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
 
@@ -106,7 +106,7 @@ Next follows three basic examples demonstrating how to
 General Examples
 ----------------
 
-Next we highlight various common features of the cbadc package 
+Next we highlight various features of the cbadc package 
   
 
 

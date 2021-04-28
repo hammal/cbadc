@@ -225,8 +225,8 @@ involved differential equations as outlined in
 
     from cbadc.simulator import StateSpaceSimulator
 
-    # Simulate for 2^17 control cycles.
-    end_time = T * (1 << 17)
+    # Simulate for 2^18 control cycles.
+    end_time = T * (1 << 18)
 
     # Instantiate the simulator.
     simulator = StateSpaceSimulator(analog_system, digital_control, [
@@ -277,7 +277,7 @@ involved differential equations as outlined in
     step:19 -> s:[1 1 0 1 1 1]
     t = 0.00168, (current simulator time)
     Ts = 8e-05,
-    t_stop = 10.48576,
+    t_stop = 20.97152,
     rtol = 1e-12,
     atol = 1e-12, and
     max_step = 0.0008
@@ -582,7 +582,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 7 minutes  38.908 seconds)
+   **Total running time of the script:** ( 15 minutes  10.594 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:

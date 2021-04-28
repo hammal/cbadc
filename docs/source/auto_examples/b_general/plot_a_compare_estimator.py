@@ -129,7 +129,7 @@ from cbadc.digital_estimator import DigitalEstimator
 G_at_omega = np.linalg.norm(
     analog_system.transfer_function_matrix(np.array([omega_3dB])))
 eta2 = G_at_omega**2
-print(f"eta2 = {eta2}, {20 * np.log10(eta2)} [dB]")
+print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
 # Set the batch size
 K1 = 1 << 14
@@ -215,7 +215,7 @@ for index in range(N):
     ax[1].plot(h_index, impulse_response_dB[:, index],
                label=f"$h_{index + 1}[k]$")
 ax[0].legend()
-fig.suptitle(f"For $\eta^2 = {20 * np.log10(eta2)}$ [dB]")
+fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
 ax[1].set_xlabel("filter taps k")
 ax[0].set_ylabel("$| h_\ell [k]|^2_2$")
 ax[1].set_ylabel("$| h_\ell [k]|^2_2$ [dB]")
@@ -371,14 +371,14 @@ u_hat_iir_clipped = u_hat_iir[(K1 + K2):-K2]
 u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
 u_clipped = stf_at_omega * u
 f_batch, psd_batch = compute_power_spectral_density(
-  u_hat_batch_clipped, nperseg=1 << 12)
+  u_hat_batch_clipped)
 f_fir, psd_fir = compute_power_spectral_density(
-    u_hat_fir_clipped, nperseg=1 << 12)
+    u_hat_fir_clipped)
 f_iir, psd_iir= compute_power_spectral_density(
-    u_hat_iir_clipped, nperseg=1 << 12)
+    u_hat_iir_clipped)
 f_parallel, psd_parallel = compute_power_spectral_density(
-    u_hat_parallel_clipped, nperseg=1 << 12)
-f_ref, psd_ref = compute_power_spectral_density(u_clipped, nperseg=1 << 12)
+    u_hat_parallel_clipped)
+f_ref, psd_ref = compute_power_spectral_density(u_clipped)
 plt.semilogx(f_ref, 10 * np.log10(psd_ref),
              label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
 plt.semilogx(f_batch, 10 * np.log10(psd_batch), label="$\hat{U}(f)$ Batch")
@@ -459,3 +459,5 @@ print(timeit.timeit(lambda: iterate_number_of_times(
 print("Parallel Estimator:")
 print(timeit.timeit(lambda: iterate_number_of_times(
     digital_estimator_parallel, length), number=repetitions), 'sec \n')
+
+# sphinx_gallery_thumbnail_number = 7

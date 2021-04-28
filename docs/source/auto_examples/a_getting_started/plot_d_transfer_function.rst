@@ -315,7 +315,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
         plt.semilogx(frequencies, 20 * \
                      np.log10(np.linalg.norm(ntf[0, :, :], axis=0)), '--', color=color)
         plt.semilogx(frequencies, stf_dB,
-                     label=f"$\eta^2={20 * np.log10(eta2):0.0f} dB$", color=color)
+                     label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$", color=color)
 
     # Add labels and legends to figure
     plt.legend(loc='lower left')
@@ -354,7 +354,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  21.820 seconds)
+   **Total running time of the script:** ( 0 minutes  21.941 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_d_transfer_function.py:

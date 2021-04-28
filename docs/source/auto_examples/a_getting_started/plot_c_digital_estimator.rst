@@ -18,8 +18,8 @@
 .. _sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py:
 
 
-Digital Estimation (Post Filtering)
-===================================
+Digital Estimation
+===================
 
 Converting a stream of control signals into a estimate samples.
 
@@ -38,7 +38,7 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 20-58
+.. GENERATED FROM PYTHON SOURCE LINES 20-55
 
 .. code-block:: default
    :lineno-start: 21
@@ -48,6 +48,8 @@ analog system and digital control.
     from cbadc.analog_system import AnalogSystem
     from cbadc.digital_control import DigitalControl
     from cbadc.digital_estimator import DigitalEstimator
+    import numpy as np
+
     N = 6
     M = N
     beta = 6250.
@@ -59,19 +61,14 @@ analog system and digital control.
          [0, 0, 0, beta, rho, 0],
          [0, 0, 0, 0, beta, rho]]
     B = [[beta], [0], [0], [0], [0], [0]]
-    CT = [[0, 0, 0, 0, 0, 1]]
+    CT = np.eye(N)
     Gamma = [[-beta, 0, 0, 0, 0, 0],
              [0, -beta, 0, 0, 0, 0],
              [0, 0, -beta, 0, 0, 0],
              [0, 0, 0, -beta, 0, 0],
              [0, 0, 0, 0, -beta, 0],
              [0, 0, 0, 0, 0, -beta]]
-    Gamma_tildeT = [[1, 0, 0, 0, 0, 0],
-                    [0, 1, 0, 0, 0, 0],
-                    [0, 0, 1, 0, 0, 0],
-                    [0, 0, 0, 1, 0, 0],
-                    [0, 0, 0, 0, 1, 0],
-                    [0, 0, 0, 0, 0, 1]]
+    Gamma_tildeT = np.eye(N)
     T = 1.0/(2 * beta)
 
     analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
@@ -107,7 +104,12 @@ analog system and digital control.
      [   0.]
      [   0.]],
     CT = 
-    [[0. 0. 0. 0. 0. 1.]],
+    [[1. 0. 0. 0. 0. 0.]
+     [0. 1. 0. 0. 0. 0.]
+     [0. 0. 1. 0. 0. 0.]
+     [0. 0. 0. 1. 0. 0.]
+     [0. 0. 0. 0. 1. 0.]
+     [0. 0. 0. 0. 0. 1.]],
     Gamma =
     [[-6250.     0.     0.     0.     0.     0.]
      [    0. -6250.     0.     0.     0.     0.]
@@ -131,7 +133,7 @@ analog system and digital control.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-66
+.. GENERATED FROM PYTHON SOURCE LINES 56-63
 
 Creating a Placehold Control Signal
 -----------------------------------
@@ -141,10 +143,10 @@ for a given analog signal. However, this might not always be the use case;
 instead, imagine we have acquired such a control signal from a previous
 simulation.
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-88
+.. GENERATED FROM PYTHON SOURCE LINES 63-85
 
 .. code-block:: default
-   :lineno-start: 66
+   :lineno-start: 63
 
     import numpy as np
     from cbadc.utilities import random_control_signal
@@ -175,7 +177,7 @@ simulation.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 89-97
+.. GENERATED FROM PYTHON SOURCE LINES 86-94
 
 Setting up the Filter
 ------------------------------------
@@ -186,10 +188,10 @@ DigitalEstimator class. However, these computations require us to
 specify both the analog system, the digital control and the filter parameters
 such as eta2, the batch size K1, and possible the lookahead K2.
 
-.. GENERATED FROM PYTHON SOURCE LINES 97-110
+.. GENERATED FROM PYTHON SOURCE LINES 94-107
 
 .. code-block:: default
-   :lineno-start: 98
+   :lineno-start: 95
 
 
     # Set the bandwidth of the estimator
@@ -215,7 +217,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
  .. code-block:: none
 
     Digital estimator is parameterized as 
-    eta2 = 10000000.00, 140 [dB],
+    eta2 = 10000000.00, 70 [dB],
     Ts = 8e-05,
     K1 = 10,
     K2 = 0,
@@ -223,76 +225,76 @@ such as eta2, the batch size K1, and possible the lookahead K2.
     number_of_iterations = 9223372036854775808
     Resulting in the filter coefficients
     Af = 
-    [[ 9.95012474e-01 -6.52575462e-08 -6.42118440e-07 -5.01286977e-06
-      -2.88559805e-05 -1.05886070e-04]
-     [ 4.97506158e-01  9.95011508e-01 -9.56770627e-06 -7.48255323e-05
-      -4.32040749e-04 -1.59582071e-03]
-     [ 1.24375947e-01  4.97498960e-01  9.94940686e-01 -5.62457185e-04
-      -3.25746716e-03 -1.21106393e-02]
-     [ 2.07264917e-02  1.24341653e-01  4.97161510e-01  9.92306292e-01
-      -1.57270281e-02 -5.89033604e-02]
-     [ 2.58168848e-03  2.06164165e-02  1.23258540e-01  4.88705899e-01
-       9.43632587e-01 -1.94333587e-01]
-     [ 2.39289279e-04  2.35454851e-03  1.83814143e-02  1.05810395e-01
-       3.88267759e-01  5.75078140e-01]],
+    [[ 9.95009873e-01 -1.07214558e-05 -3.29769511e-05 -7.22193743e-05
+      -9.99838614e-05 -6.08602482e-05]
+     [ 4.97480948e-01  9.94895332e-01 -3.94810856e-04 -9.35645249e-04
+      -1.40157552e-03 -9.46223367e-04]
+     [ 1.24240233e-01  4.96834695e-01  9.92598214e-01 -6.11667095e-03
+      -9.88175184e-03 -7.42125776e-03]
+     [ 2.02574876e-02  1.21940699e-01  4.88233723e-01  9.69889327e-01
+      -4.41464933e-02 -3.76124321e-02]
+     [ 1.56648671e-03  1.51890153e-02  1.01921548e-01  4.31504641e-01
+       8.65342522e-01 -1.31863329e-01]
+     [-8.48190802e-04 -3.79206318e-03 -7.66097787e-03  2.91476932e-02
+       2.70050483e-01  6.77163594e-01]],
     Ab = 
-    [[ 1.00501251e+00  8.77436590e-08 -8.61621467e-07  6.70567894e-06
-      -3.83956519e-05  1.39283979e-04]
-     [-5.02506150e-01  1.00501121e+00  1.28385281e-05 -1.00096227e-04
-       5.74907261e-04 -2.09960241e-03]
-     [ 1.25625752e-01 -5.02496612e-01  1.00491755e+00  7.41774780e-04
-      -4.27386936e-03  1.57156771e-02]
-     [-2.09339839e-02  1.25581705e-01 -5.02064077e-01  1.00155130e+00
-       2.00164295e-02 -7.41945627e-02]
-     [ 2.60561741e-03 -2.07997590e-02  1.24263649e-01 -4.91806139e-01
-       9.42815973e-01  2.33084553e-01]
-     [-2.39289279e-04  2.34976272e-03 -1.82873280e-02  1.04710334e-01
-      -3.79846967e-01  5.36673137e-01]],
+    [[ 1.00500883e+00  1.54861694e-05 -4.74794350e-05  1.01153964e-04
+      -1.31857374e-04  7.07416177e-05]
+     [-5.02468993e-01  1.00483987e+00  5.74426547e-04 -1.31763025e-03
+       1.85555402e-03 -1.11093774e-03]
+     [ 1.25425546e-01 -5.01522275e-01  1.00153543e+00  8.50959779e-03
+      -1.29342792e-02  8.68475153e-03]
+     [-2.02614680e-02  1.22167377e-01 -4.89583646e-01  9.71177642e-01
+       5.61398373e-02 -4.32879422e-02]
+     [ 1.23757454e-03 -1.35504621e-02  9.62247113e-02 -4.18716306e-01
+       8.48271033e-01  1.47273048e-01]
+     [ 1.06969462e-03 -4.99244970e-03  1.24120658e-02  1.62939979e-02
+      -2.49365903e-01  6.64066057e-01]],
     Bf = 
-    [[-4.98752080e-01  5.50486500e-09  6.53125949e-08  6.42771566e-07
-       5.01929749e-06  2.89061735e-05]
-     [-1.24584108e-01 -4.98751999e-01  9.72039300e-07  9.57742666e-06
-       7.49213066e-05  4.32789962e-04]
-     [-2.07553203e-02 -1.24583500e-01 -4.98744795e-01  7.18658889e-05
-       5.63175844e-04  3.26309892e-03]
-     [-2.59356050e-03 -2.07524273e-02 -1.24549177e-01 -4.98407002e-01
-       2.70963772e-03  1.57541245e-02]
-     [-2.58651751e-04 -2.58427500e-03 -2.06422593e-02 -1.23464962e-01
-      -4.89940549e-01  5.14680079e-02]
-     [-2.01854843e-05 -2.39491133e-04 -2.35694342e-03 -1.84049837e-02
-      -1.05994445e-01 -3.89327703e-01]],
+    [[-4.98751645e-01  2.01435011e-06  6.82590295e-06  1.63194985e-05
+       2.47281476e-05  1.69487071e-05]
+     [-1.24580150e-01 -4.98730814e-01  8.00612785e-05  2.08594140e-04
+       3.43169808e-04  2.60386347e-04]
+     [-2.07347413e-02 -1.24465299e-01 -4.98271350e-01  1.34555417e-03
+       2.39438164e-03  2.01951875e-03]
+     [-2.52435229e-03 -2.03346523e-02 -1.22773188e-01 -4.93311312e-01
+       1.05608518e-02  1.01139883e-02]
+     [-1.12872327e-04 -1.66317069e-03 -1.64790291e-02 -1.10609043e-01
+      -4.68327424e-01  3.49448581e-02]
+     [ 1.30405025e-04  7.66632154e-04  2.57282644e-03 -1.49723174e-03
+      -7.33995907e-02 -4.16260014e-01]],
     Bb = 
-    [[ 5.01252085e-01  7.40170334e-09 -8.76696420e-08  8.60744770e-07
-      -6.69707149e-06  3.83286812e-05]
-     [-1.25417441e-01  5.01251976e-01  1.30478895e-06 -1.28254802e-05
-       9.99679725e-05 -5.73907581e-04]
-     [ 2.09115563e-02 -1.25416636e-01  5.01242446e-01  9.48714617e-05
-      -7.40826065e-04  4.26646110e-03]
-     [-2.61433338e-03  2.09078406e-02 -1.25372626e-01  5.00810351e-01
-       3.45680789e-03 -1.99818615e-02]
-     [ 2.60670299e-04 -2.60301071e-03  2.07737289e-02 -1.24055911e-01
-       4.90565580e-01  6.20896833e-02]
-     [-2.01854843e-05  2.39087424e-04 -2.34737185e-03  1.82638543e-02
-      -1.04527695e-01  3.78801690e-01]],
+    [[ 5.01251476e-01  2.90629180e-06 -9.87489414e-06  2.30342675e-05
+      -3.29086754e-05  2.00065004e-05]
+     [-1.25411625e-01  5.01220654e-01  1.17271246e-04 -2.96315348e-04
+       4.58582587e-04 -3.09815586e-04]
+     [ 2.08811767e-02 -1.25242491e-01  5.00554230e-01  1.88944089e-03
+      -3.16355021e-03  2.39004868e-03]
+     [-2.51484999e-03  2.03105319e-02 -1.22872140e-01  4.93854504e-01
+       1.35533096e-02 -1.17435470e-02]
+     [ 6.36212541e-05 -1.36595554e-03  1.52653250e-02 -1.07513725e-01
+       4.64169939e-01  3.92569729e-02]
+     [ 1.61551740e-04 -9.68267461e-04  3.49710767e-03 -1.35278958e-03
+      -6.81691898e-02  4.12601756e-01]],
     and WT = 
-    [[ 8.39789066e-02  8.39789066e-04 -2.08312400e-03 -6.26616779e-05
-       1.02954027e-04  5.18949821e-06]]. 
+    [[ 8.45373598e-02  8.45372372e-04 -2.13025722e-03 -6.40572458e-05
+       1.06842223e-04  5.03895749e-06]]. 
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 111-115
+.. GENERATED FROM PYTHON SOURCE LINES 108-112
 
 Producing Estimates
 -------------------
 
 At this point, we can produce estimates by simply calling the iterator
 
-.. GENERATED FROM PYTHON SOURCE LINES 115-120
+.. GENERATED FROM PYTHON SOURCE LINES 112-117
 
 .. code-block:: default
-   :lineno-start: 116
+   :lineno-start: 113
 
 
     for i in digital_estimator:
@@ -309,42 +311,42 @@ At this point, we can produce estimates by simply calling the iterator
 
  .. code-block:: none
 
-    [-0.19364346]
-    [-0.19162643]
-    [-0.18828573]
-    [-0.18366046]
-    [-0.17780668]
-    [-0.17079648]
-    [-0.1627168]
-    [-0.1536679]
-    [-0.14376174]
-    [-0.13312004]
-    [-0.51926864]
-    [-0.5136171]
-    [-0.50524818]
-    [-0.49425681]
-    [-0.4807663]
-    [-0.46492652]
-    [-0.44691167]
-    [-0.42691776]
-    [-0.40515974]
-    [-0.38186847]
+    [-0.19527123]
+    [-0.19322569]
+    [-0.18982144]
+    [-0.18509899]
+    [-0.17911667]
+    [-0.17194968]
+    [-0.16368875]
+    [-0.15443858]
+    [-0.144316]
+    [-0.13344799]
+    [-0.5216019]
+    [-0.51584818]
+    [-0.50733454]
+    [-0.49615898]
+    [-0.48244866]
+    [-0.46635803]
+    [-0.44806648]
+    [-0.42777571]
+    [-0.40570676]
+    [-0.38209681]
     Warning: StopIteration recived by estimator.
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 121-125
+.. GENERATED FROM PYTHON SOURCE LINES 118-122
 
 Batch Size and Lookahead
 ------------------------
 
 Note that batch and lookahead sizes are automatically handled such that for
 
-.. GENERATED FROM PYTHON SOURCE LINES 125-138
+.. GENERATED FROM PYTHON SOURCE LINES 122-135
 
 .. code-block:: default
-   :lineno-start: 125
+   :lineno-start: 122
 
     K1 = 5
     K2 = 1
@@ -369,27 +371,27 @@ Note that batch and lookahead sizes are automatically handled such that for
 
  .. code-block:: none
 
-    [-0.24816274]
-    [-0.25087817]
-    [-0.25204345]
-    [-0.2516448]
-    [-0.24968787]
-    [-0.13670625]
-    [-0.12701198]
-    [-0.11653482]
-    [-0.10540392]
-    [-0.09375593]
-    [-0.28843043]
-    [-0.27746176]
-    [-0.26513901]
-    [-0.25160526]
-    [-0.23701516]
+    [-0.24974734]
+    [-0.25252069]
+    [-0.25370925]
+    [-0.25329868]
+    [-0.25129497]
+    [-0.1377449]
+    [-0.12783698]
+    [-0.11712884]
+    [-0.10575524]
+    [-0.09385866]
+    [-0.28957239]
+    [-0.27839036]
+    [-0.26583808]
+    [-0.25206373]
+    [-0.23722716]
     Warning: StopIteration recived by estimator.
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 139-150
+.. GENERATED FROM PYTHON SOURCE LINES 136-147
 
 Loading Control Signal from File
 --------------------------------
@@ -403,10 +405,10 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 150-155
+.. GENERATED FROM PYTHON SOURCE LINES 147-152
 
 .. code-block:: default
-   :lineno-start: 150
+   :lineno-start: 147
 
     from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
 
@@ -420,7 +422,7 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 156-162
+.. GENERATED FROM PYTHON SOURCE LINES 153-159
 
 Estimating the input
 --------------------
@@ -429,10 +431,10 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-189
+.. GENERATED FROM PYTHON SOURCE LINES 159-186
 
 .. code-block:: default
-   :lineno-start: 162
+   :lineno-start: 159
 
     import matplotlib.pyplot as plt
 
@@ -469,18 +471,10 @@ analog system and digital controls as in this example so
     :class: sphx-glr-single-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Warning: StopIteration recived by estimator.
 
 
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 190-195
+.. GENERATED FROM PYTHON SOURCE LINES 187-192
 
 Plotting the PSD
 ----------------
@@ -488,10 +482,10 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 195-205
+.. GENERATED FROM PYTHON SOURCE LINES 192-202
 
 .. code-block:: default
-   :lineno-start: 195
+   :lineno-start: 192
 
     from cbadc.utilities import compute_power_spectral_density
 
@@ -517,7 +511,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  22.323 seconds)
+   **Total running time of the script:** ( 0 minutes  13.439 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_c_digital_estimator.py:

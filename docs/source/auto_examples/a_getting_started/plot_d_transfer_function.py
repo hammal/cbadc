@@ -197,7 +197,7 @@ for eta2 in eta2_vec:
     plt.semilogx(frequencies, 20 * \
                  np.log10(np.linalg.norm(ntf[0, :, :], axis=0)), '--', color=color)
     plt.semilogx(frequencies, stf_dB,
-                 label=f"$\eta^2={20 * np.log10(eta2):0.0f} dB$", color=color)
+                 label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$", color=color)
 
 # Add labels and legends to figure
 plt.legend(loc='lower left')

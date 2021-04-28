@@ -277,7 +277,7 @@ number of independent digital controls.
     G_at_omega = np.linalg.norm(
         analog_system.transfer_function_matrix(np.array([omega_3dB])))
     eta2 = G_at_omega**2
-    print(f"eta2 = {eta2}, {20 * np.log10(eta2)} [dB]")
+    print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
     # Set the batch size
     K1 = 1 << 14
@@ -300,9 +300,9 @@ number of independent digital controls.
 
  .. code-block:: none
 
-    eta2 = 1259410956005.0083, 242.00334934088704 [dB]
+    eta2 = 1259410956005.0083, 121.00167467044352 [dB]
     Digital estimator is parameterized as 
-    eta2 = 1259410956005.01, 242 [dB],
+    eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
     K1 = 16384,
     K2 = 16384,
@@ -467,7 +467,7 @@ sizes L1 and L2 are set sufficiently large.
         ax[1].plot(h_index, impulse_response_dB[:, index],
                    label=f"$h_{index + 1}[k]$")
     ax[0].legend()
-    fig.suptitle(f"For $\eta^2 = {20 * np.log10(eta2)}$ [dB]")
+    fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     ax[1].set_xlabel("filter taps k")
     ax[0].set_ylabel("$| h_\ell [k]|^2_2$")
     ax[1].set_ylabel("$| h_\ell [k]|^2_2$ [dB]")
@@ -482,7 +482,7 @@ sizes L1 and L2 are set sufficiently large.
 
 
 .. image:: /auto_examples/b_general/images/sphx_glr_plot_a_compare_estimator_002.png
-    :alt: For $\eta^2 = 242.00334934088704$ [dB]
+    :alt: For $\eta^2 = 121.00167467044352$ [dB]
     :class: sphx-glr-single-img
 
 
@@ -493,7 +493,7 @@ sizes L1 and L2 are set sufficiently large.
  .. code-block:: none
 
     FIR estimator is parameterized as 
-    eta2 = 1259410956005.01, 242 [dB],
+    eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
     K1 = 16384,
     K2 = 16384,
@@ -560,7 +560,7 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
  .. code-block:: none
 
     IIR estimator is parameterized as 
-    eta2 = 1259410956005.01, 242 [dB],
+    eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
     K2 = 16384,
     and
@@ -655,7 +655,7 @@ parallelized into independent filter operations.
  .. code-block:: none
 
     Parallel estimator is parameterized as 
-    eta2 = 1259410956005.01, 242 [dB],
+    eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
     K1 = 16384,
     K2 = 16384,
@@ -866,14 +866,14 @@ in both time and frequency domain.
     u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
     u_clipped = stf_at_omega * u
     f_batch, psd_batch = compute_power_spectral_density(
-      u_hat_batch_clipped, nperseg=1 << 12)
+      u_hat_batch_clipped)
     f_fir, psd_fir = compute_power_spectral_density(
-        u_hat_fir_clipped, nperseg=1 << 12)
+        u_hat_fir_clipped)
     f_iir, psd_iir= compute_power_spectral_density(
-        u_hat_iir_clipped, nperseg=1 << 12)
+        u_hat_iir_clipped)
     f_parallel, psd_parallel = compute_power_spectral_density(
-        u_hat_parallel_clipped, nperseg=1 << 12)
-    f_ref, psd_ref = compute_power_spectral_density(u_clipped, nperseg=1 << 12)
+        u_hat_parallel_clipped)
+    f_ref, psd_ref = compute_power_spectral_density(u_clipped)
     plt.semilogx(f_ref, 10 * np.log10(psd_ref),
                  label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
     plt.semilogx(f_batch, 10 * np.log10(psd_batch), label="$\hat{U}(f)$ Batch")
@@ -948,7 +948,7 @@ Computational Time
 
 Compare the execution time of each estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 403-462
+.. GENERATED FROM PYTHON SOURCE LINES 403-463
 
 .. code-block:: default
    :lineno-start: 403
@@ -1016,6 +1016,7 @@ Compare the execution time of each estimator
 
 
 
+
 .. rst-class:: sphx-glr-script-out
 
  Out:
@@ -1023,16 +1024,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    2.800168206995295 sec 
+    2.709036816988373 sec 
 
     FIR Estimator:
-    35.000304339999275 sec 
+    34.77166284401028 sec 
 
     IIR Estimator:
-    22.163839922999614 sec 
+    21.792242562994943 sec 
 
     Parallel Estimator:
-    9.797573397001543 sec 
+    9.39491183499922 sec 
 
 
 
@@ -1041,7 +1042,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 26 minutes  0.130 seconds)
+   **Total running time of the script:** ( 25 minutes  23.264 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_a_compare_estimator.py:
