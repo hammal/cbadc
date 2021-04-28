@@ -171,9 +171,9 @@ for eta2 in Eta2:
 # Add labels and legends to figure
 plt.legend(loc=4)
 plt.grid(which='both')
-plt.title("Signal and noise transfer functions")
+plt.title("Signal (dashed) and noise (solid) transfer functions")
 plt.xlabel("$\omega / (4 \pi \\beta ) $")
-plt.ylabel("dB, STF dashed, NTF solid")
+plt.ylabel("dB")
 plt.xlim((1e-2, 0.5))
 plt.ylim((-150, 3))
 plt.gcf().tight_layout()
@@ -261,7 +261,7 @@ for index_de in range(len(filter_lengths)):
     # Compute estimates for each estimator
     for index, estimate in enumerate(digital_estimators[index_de]):
         u_hat[index] = estimate
-    u_hats.append(u_hat)
+    u_hats.append(np.copy(u_hat))
 
     # Compute power spectral density
     f, psd = compute_power_spectral_density(
@@ -294,12 +294,14 @@ fig.tight_layout()
 plt.rcParams['figure.figsize'] = [6.40, 6.40]
 plt.figure()
 for index in range(len(filter_lengths)):
-    t_fir = np.arange(0, stop_after_number_of_iterations)
-    plt.plot(t_fir, u_hat, label=f'K1=K2={filter_lengths[index]}')
-plt.legend()
+    t_fir = np.arange(-filter_lengths[index] + 1,
+                      stop_after_number_of_iterations - filter_lengths[index] + 1)
+    plt.plot(t_fir, u_hats[index],
+             label=f'K1=K2={filter_lengths[index]}')
 plt.ylabel('$\hat{u}(t)$')
 plt.xlim((64000, 64600))
 plt.ylim((-0.6, 0.6))
 plt.xlabel("$t / T$")
+_ = plt.legend()
 
 # sphinx_gallery_thumbnail_number = 4

@@ -1,6 +1,6 @@
-#################################################################
-Welcome to Control-Bounded A/D Conversion Toolbox's Documentation
-#################################################################
+#####################################################################
+Welcome to the Control-Bounded A/D Conversion Toolbox's Documentation
+#####################################################################
 
 This is the official documentation for the `control-bounded analog-to-digital conversion (cbadc)
 <https://pypi.org/project/cbadc/>`_ python package, which is a **toolbox** intended

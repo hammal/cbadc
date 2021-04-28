@@ -396,8 +396,8 @@ plt.show()
 
 
 ###############################################################################
-# Computational Time
-# ------------------
+# Compute Time
+# ------------
 #
 # Compare the execution time of each estimator
 import timeit

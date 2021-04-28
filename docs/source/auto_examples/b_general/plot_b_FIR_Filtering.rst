@@ -276,9 +276,9 @@ as a function of the bandwidth parameter :math:`\eta^2`.
     # Add labels and legends to figure
     plt.legend(loc=4)
     plt.grid(which='both')
-    plt.title("Signal and noise transfer functions")
+    plt.title("Signal (dashed) and noise (solid) transfer functions")
     plt.xlabel("$\omega / (4 \pi \\beta ) $")
-    plt.ylabel("dB, STF dashed, NTF solid")
+    plt.ylabel("dB")
     plt.xlim((1e-2, 0.5))
     plt.ylim((-150, 3))
     plt.gcf().tight_layout()
@@ -298,7 +298,7 @@ as a function of the bandwidth parameter :math:`\eta^2`.
     *
 
       .. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_003.png
-          :alt: Signal and noise transfer functions
+          :alt: Signal (dashed) and noise (solid) transfer functions
           :class: sphx-glr-multi-img
 
 
@@ -349,7 +349,7 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 204-305
+.. GENERATED FROM PYTHON SOURCE LINES 204-307
 
 .. code-block:: default
    :lineno-start: 204
@@ -414,7 +414,7 @@ of different lengths as their decay varies.
         # Compute estimates for each estimator
         for index, estimate in enumerate(digital_estimators[index_de]):
             u_hat[index] = estimate
-        u_hats.append(u_hat)
+        u_hats.append(np.copy(u_hat))
 
         # Compute power spectral density
         f, psd = compute_power_spectral_density(
@@ -447,13 +447,15 @@ of different lengths as their decay varies.
     plt.rcParams['figure.figsize'] = [6.40, 6.40]
     plt.figure()
     for index in range(len(filter_lengths)):
-        t_fir = np.arange(0, stop_after_number_of_iterations)
-        plt.plot(t_fir, u_hat, label=f'K1=K2={filter_lengths[index]}')
-    plt.legend()
+        t_fir = np.arange(-filter_lengths[index] + 1,
+                          stop_after_number_of_iterations - filter_lengths[index] + 1)
+        plt.plot(t_fir, u_hats[index],
+                 label=f'K1=K2={filter_lengths[index]}')
     plt.ylabel('$\hat{u}(t)$')
     plt.xlim((64000, 64600))
     plt.ylim((-0.6, 0.6))
     plt.xlabel("$t / T$")
+    _ = plt.legend()
 
 
 
@@ -480,21 +482,13 @@ of different lengths as their decay varies.
           :class: sphx-glr-multi-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-
-    Text(0.5, 41.12222222222221, '$t / T$')
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 5 minutes  37.352 seconds)
+   **Total running time of the script:** ( 5 minutes  53.487 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_b_FIR_Filtering.py:

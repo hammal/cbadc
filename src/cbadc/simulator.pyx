@@ -19,7 +19,7 @@ import math
 
 cdef class StateSpaceSimulator(object):
     """Simulate the analog system and digital control interactions
-    in the precense on analog signals.
+    in the presence on analog signals.
 
     Parameters
     ----------

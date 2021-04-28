@@ -943,8 +943,8 @@ in both time and frequency domain.
 
 .. GENERATED FROM PYTHON SOURCE LINES 399-403
 
-Computational Time
-------------------
+Compute Time
+------------
 
 Compare the execution time of each estimator
 
@@ -1024,16 +1024,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    2.709036816988373 sec 
+    2.7141672010038747 sec 
 
     FIR Estimator:
-    34.77166284401028 sec 
+    38.68493807500636 sec 
 
     IIR Estimator:
-    21.792242562994943 sec 
+    26.050817937997635 sec 
 
     Parallel Estimator:
-    9.39491183499922 sec 
+    11.09981299599167 sec 
 
 
 
@@ -1042,7 +1042,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 25 minutes  23.264 seconds)
+   **Total running time of the script:** ( 25 minutes  4.912 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_a_compare_estimator.py:
