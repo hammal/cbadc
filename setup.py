@@ -60,7 +60,7 @@ else:
 
 setup(
     name="cbadc",
-    version="0.0.8",
+    version="0.0.9",
     author="Hampus Malmberg",
     author_email="hampus.malmberg88@gmail.com",
     description="A toolbox for simulating control-bounded converters.",
