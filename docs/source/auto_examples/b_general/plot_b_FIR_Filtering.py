@@ -183,8 +183,8 @@ plt.gcf().tight_layout()
 # -------------
 #
 # We can confirm the intuition from the previous section by considering
-# a different number of filter taps for a given simulation. Firstly,
-# we once more visit the decay of the filter coefficients and recognize
+# different number of filter taps for a given control signal sequence. Firstly,
+# we once more plot the decay of the filter coefficients and recognize
 # that an SNR of around 100 dB (normalized spectrum), would need around
 # K1=K2=180 filter taps or more. This is confirmed by simulation as the
 # harmonics in the estimated spectrum disappear for larger number of
@@ -293,6 +293,7 @@ fig.tight_layout()
 # Plot snapshot in time domain
 plt.rcParams['figure.figsize'] = [6.40, 6.40]
 plt.figure()
+plt.title("Estimates in time domain")
 for index in range(len(filter_lengths)):
     t_fir = np.arange(-filter_lengths[index] + 1,
                       stop_after_number_of_iterations - filter_lengths[index] + 1)

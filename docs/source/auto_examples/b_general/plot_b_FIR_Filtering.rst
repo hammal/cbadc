@@ -330,8 +330,8 @@ Filter length
 -------------
 
 We can confirm the intuition from the previous section by considering
-a different number of filter taps for a given simulation. Firstly,
-we once more visit the decay of the filter coefficients and recognize
+different number of filter taps for a given control signal sequence. Firstly,
+we once more plot the decay of the filter coefficients and recognize
 that an SNR of around 100 dB (normalized spectrum), would need around
 K1=K2=180 filter taps or more. This is confirmed by simulation as the
 harmonics in the estimated spectrum disappear for larger number of
@@ -349,7 +349,7 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 204-307
+.. GENERATED FROM PYTHON SOURCE LINES 204-308
 
 .. code-block:: default
    :lineno-start: 204
@@ -446,6 +446,7 @@ of different lengths as their decay varies.
     # Plot snapshot in time domain
     plt.rcParams['figure.figsize'] = [6.40, 6.40]
     plt.figure()
+    plt.title("Estimates in time domain")
     for index in range(len(filter_lengths)):
         t_fir = np.arange(-filter_lengths[index] + 1,
                           stop_after_number_of_iterations - filter_lengths[index] + 1)
@@ -478,7 +479,7 @@ of different lengths as their decay varies.
     *
 
       .. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_006.png
-          :alt: plot b FIR Filtering
+          :alt: Estimates in time domain
           :class: sphx-glr-multi-img
 
 
@@ -488,7 +489,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 5 minutes  53.487 seconds)
+   **Total running time of the script:** ( 5 minutes  43.054 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_b_FIR_Filtering.py:
