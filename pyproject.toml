@@ -1,3 +1,7 @@
 [build-system]
 requires = ["setuptools", "cython", "numpy"]
 build-backend = "setuptools.build_meta"
+
+[tool]
+    [tool.pyright]
+        include = ["src/cbadc"]
