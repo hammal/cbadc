@@ -431,7 +431,7 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 191-222
+.. GENERATED FROM PYTHON SOURCE LINES 191-223
 
 .. code-block:: default
    :lineno-start: 191
@@ -470,6 +470,7 @@ in both time and frequency domain.
 
 
 
+
 .. rst-class:: sphx-glr-horizontal
 
 
@@ -501,7 +502,7 @@ in both time and frequency domain.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  54.380 seconds)
+   **Total running time of the script:** ( 0 minutes  55.782 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_c_downsample.py:

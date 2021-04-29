@@ -410,14 +410,17 @@ class ParallelEstimator:
     :py:class:`cbadc.digital_estimator.DigitalEstimator` where the the filter matrices are diagonlized
     enabling a more efficient and possible parallelizable filter implementation. The estimate is computed as
 
-    :math:`\overrightarrow{\mathbf{m}}[k][n] = f_a[n] \cdot \overrightarrow{\mathbf{m}}[k-1][n] + \sum_{m=0}^{M-1} f_b[n, m] \cdot \mathbf{s}[k-1][m]`,
-    :math:`\overleftarrow{\mathbf{m}}[k][n] = b_a \cdot \overrightarrow{\mathbf{m}}[k+1][n] + \sum_{m=0}^{M-1} b_b[n, m] \cdot \mathbf{s}[k][m]`,
-
-    and
-
     :math:`\hat{\mathbf{u}}(k T)[\ell] = \sum_{n=0}^N f_w[n] \cdot \overrightarrow{\mathbf{m}}[k][n] + b_w[n] \cdot \overleftarrow{\mathbf{m}}[k][n]`
 
-    where :math:`f_a, b_a \in \mathbb{R}^{N}`, :math:`f_b, b_b \in \mathbb{R}^{N \\times M}`,
+    where 
+    
+    :math:`\overrightarrow{\mathbf{m}}[k][n] = f_a[n] \cdot \overrightarrow{\mathbf{m}}[k-1][n] + \sum_{m=0}^{M-1} f_b[n, m] \cdot \mathbf{s}[k-1][m]`
+    
+    and
+
+    :math:`\overleftarrow{\mathbf{m}}[k][n] = b_a \cdot \overrightarrow{\mathbf{m}}[k+1][n] + \sum_{m=0}^{M-1} b_b[n, m] \cdot \mathbf{s}[k][m]`.
+
+    Furthermore, :math:`f_a, b_a \in \mathbb{R}^{N}`, :math:`f_b, b_b \in \mathbb{R}^{N \\times M}`,
     and :math:`f_w, b_w \in \mathbb{R}^{L \\times N}` are the precomputed filter coefficient formed
     from the filter coefficients as in :py:class:`cbadc.digital_estimator.DigitalEstimator`.
 
@@ -797,9 +800,6 @@ class IIRFilter():
         lookahead size, defaults to 0.
     stop_after_number_of_iterations : `int`
         determine a max number of iterations by the generator, defaults to  :math:`2^{63}`.
-    estimator_type : `str`, `optional`
-        determine which filtering method :code:`'quadratic', 'parallel', 'mid-point'` 
-        to use, defaults to :code:`'quadratic'`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
     downsample: `int`, `optional`
@@ -1069,9 +1069,6 @@ class FIRFilter():
         lookahead size, defaults to 0.
     stop_after_number_of_iterations : `int`
         determine a max number of iterations by the generator, defaults to  :math:`2^{63}`.
-    estimator_type : `str`, `optional`
-        determine which filtering method :code:`'quadratic', 'parallel', 'mid-point'` 
-        to use, defaults to :code:`'quadratic'`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
     mid_point: `bool`, `optional`
@@ -1111,7 +1108,7 @@ class FIRFilter():
         The Bb matrix
     WT : `array_like`, shape=(L, N)
         The W matrix transposed
-    h : `array_like`, shape=(K3, L, M)
+    h : `array_like`, shape=(K1 + K2, L, M)
         filter impulse response
 
     Yields
@@ -1140,6 +1137,8 @@ class FIRFilter():
         self.number_of_iterations = stop_after_number_of_iterations
         self._iteration = 0
         
+        if(mid_point):
+            raise NotImplementedError("Planned for v.0.1.0")
         self.mid_point = mid_point
         self.downsample = int(downsample)
 

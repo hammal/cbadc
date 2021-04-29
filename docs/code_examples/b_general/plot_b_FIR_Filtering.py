@@ -276,7 +276,7 @@ for index_de in range(len(filter_lengths)):
                       color='gray', alpha=0.6, lw=1.5)
 
     ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
-                          label=f'Ref', color='k')
+                          label=f'Reference', color='k')
 
     ax[index_de].semilogx(f, 10 * np.log10(psd),
                           label=f'K1=K2={filter_lengths[index_de]}',

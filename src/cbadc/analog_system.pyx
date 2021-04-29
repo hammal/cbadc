@@ -108,6 +108,19 @@ cdef class AnalogSystem:
 
     def __init__(self, A, B, CT, Gamma, Gamma_tildeT):
         """Create an analog system.
+
+        Parameters
+        ----------
+        A : `array_like`, shape=(N, N)
+            system matrix.
+        B : `array_like`, shape=(N, L)
+            input matrix.
+        CT : `array_like`, shape=(N_tilde, N)
+            signal observation matrix.
+        Gamma : `array_like`, shape=(N, M)
+            control input matrix.
+        Gamma_tildeT : `array_like`, shape=(M_tilde, N)
+            control observation matrix.
         """
 
         

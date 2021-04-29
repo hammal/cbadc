@@ -429,7 +429,7 @@ of different lengths as their decay varies.
                           color='gray', alpha=0.6, lw=1.5)
 
         ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
-                              label=f'Ref', color='k')
+                              label=f'Reference', color='k')
 
         ax[index_de].semilogx(f, 10 * np.log10(psd),
                               label=f'K1=K2={filter_lengths[index_de]}',
@@ -489,7 +489,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 5 minutes  43.054 seconds)
+   **Total running time of the script:** ( 5 minutes  29.403 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_b_FIR_Filtering.py:

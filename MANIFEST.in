@@ -1,6 +1,8 @@
 include LICENCE
 include requirements.txt
 include README.md
+include tox.ini
+include pyproject.toml
 include src/cbadc/*.pyx
 include src/cbadc/*.pxd
 include src/cbadc/*.h
