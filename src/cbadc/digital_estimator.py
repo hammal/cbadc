@@ -4,8 +4,8 @@ This module provides alternative implementations for the control-bounded A/D
 conterter's digital estimator.
 """
 from typing import Iterator
-from cbadc.digital_control import DigitalControl
-from cbadc.analog_system import AnalogSystem
+from .digital_control import DigitalControl
+from .analog_system import AnalogSystem
 from scipy.linalg import expm, solve, solve_continuous_are
 from scipy.integrate import solve_ivp
 import numpy.linalg as linalg

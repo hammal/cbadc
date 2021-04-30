@@ -8,9 +8,9 @@ These are mainly intended to produce control signals
 :py:class:`cbadc.analog_system.AnalogSystem` and
 :py:class:`cbadc.digital_control.DigitalControl` interactions.
 """
-from cbadc.analog_system import AnalogSystem
-from cbadc.digital_control import DigitalControl
-from cbadc.analog_signal import AnalogSignal
+from .analog_system import AnalogSystem
+from .digital_control import DigitalControl
+from .analog_signal import AnalogSignal
 import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.linalg import expm
