@@ -9,7 +9,7 @@ jobs:
   tox_test:
     strategy:
       matrix:
-        python-version: [ 'py36', 'py37', 'py38', 'py39']
+        python-version: ['py38', 'py39']
     runs-on: [self-hosted, ARM64]
     steps:
       - name: Checkout github repo

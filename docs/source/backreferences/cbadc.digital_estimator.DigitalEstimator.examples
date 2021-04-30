@@ -5,14 +5,14 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Converting a stream of control signals into a estimate samples.">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
 
 .. only:: html
 
- .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_c_digital_estimator_thumb.png
-     :alt: Digital Estimation
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+     :alt: Compare Estimators
 
-     :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
 
 .. raw:: html
 
@@ -20,7 +20,7 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator``
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
+ * :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
 
 .. raw:: html
 
@@ -40,3 +40,22 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator``
 .. only:: not html
 
  * :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for downsampling.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_c_downsample_thumb.png
+     :alt: Downsampling
+
+     :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`

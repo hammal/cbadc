@@ -26,21 +26,6 @@ cbadc.analog\_system.LeapFrog
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~LeapFrog.A
-      ~LeapFrog.B
-      ~LeapFrog.CT
-      ~LeapFrog.Gamma
-      ~LeapFrog.Gamma_tildeT
-      ~LeapFrog.L
-      ~LeapFrog.M
-      ~LeapFrog.M_tilde
-      ~LeapFrog.N
-      ~LeapFrog.N_tilde
-   
    
 
 .. _sphx_glr_backref_cbadc.analog_system.LeapFrog:

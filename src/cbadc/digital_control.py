@@ -1,13 +1,13 @@
 """Digital controls
 
 This module provides a general :py:class:`cbadc.digital_control.DigitalControl`
-class to enabled the creation of a general indepedently controlled digital
+class to enabled the creation of a general independently controlled digital
 control system.
 """
-#cython: language_level=3
 import numpy as np
 
-cdef class DigitalControl:
+
+class DigitalControl:
     """Represents a digital control system.
 
     This is the simplest digital control where
@@ -22,7 +22,7 @@ cdef class DigitalControl:
     M : `int`
         number of controls.
     t0 : `float`: optional
-        determines inital time, defaults to 0.
+        determines initial time, defaults to 0.
 
     Attributes
     ----------
@@ -54,7 +54,7 @@ cdef class DigitalControl:
     t = 1e-06
     """
 
-    def __init__(self, double T, int M, double t0 = 0.0):
+    def __init__(self, T: float, M: int, t0: float = 0.0):
         self.T = T
         self.M = M
         self.M_tilde = M
@@ -62,7 +62,7 @@ cdef class DigitalControl:
         self._s = np.zeros(self.M, dtype=np.int8)
         self._dac_values = np.zeros(self.M, dtype=np.double)
 
-    cpdef double [:] control_contribution(self, double t, double [:] s_tilde):
+    def control_contribution(self, t: float, s_tilde: np.ndarray) -> np.ndarray:
         """Evaluates the control contribution at time t given a control observation
         s_tilde.
 
@@ -92,21 +92,16 @@ cdef class DigitalControl:
             the control signal :math:`\mathbf{s}(t)`
 
         """
-        cdef int m
         # Check if time t has passed the next control update
         if t >= self._t_next:
             # if so update the control signal state
-            for m in range(self.M):
-                self._s[m] = s_tilde[m] >= 0
-                if self._s[m]:
-                    self._dac_values[m] = 1 
-                else: 
-                    self._dac_values[m] = -1
+            self._s = s_tilde >= 0
             self._t_next += self.T
-        # DAC
+            # DAC
+            self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
         return self._dac_values
-        
-    cpdef char [:] control_signal(self):
+
+    def control_signal(self) -> np.ndarray:
         """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
 
         Examples
@@ -129,7 +124,7 @@ cdef class DigitalControl:
         """
         return self._s
 
-    def impulse_response(self, int m, double t):
+    def impulse_response(self, m: int, t: float):
         """The impulse response of the corresponding DAC waveform
 
         Parameters
@@ -144,7 +139,7 @@ cdef class DigitalControl:
         -------
         `array_like`, shape=(M,)
             the dac waveform of the digital control system.
-        
+
         """
         temp = np.zeros(self.M, dtype=np.double)
         temp[m] = 1

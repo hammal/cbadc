@@ -321,17 +321,6 @@ At this point, we can produce estimates by simply calling the iterator
     [-0.15443858]
     [-0.144316]
     [-0.13344799]
-    [-0.5216019]
-    [-0.51584818]
-    [-0.50733454]
-    [-0.49615898]
-    [-0.48244866]
-    [-0.46635803]
-    [-0.44806648]
-    [-0.42777571]
-    [-0.40570676]
-    [-0.38209681]
-    Warning: StopIteration recived by estimator.
 
 
 
@@ -382,12 +371,6 @@ Note that batch and lookahead sizes are automatically handled such that for
     [-0.11712884]
     [-0.10575524]
     [-0.09385866]
-    [-0.28957239]
-    [-0.27839036]
-    [-0.26583808]
-    [-0.25206373]
-    [-0.23722716]
-    Warning: StopIteration recived by estimator.
 
 
 
@@ -512,7 +495,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  13.460 seconds)
+   **Total running time of the script:** ( 0 minutes  15.851 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_c_digital_estimator.py:
