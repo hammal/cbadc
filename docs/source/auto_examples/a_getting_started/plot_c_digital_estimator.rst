@@ -23,7 +23,29 @@ Digital Estimation
 
 Converting a stream of control signals into a estimate samples.
 
-.. GENERATED FROM PYTHON SOURCE LINES 8-20
+.. GENERATED FROM PYTHON SOURCE LINES 7-17
+
+.. code-block:: default
+   :lineno-start: 7
+
+    from cbadc.utilities import compute_power_spectral_density
+    import matplotlib.pyplot as plt
+    from cbadc.utilities import read_byte_stream_from_file, \
+        byte_stream_2_control_signal
+    from cbadc.utilities import random_control_signal
+    from cbadc.analog_system import AnalogSystem
+    from cbadc.digital_control import DigitalControl
+    from cbadc.digital_estimator import DigitalEstimator
+    import numpy as np
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 18-30
 
 Setting up the Analog System and Digital Control
 ------------------------------------------------
@@ -38,17 +60,13 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 20-55
+.. GENERATED FROM PYTHON SOURCE LINES 30-61
 
 .. code-block:: default
-   :lineno-start: 21
+   :lineno-start: 31
 
 
     # Setup analog system and digital control
-    from cbadc.analog_system import AnalogSystem
-    from cbadc.digital_control import DigitalControl
-    from cbadc.digital_estimator import DigitalEstimator
-    import numpy as np
 
     N = 6
     M = N
@@ -133,7 +151,7 @@ analog system and digital control.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 56-63
+.. GENERATED FROM PYTHON SOURCE LINES 62-69
 
 Creating a Placehold Control Signal
 -----------------------------------
@@ -141,15 +159,13 @@ Creating a Placehold Control Signal
 We could, of course, simulate the analog system and digital control above
 for a given analog signal. However, this might not always be the use case;
 instead, imagine we have acquired such a control signal from a previous
-simulation or possibly obtained it from a hardware implemenentation.
+simulation or possibly obtained it from a hardware implementation.
 
-.. GENERATED FROM PYTHON SOURCE LINES 63-85
+.. GENERATED FROM PYTHON SOURCE LINES 69-94
 
 .. code-block:: default
-   :lineno-start: 63
+   :lineno-start: 70
 
-    import numpy as np
-    from cbadc.utilities import random_control_signal
 
     # In principle, we can create a dummy generator by just
 
@@ -162,12 +178,17 @@ simulation or possibly obtained it from a hardware implemenentation.
 
 
     # Another way would be to use a random control signal. Such a generator
-    # is already provided in the :func:`cbadc.utilities.random_control_signal` function.
-    # Subsequently, a random (random 1-0 valued M tuples) control signal of length
+    # is already provided in the :func:`cbadc.utilities.random_control_signal`
+    # function. Subsequently, a random (random 1-0 valued M tuples) control signal
+    # of length
+
     sequence_length = 10
+
     # can conveniently be created as
+
     control_signal_sequences = random_control_signal(
         M, stop_after_number_of_iterations=sequence_length, random_seed=42)
+
     # where random_seed and stop_after_number_of_iterations are fully optional
 
 
@@ -177,7 +198,7 @@ simulation or possibly obtained it from a hardware implemenentation.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 86-94
+.. GENERATED FROM PYTHON SOURCE LINES 95-103
 
 Setting up the Filter
 ------------------------------------
@@ -188,18 +209,23 @@ DigitalEstimator class. However, these computations require us to
 specify both the analog system, the digital control and the filter parameters
 such as eta2, the batch size K1, and possible the lookahead K2.
 
-.. GENERATED FROM PYTHON SOURCE LINES 94-107
+.. GENERATED FROM PYTHON SOURCE LINES 103-121
 
 .. code-block:: default
-   :lineno-start: 95
+   :lineno-start: 104
 
 
     # Set the bandwidth of the estimator
+
     eta2 = 1e7
+
     # Set the batch size
+
     K1 = sequence_length
 
-    # Instantiate the digital estimator (this is where the filter coefficients are computed).
+    # Instantiate the digital estimator (this is where the filter coefficients are
+    # computed).
+
     digital_estimator = DigitalEstimator(
         control_signal_sequences, analog_system, digital_control, eta2, K1)
 
@@ -216,13 +242,17 @@ such as eta2, the batch size K1, and possible the lookahead K2.
 
  .. code-block:: none
 
-    Digital estimator is parameterized as 
+    Digital estimator is parameterized as
+        
     eta2 = 10000000.00, 70 [dB],
+        
     Ts = 8e-05,
     K1 = 10,
     K2 = 0,
+        
     and
     number_of_iterations = 9223372036854775808
+        
     Resulting in the filter coefficients
     Af = 
     [[ 9.95009873e-01 -1.07214558e-05 -3.29769511e-05 -7.22193743e-05
@@ -237,6 +267,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
        8.65342522e-01 -1.31863329e-01]
      [-8.48190802e-04 -3.79206318e-03 -7.66097787e-03  2.91476932e-02
        2.70050483e-01  6.77163594e-01]],
+        
     Ab = 
     [[ 1.00500883e+00  1.54861694e-05 -4.74794350e-05  1.01153964e-04
       -1.31857374e-04  7.07416177e-05]
@@ -250,6 +281,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
        8.48271033e-01  1.47273048e-01]
      [ 1.06969462e-03 -4.99244970e-03  1.24120658e-02  1.62939979e-02
       -2.49365903e-01  6.64066057e-01]],
+        
     Bf = 
     [[-4.98751645e-01  2.01435011e-06  6.82590295e-06  1.63194985e-05
        2.47281476e-05  1.69487071e-05]
@@ -263,6 +295,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
       -4.68327424e-01  3.49448581e-02]
      [ 1.30405025e-04  7.66632154e-04  2.57282644e-03 -1.49723174e-03
       -7.33995907e-02 -4.16260014e-01]],
+        
     Bb = 
     [[ 5.01251476e-01  2.90629180e-06 -9.87489414e-06  2.30342675e-05
       -3.29086754e-05  2.00065004e-05]
@@ -276,6 +309,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
        4.64169939e-01  3.92569729e-02]
      [ 1.61551740e-04 -9.68267461e-04  3.49710767e-03 -1.35278958e-03
       -6.81691898e-02  4.12601756e-01]],
+        
     and WT = 
     [[ 8.45373598e-02  8.45372372e-04 -2.13025722e-03 -6.40572458e-05
        1.06842223e-04  5.03895749e-06]]. 
@@ -284,17 +318,17 @@ such as eta2, the batch size K1, and possible the lookahead K2.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 108-112
+.. GENERATED FROM PYTHON SOURCE LINES 122-126
 
 Producing Estimates
 -------------------
 
 At this point, we can produce estimates by simply calling the iterator
 
-.. GENERATED FROM PYTHON SOURCE LINES 112-117
+.. GENERATED FROM PYTHON SOURCE LINES 126-131
 
 .. code-block:: default
-   :lineno-start: 113
+   :lineno-start: 127
 
 
     for i in digital_estimator:
@@ -325,17 +359,17 @@ At this point, we can produce estimates by simply calling the iterator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 118-122
+.. GENERATED FROM PYTHON SOURCE LINES 132-136
 
 Batch Size and Lookahead
 ------------------------
 
 Note that batch and lookahead sizes are automatically handled such that for
 
-.. GENERATED FROM PYTHON SOURCE LINES 122-136
+.. GENERATED FROM PYTHON SOURCE LINES 136-150
 
 .. code-block:: default
-   :lineno-start: 122
+   :lineno-start: 136
 
     K1 = 5
     K2 = 1
@@ -348,7 +382,7 @@ Note that batch and lookahead sizes are automatically handled such that for
     # The iterator is still called the same way.
     for i in digital_estimator:
         print(i)
-    # However, this time this iterator involves computing two batches each 
+    # However, this time this iterator involves computing two batches each
     # involving a lookahead of size one.
 
 
@@ -375,7 +409,7 @@ Note that batch and lookahead sizes are automatically handled such that for
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-148
+.. GENERATED FROM PYTHON SOURCE LINES 151-162
 
 Loading Control Signal from File
 --------------------------------
@@ -389,12 +423,11 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 148-153
+.. GENERATED FROM PYTHON SOURCE LINES 162-166
 
 .. code-block:: default
-   :lineno-start: 148
+   :lineno-start: 163
 
-    from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
 
     byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
     control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
@@ -406,7 +439,7 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 154-160
+.. GENERATED FROM PYTHON SOURCE LINES 167-173
 
 Estimating the input
 --------------------
@@ -415,12 +448,11 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 160-187
+.. GENERATED FROM PYTHON SOURCE LINES 173-199
 
 .. code-block:: default
-   :lineno-start: 160
+   :lineno-start: 174
 
-    import matplotlib.pyplot as plt
 
     stop_after_number_of_iterations = 1 << 17
     u_hat = np.zeros(stop_after_number_of_iterations)
@@ -458,7 +490,7 @@ analog system and digital controls as in this example so
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 188-193
+.. GENERATED FROM PYTHON SOURCE LINES 200-205
 
 Plotting the PSD
 ----------------
@@ -466,12 +498,11 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 193-203
+.. GENERATED FROM PYTHON SOURCE LINES 205-214
 
 .. code-block:: default
-   :lineno-start: 193
+   :lineno-start: 206
 
-    from cbadc.utilities import compute_power_spectral_density
 
     f, psd = compute_power_spectral_density(u_hat[K2:])
     plt.figure()
@@ -495,7 +526,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  15.851 seconds)
+   **Total running time of the script:** ( 0 minutes  15.735 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_c_digital_estimator.py:

@@ -153,7 +153,7 @@ eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
 
 # Instantiate estimator.
 digital_estimator = DigitalEstimator(
-    control_sequence, analog_system, digital_control, eta2, K1=1)
+    control_sequence(), analog_system, digital_control, eta2, K1=1)
 
 # Compute NTF
 ntf = digital_estimator.noise_transfer_function(omega)
@@ -194,7 +194,7 @@ plt.figure()
 for eta2 in eta2_vec:
     # Instantiate an estimator for each eta.
     digital_estimator = DigitalEstimator(
-        control_sequence, analog_system, digital_control, eta2, K1=1)
+        control_sequence(), analog_system, digital_control, eta2, K1=1)
     # Compute stf and ntf
     ntf = digital_estimator.noise_transfer_function(omega)
     ntf_dB = 20 * np.log10(np.abs(ntf))

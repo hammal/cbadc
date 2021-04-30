@@ -24,7 +24,32 @@ Compare Estimators
 In this tutorial we investigate different estimator implementation techniques
 and compare their performance.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-14
+.. GENERATED FROM PYTHON SOURCE LINES 8-21
+
+.. code-block:: default
+   :lineno-start: 8
+
+    import timeit
+    from cbadc.utilities import compute_power_spectral_density
+    from cbadc.digital_estimator import ParallelEstimator
+    from cbadc.digital_estimator import IIRFilter
+    from cbadc.digital_estimator import FIRFilter
+    import matplotlib.pyplot as plt
+    from cbadc.digital_estimator import DigitalEstimator
+    from cbadc.simulator import StateSpaceSimulator
+    from cbadc.analog_signal import Sinusodial
+    from cbadc.analog_system import LeapFrog
+    from cbadc.digital_control import DigitalControl
+    import numpy as np
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 22-27
 
 Analog System
 -------------
@@ -32,14 +57,10 @@ Analog System
 We will commit to a leap-frog control-bounded analog system throughtout
 this tutorial.
 
-.. GENERATED FROM PYTHON SOURCE LINES 14-37
+.. GENERATED FROM PYTHON SOURCE LINES 27-46
 
 .. code-block:: default
-   :lineno-start: 14
-
-    from cbadc.analog_system import LeapFrog
-    from cbadc.digital_control import DigitalControl
-    import numpy as np
+   :lineno-start: 28
 
 
     # Determine system parameters
@@ -117,7 +138,7 @@ this tutorial.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 38-43
+.. GENERATED FROM PYTHON SOURCE LINES 47-52
 
 Analog Signal
 -------------
@@ -125,12 +146,11 @@ Analog Signal
 We will also need an analog signal for conversion.
 In this tutorial we will use a Sinusodial signal.
 
-.. GENERATED FROM PYTHON SOURCE LINES 43-60
+.. GENERATED FROM PYTHON SOURCE LINES 52-68
 
 .. code-block:: default
-   :lineno-start: 43
+   :lineno-start: 53
 
-    from cbadc.analog_signal import Sinusodial
 
     # Set the peak amplitude.
     amplitude = 1.0
@@ -157,16 +177,18 @@ In this tutorial we will use a Sinusodial signal.
 
  .. code-block:: none
 
-    Sinusodial parameterized as:
-    amplitude = 1.0,
-    frequency = 97.65624999999999,
-    phase = 0.0, and
+    Sinusodial parameterized as: 
+    amplitude = 1.0, 
+
+            frequency = 97.65624999999999, 
+    phase = 0.0,
+            and
     offset = 0.0
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 61-66
+.. GENERATED FROM PYTHON SOURCE LINES 69-74
 
 Simulating
 ----------
@@ -174,17 +196,16 @@ Simulating
 Each estimator will require an independent stream of control signals.
 Therefore, we will next instantiate several digital controls and simulators.
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-116
+.. GENERATED FROM PYTHON SOURCE LINES 74-123
 
 .. code-block:: default
-   :lineno-start: 66
+   :lineno-start: 75
 
-    from cbadc.simulator import StateSpaceSimulator
 
     # Set simulation precision parameters
     atol = 1e-6
     rtol = 1e-12
-    max_step= T / 10.
+    max_step = T / 10.
 
     # Instantiate digital controls. We will need four of them as we will compare
     # four different estimators.
@@ -199,33 +220,33 @@ Therefore, we will next instantiate several digital controls and simulators.
         analog_system,
         digital_control1,
         [analog_signal],
-        atol = atol,
-        rtol = rtol,
-        max_step = max_step
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
     )
     simulator2 = StateSpaceSimulator(
         analog_system,
         digital_control2,
         [analog_signal],
-        atol = atol,
-        rtol = rtol,
-        max_step = max_step
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
     )
     simulator3 = StateSpaceSimulator(
         analog_system,
         digital_control3,
         [analog_signal],
-        atol = atol,
-        rtol = rtol,
-        max_step = max_step
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
     )
     simulator4 = StateSpaceSimulator(
         analog_system,
         digital_control4,
         [analog_signal],
-        atol = atol,
-        rtol = rtol,
-        max_step = max_step
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
     )
     print(simulator1)
 
@@ -254,7 +275,7 @@ Therefore, we will next instantiate several digital controls and simulators.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 117-126
+.. GENERATED FROM PYTHON SOURCE LINES 124-133
 
 Default, Quadratic Complexity, Estimator
 ----------------------------------------
@@ -266,12 +287,11 @@ computed. Therefore, this procedure could be computationally intense for a
 analog system with a large analog state order or equivalently for large
 number of independent digital controls.
 
-.. GENERATED FROM PYTHON SOURCE LINES 126-145
+.. GENERATED FROM PYTHON SOURCE LINES 133-152
 
 .. code-block:: default
-   :lineno-start: 126
+   :lineno-start: 134
 
-    from cbadc.digital_estimator import DigitalEstimator
 
     # Set the bandwidth of the estimator
     G_at_omega = np.linalg.norm(
@@ -283,7 +303,8 @@ number of independent digital controls.
     K1 = 1 << 14
     K2 = 1 << 14
 
-    # Instantiate the digital estimator (this is where the filter coefficients are computed).
+    # Instantiate the digital estimator (this is where the filter coefficients are
+    # computed).
     digital_estimator_batch = DigitalEstimator(
         simulator1, analog_system, digital_control1, eta2, K1, K2)
 
@@ -301,36 +322,17 @@ number of independent digital controls.
  .. code-block:: none
 
     eta2 = 1259410956005.0083, 121.00167467044352 [dB]
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
-    Digital estimator is parameterized as 
+    Digital estimator is parameterized as
+        
     eta2 = 1259410956005.01, 121 [dB],
+        
     Ts = 8e-05,
     K1 = 16384,
     K2 = 16384,
+        
     and
     number_of_iterations = 9223372036854775808
+        
     Resulting in the filter coefficients
     Af = 
     [[ 9.93992011e-01 -4.80368682e-03  1.15864448e-05 -1.85515926e-08
@@ -345,6 +347,7 @@ number of independent digital controls.
        9.96748934e-01 -6.25618007e-03]
      [ 2.57435177e-04  2.57297257e-03  2.05433050e-02  1.22849014e-01
        4.88154288e-01  9.59742079e-01]],
+        
     Ab = 
     [[ 1.00362260e+00  4.82689704e-03  1.16236702e-05  1.86786149e-08
        2.09634411e-10 -1.97644500e-10]
@@ -358,6 +361,7 @@ number of independent digital controls.
        9.96381087e-01  7.05497103e-03]
      [-2.56748688e-04  2.56174243e-03 -2.04480404e-02  1.22206039e-01
       -4.84970386e-01  9.50489454e-01]],
+        
     Bf = 
     [[-4.98596881e-01  1.20236964e-03 -1.93231278e-06  2.31454333e-09
       -3.97667688e-11  1.54595883e-11]
@@ -371,6 +375,7 @@ number of independent digital controls.
       -4.99417729e-01  1.57454839e-03]
      [-2.14752207e-05 -2.57642154e-04 -2.57316206e-03 -2.05457499e-02
       -1.22909157e-01 -4.89999233e-01]],
+        
     Bb = 
     [[ 5.01005490e-01  1.20623894e-03  1.93696031e-06  2.34138942e-09
        4.37598487e-11 -5.22665975e-11]
@@ -384,6 +389,7 @@ number of independent digital controls.
        4.99342305e-01  1.77775324e-03]
      [-2.14127285e-05  2.56542055e-04 -2.56194098e-03  2.04515506e-02
       -1.22306845e-01  4.87667659e-01]],
+        
     and WT = 
     [[ 3.72587869e-02  3.59110827e-04 -3.04746440e-05 -2.93722947e-07
        3.97693794e-08  3.78364449e-10]]. 
@@ -392,18 +398,17 @@ number of independent digital controls.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 146-149
+.. GENERATED FROM PYTHON SOURCE LINES 153-156
 
 Visualize Estimator's Transfer Function (Same for Both)
 -------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 149-184
+.. GENERATED FROM PYTHON SOURCE LINES 156-190
 
 .. code-block:: default
-   :lineno-start: 149
+   :lineno-start: 157
 
-    import matplotlib.pyplot as plt
 
     # Logspace frequencies
     frequencies = np.logspace(-3, 0, 100)
@@ -449,7 +454,7 @@ Visualize Estimator's Transfer Function (Same for Both)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-193
+.. GENERATED FROM PYTHON SOURCE LINES 191-199
 
 FIR Filter Estimator
 --------------------
@@ -457,15 +462,14 @@ FIR Filter Estimator
 Similarly as for the previous estimator the
 :py:class:`cbadc.digital_estimator.FIRFilter` is initalized. Additionally,
 we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
-fiter coefficients. This is an aid to determine if the lookahead and lookback
-sizes L1 and L2 are set sufficiently large.
+filter coefficients. This is an aid to determine if the lookahead and
+lookback sizes L1 and L2 are set sufficiently large.
 
-.. GENERATED FROM PYTHON SOURCE LINES 193-229
+.. GENERATED FROM PYTHON SOURCE LINES 199-234
 
 .. code-block:: default
-   :lineno-start: 193
+   :lineno-start: 200
 
-    from cbadc.digital_estimator import FIRFilter
 
     # Determine lookback
     L1 = K2
@@ -515,29 +519,6 @@ sizes L1 and L2 are set sufficiently large.
 
  .. code-block:: none
 
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
     FIR estimator is parameterized as 
     eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
@@ -571,7 +552,7 @@ sizes L1 and L2 are set sufficiently large.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 230-236
+.. GENERATED FROM PYTHON SOURCE LINES 235-241
 
 IIR Filter Estimator
 --------------------
@@ -580,12 +561,11 @@ The IIR filter is closely related to the FIR filter with the exception
 of an moving average computation.
 See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
-.. GENERATED FROM PYTHON SOURCE LINES 236-246
+.. GENERATED FROM PYTHON SOURCE LINES 241-250
 
 .. code-block:: default
-   :lineno-start: 236
+   :lineno-start: 242
 
-    from cbadc.digital_estimator import IIRFilter
 
     # Determine lookahead
     L2 = K2
@@ -605,29 +585,6 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
  .. code-block:: none
 
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
     IIR estimator is parameterized as 
     eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
@@ -688,7 +645,7 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 247-255
+.. GENERATED FROM PYTHON SOURCE LINES 251-259
 
 Parallel Estimator
 ------------------------------
@@ -699,14 +656,14 @@ resembles the default estimator but diagonalizes the filter coefficients
 resulting in a more computationally more efficient filter that can be
 parallelized into independent filter operations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 255-264
+.. GENERATED FROM PYTHON SOURCE LINES 259-268
 
 .. code-block:: default
-   :lineno-start: 255
+   :lineno-start: 260
 
-    from cbadc.digital_estimator import ParallelEstimator
 
-    # Instantiate the digital estimator (this is where the filter coefficients are computed).
+    # Instantiate the digital estimator (this is where the filter coefficients are
+    # computed).
     digital_estimator_parallel = ParallelEstimator(
         simulator4, analog_system, digital_control4, eta2, K1, K2)
 
@@ -723,29 +680,6 @@ parallelized into independent filter operations.
 
  .. code-block:: none
 
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
     Parallel estimator is parameterized as 
     eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
@@ -827,7 +761,7 @@ parallelized into independent filter operations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 265-272
+.. GENERATED FROM PYTHON SOURCE LINES 269-276
 
 Estimating (Filtering)
 ----------------------
@@ -837,10 +771,10 @@ estimators. Note that since no stop criteria is set for either the analog
 signal, the simulator, or the digital estimator this iteration could
 potentially continue until the default stop criteria of 2^63 iterations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 272-285
+.. GENERATED FROM PYTHON SOURCE LINES 276-289
 
 .. code-block:: default
-   :lineno-start: 273
+   :lineno-start: 277
 
 
     # Set simulation length
@@ -862,7 +796,7 @@ potentially continue until the default stop criteria of 2^63 iterations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 286-291
+.. GENERATED FROM PYTHON SOURCE LINES 290-295
 
 Visualizing Results
 -------------------
@@ -870,12 +804,11 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 291-398
+.. GENERATED FROM PYTHON SOURCE LINES 295-402
 
 .. code-block:: default
-   :lineno-start: 291
+   :lineno-start: 296
 
-    from cbadc.utilities import compute_power_spectral_density
 
     t = np.arange(size)
     # compensate the built in L1 delay of FIR filter.
@@ -883,7 +816,7 @@ in both time and frequency domain.
     t_iir = np.arange(-L1 + 1, size - L1 + 1)
     u = np.zeros_like(u_hat_batch)
     for index, tt in enumerate(t):
-        u[index] = analog_signal.evaluate( tt * T)
+        u[index] = analog_signal.evaluate(tt * T)
     plt.plot(t, u_hat_batch, label="$\hat{u}(t)$ Batch")
     plt.plot(t_fir, u_hat_fir, label="$\hat{u}(t)$ FIR")
     plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
@@ -949,7 +882,8 @@ in both time and frequency domain.
     print(f"Average FIR Error: {np.linalg.norm(fir_error) / fir_error.size}")
     print(f"Average IIR Error: {np.linalg.norm(iir_error) / iir_error.size}")
     print(
-        f"Average Parallel Error: {np.linalg.norm(parallel_error) / parallel_error.size}")
+        f"""Average Parallel Error: { np.linalg.norm(parallel_error)/
+        parallel_error.size}""")
 
     plt.figure()
     u_hat_batch_clipped = u_hat_batch[(K1 + K2):-K2]
@@ -958,10 +892,10 @@ in both time and frequency domain.
     u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
     u_clipped = stf_at_omega * u
     f_batch, psd_batch = compute_power_spectral_density(
-      u_hat_batch_clipped)
+        u_hat_batch_clipped)
     f_fir, psd_fir = compute_power_spectral_density(
         u_hat_fir_clipped)
-    f_iir, psd_iir= compute_power_spectral_density(
+    f_iir, psd_iir = compute_power_spectral_density(
         u_hat_iir_clipped)
     f_parallel, psd_parallel = compute_power_spectral_density(
         u_hat_parallel_clipped)
@@ -1033,19 +967,18 @@ in both time and frequency domain.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 399-403
+.. GENERATED FROM PYTHON SOURCE LINES 403-407
 
 Compute Time
 ------------
 
 Compare the execution time of each estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 403-463
+.. GENERATED FROM PYTHON SOURCE LINES 407-466
 
 .. code-block:: default
-   :lineno-start: 403
+   :lineno-start: 409
 
-    import timeit
 
 
     def dummy_input_control_signal():
@@ -1115,109 +1048,17 @@ Compare the execution time of each estimator
 
  .. code-block:: none
 
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
-    [[-6.02392847e+01 -6.02392849e+01 -3.31392780e-07  3.30826973e-07
-       2.05516899e-06 -4.34980255e-07]
-     [ 6.25000000e+03 -5.45733368e-06 -6.02393054e+01 -3.67739787e-05
-       3.26417079e-05  2.16560173e-04]
-     [-3.31392780e-07  6.24999998e+03 -5.63818136e-04 -6.02414344e+01
-      -3.89195469e-03  1.55716962e-03]
-     [ 3.30826973e-07 -3.67739787e-05  6.24999785e+03 -5.84149639e-02
-      -6.04606116e+01 -3.92814353e-01]
-     [ 2.05516899e-06  3.26417079e-05 -3.89195469e-03  6.24977867e+03
-      -5.92249947e+00 -7.97510681e+01]
-     [-4.34980255e-07  2.16560173e-04  1.55716962e-03 -3.92814353e-01
-       6.23048822e+03 -4.93473846e+02]] [[-6.02392846e+01 -6.02392850e+01  8.76160199e-07 -8.77141559e-07
-      -1.49489829e-06  2.88270397e-06]
-     [ 6.25000000e+03  7.52718377e-06 -6.02393195e+01  9.33261847e-05
-      -9.40233629e-05 -1.27970691e-04]
-     [ 8.76160199e-07  6.24999997e+03  7.78546611e-04 -6.02428912e+01
-       9.70645787e-03 -1.07076926e-02]
-     [-8.77141559e-07  9.33261847e-05  6.24999639e+03  8.05324810e-02
-      -6.06058716e+01  8.80146082e-01]
-     [-1.49489829e-06 -9.40233629e-05  9.70645787e-03  6.24963341e+03
-       7.99461962e+00 -9.02610637e+01]
-     [ 2.88270397e-06 -1.27970691e-04 -1.07076926e-02  8.80146082e-01
-       6.21997822e+03  6.11857966e+02]]
     Digital Estimator:
-    5.681749323033728 sec 
+    5.596273067989387 sec 
 
     FIR Estimator:
-    32.92778497404652 sec 
+    38.92125307803508 sec 
 
     IIR Estimator:
-    21.651413051993586 sec 
+    22.15397312201094 sec 
 
     Parallel Estimator:
-    9.826026222028304 sec 
+    9.235927602043375 sec 
 
 
 
@@ -1226,7 +1067,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 27 minutes  15.312 seconds)
+   **Total running time of the script:** ( 27 minutes  1.918 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_a_compare_estimator.py:

@@ -2,9 +2,14 @@
 Transfer Functions
 ==================
 
-This example demonstrates how to visualize the related transfer functions of the 
-analog system and digital estimator.
+This example demonstrates how to visualize the related transfer functions of
+the analog system and digital estimator.
 """
+from cbadc.digital_control import DigitalControl
+from cbadc.digital_estimator import DigitalEstimator
+import matplotlib.pyplot as plt
+from cbadc.analog_system import ChainOfIntegrators
+import numpy as np
 
 ###############################################################################
 # Chain-of-Integrators ADC Example
@@ -20,7 +25,8 @@ analog system and digital estimator.
 # demonstrational purposes. However, except for the analog system creation,
 # the steps for a generic analog system and digital estimator.
 #
-# For in-depth details regarding the chain-of-integrators transfer function see,
+# For in-depth details regarding the chain-of-integrators transfer function
+# see,
 # `chain-of-integrators <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=97/>`_
 #
 # First we will import dependent modules and initialize a chain-of-integrators
@@ -38,9 +44,6 @@ analog system and digital estimator.
 # derives from the main analog system class
 # :py:class:`cbadc.analog_system.AnalogSystem`.
 
-import matplotlib.pyplot as plt
-from cbadc.analog_system import ChainOfIntegrators
-import numpy as np
 # We fix the number of analog states.
 N = 6
 # Set the amplification factor.
@@ -64,7 +67,8 @@ print(analog_system)
 #
 # :math:`\mathbf{G}(\omega) = \begin{pmatrix}G_1(\omega), \dots, G_N(\omega)\end{pmatrix}^\mathsf{T} = \mathbf{C}^\mathsf{T} \left(i \omega \mathbf{I}_N - \mathbf{A}\right)^{-1}\mathbf{B}`
 #
-# using the class method :func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
+# using the class method
+# :func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
 
 # Logspace frequencies
 frequencies = np.logspace(-3, 0, 500)
@@ -81,8 +85,13 @@ for n in range(N):
         frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
 
 # Add the norm ||G(omega)||_2
-plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-    transfer_function[:, 0, :], axis=0)), '--', label="$ ||\mathbf{G}(\omega)||_2 $")
+plt.semilogx(
+    frequencies,
+    20 * np.log10(np.linalg.norm(
+        transfer_function[:, 0, :],
+        axis=0)),
+    '--',
+    label="$ ||\mathbf{G}(\omega)||_2 $")
 
 # Add labels and legends to figure
 plt.legend()
@@ -100,8 +109,8 @@ plt.gcf().tight_layout()
 # To determine the estimate's signal and noise transfer function, we must
 # instantiate a digital estimator
 # :py:class:`cbadc.digital_estimator.DigitalEstimator`. The bandwidth of the
-# digital estimation filter is mainly determined by the parameter :math:`\eta^2`
-# as the noise transfer function (NTF) follows as
+# digital estimation filter is mainly determined by the parameter
+# :math:`\eta^2` as the noise transfer function (NTF) follows as
 #
 # :math:`\text{NTF}( \omega) = \mathbf{G}( \omega)^\mathsf{H} \left(
 # \mathbf{G}( \omega)\mathbf{G}( \omega)^\mathsf{H} + \eta^2 \mathbf{I}_N
@@ -121,14 +130,14 @@ plt.gcf().tight_layout()
 #
 # For the chain-of-integrators example, the noise transfer function
 # results in a row vector
-# :math:`\text{NTF}(\omega) = \begin{pmatrix} \text{NTF}_1(\omega), \dots, \text{NTF}_N(\omega)\end{pmatrix} \in \mathbb{C}^{1 \times \tilde{N}}`
+# :math:`\text{NTF}(\omega) = \begin{pmatrix} \text{NTF}_1(\omega), \dots,
+# \text{NTF}_N(\omega)\end{pmatrix} \in \mathbb{C}^{1 \times \tilde{N}}`
 # where :math:`\text{NTF}_\ell(\omega)` refers to the noise transfer function
 # from the :math:`\ell`-th observation to the final estimate.
-from cbadc.digital_estimator import DigitalEstimator
-from cbadc.digital_control import DigitalControl
 
-# Define dummy control and control sequence (not used when computing transfer functions)
-# However necessary to instantiate the digital estimator
+# Define dummy control and control sequence (not used when computing transfer
+# functions). However necessary to instantiate the digital estimator
+
 T = 1/(2 * beta)
 digital_control = DigitalControl(T, N)
 
@@ -144,7 +153,7 @@ eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
 
 # Instantiate estimator.
 digital_estimator = DigitalEstimator(
-    control_sequence, analog_system, digital_control, eta2, K1 = 1)
+    control_sequence(), analog_system, digital_control, eta2, K1=1)
 
 # Compute NTF
 ntf = digital_estimator.noise_transfer_function(omega)
@@ -185,7 +194,7 @@ plt.figure()
 for eta2 in eta2_vec:
     # Instantiate an estimator for each eta.
     digital_estimator = DigitalEstimator(
-        control_sequence, analog_system, digital_control, eta2, K1 = 1)
+        control_sequence(), analog_system, digital_control, eta2, K1=1)
     # Compute stf and ntf
     ntf = digital_estimator.noise_transfer_function(omega)
     ntf_dB = 20 * np.log10(np.abs(ntf))
@@ -194,8 +203,9 @@ for eta2 in eta2_vec:
 
     # Plot
     color = next(plt.gca()._get_lines.prop_cycler)['color']
-    plt.semilogx(frequencies, 20 * \
-                 np.log10(np.linalg.norm(ntf[0, :, :], axis=0)), '--', color=color)
+    plt.semilogx(frequencies, 20 *
+                 np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+                 '--', color=color)
     plt.semilogx(frequencies, stf_dB,
                  label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$", color=color)
 

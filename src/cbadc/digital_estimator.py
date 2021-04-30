@@ -3,7 +3,7 @@
 This module provides alternative implementations for the control-bounded A/D
 conterter's digital estimator.
 """
-from typing import Iterable, Iterator
+from typing import Iterator
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from scipy.linalg import expm, solve, solve_continuous_are
@@ -69,7 +69,7 @@ def care(
     return V
 
 
-class DigitalEstimator(Iterable[np.ndarray]):
+class DigitalEstimator(Iterator[np.ndarray]):
     """Batch estimator implementation.
 
     The digital estimator estimates a filtered version

@@ -6,6 +6,14 @@ Downsampling
 In this tutorial we demonstrate how to configure the digital estimator
 for downsampling.
 """
+import numpy as np
+from cbadc.digital_control import DigitalControl
+from cbadc.analog_system import AnalogSystem
+from cbadc.utilities import compute_power_spectral_density
+import matplotlib.pyplot as plt
+from cbadc.digital_estimator import FIRFilter
+from cbadc.utilities import read_byte_stream_from_file, \
+    byte_stream_2_control_signal
 
 ###############################################################################
 # Setting up the Analog System and Digital Control
@@ -22,9 +30,6 @@ for downsampling.
 #    :alt: The chain of integrators ADC.
 
 # Setup analog system and digital control
-from cbadc.analog_system import AnalogSystem
-from cbadc.digital_control import DigitalControl
-import numpy as np
 
 N = 6
 M = N
@@ -67,7 +72,6 @@ print(digital_control)
 # The control signal file is encoded as raw binary data so to unpack it
 # correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
-from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
 
 byte_stream = read_byte_stream_from_file(
     '../a_getting_started/sinusodial_simulation.adc', M)
@@ -93,7 +97,6 @@ omega_3dB = 2 * np.pi / (2 * T * OSR)
 #
 # First we initialize our default estimator without a downsampling parameter
 # which then defaults to 1, i.e., no downsampling.
-from cbadc.digital_estimator import FIRFilter
 
 # Set the bandwidth of the estimator
 G_at_omega = np.linalg.norm(
@@ -116,7 +119,6 @@ print(digital_estimator_ref, "\n")
 # Visualize Estimator's Transfer Function
 # ---------------------------------------
 #
-import matplotlib.pyplot as plt
 
 # Logspace frequencies
 frequencies = np.logspace(-3, 0, 100)
@@ -155,7 +157,7 @@ plt.gcf().tight_layout()
 # FIR Filter With Downsampling
 # ----------------------------
 #
-# Next we repeat the initalization steps above but for a downsampled estimator
+# Next we repeat the initialization steps above but for a downsampled estimator
 
 digital_estimator_dow = FIRFilter(
     control_signal_sequences2,
@@ -164,7 +166,7 @@ digital_estimator_dow = FIRFilter(
     eta2,
     L1,
     L2,
-    downsample = OSR)
+    downsample=OSR)
 
 print(digital_estimator_dow, "\n")
 
@@ -188,11 +190,10 @@ for index in range(size // OSR):
 #
 # Finally, we summarize the comparision by visualizing the resulting estimate
 # in both time and frequency domain.
-from cbadc.utilities import compute_power_spectral_density
 
 # compensate the built in L1 delay of FIR filter.
 t = np.arange(-L1 + 1, size - L1 + 1)
-t_down = np.arange(-(L1) // OSR, (size - L1) // OSR ) * OSR + 1
+t_down = np.arange(-(L1) // OSR, (size - L1) // OSR) * OSR + 1
 plt.plot(t, u_hat_ref, label="$\hat{u}(t)$ Reference")
 plt.plot(t_down, u_hat_dow, label="$\hat{u}(t)$ Downsampled")
 plt.xlabel('$t / T$')
@@ -206,7 +207,7 @@ plt.figure()
 u_hat_ref_clipped = u_hat_ref[(L1 + L2):]
 u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR:]
 f_ref, psd_ref = compute_power_spectral_density(
-  u_hat_ref_clipped)
+    u_hat_ref_clipped)
 f_dow, psd_dow = compute_power_spectral_density(
     u_hat_dow_clipped, fs=1.0/OSR)
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
@@ -220,4 +221,3 @@ plt.grid(which='both')
 plt.show()
 
 # sphinx_gallery_thumbnail_number = 2
-

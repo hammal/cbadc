@@ -21,10 +21,28 @@
 Transfer Functions
 ==================
 
-This example demonstrates how to visualize the related transfer functions of the 
-analog system and digital estimator.
+This example demonstrates how to visualize the related transfer functions of
+the analog system and digital estimator.
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-40
+.. GENERATED FROM PYTHON SOURCE LINES 8-14
+
+.. code-block:: default
+   :lineno-start: 8
+
+    from cbadc.digital_control import DigitalControl
+    from cbadc.digital_estimator import DigitalEstimator
+    import matplotlib.pyplot as plt
+    from cbadc.analog_system import ChainOfIntegrators
+    import numpy as np
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 15-46
 
 Chain-of-Integrators ADC Example
 --------------------------------
@@ -39,7 +57,8 @@ In this example, we will use the chain-of-integrators ADC analog system for
 demonstrational purposes. However, except for the analog system creation,
 the steps for a generic analog system and digital estimator.
 
-For in-depth details regarding the chain-of-integrators transfer function see,
+For in-depth details regarding the chain-of-integrators transfer function
+see,
 `chain-of-integrators <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=97/>`_
 
 First we will import dependent modules and initialize a chain-of-integrators
@@ -57,15 +76,12 @@ Using the :py:class:`cbadc.analog_system.ChainOfIntegrators` class which
 derives from the main analog system class
 :py:class:`cbadc.analog_system.AnalogSystem`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 40-59
+.. GENERATED FROM PYTHON SOURCE LINES 46-62
 
 .. code-block:: default
-   :lineno-start: 41
+   :lineno-start: 47
 
 
-    import matplotlib.pyplot as plt
-    from cbadc.analog_system import ChainOfIntegrators
-    import numpy as np
     # We fix the number of analog states.
     N = 6
     # Set the amplification factor.
@@ -131,7 +147,7 @@ derives from the main analog system class
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 60-68
+.. GENERATED FROM PYTHON SOURCE LINES 63-72
 
 Plotting the Analog System's Transfer Function
 ----------------------------------------------
@@ -140,12 +156,13 @@ Next, we plot the transfer function of the analog system
 
 :math:`\mathbf{G}(\omega) = \begin{pmatrix}G_1(\omega), \dots, G_N(\omega)\end{pmatrix}^\mathsf{T} = \mathbf{C}^\mathsf{T} \left(i \omega \mathbf{I}_N - \mathbf{A}\right)^{-1}\mathbf{B}`
 
-using the class method :func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
+using the class method
+:func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 68-96
+.. GENERATED FROM PYTHON SOURCE LINES 72-105
 
 .. code-block:: default
-   :lineno-start: 69
+   :lineno-start: 73
 
 
     # Logspace frequencies
@@ -163,8 +180,13 @@ using the class method :func:`cbadc.analog_system.AnalogSystem.transfer_function
             frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
 
     # Add the norm ||G(omega)||_2
-    plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-        transfer_function[:, 0, :], axis=0)), '--', label="$ ||\mathbf{G}(\omega)||_2 $")
+    plt.semilogx(
+        frequencies,
+        20 * np.log10(np.linalg.norm(
+            transfer_function[:, 0, :],
+            axis=0)),
+        '--',
+        label="$ ||\mathbf{G}(\omega)||_2 $")
 
     # Add labels and legends to figure
     plt.legend()
@@ -186,7 +208,7 @@ using the class method :func:`cbadc.analog_system.AnalogSystem.transfer_function
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 97-127
+.. GENERATED FROM PYTHON SOURCE LINES 106-137
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
@@ -194,8 +216,8 @@ Plotting the Estimator's Signal and Noise Transfer Function
 To determine the estimate's signal and noise transfer function, we must
 instantiate a digital estimator
 :py:class:`cbadc.digital_estimator.DigitalEstimator`. The bandwidth of the
-digital estimation filter is mainly determined by the parameter :math:`\eta^2`
-as the noise transfer function (NTF) follows as
+digital estimation filter is mainly determined by the parameter
+:math:`\eta^2` as the noise transfer function (NTF) follows as
 
 :math:`\text{NTF}( \omega) = \mathbf{G}( \omega)^\mathsf{H} \left(
 \mathbf{G}( \omega)\mathbf{G}( \omega)^\mathsf{H} + \eta^2 \mathbf{I}_N
@@ -215,20 +237,20 @@ the digital estimator requires us to also instantiate a digital control
 
 For the chain-of-integrators example, the noise transfer function
 results in a row vector
-:math:`\text{NTF}(\omega) = \begin{pmatrix} \text{NTF}_1(\omega), \dots, \text{NTF}_N(\omega)\end{pmatrix} \in \mathbb{C}^{1 \times \tilde{N}}`
+:math:`\text{NTF}(\omega) = \begin{pmatrix} \text{NTF}_1(\omega), \dots,
+\text{NTF}_N(\omega)\end{pmatrix} \in \mathbb{C}^{1 \times \tilde{N}}`
 where :math:`\text{NTF}_\ell(\omega)` refers to the noise transfer function
 from the :math:`\ell`-th observation to the final estimate.
 
-.. GENERATED FROM PYTHON SOURCE LINES 127-175
+.. GENERATED FROM PYTHON SOURCE LINES 137-184
 
 .. code-block:: default
-   :lineno-start: 127
+   :lineno-start: 138
 
-    from cbadc.digital_estimator import DigitalEstimator
-    from cbadc.digital_control import DigitalControl
 
-    # Define dummy control and control sequence (not used when computing transfer functions)
-    # However necessary to instantiate the digital estimator
+    # Define dummy control and control sequence (not used when computing transfer
+    # functions). However necessary to instantiate the digital estimator
+
     T = 1/(2 * beta)
     digital_control = DigitalControl(T, N)
 
@@ -244,7 +266,7 @@ from the :math:`\ell`-th observation to the final estimate.
 
     # Instantiate estimator.
     digital_estimator = DigitalEstimator(
-        control_sequence, analog_system, digital_control, eta2, K1 = 1)
+        control_sequence(), analog_system, digital_control, eta2, K1=1)
 
     # Compute NTF
     ntf = digital_estimator.noise_transfer_function(omega)
@@ -283,17 +305,17 @@ from the :math:`\ell`-th observation to the final estimate.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 176-180
+.. GENERATED FROM PYTHON SOURCE LINES 185-189
 
 Setting the Bandwidth of the Estimation Filter
 ----------------------------------------------
 
 Finally, we will investigate the effect of eta2 on the STF and NTF.
 
-.. GENERATED FROM PYTHON SOURCE LINES 180-212
+.. GENERATED FROM PYTHON SOURCE LINES 189-222
 
 .. code-block:: default
-   :lineno-start: 181
+   :lineno-start: 190
 
 
     # create a vector of etas to be evaluated,
@@ -303,7 +325,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
     for eta2 in eta2_vec:
         # Instantiate an estimator for each eta.
         digital_estimator = DigitalEstimator(
-            control_sequence, analog_system, digital_control, eta2, K1 = 1)
+            control_sequence(), analog_system, digital_control, eta2, K1=1)
         # Compute stf and ntf
         ntf = digital_estimator.noise_transfer_function(omega)
         ntf_dB = 20 * np.log10(np.abs(ntf))
@@ -312,8 +334,9 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
         # Plot
         color = next(plt.gca()._get_lines.prop_cycler)['color']
-        plt.semilogx(frequencies, 20 * \
-                     np.log10(np.linalg.norm(ntf[0, :, :], axis=0)), '--', color=color)
+        plt.semilogx(frequencies, 20 *
+                     np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+                     '--', color=color)
         plt.semilogx(frequencies, stf_dB,
                      label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$", color=color)
 
@@ -341,11 +364,11 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
  .. code-block:: none
 
-    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:191: RuntimeWarning: divide by zero encountered in log10
+    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:200: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:191: RuntimeWarning: divide by zero encountered in log10
+    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:200: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:191: RuntimeWarning: divide by zero encountered in log10
+    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:200: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
@@ -354,7 +377,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  22.075 seconds)
+   **Total running time of the script:** ( 0 minutes  21.861 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_d_transfer_function.py:

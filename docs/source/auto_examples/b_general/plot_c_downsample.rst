@@ -25,7 +25,28 @@ Downsampling
 In this tutorial we demonstrate how to configure the digital estimator
 for downsampling.
 
-.. GENERATED FROM PYTHON SOURCE LINES 11-23
+.. GENERATED FROM PYTHON SOURCE LINES 9-18
+
+.. code-block:: default
+   :lineno-start: 9
+
+    import numpy as np
+    from cbadc.digital_control import DigitalControl
+    from cbadc.analog_system import AnalogSystem
+    from cbadc.utilities import compute_power_spectral_density
+    import matplotlib.pyplot as plt
+    from cbadc.digital_estimator import FIRFilter
+    from cbadc.utilities import read_byte_stream_from_file, \
+        byte_stream_2_control_signal
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 19-31
 
 Setting up the Analog System and Digital Control
 ------------------------------------------------
@@ -40,16 +61,13 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 23-58
+.. GENERATED FROM PYTHON SOURCE LINES 31-63
 
 .. code-block:: default
-   :lineno-start: 24
+   :lineno-start: 32
 
 
     # Setup analog system and digital control
-    from cbadc.analog_system import AnalogSystem
-    from cbadc.digital_control import DigitalControl
-    import numpy as np
 
     N = 6
     M = N
@@ -135,7 +153,7 @@ analog system and digital control.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-70
+.. GENERATED FROM PYTHON SOURCE LINES 64-75
 
 Loading Control Signal from File
 --------------------------------
@@ -149,12 +167,11 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 70-80
+.. GENERATED FROM PYTHON SOURCE LINES 75-84
 
 .. code-block:: default
-   :lineno-start: 70
+   :lineno-start: 76
 
-    from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
 
     byte_stream = read_byte_stream_from_file(
         '../a_getting_started/sinusodial_simulation.adc', M)
@@ -171,16 +188,16 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 81-84
+.. GENERATED FROM PYTHON SOURCE LINES 85-88
 
 Oversampling
 -------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-90
+.. GENERATED FROM PYTHON SOURCE LINES 88-94
 
 .. code-block:: default
-   :lineno-start: 85
+   :lineno-start: 89
 
 
     OSR = 64
@@ -195,7 +212,7 @@ Oversampling
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 91-96
+.. GENERATED FROM PYTHON SOURCE LINES 95-100
 
 Oversampling = 1
 ----------------------------------------
@@ -203,12 +220,11 @@ Oversampling = 1
 First we initialize our default estimator without a downsampling parameter
 which then defaults to 1, i.e., no downsampling.
 
-.. GENERATED FROM PYTHON SOURCE LINES 96-115
+.. GENERATED FROM PYTHON SOURCE LINES 100-118
 
 .. code-block:: default
-   :lineno-start: 96
+   :lineno-start: 101
 
-    from cbadc.digital_estimator import FIRFilter
 
     # Set the bandwidth of the estimator
     G_at_omega = np.linalg.norm(
@@ -238,29 +254,6 @@ which then defaults to 1, i.e., no downsampling.
  .. code-block:: none
 
     eta2 = 1184008941499.196, 120.73354982141205 [dB]
-    [[-6.25000001e+01 -2.43204273e-06 -2.85647441e-05 -2.35173302e-04
-      -1.28193300e-03 -3.66815487e-03]
-     [ 6.25000000e+03 -6.25000607e+01 -8.48160782e-04 -7.79552505e-03
-      -4.62928338e-02 -1.43569969e-01]
-     [-2.85647441e-05  6.24999915e+03 -6.25132365e+01 -1.32421278e-01
-      -8.49361824e-01 -2.86501699e+00]
-     [-2.35173302e-04 -7.79552505e-03  6.24986758e+03 -6.39297005e+01
-      -9.93225363e+00 -3.70923440e+01]
-     [-1.28193300e-03 -4.62928338e-02 -8.49361824e-01  6.24006775e+03
-      -1.38528479e+02 -3.29802817e+02]
-     [-3.66815487e-03 -1.43569969e-01 -2.86501699e+00 -3.70923440e+01
-       5.92019718e+03 -2.00406765e+03]] [[-6.24999997e+01 -6.73216835e-06  8.56115846e-05 -6.90821849e-04
-       3.37066838e-03 -7.73727897e-03]
-     [ 6.24999999e+03 -6.24998120e+01 -2.69606755e-03  2.36258836e-02
-      -1.23501668e-01  3.03035896e-01]
-     [ 8.56115846e-05  6.24999730e+03 -6.24580101e+01 -3.94286880e-01
-       2.20438687e+00 -5.82520597e+00]
-     [-6.90821849e-04  2.36258836e-02  6.24960571e+03 -5.85385365e+01
-      -2.38932760e+01  6.95487643e+01]
-     [ 3.37066838e-03 -1.23501668e-01  2.20438687e+00  6.22610672e+03
-       9.67249284e+01 -5.40962751e+02]
-     [-7.73727897e-03  3.03035896e-01 -5.82520597e+00  6.95487643e+01
-       5.70903725e+03  2.54331050e+03]]
     FIR estimator is parameterized as 
     eta2 = 1184008941499.20, 121 [dB],
     Ts = 8e-05,
@@ -294,18 +287,17 @@ which then defaults to 1, i.e., no downsampling.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 116-119
+.. GENERATED FROM PYTHON SOURCE LINES 119-122
 
 Visualize Estimator's Transfer Function
 ---------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 119-154
+.. GENERATED FROM PYTHON SOURCE LINES 122-156
 
 .. code-block:: default
-   :lineno-start: 119
+   :lineno-start: 123
 
-    import matplotlib.pyplot as plt
 
     # Logspace frequencies
     frequencies = np.logspace(-3, 0, 100)
@@ -351,17 +343,17 @@ Visualize Estimator's Transfer Function
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 155-159
+.. GENERATED FROM PYTHON SOURCE LINES 157-161
 
 FIR Filter With Downsampling
 ----------------------------
 
-Next we repeat the initalization steps above but for a downsampled estimator
+Next we repeat the initialization steps above but for a downsampled estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 159-171
+.. GENERATED FROM PYTHON SOURCE LINES 161-173
 
 .. code-block:: default
-   :lineno-start: 160
+   :lineno-start: 162
 
 
     digital_estimator_dow = FIRFilter(
@@ -371,7 +363,7 @@ Next we repeat the initalization steps above but for a downsampled estimator
         eta2,
         L1,
         L2,
-        downsample = OSR)
+        downsample=OSR)
 
     print(digital_estimator_dow, "\n")
 
@@ -385,29 +377,6 @@ Next we repeat the initalization steps above but for a downsampled estimator
 
  .. code-block:: none
 
-    [[-6.25000001e+01 -2.43204273e-06 -2.85647441e-05 -2.35173302e-04
-      -1.28193300e-03 -3.66815487e-03]
-     [ 6.25000000e+03 -6.25000607e+01 -8.48160782e-04 -7.79552505e-03
-      -4.62928338e-02 -1.43569969e-01]
-     [-2.85647441e-05  6.24999915e+03 -6.25132365e+01 -1.32421278e-01
-      -8.49361824e-01 -2.86501699e+00]
-     [-2.35173302e-04 -7.79552505e-03  6.24986758e+03 -6.39297005e+01
-      -9.93225363e+00 -3.70923440e+01]
-     [-1.28193300e-03 -4.62928338e-02 -8.49361824e-01  6.24006775e+03
-      -1.38528479e+02 -3.29802817e+02]
-     [-3.66815487e-03 -1.43569969e-01 -2.86501699e+00 -3.70923440e+01
-       5.92019718e+03 -2.00406765e+03]] [[-6.24999997e+01 -6.73216835e-06  8.56115846e-05 -6.90821849e-04
-       3.37066838e-03 -7.73727897e-03]
-     [ 6.24999999e+03 -6.24998120e+01 -2.69606755e-03  2.36258836e-02
-      -1.23501668e-01  3.03035896e-01]
-     [ 8.56115846e-05  6.24999730e+03 -6.24580101e+01 -3.94286880e-01
-       2.20438687e+00 -5.82520597e+00]
-     [-6.90821849e-04  2.36258836e-02  6.24960571e+03 -5.85385365e+01
-      -2.38932760e+01  6.95487643e+01]
-     [ 3.37066838e-03 -1.23501668e-01  2.20438687e+00  6.22610672e+03
-       9.67249284e+01 -5.40962751e+02]
-     [-7.73727897e-03  3.03035896e-01 -5.82520597e+00  6.95487643e+01
-       5.70903725e+03  2.54331050e+03]]
     FIR estimator is parameterized as 
     eta2 = 1184008941499.20, 121 [dB],
     Ts = 8e-05,
@@ -441,16 +410,16 @@ Next we repeat the initalization steps above but for a downsampled estimator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 172-175
+.. GENERATED FROM PYTHON SOURCE LINES 174-177
 
 Estimating (Filtering)
 ----------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 175-185
+.. GENERATED FROM PYTHON SOURCE LINES 177-187
 
 .. code-block:: default
-   :lineno-start: 176
+   :lineno-start: 178
 
 
     # Set simulation length
@@ -469,7 +438,7 @@ Estimating (Filtering)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 186-191
+.. GENERATED FROM PYTHON SOURCE LINES 188-193
 
 Visualizing Results
 -------------------
@@ -477,16 +446,15 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 191-223
+.. GENERATED FROM PYTHON SOURCE LINES 193-223
 
 .. code-block:: default
-   :lineno-start: 191
+   :lineno-start: 194
 
-    from cbadc.utilities import compute_power_spectral_density
 
     # compensate the built in L1 delay of FIR filter.
     t = np.arange(-L1 + 1, size - L1 + 1)
-    t_down = np.arange(-(L1) // OSR, (size - L1) // OSR ) * OSR + 1
+    t_down = np.arange(-(L1) // OSR, (size - L1) // OSR) * OSR + 1
     plt.plot(t, u_hat_ref, label="$\hat{u}(t)$ Reference")
     plt.plot(t_down, u_hat_dow, label="$\hat{u}(t)$ Downsampled")
     plt.xlabel('$t / T$')
@@ -500,7 +468,7 @@ in both time and frequency domain.
     u_hat_ref_clipped = u_hat_ref[(L1 + L2):]
     u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR:]
     f_ref, psd_ref = compute_power_spectral_density(
-      u_hat_ref_clipped)
+        u_hat_ref_clipped)
     f_dow, psd_dow = compute_power_spectral_density(
         u_hat_dow_clipped, fs=1.0/OSR)
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
@@ -512,7 +480,6 @@ in both time and frequency domain.
     plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
     plt.grid(which='both')
     plt.show()
-
 
 
 
@@ -548,7 +515,7 @@ in both time and frequency domain.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  34.185 seconds)
+   **Total running time of the script:** ( 0 minutes  32.825 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_c_downsample.py:

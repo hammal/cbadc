@@ -76,7 +76,7 @@ Next follows three basic examples demonstrating how to
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the  analog system...">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the analog system ...">
 
 .. only:: html
 
