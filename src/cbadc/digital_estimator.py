@@ -163,7 +163,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
                  K1: int,
                  K2: int = 0,
                  stop_after_number_of_iterations: int = (1 << 63),
-                 Ts: float=None,
+                 Ts: float = None,
                  mid_point: bool = False,
                  downsample: int = 1):
         # Check inputs
@@ -231,33 +231,27 @@ class DigitalEstimator(Iterator[np.ndarray]):
         max_step = self.Ts / 1000.0
         if (self.mid_point):
             for m in range(self.analog_system.M):
-                derivative = lambda t, x: np.dot(
-                    tempAf, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
-                solBf = solve_ivp(derivative, (0, self.Ts/2.0), np.zeros(self.analog_system.N),
-                                  atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
-                derivative = lambda t, x: - \
-                    np.dot(tempAb, x) + np.dot(Gamma,
-                                               digital_control.impulse_response(m, t))
-                solBb = -solve_ivp(derivative, (0, self.Ts/2.0), np.zeros(self.analog_system.N),
-                                   atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
-                for n in range (self.analog_system.N):
+                def _derivative_forward(t, x):
+                    return np.dot(tempAf, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBf = solve_ivp(_derivative_forward, (0, self.Ts / 2.0), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+
+                def _derivative_backward(t, x):
+                    return - np.dot(tempAb, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBb = -solve_ivp(_derivative_backward, (0, self.Ts / 2.0), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+                for n in range(self.analog_system.N):
                     self.Bf[n, m] = solBf[n]
                     self.Bb[n, m] = solBb[n]
-            self.Bf = np.dot(np.eye(self.analog_system.N) + \
-                             expm(tempAf * self.Ts / 2.0), self.Bf)
-            self.Bb = np.dot(np.eye(self.analog_system.N) + \
-                             expm(tempAb * self.Ts / 2.0), self.Bb)
+            self.Bf = np.dot(np.eye(self.analog_system.N) + expm(tempAf * self.Ts / 2.0), self.Bf)
+            self.Bb = np.dot(np.eye(self.analog_system.N) + expm(tempAb * self.Ts / 2.0), self.Bb)
         else:
             for m in range(self.analog_system.M):
-                derivative = lambda t, x: np.dot(
-                    tempAf, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
-                solBf = solve_ivp(derivative, (0, self.Ts), np.zeros(
-                    self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
-                derivative = lambda t, x: - \
-                    np.dot(tempAb, x) + np.dot(Gamma,
-                                               digital_control.impulse_response(m, t))
-                solBb = -solve_ivp(derivative, (0, self.Ts), np.zeros(self.analog_system.N),
-                                   atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+                def _derivative_forward_2(t, x):
+                    return np.dot(tempAf, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBf = solve_ivp(_derivative_forward_2, (0, self.Ts), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+
+                def _derivative_backward_2(t, x):
+                    return - np.dot(tempAb, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBb = -solve_ivp(_derivative_backward_2, (0, self.Ts), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
                 self.Bf[:, m] = solBf
                 self.Bb[:, m] = solBb
         self.WT = solve(Vf + Vb, analog_system.B).transpose()
@@ -299,10 +293,8 @@ class DigitalEstimator(Iterator[np.ndarray]):
             temp = np.dot(
                 self.Ab, self._mean[k3 + 1, :]) + np.dot(self.Bb, self._control_signal[k3, :])
             temp_estimate = np.dot(self.WT, temp - self._mean[k3, :])
-            for l in range(self.analog_system.L):
-                self._estimate[k3, l] = temp_estimate[l]
-            for n in range(self.analog_system.N):
-                self._mean[k3, n] = temp[n]
+            self._estimate[k3, :] = temp_estimate[:]
+            self._mean[k3, :] = temp[:]
         # reset intital means
         for n in range(self.analog_system.N):
             self._mean[0, n] = temp_forward_mean[n]
@@ -326,7 +318,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
     def __next__(self) -> np.ndarray:
         # Check if the end of prespecified size
-        if(self.number_of_iterations < self._iteration ):
+        if(self.number_of_iterations < self._iteration):
             raise StopIteration
         self._iteration += 1
 
@@ -634,7 +626,7 @@ class ParallelEstimator(DigitalEstimator):
                         mean -= self.forward_b[n, m]
             self._mean[n] = mean
             mean = np.complex128(0.0)
-            for k3 in range(self.K3-1, -1, -1):
+            for k3 in range(self.K3 - 1, -1, -1):
                 mean = self.backward_a[n] * mean
                 for m in range(self.analog_system.M):
                     if(self._control_signal[k3, m]):
@@ -662,7 +654,7 @@ class ParallelEstimator(DigitalEstimator):
 
     def __next__(self) -> np.ndarray:
         # Check if the end of prespecified size
-        if(self.number_of_iterations < self._iteration ):
+        if(self.number_of_iterations < self._iteration):
             raise StopIteration
         self._iteration += 1
 
@@ -802,7 +794,7 @@ class IIRFilter(DigitalEstimator):
                  Ts: float = None,
                  mid_point: bool = False,
                  downsample: int = 1
-        ):
+                 ):
         """Initializes filter coefficients
         """
         if (K2 < 0):
@@ -849,7 +841,7 @@ class IIRFilter(DigitalEstimator):
     def __next__(self) -> np.ndarray:
         # Check if the end of prespecified size
         self._iteration += 1
-        if(self.number_of_iterations and self.number_of_iterations < self._iteration ):
+        if(self.number_of_iterations and self.number_of_iterations < self._iteration):
             raise StopIteration
 
         # Rotate control_signal vector
@@ -870,7 +862,7 @@ class IIRFilter(DigitalEstimator):
         # self.h.shape -> (K2, L, M)
         result = - np.dot(self.WT, self._mean)
         self._mean = np.dot(self.Af, self._mean) + \
-        np.dot(self.Bf, self._control_signal_valued[0, :])
+            np.dot(self.Bf, self._control_signal_valued[0, :])
         if (((self._iteration - 1) % self.downsample) == 0):
             return np.einsum('ijk,ik', self.h, self._control_signal_valued) + result
         return self.__next__()
@@ -981,10 +973,10 @@ class FIRFilter(DigitalEstimator):
                  eta2: float,
                  K1: int,
                  K2: int,
-                 stop_after_number_of_iterations: int=(1 << 63),
-                 Ts: float=None,
-                 mid_point: bool=False,
-                 downsample: int=1):
+                 stop_after_number_of_iterations: int = (1 << 63),
+                 Ts: float = None,
+                 mid_point: bool = False,
+                 downsample: int = 1):
         """Initializes filter coefficients
         """
         if (K1 < 0):
@@ -1039,7 +1031,7 @@ class FIRFilter(DigitalEstimator):
     def __next__(self) -> np.ndarray:
         # Check if the end of prespecified size
         self._iteration += 1
-        if(self.number_of_iterations and self.number_of_iterations < self._iteration ):
+        if(self.number_of_iterations and self.number_of_iterations < self._iteration):
             raise StopIteration
 
         # Rotate control_signal vector

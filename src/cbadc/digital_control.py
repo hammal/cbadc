@@ -147,4 +147,3 @@ class DigitalControl:
 
     def __str__(self):
         return f"The Digital Control is parameterized as:\nT = {self.T},\nM = {self.M}, and next update at\nt = {self._t_next}"
-

@@ -244,13 +244,13 @@ class AnalogSystem:
         """
         return np.dot(self.Gamma_tildeT, x)
 
-    def _atf(self, _omega: float)->np.ndarray:
+    def _atf(self, _omega: float) -> np.ndarray:
         return np.dot(
             np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
             self.B,
         )
 
-    def transfer_function_matrix(self, omega: np.ndarray)-> np.ndarray:
+    def transfer_function_matrix(self, omega: np.ndarray) -> np.ndarray:
         """Evaluate the analog signal transfer function at the angular
         frequencies of the omega array.
 
@@ -413,7 +413,7 @@ class ChainOfIntegrators(AnalogSystem):
         if (kappa.shape[0] != rho.size):
             InvalidAnalogSystemError(
                 self, "kappa must be a one dimensional vector of size N or matrix with N rows")
-        if( beta.size != rho.size and rho.size != kappa[:, 0].size):
+        if(beta.size != rho.size and rho.size != kappa[:, 0].size):
             InvalidAnalogSystemError(
                 self, "beta, rho, kappa vector must be of same size")
 
@@ -435,7 +435,7 @@ class ChainOfIntegrators(AnalogSystem):
         Gamma_tildeT = -Gamma.transpose()
         for row_index in range(Gamma_tildeT.shape[0]):
             Gamma_tildeT[row_index, :] = \
-            Gamma_tildeT[row_index, :] / \
+                Gamma_tildeT[row_index, :] / \
                 np.linalg.norm(Gamma_tildeT[row_index, :])
 
         # initialize parent class
@@ -551,7 +551,7 @@ class LeapFrog(AnalogSystem):
         if (kappa.shape[0] != kappa.size):
             InvalidAnalogSystemError(
                 self, "kappa must be a one dimensional vector")
-        if( beta.size != rho.size and rho.size != kappa.size):
+        if(beta.size != rho.size and rho.size != kappa.size):
             InvalidAnalogSystemError(
                 self, "beta, rho, kappa vector must be of same size")
 
@@ -574,7 +574,7 @@ class LeapFrog(AnalogSystem):
         Gamma_tildeT = -Gamma.transpose()
         for row_index in range(Gamma_tildeT.shape[0]):
             Gamma_tildeT[row_index, :] = \
-            Gamma_tildeT[row_index, :] / \
+                Gamma_tildeT[row_index, :] / \
                 np.linalg.norm(Gamma_tildeT[row_index, :])
 
         # initialize parent class

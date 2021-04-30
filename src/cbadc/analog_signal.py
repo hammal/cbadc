@@ -32,7 +32,7 @@ class AnalogSignal:
         return 0.0
 
     def __str__(self):
-        return f"Analog signal returns constant 0, i.e., maps t |-> 0."
+        return "Analog signal returns constant 0, i.e., maps t |-> 0."
 
 
 class ConstantSignal(AnalogSignal):
@@ -129,8 +129,8 @@ class Sinusodial(AnalogSignal):
 
     """
 
-    def __init__(self, amplitude: float, frequency: float, phase: float =0.0,
-                 offset: float=0.0):
+    def __init__(self, amplitude: float, frequency: float, phase: float = 0.0,
+                 offset: float = 0.0):
         self.amplitude: float = amplitude
         self.frequency: float = frequency
         self.angluarFrequency: float = 2 * np.pi * self.frequency

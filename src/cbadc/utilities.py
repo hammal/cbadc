@@ -135,7 +135,7 @@ def write_byte_stream_to_file(filename: str, iterator: Iterator[bytes]):
             f.write(word)
 
 
-def read_byte_stream_from_file(filename: str, M: int)->Generator[bytes, None, None]:
+def read_byte_stream_from_file(filename: str, M: int) -> Generator[bytes, None, None]:
     """Generate a byte stream iterator from file
 
     Parameters
@@ -181,7 +181,7 @@ def random_control_signal(M: int, stop_after_number_of_iterations: int = (1 << 6
     iteration: int = 0
     while (iteration < stop_after_number_of_iterations):
         iteration += 1
-        yield np.random.randint(2, size=M, dtype = np.int8)
+        yield np.random.randint(2, size=M, dtype=np.int8)
     else:
         raise StopIteration
 
@@ -209,6 +209,6 @@ def compute_power_spectral_density(sequence: np.ndarray, nperseg: int = 1 << 14,
         nfft=None,
         return_onesided=True,
         scaling='density',
-        fs = fs
+        fs=fs
     )
     return (np.asarray(freq), np.asarray(spectrum))

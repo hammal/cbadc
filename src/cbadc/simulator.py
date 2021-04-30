@@ -108,7 +108,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                  atol: float = 1e-12,
                  rtol: float = 1e-12,
                  max_step: float = math.inf,
-        ):
+                 ):
         if analog_system.L != len(input_signal):
             raise BaseException("""The analog system does not have as many inputs as in input
             list""")
@@ -224,8 +224,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             return np.dot(
                 np.asarray(
                     self._analog_system_matrix_exponential(self.Ts - t)),
-                    np.dot(np.asarray(self.analog_system.Gamma),
-                           dac_waveform)
+                np.dot(np.asarray(self.analog_system.Gamma),
+                       dac_waveform)
             ).flatten()
 
         tspan = np.array([0, self.Ts])
@@ -238,7 +238,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                                                       np.zeros(
                                                           (self.analog_system.N * self.analog_system.M)),
                                                       atol=atol, rtol=rtol, max_step=max_step
-        ).y[:, -1].reshape((self.analog_system.N, self.analog_system.M), order='C')
+                                                      ).y[:, -1].reshape((self.analog_system.N, self.analog_system.M), order='C')
 
     def _ordinary_differential_solution(self, t_span: np.ndarray) -> np.ndarray:
         """Computes system ivp in three parts:
@@ -303,9 +303,9 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
 
     def _signal_derivative(self, t: float, x: np.ndarray) -> np.ndarray:
         res = np.dot(self.analog_system.A, x)
-        for l in range(self.analog_system.L):
-            res += np.dot(self.analog_system.B[:, l],
-                          self.input_signals[l].evaluate(t))
+        for _l in range(self.analog_system.L):
+            res += np.dot(self.analog_system.B[:, _l],
+                          self.input_signals[_l].evaluate(t))
         return res.flatten()
 
     def _full_ordinary_differential_solution(self, t_span: np.ndarray) -> np.ndarray:
@@ -334,8 +334,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         array_like, shape=(N,)
             vector of derivatives evaluated at time t.
         """
-        for l in range(self.analog_system.L):
-            self._input_vector[l] = self.input_signals[l].evaluate(t)
+        for _l in range(self.analog_system.L):
+            self._input_vector[_l] = self.input_signals[_l].evaluate(t)
         self._temp_state_vector = np.dot(self.analog_system.Gamma_tildeT, y)
         self._control_vector = self.digital_control.control_contribution(
             t, self._temp_state_vector)
@@ -367,4 +367,3 @@ def extended_simulation_result(simulator: StateSpaceSimulator) -> Generator[Dict
             'control_signal': np.array(control_signal),
             'analog_state': np.array(analog_state)
         }
-
