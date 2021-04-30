@@ -180,7 +180,6 @@ from cbadc.utilities import control_signal_2_byte_stream
 # Instantiate a new simulator and control.
 simulator = StateSpaceSimulator(analog_system, digital_control, [
                                 analog_signal], t_stop=end_time)
-digital_control = DigitalControl(T, M)
 
 # Construct byte stream.
 byte_stream = control_signal_2_byte_stream(simulator, M)

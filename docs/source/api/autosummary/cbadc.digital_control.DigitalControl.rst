@@ -25,12 +25,6 @@ cbadc.digital\_control.DigitalControl
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~DigitalControl.T
-   
    
 
 .. _sphx_glr_backref_cbadc.digital_control.DigitalControl:

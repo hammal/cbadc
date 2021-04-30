@@ -26,21 +26,6 @@ cbadc.analog\_system.AnalogSystem
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~AnalogSystem.A
-      ~AnalogSystem.B
-      ~AnalogSystem.CT
-      ~AnalogSystem.Gamma
-      ~AnalogSystem.Gamma_tildeT
-      ~AnalogSystem.L
-      ~AnalogSystem.M
-      ~AnalogSystem.M_tilde
-      ~AnalogSystem.N
-      ~AnalogSystem.N_tilde
-   
    
 
 .. _sphx_glr_backref_cbadc.analog_system.AnalogSystem:
