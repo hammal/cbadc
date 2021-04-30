@@ -1,9 +1,9 @@
 """Digital estimators.
 
-This module provides alternative implementations for the control-bounded A/D conterter's
-digital estimator.
+This module provides alternative implementations for the control-bounded A/D
+conterter's digital estimator.
 """
-from typing import Iterator
+from typing import Iterable, Iterator
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from scipy.linalg import expm, solve, solve_continuous_are
@@ -17,7 +17,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def bruteForceCare(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarray:
+def bruteForceCare(
+        A: np.ndarray, B: np.ndarray,
+        Q: np.ndarray, R: np.ndarray) -> np.ndarray:
     timelimit = 10 * 60
     start_time = time.time()
     V = np.eye(A.shape[0])
@@ -43,7 +45,9 @@ def bruteForceCare(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -
     return V
 
 
-def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarray:
+def care(
+        A: np.ndarray, B: np.ndarray,
+        Q: np.ndarray, R: np.ndarray) -> np.ndarray:
     """
     This function solves the forward and backward continuous Riccati equation.
     """
@@ -65,12 +69,13 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
     return V
 
 
-class DigitalEstimator(Iterator[np.ndarray]):
+class DigitalEstimator(Iterable[np.ndarray]):
     """Batch estimator implementation.
 
-    The digital estimator estimates a filtered version :math:`\hat{\mathbf{u}}(t)` (shaped by
-    :py:func:`signal_transfer_function`) of the
-    input signal :math:`\mathbf{u}(t)` from a sequence of control signals :math:`\mathbf{s}[k]`.
+    The digital estimator estimates a filtered version
+    :math:`\hat{\mathbf{u}}(t)` (shaped by :py:func:`signal_transfer_function`)
+    of the input signal :math:`\mathbf{u}(t)` from a sequence of control
+    signals :math:`\mathbf{s}[k]`.
 
     Specifically, the estimates are computed as
 
@@ -82,9 +87,12 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
     :math:`\hat{\mathbf{u}}(k T) = \mathbf{W}^\mathsf{T}\\left(\overleftarrow{\mathbf{m}}[k] -  \overrightarrow{\mathbf{m}}[k]\\right)`
 
-    where :math:`\mathbf{A}_f, \mathbf{A}_b \in \mathbb{R}^{N \\times N}`, :math:`\mathbf{B}_f, \mathbf{B}_b \in \mathbb{R}^{N \\times M}`,
-    and :math:`\mathbf{W}^\mathsf{T} \in \mathbb{R}^{L \\times N}` are the precomputed filter coefficient based on the
-    choice of :py:class:`cbadc.analog_system.AnalogSystem` and :py:class:`cbadc.digital_control.DigitalControl`.
+    where :math:`\mathbf{A}_f, \mathbf{A}_b \in \mathbb{R}^{N \\times N}`,
+    :math:`\mathbf{B}_f, \mathbf{B}_b \in \mathbb{R}^{N \\times M}`, and
+    :math:`\mathbf{W}^\mathsf{T} \in \mathbb{R}^{L \\times N}` are the
+    precomputed filter coefficient based on the choice of
+    :py:class:`cbadc.analog_system.AnalogSystem` and
+    :py:class:`cbadc.digital_control.DigitalControl`.
 
     Parameters
     ----------
@@ -92,9 +100,11 @@ class DigitalEstimator(Iterator[np.ndarray]):
     control_signal_sequence : iterator
         a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
-        an analog system (necessary to compute the estimators filter coefficients).
+        an analog system (necessary to compute the estimators filter
+        coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
-        a digital control (necessary to determine the corresponding DAC waveform).
+        a digital control (necessary to determine the corresponding DAC
+        waveform).
     eta2 : `float`
         the :math:`\eta^2` parameter determines the bandwidth of the estimator.
     K1 : `int`
@@ -102,35 +112,40 @@ class DigitalEstimator(Iterator[np.ndarray]):
     K2 : `int`, `optional`
         lookahead size, defaults to 0.
     stop_after_number_of_iterations : `int`
-        determine a max number of iterations by the iterator, defaults to :math:`2^{63}`.
+        determine a max number of iterations by the iterator, defaults to
+        :math:`2^{63}`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
     mid_point: `bool`, `optional`
-        set samples in between control updates, i.e., :math:`\hat{u}(kT + T/2)`, defaults to False.
+        set samples in between control updates, i.e., :math:`\hat{u}(kT + T/2)`
+        , defaults to False.
     downsample: `int`, `optional`
-        set a downsampling factor compared to the control signal rate, defaults to 1, i.e.,
-        no downsampling.
+        set a downsampling factor compared to the control signal rate,
+        defaults to 1, i.e., no downsampling.
 
 
     Attributes
     ----------
 
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
-        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or from
-        derived class.
+        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or
+        from derived class.
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
-        digital control as in :py:class:`cbadc.digital_control.DigitalControl` or from
-        derived class.
+        digital control as in :py:class:`cbadc.digital_control.DigitalControl`
+        or from derived class.
     eta2 : float
-        eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the estimator.
+        eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the
+        estimator.
     control_signal : :py:class:`cbadc.digital_control.DigitalControl`
-        a iterator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
+        a iterator suppling control signals as
+        :py:class:`cbadc.digital_control.DigitalControl`.
     number_of_iterations : `int`
         number of iterations until iterator raises :py:class:`StopIteration`.
     downsample: `int`, `optional`
         The downsampling factor compared to the rate of the control signal.
     mid_point: `bool`
-        estimated samples shifted in between control updates, i.e., :math:`\hat{u}(kT + T/2)`.
+        estimated samples shifted in between control updates, i.e.,
+        :math:`\hat{u}(kT + T/2)`.
     K1 : `int`
         number of samples per estimate batch.
     K2 : `int`
@@ -203,7 +218,10 @@ class DigitalEstimator(Iterator[np.ndarray]):
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
         self._allocate_memory_buffers()
 
-    def _compute_filter_coefficients(self, analog_system: AnalogSystem, digital_control: DigitalControl, eta2: float):
+    def _compute_filter_coefficients(self,
+                                     analog_system: AnalogSystem,
+                                     digital_control: DigitalControl,
+                                     eta2: float):
         # Compute filter coefficients
         A = np.array(analog_system.A).transpose()
         B = np.array(analog_system.CT).transpose()
@@ -232,26 +250,43 @@ class DigitalEstimator(Iterator[np.ndarray]):
         if (self.mid_point):
             for m in range(self.analog_system.M):
                 def _derivative_forward(t, x):
-                    return np.dot(tempAf, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
-                solBf = solve_ivp(_derivative_forward, (0, self.Ts / 2.0), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+                    return np.dot(tempAf, x) + \
+                        np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBf = solve_ivp(_derivative_forward, (0, self.Ts / 2.0),
+                                  np.zeros(self.analog_system.N),
+                                  atol=atol, rtol=rtol,
+                                  max_step=max_step).y[:, -1]
 
                 def _derivative_backward(t, x):
-                    return - np.dot(tempAb, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
-                solBb = -solve_ivp(_derivative_backward, (0, self.Ts / 2.0), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+                    return - np.dot(tempAb, x) + \
+                        np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBb = -solve_ivp(_derivative_backward, (0, self.Ts / 2.0),
+                                   np.zeros(self.analog_system.N),
+                                   atol=atol, rtol=rtol,
+                                   max_step=max_step).y[:, -1]
                 for n in range(self.analog_system.N):
                     self.Bf[n, m] = solBf[n]
                     self.Bb[n, m] = solBb[n]
-            self.Bf = np.dot(np.eye(self.analog_system.N) + expm(tempAf * self.Ts / 2.0), self.Bf)
-            self.Bb = np.dot(np.eye(self.analog_system.N) + expm(tempAb * self.Ts / 2.0), self.Bb)
+            self.Bf = np.dot(np.eye(self.analog_system.N) +
+                             expm(tempAf * self.Ts / 2.0), self.Bf)
+            self.Bb = np.dot(np.eye(self.analog_system.N) +
+                             expm(tempAb * self.Ts / 2.0), self.Bb)
         else:
             for m in range(self.analog_system.M):
                 def _derivative_forward_2(t, x):
-                    return np.dot(tempAf, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
-                solBf = solve_ivp(_derivative_forward_2, (0, self.Ts), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+                    return np.dot(tempAf, x) + \
+                        np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBf = solve_ivp(_derivative_forward_2, (0, self.Ts),
+                                  np.zeros(self.analog_system.N), atol=atol,
+                                  rtol=rtol, max_step=max_step).y[:, -1]
 
                 def _derivative_backward_2(t, x):
-                    return - np.dot(tempAb, x) + np.dot(Gamma, digital_control.impulse_response(m, t))
-                solBb = -solve_ivp(_derivative_backward_2, (0, self.Ts), np.zeros(self.analog_system.N), atol=atol, rtol=rtol, max_step=max_step).y[:, -1]
+                    return - np.dot(tempAb, x) + \
+                        np.dot(Gamma, digital_control.impulse_response(m, t))
+                solBb = -solve_ivp(_derivative_backward_2, (0, self.Ts),
+                                   np.zeros(self.analog_system.N), atol=atol,
+                                   rtol=rtol,
+                                   max_step=max_step).y[:, -1]
                 self.Bf[:, m] = solBf
                 self.Bb[:, m] = solBb
         self.WT = solve(Vf + Vb, analog_system.B).transpose()
@@ -274,7 +309,8 @@ class DigitalEstimator(Iterator[np.ndarray]):
         # compute lookahead
         for k1 in range(self.K3 - 1, self.K1 - 1, -1):
             temp = np.dot(
-                self.Ab, self._mean[self.K1, :]) + np.dot(self.Bb, self._control_signal[k1, :])
+                self.Ab, self._mean[self.K1, :]) + \
+                np.dot(self.Bb, self._control_signal[k1, :])
             for n in range(self.analog_system.N):
                 self._mean[self.K1, n] = temp[n]
         # compute forward recursion
@@ -285,13 +321,13 @@ class DigitalEstimator(Iterator[np.ndarray]):
                 for n in range(self.analog_system.N):
                     self._mean[k2 + 1, n] = temp[n]
             else:
-                # temp = np.dot(self._Af, temp) + np.dot(self._Bf, self._control_signal[k2 + 1, :])
                 for n in range(self.analog_system.N):
                     temp_forward_mean[n] = temp[n]
         # compute backward recursion and estimate
         for k3 in range(self.K1 - 1, -1, -1):
             temp = np.dot(
-                self.Ab, self._mean[k3 + 1, :]) + np.dot(self.Bb, self._control_signal[k3, :])
+                self.Ab, self._mean[k3 + 1, :]) + \
+                np.dot(self.Bb, self._control_signal[k3, :])
             temp_estimate = np.dot(self.WT, temp - self._mean[k3, :])
             self._estimate[k3, :] = temp_estimate[:]
             self._mean[k3, :] = temp[:]
@@ -306,10 +342,11 @@ class DigitalEstimator(Iterator[np.ndarray]):
     def _input(self, s: np.ndarray) -> bool:
         if (self._control_signal_in_buffer == (self.K3)):
             raise BaseException(
-                "Input buffer full. You must compute batch before adding more control signals")
+                """Input buffer full. You must compute batch before adding
+                more control signals""")
         for m in range(self.analog_system.M):
-            self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
-                2 * s - 1, dtype=np.int8)
+            self._control_signal[self._control_signal_in_buffer, :] = \
+                np.asarray(2 * s - 1, dtype=np.int8)
         self._control_signal_in_buffer += 1
         return self._control_signal_in_buffer > (self.K3 - 1)
 
@@ -358,19 +395,23 @@ class DigitalEstimator(Iterator[np.ndarray]):
         return self.__next__()
 
     def noise_transfer_function(self, omega: np.ndarray):
-        """Compute the noise transfer function (NTF) at the angular frequencies of the omega array.
+        """Compute the noise transfer function (NTF) at the angular
+        frequencies of the omega array.
 
         Specifically, computes
 
         :math:`\\text{NTF}( \omega) = \mathbf{G}( \omega)^\mathsf{H} \\left( \mathbf{G}( \omega)\mathbf{G}( \omega)^\mathsf{H} + \eta^2 \mathbf{I}_N \\right)^{-1}`
 
-        for each angular frequency in omega where where :math:`\mathbf{G}(\omega)\in\mathbb{R}^{N \\times L}` is the ATF matrix of the analog system
-        and :math:`\mathbf{I}_N` represents a square identity matrix.
+        for each angular frequency in omega where where
+        :math:`\mathbf{G}(\omega)\in\mathbb{R}^{N \\times L}` is the ATF
+        matrix of the analog system and :math:`\mathbf{I}_N` represents a
+        square identity matrix.
 
         Parameters
         ----------
         omega: `array_like`, shape=(K,)
-            an array_like object containing the angular frequencies for evaluation.
+            an array_like object containing the angular frequencies for
+            evaluation.
 
         Returns
         -------
@@ -389,19 +430,23 @@ class DigitalEstimator(Iterator[np.ndarray]):
         return result
 
     def signal_transfer_function(self, omega: np.ndarray):
-        """Compute the signal transfer function (STF) at the angular frequencies of the omega array.
+        """Compute the signal transfer function (STF) at the angular
+        frequencies of the omega array.
 
         Specifically, computes
 
         :math:`\\text{STF}( \omega) = \mathbf{G}( \omega)^\mathsf{H} \\left( \mathbf{G}( \omega)\mathbf{G}( \omega)^\mathsf{H} + \eta^2 \mathbf{I}_N \\right)^{-1} \mathbf{G}( \omega)`
 
-        for each angular frequency in omega where where :math:`\mathbf{G}(\omega)\in\mathbb{R}^{N \\times L}` is the ATF matrix of the analog system
-        and :math:`\mathbf{I}_N` represents a square identity matrix.
+        for each angular frequency in omega where where
+        :math:`\mathbf{G}(\omega)\in\mathbb{R}^{N \\times L}` is the ATF
+        matrix of the analog system and :math:`\mathbf{I}_N` represents a
+        square identity matrix.
 
         Parameters
         ----------
         omega: `array_like`, shape=(K,)
-            an array_like object containing the angular frequencies for evaluation.
+            an array_like object containing the angular frequencies for
+            evaluation.
 
         Returns
         -------
@@ -419,19 +464,29 @@ class DigitalEstimator(Iterator[np.ndarray]):
         return result
 
     def __str__(self):
-        return f"Digital estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}\nResulting in the filter coefficients\nAf = \n{self.Af},\nAb = \n{self.Ab},\nBf = \n{self.Bf},\nBb = \n{self.Bb},\nand WT = \n{self.WT}."
+        return f"""Digital estimator is parameterized as
+        \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],
+        \nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},
+        \nand\nnumber_of_iterations = {self.number_of_iterations}
+        \nResulting in the filter coefficients\nAf = \n{self.Af},
+        \nAb = \n{self.Ab},
+        \nBf = \n{self.Bf},
+        \nBb = \n{self.Bb},
+        \nand WT = \n{self.WT}."""
 
 
 class ParallelEstimator(DigitalEstimator):
     """Parallelized batch estimator implementation.
 
-    The parallel estimator estimates a filtered version :math:`\hat{\mathbf{u}}(t)` (shaped by
-    :py:func:`signal_transfer_function`) of the
-    input signal :math:`\mathbf{u}(t)` from a sequence of control signals :math:`\mathbf{s}[k]`.
+    The parallel estimator estimates a filtered version
+    :math:`\hat{\mathbf{u}}(t)` (shaped by :py:func:`signal_transfer_function`)
+    of the input signal :math:`\mathbf{u}(t)` from a sequence of control
+    signals :math:`\mathbf{s}[k]`.
 
-    Specifically, the parallel estimator is a modified version of the default estimator
-    :py:class:`cbadc.digital_estimator.DigitalEstimator` where the the filter matrices are diagonalized
-    enabling a more efficient and possible parallelizable filter implementation. The estimate is computed as
+    Specifically, the parallel estimator is a modified version of the default
+    estimator :py:class:`cbadc.digital_estimator.DigitalEstimator` where the
+    the filter matrices are diagonalized enabling a more efficient and
+    possible parallelizable filter implementation. The estimate is computed as
 
     :math:`\hat{\mathbf{u}}(k T)[\ell] = \sum_{n=0}^N f_w[n] \cdot \overrightarrow{\mathbf{m}}[k][n] + b_w[n] \cdot \overleftarrow{\mathbf{m}}[k][n]`
 

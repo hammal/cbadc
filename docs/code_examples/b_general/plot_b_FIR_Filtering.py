@@ -5,6 +5,15 @@ Digital Estimator as FIR Filter
 
 We demonstrate how to set up the FIR filter implementation.
 """
+from cbadc.utilities import compute_power_spectral_density
+from cbadc.digital_estimator import FIRFilter
+from cbadc.utilities import read_byte_stream_from_file, \
+    byte_stream_2_control_signal
+import matplotlib.pyplot as plt
+from cbadc.analog_system import AnalogSystem
+from cbadc.digital_control import DigitalControl
+from cbadc.digital_estimator import DigitalEstimator
+import numpy as np
 
 ###############################################################################
 # ---------------------------------------
@@ -15,10 +24,6 @@ We demonstrate how to set up the FIR filter implementation.
 # digital control are used. Here we default to the chain-of-integrators
 # example.
 
-from cbadc.analog_system import AnalogSystem
-from cbadc.digital_control import DigitalControl
-from cbadc.digital_estimator import DigitalEstimator
-import numpy as np
 N = 6
 M = N
 beta = 6250.
@@ -58,9 +63,6 @@ print(digital_control)
 # Note that we will also use use the control signal sequence that we previously
 # simulated in
 # :doc:`../a_getting_started/plot_b_simulate_a_control_bounded_adc`.
-import matplotlib.pyplot as plt
-from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
-from cbadc.digital_estimator import FIRFilter
 
 # Choose an arbitrary eta2
 eta2 = 1e6
@@ -201,14 +203,16 @@ plt.gcf().tight_layout()
 # control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 # of different lengths as their decay varies.
 #
-from cbadc.utilities import compute_power_spectral_density
 
 filter_lengths = [10, 20, 40, 80, 120, 160, 180, 200, 220]
 
 eta2 = 1e6
 
-control_signal_sequences = [byte_stream_2_control_signal(read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adc', M), M) for _ in filter_lengths]
+control_signal_sequences = [
+    byte_stream_2_control_signal(
+        read_byte_stream_from_file(
+            '../a_getting_started/sinusodial_simulation.adc', M), M)
+    for _ in filter_lengths]
 
 stop_after_number_of_iterations = 1 << 16
 u_hat = np.zeros(stop_after_number_of_iterations)
@@ -241,7 +245,7 @@ plt.grid(which='both')
 
 digital_estimators_ref = DigitalEstimator(
     byte_stream_2_control_signal(read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adc', M), M),
+        '../a_getting_started/sinusodial_simulation.adc', M), M),
     analog_system,
     digital_control,
     eta2,
@@ -276,7 +280,7 @@ for index_de in range(len(filter_lengths)):
                       color='gray', alpha=0.6, lw=1.5)
 
     ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
-                          label=f'Reference', color='k')
+                          label='Reference', color='k')
 
     ax[index_de].semilogx(f, 10 * np.log10(psd),
                           label=f'K1=K2={filter_lengths[index_de]}',
@@ -295,8 +299,9 @@ plt.rcParams['figure.figsize'] = [6.40, 6.40]
 plt.figure()
 plt.title("Estimates in time domain")
 for index in range(len(filter_lengths)):
-    t_fir = np.arange(-filter_lengths[index] + 1,
-                      stop_after_number_of_iterations - filter_lengths[index] + 1)
+    t_fir = np.arange(
+        -filter_lengths[index] + 1,
+        stop_after_number_of_iterations - filter_lengths[index] + 1)
     plt.plot(t_fir, u_hats[index],
              label=f'K1=K2={filter_lengths[index]}')
 plt.ylabel('$\hat{u}(t)$')

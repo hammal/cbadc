@@ -1,10 +1,11 @@
 """Predefined common analog signals
 
-This module focuses on representing analog signals, i.e., mappings from the time :math:`t`
-to a signal value :math:`u(t)`. Typically for signal processing algorithms, we are used to
-handeling discrete-time signals, i.e. samples of signals. However, since the control-bounded A/D
-converters are converting continuous-time signals we need tools to define signals that
-can be evaluated over their whole continuous domain.
+This module focuses on representing analog signals, i.e., mappings from the
+time :math:`t` to a signal value :math:`u(t)`. Typically for signal processing
+algorithms, we are used to handeling discrete-time signals, i.e. samples of
+signals. However, since the control-bounded A/D converters are converting
+continuous-time signals we need tools to define signals that can be evaluated
+over their whole continuous domain.
 """
 import numpy as np
 
@@ -138,7 +139,9 @@ class Sinusodial(AnalogSignal):
         self.offset: float = offset
 
     def __str__(self):
-        return f"Sinusodial parameterized as:\namplitude = {self.amplitude},\nfrequency = {self.frequency},\nphase = {self.phase}, and\noffset = {self.offset}"
+        return f"""Sinusodial parameterized as: \namplitude = {self.amplitude}, \n
+        frequency = {self.frequency}, \nphase = {self.phase},
+        and\noffset = {self.offset}"""
 
     def evaluate(self, t: float) -> float:
         """Evaluate the signal at time :math:`t`.
@@ -154,6 +157,6 @@ class Sinusodial(AnalogSignal):
             The analog signal value
         """
         return (
-            self.amplitude * np.sin(self.angluarFrequency * t + self.phase)
-            + self.offset
+            self.amplitude *
+            np.sin(self.angluarFrequency * t + self.phase) + self.offset
         )

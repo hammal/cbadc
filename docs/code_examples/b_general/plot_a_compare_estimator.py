@@ -5,16 +5,25 @@ Compare Estimators
 In this tutorial we investigate different estimator implementation techniques
 and compare their performance.
 """
+import timeit
+from cbadc.utilities import compute_power_spectral_density
+from cbadc.digital_estimator import ParallelEstimator
+from cbadc.digital_estimator import IIRFilter
+from cbadc.digital_estimator import FIRFilter
+import matplotlib.pyplot as plt
+from cbadc.digital_estimator import DigitalEstimator
+from cbadc.simulator import StateSpaceSimulator
+from cbadc.analog_signal import Sinusodial
+from cbadc.analog_system import LeapFrog
+from cbadc.digital_control import DigitalControl
+import numpy as np
+
 ###############################################################################
 # Analog System
 # -------------
 #
 # We will commit to a leap-frog control-bounded analog system throughtout
 # this tutorial.
-from cbadc.analog_system import LeapFrog
-from cbadc.digital_control import DigitalControl
-import numpy as np
-
 
 # Determine system parameters
 N = 6
@@ -40,7 +49,6 @@ print(analog_system, "\n")
 #
 # We will also need an analog signal for conversion.
 # In this tutorial we will use a Sinusodial signal.
-from cbadc.analog_signal import Sinusodial
 
 # Set the peak amplitude.
 amplitude = 1.0
@@ -63,12 +71,11 @@ print(analog_signal)
 #
 # Each estimator will require an independent stream of control signals.
 # Therefore, we will next instantiate several digital controls and simulators.
-from cbadc.simulator import StateSpaceSimulator
 
 # Set simulation precision parameters
 atol = 1e-6
 rtol = 1e-12
-max_step= T / 10.
+max_step = T / 10.
 
 # Instantiate digital controls. We will need four of them as we will compare
 # four different estimators.
@@ -83,33 +90,33 @@ simulator1 = StateSpaceSimulator(
     analog_system,
     digital_control1,
     [analog_signal],
-    atol = atol,
-    rtol = rtol,
-    max_step = max_step
+    atol=atol,
+    rtol=rtol,
+    max_step=max_step
 )
 simulator2 = StateSpaceSimulator(
     analog_system,
     digital_control2,
     [analog_signal],
-    atol = atol,
-    rtol = rtol,
-    max_step = max_step
+    atol=atol,
+    rtol=rtol,
+    max_step=max_step
 )
 simulator3 = StateSpaceSimulator(
     analog_system,
     digital_control3,
     [analog_signal],
-    atol = atol,
-    rtol = rtol,
-    max_step = max_step
+    atol=atol,
+    rtol=rtol,
+    max_step=max_step
 )
 simulator4 = StateSpaceSimulator(
     analog_system,
     digital_control4,
     [analog_signal],
-    atol = atol,
-    rtol = rtol,
-    max_step = max_step
+    atol=atol,
+    rtol=rtol,
+    max_step=max_step
 )
 print(simulator1)
 
@@ -123,7 +130,6 @@ print(simulator1)
 # computed. Therefore, this procedure could be computationally intense for a
 # analog system with a large analog state order or equivalently for large
 # number of independent digital controls.
-from cbadc.digital_estimator import DigitalEstimator
 
 # Set the bandwidth of the estimator
 G_at_omega = np.linalg.norm(
@@ -135,7 +141,8 @@ print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 K1 = 1 << 14
 K2 = 1 << 14
 
-# Instantiate the digital estimator (this is where the filter coefficients are computed).
+# Instantiate the digital estimator (this is where the filter coefficients are
+# computed).
 digital_estimator_batch = DigitalEstimator(
     simulator1, analog_system, digital_control1, eta2, K1, K2)
 
@@ -146,7 +153,6 @@ print(digital_estimator_batch, "\n")
 # Visualize Estimator's Transfer Function (Same for Both)
 # -------------------------------------------------------
 #
-import matplotlib.pyplot as plt
 
 # Logspace frequencies
 frequencies = np.logspace(-3, 0, 100)
@@ -188,9 +194,8 @@ plt.gcf().tight_layout()
 # Similarly as for the previous estimator the
 # :py:class:`cbadc.digital_estimator.FIRFilter` is initalized. Additionally,
 # we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
-# fiter coefficients. This is an aid to determine if the lookahead and lookback
-# sizes L1 and L2 are set sufficiently large.
-from cbadc.digital_estimator import FIRFilter
+# filter coefficients. This is an aid to determine if the lookahead and
+# lookback sizes L1 and L2 are set sufficiently large.
 
 # Determine lookback
 L1 = K2
@@ -233,7 +238,6 @@ ax[1].grid(which='both')
 # The IIR filter is closely related to the FIR filter with the exception
 # of an moving average computation.
 # See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
-from cbadc.digital_estimator import IIRFilter
 
 # Determine lookahead
 L2 = K2
@@ -252,9 +256,9 @@ print(digital_estimator_iir, "\n")
 # resembles the default estimator but diagonalizes the filter coefficients
 # resulting in a more computationally more efficient filter that can be
 # parallelized into independent filter operations.
-from cbadc.digital_estimator import ParallelEstimator
 
-# Instantiate the digital estimator (this is where the filter coefficients are computed).
+# Instantiate the digital estimator (this is where the filter coefficients are
+# computed).
 digital_estimator_parallel = ParallelEstimator(
     simulator4, analog_system, digital_control4, eta2, K1, K2)
 
@@ -288,7 +292,6 @@ for index in range(size):
 #
 # Finally, we summarize the comparision by visualizing the resulting estimate
 # in both time and frequency domain.
-from cbadc.utilities import compute_power_spectral_density
 
 t = np.arange(size)
 # compensate the built in L1 delay of FIR filter.
@@ -296,7 +299,7 @@ t_fir = np.arange(-L1 + 1, size - L1 + 1)
 t_iir = np.arange(-L1 + 1, size - L1 + 1)
 u = np.zeros_like(u_hat_batch)
 for index, tt in enumerate(t):
-    u[index] = analog_signal.evaluate( tt * T)
+    u[index] = analog_signal.evaluate(tt * T)
 plt.plot(t, u_hat_batch, label="$\hat{u}(t)$ Batch")
 plt.plot(t_fir, u_hat_fir, label="$\hat{u}(t)$ FIR")
 plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
@@ -362,7 +365,8 @@ print(f"Average Batch Error: {np.linalg.norm(batch_error) / batch_error.size}")
 print(f"Average FIR Error: {np.linalg.norm(fir_error) / fir_error.size}")
 print(f"Average IIR Error: {np.linalg.norm(iir_error) / iir_error.size}")
 print(
-    f"Average Parallel Error: {np.linalg.norm(parallel_error) / parallel_error.size}")
+    f"""Average Parallel Error: { np.linalg.norm(parallel_error)/
+    parallel_error.size}""")
 
 plt.figure()
 u_hat_batch_clipped = u_hat_batch[(K1 + K2):-K2]
@@ -371,10 +375,10 @@ u_hat_iir_clipped = u_hat_iir[(K1 + K2):-K2]
 u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
 u_clipped = stf_at_omega * u
 f_batch, psd_batch = compute_power_spectral_density(
-  u_hat_batch_clipped)
+    u_hat_batch_clipped)
 f_fir, psd_fir = compute_power_spectral_density(
     u_hat_fir_clipped)
-f_iir, psd_iir= compute_power_spectral_density(
+f_iir, psd_iir = compute_power_spectral_density(
     u_hat_iir_clipped)
 f_parallel, psd_parallel = compute_power_spectral_density(
     u_hat_parallel_clipped)
@@ -400,7 +404,6 @@ plt.show()
 # ------------
 #
 # Compare the execution time of each estimator
-import timeit
 
 
 def dummy_input_control_signal():

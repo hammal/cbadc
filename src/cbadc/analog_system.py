@@ -18,20 +18,26 @@ class AnalogSystem:
 
     :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
 
-    where we refer to :math:`\mathbf{A} \in \mathbb{R}^{N \\times N}` as the system matrix,
-    :math:`\mathbf{B} \in \mathbb{R}^{N \\times L}` as the input matrix,
-    and :math:`\mathbf{\Gamma} \in \mathbb{R}^{N \\times M}` is the control input matrix. Furthermore,
-    :math:`\mathbf{x}(t)\in\mathbb{R}^{N}` is the state vector of the system, :math:`\mathbf{u}(t)\in\mathbb{R}^{L}`
-    is the vector valued, continuous-time, analog input signal, and :math:`\mathbf{s}(t)\in\mathbb{R}^{M}` is the
-    vector valued control signal.
+    where we refer to :math:`\mathbf{A} \in \mathbb{R}^{N \\times N}` as the
+    system matrix, :math:`\mathbf{B} \in \mathbb{R}^{N \\times L}` as the
+    input matrix, and :math:`\mathbf{\Gamma} \in \mathbb{R}^{N \\times M}` is
+    the control input matrix. Furthermore,
+    :math:`\mathbf{x}(t)\in\mathbb{R}^{N}` is the state vector of the system,
+    :math:`\mathbf{u}(t)\in\mathbb{R}^{L}` is the vector valued,
+    continuous-time, analog input signal, and
+    :math:`\mathbf{s}(t)\in\mathbb{R}^{M}` is the vector valued control signal.
 
     The analog system also has two (possibly vector valued) outputs namely:
 
-    * The control observation :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
+    * The control observation
+      :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
     * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
 
-    where :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}` is the control observation matrix
-    and :math:`\mathbf{C}^\mathsf{T}\in\mathbb{R}^{\\tilde{N} \\times N}` is the signal observation matrix.
+    where 
+    :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}` 
+    is the control observation matrix and 
+    :math:`\mathbf{C}^\mathsf{T}\in\mathbb{R}^{\\tilde{N} \\times N}` is the
+    signal observation matrix.
 
     Parameters
     ----------
@@ -169,7 +175,8 @@ class AnalogSystem:
         if self.Gamma_tildeT.shape[1] != self.A.shape[0]:
             raise InvalidAnalogSystemError(
                 self,
-                "N does not agree with control observation matrix Gamma_tilde.",
+                """N does not agree with control observation matrix
+                Gamma_tilde.""",
             )
 
     def derivative(self, x: np.ndarray, t: float, u: np.ndarray,
@@ -203,8 +210,8 @@ class AnalogSystem:
         return np.dot(self.A, x) + np.dot(self.B, u) + np.dot(self.Gamma, s)
 
     def signal_observation(self, x: np.ndarray) -> np.ndarray:
-        """Computes the signal observation for a given state vector :math:`\mathbf{x}(t)`
-        evaluated at time :math:`t`.
+        """Computes the signal observation for a given state vector
+        :math:`\mathbf{x}(t)` evaluated at time :math:`t`.
 
         Specifically, returns
 

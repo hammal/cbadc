@@ -4,6 +4,16 @@ Digital Estimation
 
 Converting a stream of control signals into a estimate samples.
 """
+from cbadc.utilities import compute_power_spectral_density
+import matplotlib.pyplot as plt
+from cbadc.utilities import read_byte_stream_from_file, \
+    byte_stream_2_control_signal
+from cbadc.utilities import random_control_signal
+from cbadc.analog_system import AnalogSystem
+from cbadc.digital_control import DigitalControl
+from cbadc.digital_estimator import DigitalEstimator
+import numpy as np
+
 ###############################################################################
 # Setting up the Analog System and Digital Control
 # ------------------------------------------------
@@ -19,10 +29,6 @@ Converting a stream of control signals into a estimate samples.
 #    :alt: The chain of integrators ADC.
 
 # Setup analog system and digital control
-from cbadc.analog_system import AnalogSystem
-from cbadc.digital_control import DigitalControl
-from cbadc.digital_estimator import DigitalEstimator
-import numpy as np
 
 N = 6
 M = N
@@ -59,9 +65,7 @@ print(digital_control)
 # We could, of course, simulate the analog system and digital control above
 # for a given analog signal. However, this might not always be the use case;
 # instead, imagine we have acquired such a control signal from a previous
-# simulation or possibly obtained it from a hardware implemenentation.
-import numpy as np
-from cbadc.utilities import random_control_signal
+# simulation or possibly obtained it from a hardware implementation.
 
 # In principle, we can create a dummy generator by just
 
@@ -74,12 +78,17 @@ def dummy_control_sequence_signal():
 
 
 # Another way would be to use a random control signal. Such a generator
-# is already provided in the :func:`cbadc.utilities.random_control_signal` function.
-# Subsequently, a random (random 1-0 valued M tuples) control signal of length
+# is already provided in the :func:`cbadc.utilities.random_control_signal`
+# function. Subsequently, a random (random 1-0 valued M tuples) control signal
+# of length
+
 sequence_length = 10
+
 # can conveniently be created as
+
 control_signal_sequences = random_control_signal(
     M, stop_after_number_of_iterations=sequence_length, random_seed=42)
+
 # where random_seed and stop_after_number_of_iterations are fully optional
 
 ###############################################################################
@@ -93,11 +102,16 @@ control_signal_sequences = random_control_signal(
 # such as eta2, the batch size K1, and possible the lookahead K2.
 
 # Set the bandwidth of the estimator
+
 eta2 = 1e7
+
 # Set the batch size
+
 K1 = sequence_length
 
-# Instantiate the digital estimator (this is where the filter coefficients are computed).
+# Instantiate the digital estimator (this is where the filter coefficients are
+# computed).
+
 digital_estimator = DigitalEstimator(
     control_signal_sequences, analog_system, digital_control, eta2, K1)
 
@@ -130,7 +144,7 @@ digital_estimator = DigitalEstimator(
 # The iterator is still called the same way.
 for i in digital_estimator:
     print(i)
-# However, this time this iterator involves computing two batches each 
+# However, this time this iterator involves computing two batches each
 # involving a lookahead of size one.
 
 ###############################################################################
@@ -145,7 +159,6 @@ for i in digital_estimator:
 # The control signal file is encoded as raw binary data so to unpack it
 # correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
-from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
 
 byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
 control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
@@ -157,7 +170,6 @@ control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
 # Fortunately, we used the same
 # analog system and digital controls as in this example so
 #
-import matplotlib.pyplot as plt
 
 stop_after_number_of_iterations = 1 << 17
 u_hat = np.zeros(stop_after_number_of_iterations)
@@ -190,7 +202,6 @@ plt.tight_layout()
 #
 # As is typical for delta-sigma modulators, we often visualize the performance
 # of the estimate by plotting the power spectral density (PSD).
-from cbadc.utilities import compute_power_spectral_density
 
 f, psd = compute_power_spectral_density(u_hat[K2:])
 plt.figure()
