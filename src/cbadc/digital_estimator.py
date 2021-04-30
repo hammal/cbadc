@@ -3,7 +3,7 @@
 This module provides alternative implementations for the control-bounded A/D conterter's
 digital estimator.
 """
-from typing import Generator
+from typing import Iterator
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from scipy.linalg import expm, solve, solve_continuous_are
@@ -65,7 +65,7 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
     return V
 
 
-class DigitalEstimator:
+class DigitalEstimator(Iterator[np.ndarray]):
     """Batch estimator implementation.
 
     The digital estimator estimates a filtered version :math:`\hat{\mathbf{u}}(t)` (shaped by
@@ -90,7 +90,7 @@ class DigitalEstimator:
     ----------
 
     control_signal_sequence : iterator
-        a generator which outputs a sequence of control signals.
+        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -102,7 +102,7 @@ class DigitalEstimator:
     K2 : `int`, `optional`
         lookahead size, defaults to 0.
     stop_after_number_of_iterations : `int`
-        determine a max number of iterations by the generator, defaults to :math:`2^{63}`.
+        determine a max number of iterations by the iterator, defaults to :math:`2^{63}`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
     mid_point: `bool`, `optional`
@@ -124,9 +124,9 @@ class DigitalEstimator:
     eta2 : float
         eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the estimator.
     control_signal : :py:class:`cbadc.digital_control.DigitalControl`
-        a generator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
+        a iterator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
     number_of_iterations : `int`
-        number of iterations until generator raises :py:class:`StopIteration`.
+        number of iterations until iterator raises :py:class:`StopIteration`.
     downsample: `int`, `optional`
         The downsampling factor compared to the rate of the control signal.
     mid_point: `bool`
@@ -156,7 +156,7 @@ class DigitalEstimator:
     """
 
     def __init__(self,
-                 control_signal_sequence: Generator[np.ndarray, None, None],
+                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,
@@ -347,7 +347,7 @@ class DigitalEstimator:
         # Fill up batch with new control signals.
         while (not full):
             # next(self.control_signal) calls the control signal
-            # generator and thus recives new control
+            # iterator and thus recives new control
             # signal samples
             try:
                 control_signal_sample = next(self.control_signal)
@@ -459,7 +459,7 @@ class ParallelEstimator(DigitalEstimator):
     Parameters
     ----------
     control_signal_sequence : iterator
-        a generator which outputs a sequence of control signals.
+        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -471,7 +471,7 @@ class ParallelEstimator(DigitalEstimator):
     K2 : `int`, `optional`
         lookahead size, defaults to 0.
     stop_after_number_of_iterations : `int`
-        determine a max number of iterations by the generator, defaults to :math:`2^{63}`.
+        determine a max number of iterations by the iterator, defaults to :math:`2^{63}`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
     mid_point: `bool`, `optional`
@@ -492,9 +492,9 @@ class ParallelEstimator(DigitalEstimator):
     eta2 : float
         eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the estimator.
     control_signal : :py:class:`cbadc.digital_control.DigitalControl`
-        a generator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
+        a iterator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
     number_of_iterations : `int`
-        number of iterations until generator raises :py:class:`StopIteration`.
+        number of iterations until iterator raises :py:class:`StopIteration`.
     downsample: `int`, `optional`
         The downsampling factor compared to the rate of the control signal.
     mid_point: `bool`
@@ -535,7 +535,7 @@ class ParallelEstimator(DigitalEstimator):
     """
 
     def __init__(self,
-                 control_signal_sequence: Generator[np.ndarray, None, None],
+                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,
@@ -732,7 +732,7 @@ class IIRFilter(DigitalEstimator):
     Parameters
     ----------
     control_signal : iterator
-        a generator which outputs a sequence of control signals.
+        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -742,7 +742,7 @@ class IIRFilter(DigitalEstimator):
     K2 : `int`, `optional`
         lookahead size, defaults to 0.
     stop_after_number_of_iterations : `int`
-        determine a max number of iterations by the generator, defaults to  :math:`2^{63}`.
+        determine a max number of iterations by the iterator, defaults to  :math:`2^{63}`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
     mid_point: `bool`, `optional`
@@ -762,9 +762,9 @@ class IIRFilter(DigitalEstimator):
     eta2 : float
         eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the estimator.
     control_signal : :py:class:`cbadc.digital_control.DigitalControl`
-        a generator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
+        a iterator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
     number_of_iterations : `int`
-        number of iterations until generator raises :py:class:`StopIteration`.
+        number of iterations until iterator raises :py:class:`StopIteration`.
     mid_point: `bool`
         estimated samples shifted in between control updates, i.e., :math:`\hat{u}(kT + T/2)`.
     K2 : `int`
@@ -794,7 +794,7 @@ class IIRFilter(DigitalEstimator):
     """
 
     def __init__(self,
-                 control_signal_sequence: Generator[np.ndarray, None, None],
+                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,
@@ -914,7 +914,7 @@ class FIRFilter(DigitalEstimator):
     Parameters
     ----------
     control_signal : iterator
-        a generator which outputs a sequence of control signals.
+        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -926,7 +926,7 @@ class FIRFilter(DigitalEstimator):
     K2 : `int`, `optional`
         lookahead size, defaults to 0.
     stop_after_number_of_iterations : `int`
-        determine a max number of iterations by the generator, defaults to  :math:`2^{63}`.
+        determine a max number of iterations by the iterator, defaults to  :math:`2^{63}`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
     mid_point: `bool`, `optional`
@@ -943,9 +943,9 @@ class FIRFilter(DigitalEstimator):
     eta2 : float
         eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the estimator.
     control_signal : :py:class:`cbadc.digital_control.DigitalControl`
-        a generator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
+        a iterator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
     number_of_iterations : `int`
-        number of iterations until generator raises :py:class:`StopIteration`.
+        number of iterations until iterator raises :py:class:`StopIteration`.
     K1 : `int`
         number of samples, prior to estimate, used in estimate
     K2 : `int`
@@ -976,7 +976,7 @@ class FIRFilter(DigitalEstimator):
     """
 
     def __init__(self,
-                 control_signal_sequence: Generator[np.ndarray, None, None],
+                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,

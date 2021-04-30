@@ -307,7 +307,7 @@ class ChainOfIntegrators(AnalogSystem):
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and
     creates a convenient way of creating chain-of-integrator A/D analog
     systems. For more information about chain-of-integrator ADCs see
-    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=96/>`_..
+    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=96/>`_.
 
 
     Chain-of-integrators analog systems are system goverened by the
@@ -447,7 +447,7 @@ class LeapFrog(AnalogSystem):
 
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
     way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see
-    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=126/>`_..
+    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=126/>`_.
 
 
     A leap-frog analog system is goverened by the differential equations,

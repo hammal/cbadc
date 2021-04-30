@@ -12,3 +12,6 @@ src/cbadc/**/*.so
 .tox
 PythonADC
 ._profile_simulator_stats.txt
+docs/code_examples/a_getting_started/sinusodial_simulation.adc
+docs/._make.bat
+profile_simulator_stats
