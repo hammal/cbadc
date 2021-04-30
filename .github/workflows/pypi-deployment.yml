@@ -32,36 +32,36 @@ jobs:
       with:
         path: dist/*.tar.gz
 
-  build_wheels:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    steps:
-    - name: Checkout github repo
-      uses: actions/checkout@v2
+  # build_wheels:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest, windows-latest]
+  #   steps:
+  #   - name: Checkout github repo
+  #     uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: 3.8
       
-    - name: Install cibuildwheel
-      run: python -m pip install cibuildwheel==1.10.0
+  #   - name: Install cibuildwheel
+  #     run: python -m pip install cibuildwheel==1.10.0
 
-    - name: Build wheels
-      run: python -m cibuildwheel --output-dir wheelhouse
-      env:
-        CIBW_SKIP: pp3*
-        CIBW_ENVIRONMENT: "CYTHON=True"
-        # CIBW_TEST_COMMAND: pytest {project}/tests
+  #   - name: Build wheels
+  #     run: python -m cibuildwheel --output-dir wheelhouse
+  #     env:
+  #       CIBW_SKIP: pp3*
+  #       CIBW_ENVIRONMENT: "CYTHON=True"
+  #       # CIBW_TEST_COMMAND: pytest {project}/tests
 
-    - uses: actions/upload-artifact@v2
-      with:
-        path: ./wheelhouse/*.whl
+  #   - uses: actions/upload-artifact@v2
+  #     with:
+  #       path: ./wheelhouse/*.whl
 
   upload_pypi:
-    needs: [build_wheels, build_sdist]
+    needs: [build_sdist] #[build_wheels, build_sdist]
     runs-on: ubuntu-latest
     # upload to PyPI on every tag starting with 'v'
     # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
