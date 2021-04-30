@@ -1,25 +1,26 @@
-""" Analog systems
+"""Analog systems
 
 This module provides a general :py:class:`cbadc.analog_system.AnalogSystem`
-class with the necessary functionality to do transient simulations, compute 
-transfer functions, and exposing the relevant system parameters as 
-attributes. Additionally, several derived convenience classes are defined 
-to quikly initalize analog systems of particular structures.
+class with the necessary functionality to do transient simulations, compute
+transfer functions, and exposing the relevant system parameters as
+attributes. Additionally, several derived convenience classes are defined
+to quickly initialize analog systems of particular structures.
 """
-#cython: language_level=3
 import numpy as np
+import numpy.typing as npt
 
 
-cdef class AnalogSystem:
+class AnalogSystem:
     """Represents an analog system.
 
-    The AnalogSystem class represents an analog sytem goverened by the differential equations,
+    The AnalogSystem class represents an analog system goverened by the
+    differential equations,
 
     :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
-    
+
     where we refer to :math:`\mathbf{A} \in \mathbb{R}^{N \\times N}` as the system matrix,
     :math:`\mathbf{B} \in \mathbb{R}^{N \\times L}` as the input matrix,
-    and :math:`\mathbf{\Gamma} \in \mathbb{R}^{N \\times M}` is the control input matrix. Furthermore, 
+    and :math:`\mathbf{\Gamma} \in \mathbb{R}^{N \\times M}` is the control input matrix. Furthermore,
     :math:`\mathbf{x}(t)\in\mathbb{R}^{N}` is the state vector of the system, :math:`\mathbf{u}(t)\in\mathbb{R}^{L}`
     is the vector valued, continuous-time, analog input signal, and :math:`\mathbf{s}(t)\in\mathbb{R}^{M}` is the
     vector valued control signal.
@@ -29,7 +30,7 @@ cdef class AnalogSystem:
     * The control observation :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
     * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
 
-    where :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}` is the control observation matrix 
+    where :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}` is the control observation matrix
     and :math:`\mathbf{C}^\mathsf{T}\in\mathbb{R}^{\\tilde{N} \\times N}` is the signal observation matrix.
 
     Parameters
@@ -90,7 +91,7 @@ cdef class AnalogSystem:
     B =
     [[1.]
      [2.]],
-    CT = 
+    CT =
     [[1. 0.]
      [2. 1.]],
     Gamma =
@@ -106,7 +107,8 @@ cdef class AnalogSystem:
         For faulty analog system parametrization.
     """
 
-    def __init__(self, A, B, CT, Gamma, Gamma_tildeT):
+    def __init__(self, A: npt.ArrayLike, B: npt.ArrayLike, CT: npt.ArrayLike,
+                 Gamma: npt.ArrayLike, Gamma_tildeT: npt.ArrayLike):
         """Create an analog system.
 
         Parameters
@@ -123,14 +125,13 @@ cdef class AnalogSystem:
             control observation matrix.
         """
 
-        
         self.A = np.array(A, dtype=np.double)
         self.B = np.array(B, dtype=np.double)
         self.CT = np.array(CT, dtype=np.double)
         self.Gamma = np.array(Gamma, dtype=np.double)
         self.Gamma_tildeT = np.array(Gamma_tildeT, dtype=np.double)
 
-        self.N = self.A.shape[0]    
+        self.N = self.A.shape[0]
 
         if self.A.shape[0] != self.A.shape[1]:
             raise InvalidAnalogSystemError(self, "system matrix not square")
@@ -146,10 +147,9 @@ cdef class AnalogSystem:
         self.L = self.B.shape[1]
         self.N_tilde = self.CT.shape[0]
 
-        self.temp_derivative = np.zeros(self.N,dtype=np.double)
+        self.temp_derivative = np.zeros(self.N, dtype=np.double)
         self.temp_y = np.zeros(self.N_tilde, dtype=np.double)
         self.temp_s_tilde = np.zeros(self.M_tilde, dtype=np.double)
-
 
         if self.B.shape[0] != self.A.shape[0]:
             raise InvalidAnalogSystemError(
@@ -172,14 +172,14 @@ cdef class AnalogSystem:
                 "N does not agree with control observation matrix Gamma_tilde.",
             )
 
-        
-    cpdef double [:] derivative(self, double [:] x, double t, double [:] u, double [:] s):
+    def derivative(self, x: np.ndarray, t: float, u: np.ndarray,
+                   s: np.ndarray) -> np.ndarray:
         """Compute the derivative of the analog system.
-        
-        Specifically, produces the state derivative 
-        
+
+        Specifically, produces the state derivative
+
         :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
-        
+
         as a function of the state vector :math:`\mathbf{x}(t)`, the given time
         :math:`t`, the input signal value :math:`\mathbf{u}(t)`, and the
         control contribution value :math:`\mathbf{s}(t)`.
@@ -200,18 +200,9 @@ cdef class AnalogSystem:
         `array_like`, shape=(N,)
             the derivative :math:`\dot{\mathbf{x}}(t)`.
         """
-        cdef int n, nn, l, m
-        for n in range(self.N):
-            self.temp_derivative[n] = 0
-            for nn in range(self.N):
-                self.temp_derivative[n] += self.A[n,nn] * x[nn]
-            for l in range(self.L):
-                self.temp_derivative[n] += self.B[n,l] * u[l]
-            for m in range(self.M):
-                self.temp_derivative[n] += self.Gamma[n,m] * s[m]
-        return self.temp_derivative
-    
-    cpdef double [:] signal_observation(self, double [:] x):
+        return np.dot(self.A, x) + np.dot(self.B, u) + np.dot(self.Gamma, s)
+
+    def signal_observation(self, x: np.ndarray) -> np.ndarray:
         """Computes the signal observation for a given state vector :math:`\mathbf{x}(t)`
         evaluated at time :math:`t`.
 
@@ -223,75 +214,68 @@ cdef class AnalogSystem:
         ----------
         x : `array_like`, shape=(N,)
             the state vector.
-    
+
         Returns
         -------
         `array_like`, shape=(N_tilde,)
             the signal observation.
 
         """
-        cdef int n, n_tilde
-        for n_tilde in range(self.N_tilde):
-            self.temp_y[n_tilde] = 0
-            for n in range(self.N):
-                self.temp_y[n_tilde] += self.CT[n_tilde, n] * x[n]
-        return self.temp_y
-    
-    cpdef double [:] control_observation(self, double [:] x):
+        return np.dot(self.CT, x)
+
+    def control_observation(self, x: np.ndarray) -> np.ndarray:
         """Computes the control observation for a given state vector :math:`\mathbf{x}(t)`
         evaluated at time :math:`t`.
 
         Specifically, returns
-        
+
         :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
-    
+
         Parameters
         ----------
         x : `array_like`, shape=(N,)
             the state vector.
-    
+
         Returns
         -------
         `array_like`, shape=(M_tilde,)
             the control observation.
 
         """
-        cdef int n, m_tilde
-        for m_tilde in range(self.M_tilde):
-            self.temp_s_tilde[m_tilde] = 0
-            for n in range(self.N):
-                self.temp_s_tilde[m_tilde] = self.Gamma_tildeT[m_tilde, n] * x[n]
-        return self.tem_s_tilde
+        return np.dot(self.Gamma_tildeT, x)
 
-    cdef complex [:,:] _atf(self, double _omega):
-            return np.dot(
-                np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
-                self.B,
-            )
+    def _atf(self, _omega: float)->np.ndarray:
+        return np.dot(
+            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
+            self.B,
+        )
 
-    def transfer_function_matrix(self, double [:] omega):
-        """Evaluate the analog signal transfer function at the angular frequencies of the omega array.
+    def transfer_function_matrix(self, omega: np.ndarray)-> np.ndarray:
+        """Evaluate the analog signal transfer function at the angular
+        frequencies of the omega array.
 
         Specifically, evaluates
-        
+
         :math:`\mathbf{G}(\omega) = \mathbf{C}^\mathsf{T} \\left(\mathbf{A} - i \omega \mathbf{I}_N\\right)^{-1} \mathbf{B}`
 
-        for each angular frequency in omega where :math:`\mathbf{I}_N` represents
-        a square identity matrix of the same dimensions as :math:`\mathbf{A}` and :math:`i=\sqrt{-1}`.
-        
+        for each angular frequency in omega where :math:`\mathbf{I}_N`
+        represents a square identity matrix of the same dimensions as
+        :math:`\mathbf{A}` and :math:`i=\sqrt{-1}`.
+
         Parameters
         ----------
         omega: `array_like`, shape=(K,)
-            an array_like object containing the angular frequencies for evaluation.
-        
+            an array_like object containing the angular frequencies for
+            evaluation.
+
         Returns
         -------
         `array_like`, shape=(N_tilde, L, K)
-            the signal transfer function evaluated at K different angular frequencies.
+            the signal transfer function evaluated at K different angular
+            frequencies.
         """
-        cdef int size = omega.size
-        cdef complex [:,:,:] result =  np.zeros((self.N, self.L, size), dtype=complex)
-        cdef int index
+        size: int = omega.size
+        result = np.zeros((self.N, self.L, size), dtype=complex)
         for index in range(size):
             result[:, :, index] = self._atf(omega[index])
         resp = np.einsum('ij,jkl', self.CT, result)
@@ -320,22 +304,23 @@ class InvalidAnalogSystemError(Exception):
 class ChainOfIntegrators(AnalogSystem):
     """Represents an chain-of-integrators analog system.
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
-    way of creating chain-of-integrator A/D analog systems. For more information about 
-    chain-of-integrator ADCs see 
+    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and
+    creates a convenient way of creating chain-of-integrator A/D analog
+    systems. For more information about chain-of-integrator ADCs see
     `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=96/>`_..
 
 
-    Chain-of-integrators analog systems are sytem goverened by the differential equations,
+    Chain-of-integrators analog systems are system goverened by the
+    differential equations,
 
     :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
-    
-    where 
+
+    where
 
     :math:`\mathbf{A} = \\begin{pmatrix} \\rho_1 & \\\ \\beta_2 & \\rho_2  \\\ & \ddots & \ddots \\\ & & \\beta_N & \\rho_N \\end{pmatrix}`
-    
+
     :math:`\mathbf{B} = \\begin{pmatrix} \\beta_1 & 0 & \cdots & 0 \\end{pmatrix}^\mathsf{T}`
-    
+
     :math:`\mathbf{C}^\mathsf{T} = \mathbf{I}_N`
 
     :math:`\mathbf{\Gamma} = \\begin{pmatrix} \\kappa_1  \\\  & \ddots \\\ & & \\kappa_N  \\end{pmatrix}`
@@ -396,7 +381,7 @@ class ChainOfIntegrators(AnalogSystem):
     [[100.]
      [  0.]
      [  0.]],
-    CT = 
+    CT =
     [[1. 0. 0.]
      [0. 1. 0.]
      [0. 0. 1.]],
@@ -416,18 +401,22 @@ class ChainOfIntegrators(AnalogSystem):
         For faulty analog system parametrization.
     """
 
-    def __init__(self, beta, rho, kappa):
+    def __init__(self, beta: np.ndarray, rho: np.ndarray, kappa: np.ndarray):
         """Create an chain-of-integrators analog system.
         """
         if (beta.shape[0] != beta.size):
-            InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "beta must be a one dimensional vector")
         if (rho.shape[0] != rho.size):
-            InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "rho must be a one dimensional vector")
         if (kappa.shape[0] != rho.size):
-            InvalidAnalogSystemError(self, "kappa must be a one dimensional vector of size N or matrix with N rows")
-        if( beta.size != rho.size and rho.size != kappa[:,0].size):
-            InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")
-        
+            InvalidAnalogSystemError(
+                self, "kappa must be a one dimensional vector of size N or matrix with N rows")
+        if( beta.size != rho.size and rho.size != kappa[:, 0].size):
+            InvalidAnalogSystemError(
+                self, "beta, rho, kappa vector must be of same size")
+
         # State space order
         N = beta.size
 
@@ -442,34 +431,35 @@ class ChainOfIntegrators(AnalogSystem):
             Gamma = np.diag(kappa.flatten())
         else:
             Gamma = np.array(kappa, dtype=np.double)
-        
+
         Gamma_tildeT = -Gamma.transpose()
         for row_index in range(Gamma_tildeT.shape[0]):
-            Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
-        
+            Gamma_tildeT[row_index, :] = \
+            Gamma_tildeT[row_index, :] / \
+                np.linalg.norm(Gamma_tildeT[row_index, :])
+
         # initialize parent class
         AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)
-
 
 
 class LeapFrog(AnalogSystem):
     """Represents an leap-frog analog system.
 
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
-    way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see 
+    way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see
     `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=126/>`_..
 
 
     A leap-frog analog system is goverened by the differential equations,
 
     :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
-    
-    where 
+
+    where
 
     :math:`\mathbf{A} = \\begin{pmatrix} \\rho_1 & \\rho_2 \\\ \\beta_2 & 0 & \\rho_3 \\\ & \ddots & \ddots & \ddots \\\ & & \\beta_N & 0 & \\rho_{N+1} \\end{pmatrix}`
-    
+
     :math:`\mathbf{B} = \\begin{pmatrix} \\beta_1 & 0 & \cdots & 0 \\end{pmatrix}^\mathsf{T}`
-    
+
     :math:`\mathbf{C}^\mathsf{T} = \mathbf{I}_N`
 
     :math:`\mathbf{\Gamma} = \\begin{pmatrix} \\kappa_1  \\\  & \ddots \\\ & & \\kappa_N  \\end{pmatrix}`
@@ -529,7 +519,7 @@ class LeapFrog(AnalogSystem):
     [[101.]
      [  0.]
      [  0.]],
-    CT = 
+    CT =
     [[1. 0. 0.]
      [0. 1. 0.]
      [0. 0. 1.]],
@@ -549,37 +539,43 @@ class LeapFrog(AnalogSystem):
         For faulty analog system parametrization.
     """
 
-    def __init__(self, beta, rho, kappa):
+    def __init__(self, beta: np.ndarray, rho: np.ndarray, kappa: np.ndarray):
         """Create an leap-frog analog system.
         """
         if (beta.shape[0] != beta.size):
-            InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "beta must be a one dimensional vector")
         if (rho.shape[0] != rho.size):
-            InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "rho must be a one dimensional vector")
         if (kappa.shape[0] != kappa.size):
-            InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "kappa must be a one dimensional vector")
         if( beta.size != rho.size and rho.size != kappa.size):
-            InvalidAnalogSystemError(self, "beta, rho, kappa vector must be of same size")
-        
+            InvalidAnalogSystemError(
+                self, "beta, rho, kappa vector must be of same size")
+
         # State space order
         N = beta.size
 
         # Analog system parameters
         A = np.diag(rho[1:], k=1) + np.diag(beta[1:], k=-1)
-        A[0,0] = rho[0]
+        A[0, 0] = rho[0]
         B = np.zeros((N, 1))
         B[0] = beta[0]
         CT = np.eye(N)
-        
+
         # Check if Kappa is specified as a vector
         if kappa.shape[1] == 1:
             Gamma = np.diag(kappa.flatten())
         else:
             Gamma = np.array(kappa, dtype=np.double)
-        
+
         Gamma_tildeT = -Gamma.transpose()
         for row_index in range(Gamma_tildeT.shape[0]):
-            Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(Gamma_tildeT[row_index, :])
-        
+            Gamma_tildeT[row_index, :] = \
+            Gamma_tildeT[row_index, :] / \
+                np.linalg.norm(Gamma_tildeT[row_index, :])
+
         # initialize parent class
         AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)

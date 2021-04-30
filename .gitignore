@@ -11,3 +11,4 @@ src/cbadc/**/*.so
 *.DS_Store
 .tox
 PythonADC
+._profile_simulator_stats.txt

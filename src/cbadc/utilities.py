@@ -1,15 +1,16 @@
 """Utility functions
 
-This module contains various helpful functions to accomondate 
+This module contains various helpful functions to accommodate
 the cbadc toolbox.
 """
 import struct
+from typing import Generator, Iterator
 import numpy as np
-cimport numpy as np
-import math
 from scipy.signal import welch
+from typing import Tuple
 
-def number_of_bytes_selector(int M):
+
+def number_of_bytes_selector(M: int):
     """A helper function for selecting
     the right bytes settings.
 
@@ -24,13 +25,13 @@ def number_of_bytes_selector(int M):
         the byte type for conversion.
     """
     if M < 9:
-        return  {
+        return {
             'number_of_bytes': 1,
             'format_marker': 'B',
             'c_type_name': 'unsigned char'
         }
     if M < 17:
-        return  {
+        return {
             'number_of_bytes': 2,
             'format_marker': 'h',
             'c_type_name': 'short'
@@ -47,10 +48,11 @@ def number_of_bytes_selector(int M):
             'format_marker': 'q',
             'c_type_name': 'long long'
         }
-    raise f"M={M} is larger than 128 which is the largest allowed size"
+    raise BaseException(
+        f"M={M} is larger than 128 which is the largest allowed size")
 
 
-def control_signal_2_byte_stream(control_signal, int M):
+def control_signal_2_byte_stream(control_signal: Iterator[np.ndarray], M: int) -> Generator[bytes, None, None]:
     """Convert a control signal into a byte stream
 
     Parameters
@@ -76,7 +78,8 @@ def control_signal_2_byte_stream(control_signal, int M):
                 sum += 1 << m
         yield struct.pack(format_marker, sum)
 
-def byte_stream_2_control_signal(byte_stream, int M):
+
+def byte_stream_2_control_signal(byte_stream: Iterator[bytes], M: int) -> Generator[np.ndarray, None, None]:
     """Convert a byte stream into a control_sequence
 
     Parameters
@@ -117,7 +120,7 @@ def byte_stream_2_control_signal(byte_stream, int M):
         yield s
 
 
-def write_byte_stream_to_file(filename, iterator):
+def write_byte_stream_to_file(filename: str, iterator: Iterator[bytes]):
     """ Write an stream into binary file.
 
     Parameters
@@ -130,8 +133,9 @@ def write_byte_stream_to_file(filename, iterator):
     with open(filename, "wb") as f:
         for word in iterator:
             f.write(word)
-        
-def read_byte_stream_from_file(filename, M):
+
+
+def read_byte_stream_from_file(filename: str, M: int)->Generator[bytes, None, None]:
     """Generate a byte stream iterator from file
 
     Parameters
@@ -140,7 +144,7 @@ def read_byte_stream_from_file(filename, M):
         filename for input file
     M : `int`
         number of controls
-    
+
     Yields
     ------
     bytes :
@@ -151,9 +155,10 @@ def read_byte_stream_from_file(filename, M):
         byte = b'0'
         while byte:
             byte = f.read(format['number_of_bytes'])
-            yield byte  
+            yield byte
 
-def random_control_signal(int M, int stop_after_number_of_iterations=(1 << 63), int random_seed=0):
+
+def random_control_signal(M: int, stop_after_number_of_iterations: int = (1 << 63), random_seed: int = 0) -> Generator[np.ndarray, None, None]:
     """Creates a iterator producing random control signals.
 
     Parameters
@@ -161,19 +166,19 @@ def random_control_signal(int M, int stop_after_number_of_iterations=(1 << 63), 
     M : `int`
         number of controls
     stop_after_number_of_iterations : `int`, `optional`
-        number of iterations until :py:class:`StopIteration` is raised, 
+        number of iterations until :py:class:`StopIteration` is raised,
         defaults to  :math:`2^{63}`.
     random_seed : `int`, `optional`
         used for setting the random seed, see :py:class:`numpy.random.seed`.
 
     Yields
-    ------  
+    ------
     array_like, shape=(M,)
         a random control signal
     """
     if random_seed:
         np.random.seed(random_seed)
-    iteration = 0
+    iteration: int = 0
     while (iteration < stop_after_number_of_iterations):
         iteration += 1
         yield np.random.randint(2, size=M, dtype = np.int8)
@@ -181,7 +186,7 @@ def random_control_signal(int M, int stop_after_number_of_iterations=(1 << 63), 
         raise StopIteration
 
 
-def compute_power_spectral_density(sequence, nperseg = 1 << 14, fs = 1.0):
+def compute_power_spectral_density(sequence: np.ndarray, nperseg: int = 1 << 14, fs: float = 1.0) -> Tuple[np.ndarray, np.ndarray]:
     """Compute power spectral density of sequence.
 
     Parameters
@@ -194,16 +199,16 @@ def compute_power_spectral_density(sequence, nperseg = 1 << 14, fs = 1.0):
     Returns
     -------
     ((array_like, shape=(K,)), (array_like, shape=(L, K)))
-        frequenceis [Hz] and PSD [:math:`V^2/\mathrm{Hz}`] of sequence.
+        frequencies [Hz] and PSD [:math:`V^2/\mathrm{Hz}`] of sequence.
     """
     freq, spectrum = welch(
-        sequence, 
+        sequence,
         window='hanning',
-        nperseg=nperseg, 
-        noverlap=None, 
-        nfft=None, 
-        return_onesided=True, 
+        nperseg=nperseg,
+        noverlap=None,
+        nfft=None,
+        return_onesided=True,
         scaling='density',
         fs = fs
-        )
-    return (freq, spectrum)
+    )
+    return (np.asarray(freq), np.asarray(spectrum))

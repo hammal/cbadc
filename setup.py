@@ -60,7 +60,7 @@ else:
 
 setup(
     name="cbadc",
-    version="0.0.11",
+    version="0.0.12",
     author="Hampus Malmberg",
     author_email="hampus.malmberg88@gmail.com",
     description="A toolbox for simulating control-bounded converters.",
@@ -77,7 +77,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     package_dir={'': 'src'},
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=REQUIREMENTS,
     include_package_data=True,
     ext_modules=ext_modules,
