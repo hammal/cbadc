@@ -37,8 +37,8 @@ def bruteForceCare(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -
                 - np.dot(V, np.dot(B, np.dot(RInv, np.dot(B.transpose(), V))))
             )
         except FloatingPointError:
-            print("V_frw:\n{}\n".format(V))
-            print("V_frw.dot(V_frw):\n{}".format(np.dot(V, V)))
+            logger.warning("V_frw:\n{}\n".format(V))
+            logger.warning("V_frw.dot(V_frw):\n{}".format(np.dot(V, V)))
             raise FloatingPointError
     return V
 
@@ -217,7 +217,6 @@ class DigitalEstimator(Iterator[np.ndarray]):
                                  np.array(analog_system.CT))
         tempAf: np.ndarray = analog_system.A - np.dot(Vf, CCT) / eta2
         tempAb: np.ndarray = analog_system.A + np.dot(Vb, CCT) / eta2
-        print(tempAf, tempAb)
         self.Af: np.ndarray = np.asarray(expm(tempAf * self.Ts))
         self.Ab: np.ndarray = np.asarray(expm(-tempAb * self.Ts))
         Gamma = np.array(analog_system.Gamma)
@@ -339,7 +338,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
             return temp
         # Check if stop iteration has been raised in previous batch
         if (self._stop_iteration):
-            print("Warning: StopIteration received by estimator.")
+            logger.warning("Warning: StopIteration received by estimator.")
             raise StopIteration
         # Otherwise start receiving control signals
         full = False
@@ -675,7 +674,7 @@ class ParallelEstimator(DigitalEstimator):
             return temp
         # Check if stop iteration has been raised in previous batch
         if (self._stop_iteration):
-            print("Warning: StopIteration received by estimator.")
+            logger.warning("StopIteration received by estimator.")
             raise StopIteration
         # Otherwise start receiving control signals
         full = False
@@ -861,7 +860,7 @@ class IIRFilter(DigitalEstimator):
         try:
             temp = self.control_signal.__next__()
         except RuntimeError:
-            print("Warning estimator received Stop Iteration")
+            logger.warning("Estimator received Stop Iteration")
             raise StopIteration
 
         self._control_signal_valued[-1,
@@ -1051,7 +1050,7 @@ class FIRFilter(DigitalEstimator):
         try:
             temp = self.control_signal.__next__()
         except RuntimeError:
-            print("Warning estimator received Stop Iteration")
+            logger.warning("Estimator received Stop Iteration")
             raise StopIteration
 
         self._control_signal_valued[self.K3 - 1,

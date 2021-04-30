@@ -239,7 +239,6 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                                                           (self.analog_system.N * self.analog_system.M)),
                                                       atol=atol, rtol=rtol, max_step=max_step
         ).y[:, -1].reshape((self.analog_system.N, self.analog_system.M), order='C')
-        # print(f"self._pre_computed_control_matrix: {np.asarray(self._pre_computed_control_matrix)}")
 
     def _ordinary_differential_solution(self, t_span: np.ndarray) -> np.ndarray:
         """Computes system ivp in three parts:
