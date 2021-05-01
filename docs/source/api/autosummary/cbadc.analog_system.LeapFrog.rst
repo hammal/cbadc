@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.LeapFrog
+cbadc.analog\_system.LeapFrog
 =============================
 
 .. currentmodule:: cbadc.analog_system
@@ -9,7 +9,7 @@
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods
@@ -25,21 +25,6 @@
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~LeapFrog.A
-      ~LeapFrog.B
-      ~LeapFrog.CT
-      ~LeapFrog.Gamma
-      ~LeapFrog.Gamma_tildeT
-      ~LeapFrog.L
-      ~LeapFrog.M
-      ~LeapFrog.M_tilde
-      ~LeapFrog.N
-      ~LeapFrog.N_tilde
    
    
 

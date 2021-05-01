@@ -5,6 +5,16 @@ Simulating a Control-Bounded ADC
 This example shows how to simulate the interactions between an analog system
 and a digital control while the former is excited by an analog signal.
 """
+import matplotlib.pyplot as plt
+from cbadc.utilities import control_signal_2_byte_stream
+from cbadc.utilities import write_byte_stream_to_file
+from cbadc.simulator import extended_simulation_result
+from cbadc.simulator import StateSpaceSimulator
+from cbadc.analog_signal import Sinusodial
+from cbadc.digital_control import DigitalControl
+from cbadc.analog_system import ChainOfIntegrators
+import numpy as np
+
 ###############################################################################
 # The Analog System
 # -----------------
@@ -18,8 +28,6 @@ and a digital control while the former is excited by an analog signal.
 # commit to a chain-of-integrators ADC,
 # see :py:class:`cbadc.analog_system.ChainOfIntegrators`, as our analog
 # system.
-from cbadc.analog_system import ChainOfIntegrators
-import numpy as np
 
 # We fix the number of analog states.
 N = 6
@@ -43,7 +51,6 @@ print(analog_system)
 # In addition to the analog system, our simulation will require us to specify a
 # digital control. For this tutorial, we will use
 # :py:class:`cbadc.digital_control.DigitalControl`.
-from cbadc.digital_control import DigitalControl
 
 # Set the time period which determines how often the digital control updates.
 T = 1.0/(2 * beta)
@@ -63,7 +70,6 @@ print(digital_control)
 # For this tutorial, we will choose a
 # :py:class:`cbadc.analog_signal.Sinusodial`. Again, this is one of several
 # possible choices.
-from cbadc.analog_signal import Sinusodial
 
 # Set the peak amplitude.
 amplitude = 0.5
@@ -89,10 +95,9 @@ print(analog_signal)
 # involved differential equations as outlined in
 # :py:class:`cbadc.analog_system.AnalogSystem`.
 #
-from cbadc.simulator import StateSpaceSimulator
 
-# Simulate for 2^17 control cycles.
-end_time = T * (1 << 17)
+# Simulate for 2^18 control cycles.
+end_time = T * (1 << 18)
 
 # Instantiate the simulator.
 simulator = StateSpaceSimulator(analog_system, digital_control, [
@@ -145,7 +150,6 @@ print(simulator)
 #
 # We can achieve this by appending yet another generator to the control signal
 # stream as:
-from cbadc.simulator import extended_simulation_result
 
 # Repeating the steps above we now get for the following
 # ten control cycles.
@@ -173,14 +177,11 @@ for res in ext_simulator:
 # For this purpose use the
 # :func:`cbadc.utilities.control_signal_2_byte_stream` and
 # :func:`cbadc.utilities.write_byte_stream_to_file` functions.
-from cbadc.utilities import write_byte_stream_to_file
-from cbadc.utilities import control_signal_2_byte_stream
 
 
 # Instantiate a new simulator and control.
 simulator = StateSpaceSimulator(analog_system, digital_control, [
                                 analog_signal], t_stop=end_time)
-digital_control = DigitalControl(T, M)
 
 # Construct byte stream.
 byte_stream = control_signal_2_byte_stream(simulator, M)
@@ -210,7 +211,6 @@ write_byte_stream_to_file("sinusodial_simulation.adc",
 # unit of time. However, digital control is still restricted to only update
 # the control signals at multiples of :math:`T`.
 #
-import matplotlib.pyplot as plt
 
 # Set sampling time three orders of magnitude smaller than the control period
 Ts = T / 1000.0

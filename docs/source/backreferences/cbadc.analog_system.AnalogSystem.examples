@@ -5,45 +5,7 @@ Examples using ``cbadc.analog_system.AnalogSystem``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to simulate the interactions between an analog system and a digital cont...">
-
-.. only:: html
-
- .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_b_simulate_a_control_bounded_adc_thumb.png
-     :alt: Simulating a Control-Bounded ADC
-
-     :ref:`sphx_glr_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
- * :ref:`sphx_glr_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Converting a stream of control signals into a estimate samples.">
-
-.. only:: html
-
- .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_c_digital_estimator_thumb.png
-     :alt: Digital Estimation (Post Filtering)
-
-     :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
- * :ref:`sphx_glr_auto_examples_a_getting_started_plot_c_digital_estimator.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the  analog system...">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the analog system ...">
 
 .. only:: html
 
@@ -59,22 +21,3 @@ Examples using ``cbadc.analog_system.AnalogSystem``
 .. only:: not html
 
  * :ref:`sphx_glr_auto_examples_a_getting_started_plot_d_transfer_function.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to set up the FIR filter implementation.">
-
-.. only:: html
-
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
-     :alt: Digital Estimator as FIR Filter
-
-     :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
- * :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`

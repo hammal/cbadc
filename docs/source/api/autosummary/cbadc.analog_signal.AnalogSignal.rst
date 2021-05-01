@@ -9,7 +9,7 @@ cbadc.analog\_signal.AnalogSignal
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods

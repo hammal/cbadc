@@ -89,9 +89,20 @@ Relation to :math:`\Delta\Sigma` Modulators
 But wait, the figure above looks like a continuous-time :math:`\Delta\Sigma` modulator?
 Is it just the same? 
 
-Not quite. It is true that...
+Not quite. It is true that, in the scalar input, state vector, and control signal case,
+there is no difference between the AS and DC of the control-bounded architecture presented 
+above and a first order continuous-time :math:`\Delta\Sigma` modulator. However, the DE
+filter is derived in a conceptually different way compared to a decimation filer. 
+Furthermore, for a general AS and DC the closest :math:`\Delta\Sigma` concept is the
+MASH :math:`\Delta\Sigma` modulator concept. However, the MASH concept requires a 
+digital cancellation logic which fundamentally constrains how the AS and DC can be 
+interconnected. In comparison, the control-bounded DE pose no such restrictions but 
+instead enables a vast AS and DC design space.
 
-:doc:`MASH Delta-Sigma Converter<MASH_delta_sigma>`
+Interestingly, :doc:`any MASH converter can be written in the form of a control-bounded A/D 
+converter<MASH_delta_sigma>` and thereby benefit from using the simple design procedure of the 
+DE as opposed to the conventional way of a digital cancellation logic followed by a 
+decimation filter.
 
 ======================
 References
@@ -110,14 +121,15 @@ For a more in-depth description, consider the following references.
 What's next
 ======================
 
-.. Next follows a series of tutorials demonstrating common use cases of the cbadc package.
-.. In particular, consider the :ref:`getting_started`.
+Next follows a series of tutorials demonstrating common use cases of the cbadc package.
+In particular, consider the :ref:`getting_started`.
 
 .. toctree::
    :depth: 0
+   :hidden:
   
-  analog_system
-  digital_control
-  digital_estimator
-  MASH_delta_sigma
-  terminology
+   analog_system
+   digital_control
+   digital_estimator
+   MASH_delta_sigma
+   terminology

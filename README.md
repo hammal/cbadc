@@ -17,10 +17,18 @@ The projects official documentation can be found at [Read the Docs](https://cbad
 
 For a in depth description of the control-bounded conversion concept, check out [Control-Bounded Converters](https://doi.org/10.3929/ethz-b-000469192).
 
-# Building from Source Code
-...
+# Installation
+
+Install [cbadc](https://pypi.org/project/cbadc/) by typing
+
+```bash
+pip install cbadc
+```
+
+into your console. Note that, currently cbadc is only supported for Python3.6 and later.
+
 # Changelog
 
-## 0.0.1
+## 0.1.0
 
-- First release
+- First public release

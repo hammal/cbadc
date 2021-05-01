@@ -1,3 +1,15 @@
 [build-system]
 requires = ["setuptools", "cython", "numpy"]
 build-backend = "setuptools.build_meta"
+
+[tool]
+[tool.pyright]
+include = ["src/cbadc"]
+[tool.flake8]
+ignore = "W605"
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests"
+]

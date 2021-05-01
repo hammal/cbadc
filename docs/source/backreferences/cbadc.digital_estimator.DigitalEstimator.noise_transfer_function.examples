@@ -5,7 +5,7 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator.noise_transfer_functio
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the  analog system...">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the analog system ...">
 
 .. only:: html
 
@@ -21,22 +21,3 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator.noise_transfer_functio
 .. only:: not html
 
  * :ref:`sphx_glr_auto_examples_a_getting_started_plot_d_transfer_function.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to set up the FIR filter implementation.">
-
-.. only:: html
-
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
-     :alt: Digital Estimator as FIR Filter
-
-     :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
- * :ref:`sphx_glr_auto_examples_b_general_plot_b_FIR_Filtering.py`

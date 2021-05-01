@@ -24,7 +24,32 @@ Compare Estimators
 In this tutorial we investigate different estimator implementation techniques
 and compare their performance.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-14
+.. GENERATED FROM PYTHON SOURCE LINES 8-21
+
+.. code-block:: default
+   :lineno-start: 8
+
+    import timeit
+    from cbadc.utilities import compute_power_spectral_density
+    from cbadc.digital_estimator import ParallelEstimator
+    from cbadc.digital_estimator import IIRFilter
+    from cbadc.digital_estimator import FIRFilter
+    import matplotlib.pyplot as plt
+    from cbadc.digital_estimator import DigitalEstimator
+    from cbadc.simulator import StateSpaceSimulator
+    from cbadc.analog_signal import Sinusodial
+    from cbadc.analog_system import LeapFrog
+    from cbadc.digital_control import DigitalControl
+    import numpy as np
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 22-27
 
 Analog System
 -------------
@@ -32,14 +57,11 @@ Analog System
 We will commit to a leap-frog control-bounded analog system throughtout
 this tutorial.
 
-.. GENERATED FROM PYTHON SOURCE LINES 14-36
+.. GENERATED FROM PYTHON SOURCE LINES 27-46
 
 .. code-block:: default
-   :lineno-start: 14
+   :lineno-start: 28
 
-    from cbadc.analog_system import LeapFrog
-    from cbadc.digital_control import DigitalControl
-    import numpy as np
 
     # Determine system parameters
     N = 6
@@ -116,7 +138,7 @@ this tutorial.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 37-42
+.. GENERATED FROM PYTHON SOURCE LINES 47-52
 
 Analog Signal
 -------------
@@ -124,12 +146,11 @@ Analog Signal
 We will also need an analog signal for conversion.
 In this tutorial we will use a Sinusodial signal.
 
-.. GENERATED FROM PYTHON SOURCE LINES 42-59
+.. GENERATED FROM PYTHON SOURCE LINES 52-68
 
 .. code-block:: default
-   :lineno-start: 42
+   :lineno-start: 53
 
-    from cbadc.analog_signal import Sinusodial
 
     # Set the peak amplitude.
     amplitude = 1.0
@@ -137,7 +158,7 @@ In this tutorial we will use a Sinusodial signal.
     frequency = 1.0 / (T * OSR * (1 << 0))
 
     # We also specify a phase an offset these are hovewer optional.
-    phase = np.pi / 3
+    phase = 0.0
     offset = 0.0
 
     # Instantiate the analog signal
@@ -156,16 +177,18 @@ In this tutorial we will use a Sinusodial signal.
 
  .. code-block:: none
 
-    Sinusodial parameterized as:
-    amplitude = 1.0,
-    frequency = 97.65624999999999,
-    phase = 1.0471975511965976, and
+    Sinusodial parameterized as: 
+    amplitude = 1.0, 
+
+            frequency = 97.65624999999999, 
+    phase = 0.0,
+            and
     offset = 0.0
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 60-65
+.. GENERATED FROM PYTHON SOURCE LINES 69-74
 
 Simulating
 ----------
@@ -173,21 +196,23 @@ Simulating
 Each estimator will require an independent stream of control signals.
 Therefore, we will next instantiate several digital controls and simulators.
 
-.. GENERATED FROM PYTHON SOURCE LINES 65-96
+.. GENERATED FROM PYTHON SOURCE LINES 74-123
 
 .. code-block:: default
-   :lineno-start: 65
+   :lineno-start: 75
 
-    from cbadc.simulator import StateSpaceSimulator
 
     # Set simulation precision parameters
     atol = 1e-6
     rtol = 1e-12
-    max_step= T / 10.
+    max_step = T / 10.
 
-    # Instantiate digital controls
+    # Instantiate digital controls. We will need four of them as we will compare
+    # four different estimators.
     digital_control1 = DigitalControl(T, M)
     digital_control2 = DigitalControl(T, M)
+    digital_control3 = DigitalControl(T, M)
+    digital_control4 = DigitalControl(T, M)
     print(digital_control1)
 
     # Instantiate simulators.
@@ -195,17 +220,33 @@ Therefore, we will next instantiate several digital controls and simulators.
         analog_system,
         digital_control1,
         [analog_signal],
-        atol = atol,
-        rtol = rtol,
-        max_step = max_step
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
     )
     simulator2 = StateSpaceSimulator(
         analog_system,
         digital_control2,
         [analog_signal],
-        atol = atol,
-        rtol = rtol,
-        max_step = max_step
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
+    )
+    simulator3 = StateSpaceSimulator(
+        analog_system,
+        digital_control3,
+        [analog_signal],
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
+    )
+    simulator4 = StateSpaceSimulator(
+        analog_system,
+        digital_control4,
+        [analog_signal],
+        atol=atol,
+        rtol=rtol,
+        max_step=max_step
     )
     print(simulator1)
 
@@ -234,10 +275,10 @@ Therefore, we will next instantiate several digital controls and simulators.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 97-106
+.. GENERATED FROM PYTHON SOURCE LINES 124-133
 
-Quadratic Complexity Estimator
-------------------------------
+Default, Quadratic Complexity, Estimator
+----------------------------------------
 
 Next we instantiate the quadratic and default estimator
 :py:class:`cbadc.digital_estimator.DigitalEstimator`. Note that during its
@@ -246,24 +287,24 @@ computed. Therefore, this procedure could be computationally intense for a
 analog system with a large analog state order or equivalently for large
 number of independent digital controls.
 
-.. GENERATED FROM PYTHON SOURCE LINES 106-125
+.. GENERATED FROM PYTHON SOURCE LINES 133-152
 
 .. code-block:: default
-   :lineno-start: 106
+   :lineno-start: 134
 
-    from cbadc.digital_estimator import DigitalEstimator
 
     # Set the bandwidth of the estimator
     G_at_omega = np.linalg.norm(
         analog_system.transfer_function_matrix(np.array([omega_3dB])))
     eta2 = G_at_omega**2
-    print(f"eta2 = {eta2}, {20 * np.log10(eta2)} [dB]")
+    print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
     # Set the batch size
-    K1 = 1 << 10
-    K2 = 1 << 10
+    K1 = 1 << 14
+    K2 = 1 << 14
 
-    # Instantiate the digital estimator (this is where the filter coefficients are computed).
+    # Instantiate the digital estimator (this is where the filter coefficients are
+    # computed).
     digital_estimator_batch = DigitalEstimator(
         simulator1, analog_system, digital_control1, eta2, K1, K2)
 
@@ -280,32 +321,94 @@ number of independent digital controls.
 
  .. code-block:: none
 
-    eta2 = 1259410956005.0083, 242.00334934088704 [dB]
-    Digital estimator is parameterized as 
-    eta2 = 1259410956005.01, 242 [dB],
+    eta2 = 1259410956005.0083, 121.00167467044352 [dB]
+    Digital estimator is parameterized as
+        
+    eta2 = 1259410956005.01, 121 [dB],
+        
     Ts = 8e-05,
-    K1 = 1024,
-    K2 = 1024,
-    estimator_type = quadratic,
+    K1 = 16384,
+    K2 = 16384,
+        
     and
-    number_of_iterations = 9223372036854775808. 
+    number_of_iterations = 9223372036854775808
+        
+    Resulting in the filter coefficients
+    Af = 
+    [[ 9.93992011e-01 -4.80368682e-03  1.15864448e-05 -1.85515926e-08
+       1.63410461e-10 -7.50223347e-11]
+     [ 4.98396397e-01  9.97593569e-01 -4.81334317e-03  1.16016953e-05
+      -1.11135428e-08  1.65593448e-08]
+     [ 1.24724256e-01  4.99398045e-01  9.97591782e-01 -4.81356428e-03
+       1.13768870e-05  1.77374670e-07]
+     [ 2.07981872e-02  1.24899305e-01  4.99395630e-01  9.97581755e-01
+      -4.83705939e-03 -1.55238302e-05]
+     [ 2.60019384e-03  2.08166882e-02  1.24867079e-01  4.99198307e-01
+       9.96748934e-01 -6.25618007e-03]
+     [ 2.57435177e-04  2.57297257e-03  2.05433050e-02  1.22849014e-01
+       4.88154288e-01  9.59742079e-01]],
+        
+    Ab = 
+    [[ 1.00362260e+00  4.82689704e-03  1.16236702e-05  1.86786149e-08
+       2.09634411e-10 -1.97644500e-10]
+     [-5.00804522e-01  9.97589700e-01  4.81334112e-03  1.15948304e-05
+       2.15247962e-08  1.18496522e-08]
+     [ 1.25125657e-01 -4.99397548e-01  9.97591713e-01  4.81382778e-03
+       1.07124083e-05  6.90493753e-07]
+     [-2.08483433e-02  1.24899069e-01 -4.99394396e-01  9.97575580e-01
+       4.85758001e-03 -5.16212805e-05]
+     [ 2.60500526e-03 -2.08147709e-02  1.24852463e-01 -4.99111003e-01
+       9.96381087e-01  7.05497103e-03]
+     [-2.56748688e-04  2.56174243e-03 -2.04480404e-02  1.22206039e-01
+      -4.84970386e-01  9.50489454e-01]],
+        
+    Bf = 
+    [[-4.98596881e-01  1.20236964e-03 -1.93231278e-06  2.31454333e-09
+      -3.97667688e-11  1.54595883e-11]
+     [-1.24749327e-01 -4.99598767e-01  1.20406083e-03 -1.93395884e-06
+       8.49726057e-10 -4.20727403e-09]
+     [-2.08007368e-02 -1.24924740e-01 -4.99598530e-01  1.20411261e-03
+      -1.87040237e-06 -4.10128618e-08]
+     [-2.60081858e-03 -2.08232546e-02 -1.24924376e-01 -4.99596513e-01
+       1.20951927e-03  5.19835323e-06]
+     [-2.60096754e-04 -2.60270056e-03 -2.08191933e-02 -1.24892521e-01
+      -4.99417729e-01  1.57454839e-03]
+     [-2.14752207e-05 -2.57642154e-04 -2.57316206e-03 -2.05457499e-02
+      -1.22909157e-01 -4.89999233e-01]],
+        
+    Bb = 
+    [[ 5.01005490e-01  1.20623894e-03  1.93696031e-06  2.34138942e-09
+       4.37598487e-11 -5.22665975e-11]
+     [-1.25150778e-01  4.99598283e-01  1.20406088e-03  1.93243952e-06
+       3.44418666e-09  2.83912996e-09]
+     [ 2.08509199e-02 -1.24924690e-01  4.99598518e-01  1.20416489e-03
+       1.72011597e-06  1.85227740e-07]
+     [-2.60583470e-03  2.08232276e-02 -1.24924193e-01  4.99595398e-01
+       1.21392827e-03 -1.44616071e-05]
+     [ 2.60496116e-04 -2.60249443e-03  2.08172912e-02 -1.24878394e-01
+       4.99342305e-01  1.77775324e-03]
+     [-2.14127285e-05  2.56542055e-04 -2.56194098e-03  2.04515506e-02
+      -1.22306845e-01  4.87667659e-01]],
+        
+    and WT = 
+    [[ 3.72587869e-02  3.59110827e-04 -3.04746440e-05 -2.93722947e-07
+       3.97693794e-08  3.78364449e-10]]. 
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 126-129
+.. GENERATED FROM PYTHON SOURCE LINES 153-156
 
 Visualize Estimator's Transfer Function (Same for Both)
 -------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 129-164
+.. GENERATED FROM PYTHON SOURCE LINES 156-190
 
 .. code-block:: default
-   :lineno-start: 129
+   :lineno-start: 157
 
-    import matplotlib.pyplot as plt
 
     # Logspace frequencies
     frequencies = np.logspace(-3, 0, 100)
@@ -351,7 +454,7 @@ Visualize Estimator's Transfer Function (Same for Both)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 165-173
+.. GENERATED FROM PYTHON SOURCE LINES 191-199
 
 FIR Filter Estimator
 --------------------
@@ -359,15 +462,14 @@ FIR Filter Estimator
 Similarly as for the previous estimator the
 :py:class:`cbadc.digital_estimator.FIRFilter` is initalized. Additionally,
 we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
-fiter coefficients. This is an aid to determine if the lookahead and lookback
-sizes L1 and L2 are set sufficiently large.
+filter coefficients. This is an aid to determine if the lookahead and
+lookback sizes L1 and L2 are set sufficiently large.
 
-.. GENERATED FROM PYTHON SOURCE LINES 173-208
+.. GENERATED FROM PYTHON SOURCE LINES 199-234
 
 .. code-block:: default
-   :lineno-start: 173
+   :lineno-start: 200
 
-    from cbadc.digital_estimator import FIRFilter
 
     # Determine lookback
     L1 = K2
@@ -392,7 +494,7 @@ sizes L1 and L2 are set sufficiently large.
         ax[1].plot(h_index, impulse_response_dB[:, index],
                    label=f"$h_{index + 1}[k]$")
     ax[0].legend()
-    fig.suptitle(f"For $\eta^2 = {20 * np.log10(eta2)}$ [dB]")
+    fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     ax[1].set_xlabel("filter taps k")
     ax[0].set_ylabel("$| h_\ell [k]|^2_2$")
     ax[1].set_ylabel("$| h_\ell [k]|^2_2$ [dB]")
@@ -405,8 +507,9 @@ sizes L1 and L2 are set sufficiently large.
 
 
 
+
 .. image:: /auto_examples/b_general/images/sphx_glr_plot_a_compare_estimator_002.png
-    :alt: For $\eta^2 = 242.00334934088704$ [dB]
+    :alt: For $\eta^2 = 121.00167467044352$ [dB]
     :class: sphx-glr-single-img
 
 
@@ -417,18 +520,248 @@ sizes L1 and L2 are set sufficiently large.
  .. code-block:: none
 
     FIR estimator is parameterized as 
-    eta2 = 1259410956005.01, 242 [dB],
+    eta2 = 1259410956005.01, 121 [dB],
     Ts = 8e-05,
-    K1 = 1024,
-    K2 = 1024,
+    K1 = 16384,
+    K2 = 16384,
     and
-    number_of_iterations = 9223372036854775808. 
+    number_of_iterations = 9223372036854775808.
+    Resulting in the filter coefficients
+    h = 
+    [[[-8.98888898e-23  3.86415095e-22  1.78156003e-24 -4.79446971e-24
+        7.27065594e-26  2.27668501e-26]]
+
+     [[-2.83409888e-22  3.83559846e-22  6.03912517e-24 -4.80331079e-24
+        3.78726687e-26  2.38832693e-26]]
+
+     [[-4.75669190e-22  3.77650779e-22  1.02704857e-23 -4.77413575e-24
+        2.56155339e-27  2.48161162e-26]]
+
+     ...
+
+     [[-4.75669907e-22 -3.86819973e-22  2.90231508e-24  4.90109885e-24
+        9.58043254e-26 -2.39133322e-26]]
+
+     [[-2.83410645e-22 -3.89022952e-22 -1.40723095e-24  4.84795443e-24
+        1.30885021e-25 -2.23089599e-26]]
+
+     [[-8.98896795e-23 -3.88147792e-22 -5.68388016e-24  4.75685840e-24
+        1.64756363e-25 -2.05368242e-26]]]. 
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 209-216
+.. GENERATED FROM PYTHON SOURCE LINES 235-241
+
+IIR Filter Estimator
+--------------------
+
+The IIR filter is closely related to the FIR filter with the exception
+of an moving average computation.
+See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
+
+.. GENERATED FROM PYTHON SOURCE LINES 241-250
+
+.. code-block:: default
+   :lineno-start: 242
+
+
+    # Determine lookahead
+    L2 = K2
+
+    digital_estimator_iir = IIRFilter(
+        simulator3, analog_system, digital_control3, eta2, L2)
+
+    print(digital_estimator_iir, "\n")
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    IIR estimator is parameterized as 
+    eta2 = 1259410956005.01, 121 [dB],
+    Ts = 8e-05,
+    K2 = 16384,
+    and
+    number_of_iterations = 9223372036854775808.
+    Resulting in the filter coefficients
+    Af = 
+    [[ 9.93992011e-01 -4.80368682e-03  1.15864448e-05 -1.85515926e-08
+       1.63410461e-10 -7.50223347e-11]
+     [ 4.98396397e-01  9.97593569e-01 -4.81334317e-03  1.16016953e-05
+      -1.11135428e-08  1.65593448e-08]
+     [ 1.24724256e-01  4.99398045e-01  9.97591782e-01 -4.81356428e-03
+       1.13768870e-05  1.77374670e-07]
+     [ 2.07981872e-02  1.24899305e-01  4.99395630e-01  9.97581755e-01
+      -4.83705939e-03 -1.55238302e-05]
+     [ 2.60019384e-03  2.08166882e-02  1.24867079e-01  4.99198307e-01
+       9.96748934e-01 -6.25618007e-03]
+     [ 2.57435177e-04  2.57297257e-03  2.05433050e-02  1.22849014e-01
+       4.88154288e-01  9.59742079e-01]],
+    Bf = 
+    [[-4.98596881e-01  1.20236964e-03 -1.93231278e-06  2.31454333e-09
+      -3.97667688e-11  1.54595883e-11]
+     [-1.24749327e-01 -4.99598767e-01  1.20406083e-03 -1.93395884e-06
+       8.49726057e-10 -4.20727403e-09]
+     [-2.08007368e-02 -1.24924740e-01 -4.99598530e-01  1.20411261e-03
+      -1.87040237e-06 -4.10128618e-08]
+     [-2.60081858e-03 -2.08232546e-02 -1.24924376e-01 -4.99596513e-01
+       1.20951927e-03  5.19835323e-06]
+     [-2.60096754e-04 -2.60270056e-03 -2.08191933e-02 -1.24892521e-01
+      -4.99417729e-01  1.57454839e-03]
+     [-2.14752207e-05 -2.57642154e-04 -2.57316206e-03 -2.05457499e-02
+      -1.22909157e-01 -4.89999233e-01]],WT = 
+    [[ 3.72587869e-02  3.59110827e-04 -3.04746440e-05 -2.93722947e-07
+       3.97693794e-08  3.78364449e-10]],
+     and h = 
+    [[[ 1.86212791e-02  2.28154968e-04 -1.46830069e-05 -1.87616530e-07
+        1.94061458e-08  2.52891377e-10]]
+
+     [[ 1.85726422e-02  3.24796865e-04 -1.32368983e-05 -2.64504813e-07
+        1.81534338e-08  3.75850028e-10]]
+
+     [[ 1.84756129e-02  4.20239300e-04 -1.12914286e-05 -3.32485463e-07
+        1.64896943e-08  4.90005468e-10]]
+
+     ...
+
+     [[-4.75669907e-22 -3.86819973e-22  2.90231508e-24  4.90109885e-24
+        9.58043254e-26 -2.39133322e-26]]
+
+     [[-2.83410645e-22 -3.89022952e-22 -1.40723095e-24  4.84795443e-24
+        1.30885021e-25 -2.23089599e-26]]
+
+     [[-8.98896795e-23 -3.88147792e-22 -5.68388016e-24  4.75685840e-24
+        1.64756363e-25 -2.05368242e-26]]]. 
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 251-259
+
+Parallel Estimator
+------------------------------
+
+Next we instantiate the parallel estimator
+:py:class:`cbadc.digital_estimator.ParallelEstimator`. The parallel estimator
+resembles the default estimator but diagonalizes the filter coefficients
+resulting in a more computationally more efficient filter that can be
+parallelized into independent filter operations.
+
+.. GENERATED FROM PYTHON SOURCE LINES 259-268
+
+.. code-block:: default
+   :lineno-start: 260
+
+
+    # Instantiate the digital estimator (this is where the filter coefficients are
+    # computed).
+    digital_estimator_parallel = ParallelEstimator(
+        simulator4, analog_system, digital_control4, eta2, K1, K2)
+
+    print(digital_estimator_parallel, "\n")
+
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Parallel estimator is parameterized as 
+    eta2 = 1259410956005.01, 121 [dB],
+    Ts = 8e-05,
+    K1 = 16384,
+    K2 = 16384,
+    and
+    number_of_iterations = 9223372036854775808
+    Resulting in the filter coefficients
+    f_a = 
+    [0.99352853+0.08855482j 0.99352853-0.08855482j 0.99020742+0.06151822j
+     0.99020742-0.06151822j 0.98788911+0.02199108j 0.98788911-0.02199108j],
+    b_a = 
+    [[-1.38136935e+03+2.51506293e+03j  4.26841429e+02+2.82595564e+02j
+       3.90945213e+01-5.02154026e+01j -4.61566859e+00-4.48169798e+00j
+      -4.43374620e-01+3.13952416e-01j  9.36956969e-03+3.68208127e-02j]
+     [-1.38136935e+03-2.51506293e+03j  4.26841429e+02-2.82595564e+02j
+       3.90945213e+01+5.02154026e+01j -4.61566859e+00+4.48169798e+00j
+      -4.43374620e-01-3.13952416e-01j  9.36956969e-03-3.68208127e-02j]
+     [ 3.02676362e+03-8.51639570e+03j -9.79746501e+02-5.92495175e+02j
+      -5.98609064e+01+3.01180862e+01j -6.65317488e+00+2.19446920e+00j
+      -4.09920461e-01+1.15069267e+00j  7.27422100e-02+8.92621035e-02j]
+     [ 3.02676362e+03+8.51639570e+03j -9.79746501e+02+5.92495175e+02j
+      -5.98609064e+01-3.01180862e+01j -6.65317488e+00-2.19446920e+00j
+      -4.09920461e-01-1.15069267e+00j  7.27422100e-02-8.92621035e-02j]
+     [ 1.64587846e+03-1.36561516e+04j -5.52732368e+02-5.30916615e+02j
+      -2.09658328e+01-1.19692787e+02j -1.11559461e+01-7.04141499e+00j
+      -7.81738548e-01-8.25159236e-01j -1.63333052e-01-5.22025352e-02j]
+     [ 1.64587846e+03+1.36561516e+04j -5.52732368e+02+5.30916615e+02j
+      -2.09658328e+01+1.19692787e+02j -1.11559461e+01+7.04141499e+00j
+      -7.81738548e-01+8.25159236e-01j -1.63333052e-01+5.22025352e-02j]],
+    f_b = 
+    [[ 1.38153996e+03-2.51528946e+03j  4.53510548e+02+2.34143075e+02j
+      -3.06136063e+01+5.52005619e+01j -5.28796590e+00-3.46613061e+00j
+       3.47968904e-01-3.90570686e-01j  1.68823963e-02+3.00750056e-02j]
+     [ 1.38153996e+03+2.51528946e+03j  4.53510548e+02-2.34143075e+02j
+      -3.06136063e+01-5.52005619e+01j -5.28796590e+00+3.46613061e+00j
+       3.47968904e-01+3.90570686e-01j  1.68823963e-02-3.00750056e-02j]
+     [ 3.02777145e+03-8.51896570e+03j  1.03840481e+03+4.28469244e+02j
+      -4.04251316e+01+3.99688739e+01j  5.68846326e+00-1.51947402e+00j
+      -2.91086803e-01+1.11522405e+00j -7.93111153e-02-6.76031065e-02j]
+     [ 3.02777145e+03+8.51896570e+03j  1.03840481e+03-4.28469244e+02j
+      -4.04251316e+01-3.99688739e+01j  5.68846326e+00+1.51947402e+00j
+      -2.91086803e-01-1.11522405e+00j -7.93111153e-02+6.76031065e-02j]
+     [-1.64668442e+03+1.36624329e+04j -5.84727395e+02-2.67798132e+02j
+       1.00094661e+01+1.12047350e+02j -1.08624178e+01-4.81058892e+00j
+       5.69853789e-01+7.11277929e-01j -1.50265682e-01-3.75273959e-02j]
+     [-1.64668442e+03-1.36624329e+04j -5.84727395e+02+2.67798132e+02j
+       1.00094661e+01-1.12047350e+02j -1.08624178e+01+4.81058892e+00j
+       5.69853789e-01-7.11277929e-01j -1.50265682e-01+3.75273959e-02j]],
+    b_b = 
+    [[-1.38136935e+03+2.51506293e+03j  4.26841429e+02+2.82595564e+02j
+       3.90945213e+01-5.02154026e+01j -4.61566859e+00-4.48169798e+00j
+      -4.43374620e-01+3.13952416e-01j  9.36956969e-03+3.68208127e-02j]
+     [-1.38136935e+03-2.51506293e+03j  4.26841429e+02-2.82595564e+02j
+       3.90945213e+01+5.02154026e+01j -4.61566859e+00+4.48169798e+00j
+      -4.43374620e-01-3.13952416e-01j  9.36956969e-03-3.68208127e-02j]
+     [ 3.02676362e+03-8.51639570e+03j -9.79746501e+02-5.92495175e+02j
+      -5.98609064e+01+3.01180862e+01j -6.65317488e+00+2.19446920e+00j
+      -4.09920461e-01+1.15069267e+00j  7.27422100e-02+8.92621035e-02j]
+     [ 3.02676362e+03+8.51639570e+03j -9.79746501e+02+5.92495175e+02j
+      -5.98609064e+01-3.01180862e+01j -6.65317488e+00-2.19446920e+00j
+      -4.09920461e-01-1.15069267e+00j  7.27422100e-02-8.92621035e-02j]
+     [ 1.64587846e+03-1.36561516e+04j -5.52732368e+02-5.30916615e+02j
+      -2.09658328e+01-1.19692787e+02j -1.11559461e+01-7.04141499e+00j
+      -7.81738548e-01-8.25159236e-01j -1.63333052e-01-5.22025352e-02j]
+     [ 1.64587846e+03+1.36561516e+04j -5.52732368e+02+5.30916615e+02j
+      -2.09658328e+01+1.19692787e+02j -1.11559461e+01+7.04141499e+00j
+      -7.81738548e-01+8.25159236e-01j -1.63333052e-01+5.22025352e-02j]],
+    f_w = 
+    [[ 3.03885799e-07+2.89096210e-07j  3.03885799e-07-2.89096210e-07j
+       1.85353653e-07+3.27557820e-07j  1.85353653e-07-3.27557820e-07j
+      -6.07297810e-08-3.44886118e-07j -6.07297810e-08+3.44886118e-07j]],
+    and b_w = 
+    [[-3.03911447e-07-2.89128778e-07j -3.03911447e-07+2.89128778e-07j
+       1.85407012e-07+3.27659638e-07j  1.85407012e-07-3.27659638e-07j
+       6.07565228e-08+3.45045113e-07j  6.07565228e-08-3.45045113e-07j]]. 
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 269-276
 
 Estimating (Filtering)
 ----------------------
@@ -438,19 +771,23 @@ estimators. Note that since no stop criteria is set for either the analog
 signal, the simulator, or the digital estimator this iteration could
 potentially continue until the default stop criteria of 2^63 iterations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 216-225
+.. GENERATED FROM PYTHON SOURCE LINES 276-289
 
 .. code-block:: default
-   :lineno-start: 217
+   :lineno-start: 277
 
 
     # Set simulation length
     size = K2 << 4
     u_hat_batch = np.zeros(size)
     u_hat_fir = np.zeros(size)
+    u_hat_iir = np.zeros(size)
+    u_hat_parallel = np.zeros(size)
     for index in range(size):
         u_hat_batch[index] = next(digital_estimator_batch)
         u_hat_fir[index] = next(digital_estimator_fir)
+        u_hat_iir[index] = next(digital_estimator_iir)
+        u_hat_parallel[index] = next(digital_estimator_parallel)
 
 
 
@@ -459,7 +796,7 @@ potentially continue until the default stop criteria of 2^63 iterations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 226-231
+.. GENERATED FROM PYTHON SOURCE LINES 290-295
 
 Visualizing Results
 -------------------
@@ -467,22 +804,24 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 231-307
+.. GENERATED FROM PYTHON SOURCE LINES 295-402
 
 .. code-block:: default
-   :lineno-start: 231
+   :lineno-start: 296
 
-    from cbadc.utilities import compute_power_spectral_density
 
     t = np.arange(size)
     # compensate the built in L1 delay of FIR filter.
     t_fir = np.arange(-L1 + 1, size - L1 + 1)
+    t_iir = np.arange(-L1 + 1, size - L1 + 1)
     u = np.zeros_like(u_hat_batch)
     for index, tt in enumerate(t):
-        u[index] = analog_signal.evaluate( tt * T)
-    plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
-    plt.plot(t_fir, u_hat_fir, label="$\hat{u}(t)$ FIR")
+        u[index] = analog_signal.evaluate(tt * T)
     plt.plot(t, u_hat_batch, label="$\hat{u}(t)$ Batch")
+    plt.plot(t_fir, u_hat_fir, label="$\hat{u}(t)$ FIR")
+    plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
+    plt.plot(t, u_hat_parallel, label="$\hat{u}(t)$ Parallel")
+    plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
     plt.xlabel('$t / T$')
     plt.legend()
     plt.title("Estimated input signal")
@@ -491,9 +830,11 @@ in both time and frequency domain.
     plt.tight_layout()
 
     plt.figure()
-    plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
-    plt.plot(t_fir, u_hat_fir, label="$\hat{u}(t)$ FIR")
     plt.plot(t, u_hat_batch, label="$\hat{u}(t)$ Batch")
+    plt.plot(t_fir, u_hat_fir, label="$\hat{u}(t)$ FIR")
+    plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
+    plt.plot(t, u_hat_parallel, label="$\hat{u}(t)$ Parallel")
+    plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
     plt.xlabel('$t / T$')
     plt.legend()
     plt.title("Estimated input signal")
@@ -502,52 +843,79 @@ in both time and frequency domain.
     plt.tight_layout()
 
     plt.figure()
-    plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
     plt.plot(t, u_hat_batch, label="$\hat{u}(t)$ Batch")
     plt.plot(t_fir, u_hat_fir, label="$\hat{u}(t)$ FIR")
+    plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
+    plt.plot(t, u_hat_parallel, label="$\hat{u}(t)$ Parallel")
+    plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
     plt.xlabel('$t / T$')
     plt.legend()
     plt.title("Estimated input signal")
     plt.grid(which='both')
-    plt.xlim((t_fir[0], t[-1]))
+    # plt.xlim((t_fir[0], t[-1]))
+    plt.xlim(((1 << 14) - 100, (1 << 14) + 100))
     plt.tight_layout()
 
     batch_error = stf_at_omega * u - u_hat_batch
     fir_error = stf_at_omega * u[:(u.size - L1 + 1)] - u_hat_fir[(L1 - 1):]
+    iir_error = stf_at_omega * u[:(u.size - L1 + 1)] - u_hat_iir[(L1 - 1):]
+    parallel_error = stf_at_omega * u - u_hat_parallel
     plt.figure()
     plt.plot(t, batch_error,
              label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Batch")
     plt.plot(t[:(u.size - L1 + 1)], fir_error,
              label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ FIR")
+    plt.plot(t[:(u.size - L1 + 1)], iir_error,
+             label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ IIR")
+    plt.plot(t, parallel_error,
+             label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Parallel")
     plt.xlabel('$t / T$')
+    plt.xlim(((1 << 14) - 100, (1 << 14) + 100))
+    plt.ylim((-0.00001, 0.00001))
     plt.legend()
     plt.title("Estimation error")
     plt.grid(which='both')
     plt.tight_layout()
 
+
+    print(f"Average Batch Error: {np.linalg.norm(batch_error) / batch_error.size}")
+    print(f"Average FIR Error: {np.linalg.norm(fir_error) / fir_error.size}")
+    print(f"Average IIR Error: {np.linalg.norm(iir_error) / iir_error.size}")
     print(
-        f"Average Batch Error: {np.linalg.norm(batch_error) / batch_error.size} \nAverage FIR Error: {np.linalg.norm(fir_error) / fir_error.size}")
+        f"""Average Parallel Error: { np.linalg.norm(parallel_error)/
+        parallel_error.size}""")
 
     plt.figure()
-    u_hat_batch_clipped = u_hat_batch[(K1 + K2):]
+    u_hat_batch_clipped = u_hat_batch[(K1 + K2):-K2]
     u_hat_fir_clipped = u_hat_fir[(L1 + L2):]
+    u_hat_iir_clipped = u_hat_iir[(K1 + K2):-K2]
+    u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
     u_clipped = stf_at_omega * u
     f_batch, psd_batch = compute_power_spectral_density(
-        u_hat_batch_clipped, nperseg=1 << 12)
+        u_hat_batch_clipped)
     f_fir, psd_fir = compute_power_spectral_density(
-        u_hat_fir_clipped, nperseg=1 << 12)
-    f_ref, psd_ref = compute_power_spectral_density(u_clipped, nperseg=1 << 12)
+        u_hat_fir_clipped)
+    f_iir, psd_iir = compute_power_spectral_density(
+        u_hat_iir_clipped)
+    f_parallel, psd_parallel = compute_power_spectral_density(
+        u_hat_parallel_clipped)
+    f_ref, psd_ref = compute_power_spectral_density(u_clipped)
     plt.semilogx(f_ref, 10 * np.log10(psd_ref),
                  label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
     plt.semilogx(f_batch, 10 * np.log10(psd_batch), label="$\hat{U}(f)$ Batch")
     plt.semilogx(f_fir, 10 * np.log10(psd_fir), label="$\hat{U}(f)$ FIR")
+    plt.semilogx(f_iir, 10 * np.log10(psd_iir), label="$\hat{U}(f)$ IIR")
+    plt.semilogx(f_parallel, 10 * np.log10(psd_parallel),
+                 label="$\hat{U}(f)$ Parallel")
     plt.legend()
-    plt.ylim((-200, 100))
+    plt.ylim((-200, 50))
     plt.xlim((f_fir[1], f_fir[-1]))
     plt.xlabel('frequency [Hz]')
     plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
     plt.grid(which='both')
     plt.show()
+
+
 
 
 
@@ -591,8 +959,107 @@ in both time and frequency domain.
 
  .. code-block:: none
 
-    Average Batch Error: 7.663984157544121e-05 
-    Average FIR Error: 8.359562819622264e-05
+    Average Batch Error: 4.083356884702229e-06
+    Average FIR Error: 4.355562954169463e-06
+    Average IIR Error: 4.355562954169459e-06
+    Average Parallel Error: 4.083356886366607e-06
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 403-407
+
+Compute Time
+------------
+
+Compare the execution time of each estimator
+
+.. GENERATED FROM PYTHON SOURCE LINES 407-466
+
+.. code-block:: default
+   :lineno-start: 409
+
+
+
+    def dummy_input_control_signal():
+        while True:
+            yield np.zeros(M, dtype=np.int8)
+
+
+    def iterate_number_of_times(iterator, number_of_times):
+        for _ in range(number_of_times):
+            _ = next(iterator)
+
+
+    digital_estimator_batch = DigitalEstimator(
+        dummy_input_control_signal(),
+        analog_system,
+        digital_control1,
+        eta2,
+        K1,
+        K2)
+    digital_estimator_fir = FIRFilter(
+        dummy_input_control_signal(),
+        analog_system,
+        digital_control2,
+        eta2,
+        L1,
+        L2)
+    digital_estimator_parallel = ParallelEstimator(
+        dummy_input_control_signal(),
+        analog_system,
+        digital_control4,
+        eta2,
+        K1,
+        K2)
+    digital_estimator_iir = IIRFilter(
+        dummy_input_control_signal(),
+        analog_system,
+        digital_control3,
+        eta2,
+        L2)
+
+    length = 1 << 14
+    repetitions = 10
+
+    print("Digital Estimator:")
+    print(timeit.timeit(lambda: iterate_number_of_times(
+        digital_estimator_batch, length), number=repetitions), 'sec \n')
+
+    print("FIR Estimator:")
+    print(timeit.timeit(lambda: iterate_number_of_times(
+        digital_estimator_fir, length), number=repetitions), 'sec \n')
+
+    print("IIR Estimator:")
+    print(timeit.timeit(lambda: iterate_number_of_times(
+        digital_estimator_iir, length), number=repetitions), 'sec \n')
+
+    print("Parallel Estimator:")
+    print(timeit.timeit(lambda: iterate_number_of_times(
+        digital_estimator_parallel, length), number=repetitions), 'sec \n')
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Digital Estimator:
+    5.596273067989387 sec 
+
+    FIR Estimator:
+    38.92125307803508 sec 
+
+    IIR Estimator:
+    22.15397312201094 sec 
+
+    Parallel Estimator:
+    9.235927602043375 sec 
+
 
 
 
@@ -600,7 +1067,7 @@ in both time and frequency domain.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  59.639 seconds)
+   **Total running time of the script:** ( 27 minutes  1.918 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_a_compare_estimator.py:

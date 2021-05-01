@@ -24,7 +24,29 @@ Digital Estimator as FIR Filter
 
 We demonstrate how to set up the FIR filter implementation.
 
-.. GENERATED FROM PYTHON SOURCE LINES 10-17
+.. GENERATED FROM PYTHON SOURCE LINES 8-18
+
+.. code-block:: default
+   :lineno-start: 8
+
+    from cbadc.utilities import compute_power_spectral_density
+    from cbadc.digital_estimator import FIRFilter
+    from cbadc.utilities import read_byte_stream_from_file, \
+        byte_stream_2_control_signal
+    import matplotlib.pyplot as plt
+    from cbadc.analog_system import AnalogSystem
+    from cbadc.digital_control import DigitalControl
+    from cbadc.digital_estimator import DigitalEstimator
+    import numpy as np
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 19-26
 
 ---------------------------------------
 Analog System and Digital Control Setup
@@ -34,16 +56,12 @@ To initialize a digital estimator, we need to specify which analog system and
 digital control are used. Here we default to the chain-of-integrators
 example.
 
-.. GENERATED FROM PYTHON SOURCE LINES 17-50
+.. GENERATED FROM PYTHON SOURCE LINES 26-55
 
 .. code-block:: default
-   :lineno-start: 18
+   :lineno-start: 27
 
 
-    from cbadc.analog_system import AnalogSystem
-    from cbadc.digital_control import DigitalControl
-    from cbadc.digital_estimator import DigitalEstimator
-    import numpy as np
     N = 6
     M = N
     beta = 6250.
@@ -127,7 +145,7 @@ example.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 51-58
+.. GENERATED FROM PYTHON SOURCE LINES 56-66
 
 ----------------
 Impulse Response
@@ -136,30 +154,36 @@ Impulse Response
 Next we instantiate a :py:class:`cbadc.digital_estimator.FIRFilter` and
 visualize its impulse responses.
 
+Note that we will also use use the control signal sequence that we previously
+simulated in
+:doc:`../a_getting_started/plot_b_simulate_a_control_bounded_adc`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 58-92
+.. GENERATED FROM PYTHON SOURCE LINES 66-104
 
 .. code-block:: default
-   :lineno-start: 58
+   :lineno-start: 67
 
-    import matplotlib.pyplot as plt
-    from cbadc.utilities import read_byte_stream_from_file, byte_stream_2_control_signal
 
-    eta2 = 1e5
+    # Choose an arbitrary eta2
+    eta2 = 1e6
 
-    from cbadc.digital_estimator import FIRFilter
+    # Load the control signal from previous simulation
     byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
     control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
 
+
+    # Instantiate digital estimator
     K1 = 250
     K2 = 250
-    h_index = np.arange(-K1, K2)
-
     digital_estimator = FIRFilter(
         control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
-    impulse_response = np.abs(np.array(digital_estimator.h[:, 0, :])) ** 2
-    impulse_response_dB = 10 * np.log10(impulse_response)
 
+    # extract impulse response
+    impulse_response = np.abs(np.array(digital_estimator.h[:, 0, :]))
+    impulse_response_dB = 20 * np.log10(impulse_response)
+
+    # Visualize the impulse response
+    h_index = np.arange(-K1, K2)
     fig, ax = plt.subplots(2)
     for index in range(N):
         ax[0].plot(h_index, impulse_response[:, index],
@@ -167,10 +191,10 @@ visualize its impulse responses.
         ax[1].plot(h_index, impulse_response_dB[:, index],
                    label=f"$h_{index + 1}[k]$")
     ax[0].legend()
-    fig.suptitle(f"For $\eta^2 = {20 * np.log10(eta2)}$ [dB]")
-    ax[1].set_xlabel("filter taps k")
-    ax[0].set_ylabel("$| h_\ell [k]|^2_2$")
-    ax[1].set_ylabel("$| h_\ell [k]|^2_2$ [dB]")
+    fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
+    ax[1].set_xlabel("filter tap k")
+    ax[0].set_ylabel("$| h_\ell [k]|$")
+    ax[1].set_ylabel("$| h_\ell [k]|$ [dB]")
     ax[0].set_xlim((-50, 50))
     ax[0].grid(which='both')
     ax[1].set_xlim((-K1, K2))
@@ -179,65 +203,118 @@ visualize its impulse responses.
 
 
 
+
 .. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_001.png
-    :alt: For $\eta^2 = 100.0$ [dB]
+    :alt: For $\eta^2 = 60.0$ [dB]
     :class: sphx-glr-single-img
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 93-98
+.. GENERATED FROM PYTHON SOURCE LINES 105-124
 
-Transfer Function
------------------
+-----------------------------------
+Impulse Response and :math:`\eta^2`
+-----------------------------------
 
-Additionally, we plot the corresponding transfer functions of the estimator.
+The rate at which the estimator's impulse response decays depends on our
+bandwidth parameter :math:`\eta^2`. Specifically, as we increase
+:math:`\eta^2` we typically seek a higher resolution at a smaller bandwidth.
+As expected, a more narrowband filter requires a longer impulse responses,
+or equivalently, has a slower decaying impulse response. Therefore,
+we require more filter taps for a given precision as we increase
+:math:`\eta^2`.
 
+Note that we plot only the first and largest filter coefficient
+:math:`h_1[k]`. The fact that :math:`h_1[k]` has the largest filter
+coefficients follows from the choice of analog system and digital control
+and does not necessarily generalize.
 
-.. GENERATED FROM PYTHON SOURCE LINES 98-130
+We additionally plot the corresponding digital estimator transfer functions
+as a function of the bandwidth parameter :math:`\eta^2`.
+
+.. GENERATED FROM PYTHON SOURCE LINES 124-183
 
 .. code-block:: default
-   :lineno-start: 99
+   :lineno-start: 125
 
+
+    Eta2 = np.logspace(0, 7, 8)
+    K1 = 1 << 8
+    K2 = 1 << 8
+    h_index = np.arange(-K1, K2)
+
+
+    plt.figure()
+    for eta2 in Eta2:
+        digital_estimator = FIRFilter(
+            control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+        impulse_response = 20 * \
+            np.log10(np.abs(np.array(digital_estimator.h[:, 0, 0])))
+        plt.plot(np.arange(0, K2), impulse_response[K2:],
+                 label=f"$\eta^2 = {10 * np.log10(eta2)}$ [dB]")
+    plt.legend()
+    plt.xlabel("filter tap k")
+    plt.ylabel("$| h_1 [k] \|$ [dB]")
+    plt.xlim((0, K2))
+    plt.grid(which="both")
+
+
+    # Plot corresponding transfer functions of estimator
 
     # Logspace frequencies
     frequencies = np.logspace(-3, 0, 100)
     omega = 4 * np.pi * beta * frequencies
 
-    # Compute NTF
-    ntf = digital_estimator.noise_transfer_function(omega)
-    ntf_dB = 20 * np.log10(np.abs(ntf))
-
-    # Compute STF
-    stf = digital_estimator.signal_transfer_function(omega)
-    stf_dB = 20 * np.log10(np.abs(stf.flatten()))
-
-    # Plot
     plt.figure()
-    plt.semilogx(frequencies, stf_dB, label='$STF(\omega)$')
-    for n in range(N):
-        plt.semilogx(frequencies, ntf_dB[0, n, :], label=f"$|NTF_{n+1}(\omega)|$")
-    plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-        ntf[0, :, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $")
+    for eta2 in Eta2:
+        # Compute NTF
+        digital_estimator = FIRFilter(
+            control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+
+        ntf = digital_estimator.noise_transfer_function(omega)
+        ntf_dB = 20 * np.log10(np.abs(ntf))
+
+        # Compute STF
+        stf = digital_estimator.signal_transfer_function(omega)
+        stf_dB = 20 * np.log10(np.abs(stf.flatten()))
+
+        plt.semilogx(frequencies, stf_dB, '--')
+        color = plt.gca().lines[-1].get_color()
+        plt.semilogx(
+            frequencies,
+            20 * np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+            color=color,
+            label=f'$\eta^2 = {10 * np.log10(eta2)}$ [dB]')
 
     # Add labels and legends to figure
-    plt.legend()
+    plt.legend(loc=4)
     plt.grid(which='both')
-    plt.title("Signal and noise transfer functions")
+    plt.title("Signal (dashed) and noise (solid) transfer functions")
     plt.xlabel("$\omega / (4 \pi \\beta ) $")
     plt.ylabel("dB")
-    plt.xlim((frequencies[10], frequencies[-1]))
-    plt.ylim((-300, 10))
+    plt.xlim((1e-2, 0.5))
+    plt.ylim((-150, 3))
     plt.gcf().tight_layout()
 
 
 
 
+.. rst-class:: sphx-glr-horizontal
 
-.. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_002.png
-    :alt: Signal and noise transfer functions
-    :class: sphx-glr-single-img
+
+    *
+
+      .. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_002.png
+          :alt: plot b FIR Filtering
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_003.png
+          :alt: Signal (dashed) and noise (solid) transfer functions
+          :class: sphx-glr-multi-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -246,91 +323,67 @@ Additionally, we plot the corresponding transfer functions of the estimator.
 
  .. code-block:: none
 
-    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:105: RuntimeWarning: divide by zero encountered in log10
+    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+      ntf_dB = 20 * np.log10(np.abs(ntf))
+    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+      ntf_dB = 20 * np.log10(np.abs(ntf))
+    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+      ntf_dB = 20 * np.log10(np.abs(ntf))
+    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+      ntf_dB = 20 * np.log10(np.abs(ntf))
+    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+      ntf_dB = 20 * np.log10(np.abs(ntf))
+    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 131-141
-
------------------------------------
-Impulse Response and :math:`\eta^2`
------------------------------------
-
-The rate at which the estimator's impulse response decays depends on our
-bandwidth parameter :math:`\eta^2`. Specifically, as we increase
-:math:`\eta^2` we seek a higher resolution at a smaller bandwidth. As
-expected, decreasing the bandwidth requires 'more' filtering and, therefore,
-a slower decaying impulse response. Equivalently, we require more filter taps
-for a given precision as we increase :math:`\eta^2`.
-
-.. GENERATED FROM PYTHON SOURCE LINES 141-161
-
-.. code-block:: default
-   :lineno-start: 141
-
-    Eta2 = np.logspace(0, 7, 8)
-    K1 = 250
-    K2 = 250
-    h_index = np.arange(-K1, K2)
-
-    plt.figure()
-    for eta2 in Eta2:
-        digital_estimator = FIRFilter(
-            control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
-        impulse_response = 20 * \
-            np.log10(np.linalg.norm(
-                np.array(digital_estimator.h[:, 0, :]), axis=-1))
-        plt.plot(h_index, impulse_response,
-                 label=f"$\eta^2 = {20 * np.log10(eta2)}$ [dB]")
-    plt.legend()
-    plt.xlabel("filter taps k")
-    plt.ylabel("$\| \mathbf{h} [k] \|^2_2$ [dB]")
-    plt.xlim((-K1, K2))
-    plt.grid(which="both")
-
-
-
-
-.. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_003.png
-    :alt: plot b FIR Filtering
-    :class: sphx-glr-single-img
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 162-172
+.. GENERATED FROM PYTHON SOURCE LINES 184-206
 
 Filter length
 -------------
 
 We can confirm the intuition from the previous section by considering
-a different number of filter taps for a given simulation. Specifically, we
-FIRFilter parametrizations.
+different number of filter taps for a given control signal sequence. Firstly,
+we once more plot the decay of the filter coefficients and recognize
+that an SNR of around 100 dB (normalized spectrum), would need around
+K1=K2=180 filter taps or more. This is confirmed by simulation as the
+harmonics in the estimated spectrum disappear for larger number of
+filter taps. Note also the reference used in the spectral plots which
+corresponds to the default implementation
+:py:class:`cbadc.digital_estimator.DigitalEstimator` using a much
+longer lookahead than corresponding FIR filters implementations.
 
-Conducting such a simulation is a good way of determining a minimum number
-of filter taps for a specific analog system, digital control, and :math:`\eta^2`
-combination.
+The simulation is often a robust way of determining a minimum
+number of filter taps for a specific analog system, digital control,
+and :math:`\eta^2` combination.
 
-.. GENERATED FROM PYTHON SOURCE LINES 172-225
+As is clear from the filter coefficient the different dimensions of the
+control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
+of different lengths as their decay varies.
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 206-313
 
 .. code-block:: default
-   :lineno-start: 172
+   :lineno-start: 207
 
-    from cbadc.utilities import compute_power_spectral_density
 
-    filter_lengths = [1, 1 << 4, 1 << 6, 1 << 8]
-    print(f"filter_lengths: {filter_lengths}")
+    filter_lengths = [10, 20, 40, 80, 120, 160, 180, 200, 220]
 
     eta2 = 1e6
 
-    control_signal_sequences = [byte_stream_2_control_signal(read_byte_stream_from_file(
-        '../a_getting_started/sinusodial_simulation.adc', M), M) for _ in filter_lengths]
+    control_signal_sequences = [
+        byte_stream_2_control_signal(
+            read_byte_stream_from_file(
+                '../a_getting_started/sinusodial_simulation.adc', M), M)
+        for _ in filter_lengths]
 
     stop_after_number_of_iterations = 1 << 16
     u_hat = np.zeros(stop_after_number_of_iterations)
+
+
     digital_estimators = [FIRFilter(
         cs,
         analog_system,
@@ -341,37 +394,88 @@ combination.
         stop_after_number_of_iterations=stop_after_number_of_iterations
     ) for index, cs in enumerate(control_signal_sequences)]
 
-    fig_frequency_spectrum = 4
-    fig_time_domain = 5
-    for index_de, de in enumerate(digital_estimators):
-        # Print the estimator configuration
-        print(de)
-        for index, estimate in enumerate(de):
-            u_hat[index] = estimate
-        f, psd = compute_power_spectral_density(u_hat[filter_lengths[index_de]:])
-        plt.figure(fig_frequency_spectrum)
-        plt.semilogx(f, 10 * np.log10(psd),
-                     label=f'K1=K2={filter_lengths[index_de]}')
-        plt.figure(fig_time_domain)
-        t_fir = np.arange(-filter_lengths[index_de] + 1,
-                          stop_after_number_of_iterations - filter_lengths[index_de] + 1)
-        plt.plot(t_fir, u_hat, label=f'K1=K2={filter_lengths[index_de]}')
 
-    plt.xlabel('$t / T$')
-    plt.ylabel('$\hat{u}(t)$')
+    impulse_response_dB = 20 * \
+        np.log10(np.abs(np.array(digital_estimators[-1].h[:, 0, :])))
+    plt.figure()
+    for index in range(N):
+        plt.plot(
+            np.arange(0, filter_lengths[-1]),
+            impulse_response_dB[filter_lengths[-1]:, index],
+            label=f"$h_{index + 1}[k]$")
     plt.legend()
-    plt.title("Estimated input signal")
+    plt.xlabel("filter tap k")
+    plt.ylabel("$| h_\ell [k]|$ [dB]")
+    plt.xlim((0, filter_lengths[-1]))
     plt.grid(which='both')
-    plt.xlim(stop_after_number_of_iterations - 501,
-             stop_after_number_of_iterations - 1)
-    plt.tight_layout()
 
-    plt.figure(fig_frequency_spectrum)
-    plt.legend()
-    plt.xlabel('frequency [Hz]')
-    plt.ylabel('$ \mathrm{V}^2 \, / \, \mathrm{Hz}$')
-    plt.xlim((f[1], f[-1]))
-    plt.grid(which="both")
+    digital_estimators_ref = DigitalEstimator(
+        byte_stream_2_control_signal(read_byte_stream_from_file(
+            '../a_getting_started/sinusodial_simulation.adc', M), M),
+        analog_system,
+        digital_control,
+        eta2,
+        stop_after_number_of_iterations >> 2,
+        1 << 14,
+        stop_after_number_of_iterations=stop_after_number_of_iterations
+    )
+
+    for index, estimate in enumerate(digital_estimators_ref):
+        u_hat[index] = estimate
+    f_ref, psd_ref = compute_power_spectral_density(u_hat)
+
+    u_hats = []
+    plt.rcParams['figure.figsize'] = [6.40, 6.40 * 4]
+    fig, ax = plt.subplots(len(filter_lengths), 1)
+    for index_de in range(len(filter_lengths)):
+        # Compute estimates for each estimator
+        for index, estimate in enumerate(digital_estimators[index_de]):
+            u_hat[index] = estimate
+        u_hats.append(np.copy(u_hat))
+
+        # Compute power spectral density
+        f, psd = compute_power_spectral_density(
+            u_hat[filter_lengths[index_de]:])
+
+        # Plot the FIR filters
+        color = next(ax[index_de]._get_lines.prop_cycler)['color']
+
+        ax[index_de].grid(b=True, which='major',
+                          color='gray', alpha=0.6, lw=1.5)
+        ax[index_de].grid(b=True, which='major',
+                          color='gray', alpha=0.6, lw=1.5)
+
+        ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
+                              label='Reference', color='k')
+
+        ax[index_de].semilogx(f, 10 * np.log10(psd),
+                              label=f'K1=K2={filter_lengths[index_de]}',
+                              color=color)
+
+        ax[index_de].set_ylabel('$ \mathrm{V}^2 \, / \, \mathrm{Hz}$')
+
+        ax[index_de].legend()
+        ax[index_de].set_xlim((0.0002, 0.5))
+
+    ax[-1].set_xlabel('frequency [Hz]')
+    fig.tight_layout()
+
+    # Plot snapshot in time domain
+    plt.rcParams['figure.figsize'] = [6.40, 6.40]
+    plt.figure()
+    plt.title("Estimates in time domain")
+    for index in range(len(filter_lengths)):
+        t_fir = np.arange(
+            -filter_lengths[index] + 1,
+            stop_after_number_of_iterations - filter_lengths[index] + 1)
+        plt.plot(t_fir, u_hats[index],
+                 label=f'K1=K2={filter_lengths[index]}')
+    plt.ylabel('$\hat{u}(t)$')
+    plt.xlim((64000, 64600))
+    plt.ylim((-0.6, 0.6))
+    plt.xlabel("$t / T$")
+    _ = plt.legend()
+
 
 
 
@@ -387,45 +491,15 @@ combination.
     *
 
       .. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_005.png
-          :alt: Estimated input signal
+          :alt: plot b FIR Filtering
           :class: sphx-glr-multi-img
 
+    *
 
-.. rst-class:: sphx-glr-script-out
+      .. image:: /auto_examples/b_general/images/sphx_glr_plot_b_FIR_Filtering_006.png
+          :alt: Estimates in time domain
+          :class: sphx-glr-multi-img
 
- Out:
-
- .. code-block:: none
-
-    filter_lengths: [1, 16, 64, 256]
-    FIR estimator is parameterized as 
-    eta2 = 1000000.00, 120 [dB],
-    Ts = 8e-05,
-    K1 = 1,
-    K2 = 1,
-    and
-    number_of_iterations = 65536.
-    FIR estimator is parameterized as 
-    eta2 = 1000000.00, 120 [dB],
-    Ts = 8e-05,
-    K1 = 16,
-    K2 = 16,
-    and
-    number_of_iterations = 65536.
-    FIR estimator is parameterized as 
-    eta2 = 1000000.00, 120 [dB],
-    Ts = 8e-05,
-    K1 = 64,
-    K2 = 64,
-    and
-    number_of_iterations = 65536.
-    FIR estimator is parameterized as 
-    eta2 = 1000000.00, 120 [dB],
-    Ts = 8e-05,
-    K1 = 256,
-    K2 = 256,
-    and
-    number_of_iterations = 65536.
 
 
 
@@ -433,7 +507,7 @@ combination.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  50.980 seconds)
+   **Total running time of the script:** ( 1 minutes  40.238 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_b_FIR_Filtering.py:

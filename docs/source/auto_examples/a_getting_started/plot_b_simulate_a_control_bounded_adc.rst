@@ -24,7 +24,29 @@ Simulating a Control-Bounded ADC
 This example shows how to simulate the interactions between an analog system
 and a digital control while the former is excited by an analog signal.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-21
+.. GENERATED FROM PYTHON SOURCE LINES 8-18
+
+.. code-block:: default
+   :lineno-start: 8
+
+    import matplotlib.pyplot as plt
+    from cbadc.utilities import control_signal_2_byte_stream
+    from cbadc.utilities import write_byte_stream_to_file
+    from cbadc.simulator import extended_simulation_result
+    from cbadc.simulator import StateSpaceSimulator
+    from cbadc.analog_signal import Sinusodial
+    from cbadc.digital_control import DigitalControl
+    from cbadc.analog_system import ChainOfIntegrators
+    import numpy as np
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 19-31
 
 The Analog System
 -----------------
@@ -39,13 +61,11 @@ commit to a chain-of-integrators ADC,
 see :py:class:`cbadc.analog_system.ChainOfIntegrators`, as our analog
 system.
 
-.. GENERATED FROM PYTHON SOURCE LINES 21-39
+.. GENERATED FROM PYTHON SOURCE LINES 31-47
 
 .. code-block:: default
-   :lineno-start: 21
+   :lineno-start: 32
 
-    from cbadc.analog_system import ChainOfIntegrators
-    import numpy as np
 
     # We fix the number of analog states.
     N = 6
@@ -112,7 +132,7 @@ system.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 40-46
+.. GENERATED FROM PYTHON SOURCE LINES 48-54
 
 The Digital Control
 -------------------
@@ -121,12 +141,11 @@ In addition to the analog system, our simulation will require us to specify a
 digital control. For this tutorial, we will use
 :py:class:`cbadc.digital_control.DigitalControl`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 46-58
+.. GENERATED FROM PYTHON SOURCE LINES 54-65
 
 .. code-block:: default
-   :lineno-start: 46
+   :lineno-start: 55
 
-    from cbadc.digital_control import DigitalControl
 
     # Set the time period which determines how often the digital control updates.
     T = 1.0/(2 * beta)
@@ -156,7 +175,7 @@ digital control. For this tutorial, we will use
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-66
+.. GENERATED FROM PYTHON SOURCE LINES 66-73
 
 The Analog Signal
 -----------------
@@ -166,12 +185,11 @@ For this tutorial, we will choose a
 :py:class:`cbadc.analog_signal.Sinusodial`. Again, this is one of several
 possible choices.
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-83
+.. GENERATED FROM PYTHON SOURCE LINES 73-89
 
 .. code-block:: default
-   :lineno-start: 66
+   :lineno-start: 74
 
-    from cbadc.analog_signal import Sinusodial
 
     # Set the peak amplitude.
     amplitude = 0.5
@@ -198,16 +216,18 @@ possible choices.
 
  .. code-block:: none
 
-    Sinusodial parameterized as:
-    amplitude = 0.5,
-    frequency = 24.414062499999996,
-    phase = 1.0471975511965976, and
+    Sinusodial parameterized as: 
+    amplitude = 0.5, 
+
+            frequency = 24.414062499999996, 
+    phase = 1.0471975511965976,
+            and
     offset = 0.0
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-92
+.. GENERATED FROM PYTHON SOURCE LINES 90-98
 
 Simulating
 -------------
@@ -218,15 +238,14 @@ involved differential equations as outlined in
 :py:class:`cbadc.analog_system.AnalogSystem`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 92-114
+.. GENERATED FROM PYTHON SOURCE LINES 98-119
 
 .. code-block:: default
-   :lineno-start: 92
+   :lineno-start: 99
 
-    from cbadc.simulator import StateSpaceSimulator
 
-    # Simulate for 2^17 control cycles.
-    end_time = T * (1 << 17)
+    # Simulate for 2^18 control cycles.
+    end_time = T * (1 << 18)
 
     # Instantiate the simulator.
     simulator = StateSpaceSimulator(analog_system, digital_control, [
@@ -256,28 +275,28 @@ involved differential equations as outlined in
  .. code-block:: none
 
     step:0 -> s:[0 0 0 0 0 0]
-    step:1 -> s:[1 1 1 1 1 1]
-    step:2 -> s:[0 0 0 0 0 0]
-    step:3 -> s:[1 1 0 0 0 0]
-    step:4 -> s:[1 0 1 1 1 1]
-    step:5 -> s:[1 1 1 0 0 0]
-    step:6 -> s:[0 1 0 1 1 0]
-    step:7 -> s:[1 0 1 0 0 1]
-    step:8 -> s:[1 1 0 1 1 0]
-    step:9 -> s:[0 0 1 0 0 1]
-    step:10 -> s:[1 1 0 1 1 1]
-    step:11 -> s:[1 1 1 1 1 0]
-    step:12 -> s:[1 1 1 0 0 1]
-    step:13 -> s:[0 0 0 1 1 0]
-    step:14 -> s:[1 1 1 0 0 0]
-    step:15 -> s:[1 1 0 1 1 1]
-    step:16 -> s:[1 0 1 0 0 0]
-    step:17 -> s:[0 1 0 1 1 1]
-    step:18 -> s:[1 0 1 0 0 0]
-    step:19 -> s:[1 1 0 1 1 1]
+    step:1 -> s:[ True  True  True  True  True  True]
+    step:2 -> s:[False False False False False False]
+    step:3 -> s:[ True  True False False False False]
+    step:4 -> s:[ True False  True  True  True  True]
+    step:5 -> s:[ True  True  True False False False]
+    step:6 -> s:[False  True False  True  True False]
+    step:7 -> s:[ True False  True False False  True]
+    step:8 -> s:[ True  True False  True  True False]
+    step:9 -> s:[False False  True False False  True]
+    step:10 -> s:[ True  True False  True  True  True]
+    step:11 -> s:[ True  True  True  True  True False]
+    step:12 -> s:[ True  True  True False False  True]
+    step:13 -> s:[False False False  True  True False]
+    step:14 -> s:[ True  True  True False False False]
+    step:15 -> s:[ True  True False  True  True  True]
+    step:16 -> s:[ True False  True False False False]
+    step:17 -> s:[False  True False  True  True  True]
+    step:18 -> s:[ True False  True False False False]
+    step:19 -> s:[ True  True False  True  True  True]
     t = 0.00168, (current simulator time)
     Ts = 8e-05,
-    t_stop = 10.48576,
+    t_stop = 20.97152,
     rtol = 1e-12,
     atol = 1e-12, and
     max_step = 0.0008
@@ -286,7 +305,7 @@ involved differential equations as outlined in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 115-148
+.. GENERATED FROM PYTHON SOURCE LINES 120-153
 
 Tracking the Analog State Vector
 --------------------------------
@@ -322,12 +341,11 @@ output.
 We can achieve this by appending yet another generator to the control signal
 stream as:
 
-.. GENERATED FROM PYTHON SOURCE LINES 148-161
+.. GENERATED FROM PYTHON SOURCE LINES 153-165
 
 .. code-block:: default
-   :lineno-start: 148
+   :lineno-start: 154
 
-    from cbadc.simulator import extended_simulation_result
 
     # Repeating the steps above we now get for the following
     # ten control cycles.
@@ -350,21 +368,21 @@ stream as:
 
  .. code-block:: none
 
-    step:20 -> s:[0 0 0 1 1 1], x:[ 0.54823676  0.11670772  0.06484887 -0.46198384 -0.49102044 -0.40805782]
-    step:21 -> s:[1 1 1 0 0 0], x:[ 0.28852725 -0.17409672 -0.44326187 -0.0494616  -0.10665245 -0.06475226]
-    step:22 -> s:[1 0 0 0 0 0], x:[0.03084446 0.40503051 0.120886   0.35734484 0.45783131 0.51372721]
-    step:23 -> s:[1 1 1 1 1 1], x:[-0.22485823 -0.14425853 -0.3083532  -0.17870181  0.01002218  0.13999188]
-    step:24 -> s:[0 0 0 0 1 1], x:[ 0.51887684  0.4288167   0.24768119  0.29413081 -0.47129083 -0.48446615]
-    step:25 -> s:[1 1 1 1 0 0], x:[ 0.2620199   0.12253093 -0.10960282 -0.16543731  0.06911753 -0.07384044]
-    step:26 -> s:[1 1 0 0 1 0], x:[ 0.00702877 -0.30986756  0.34809795  0.40279187 -0.38008475  0.33569788]
-    step:27 -> s:[1 0 1 1 0 1], x:[-0.24614276  0.13067341 -0.19163269 -0.06832882  0.21496712 -0.19582706]
-    step:28 -> s:[0 1 0 0 1 0], x:[ 0.4999634  -0.30514404  0.24888018  0.45427765 -0.19748182  0.29719102]
-    step:29 -> s:[1 0 1 1 0 1], x:[ 0.24531795  0.38086046 -0.22665437 -0.05565031  0.41130916 -0.13880886]
+    step:20 -> s:[False False False  True  True  True], x:[ 0.54823676  0.11670772  0.06484886 -0.46198389 -0.49102059 -0.40805816]
+    step:21 -> s:[ True  True  True False False False], x:[ 0.28852725 -0.17409673 -0.44326189 -0.04946166 -0.10665263 -0.06475268]
+    step:22 -> s:[ True False False False False False], x:[0.03084446 0.4050305  0.12088599 0.35734476 0.45783109 0.51372668]
+    step:23 -> s:[ True  True  True  True  True  True], x:[-0.22485823 -0.14425853 -0.30835322 -0.17870188  0.01002193  0.13999125]
+    step:24 -> s:[False False False False  True  True], x:[ 0.51887684  0.42881669  0.24768117  0.29413072 -0.47129112 -0.48446692]
+    step:25 -> s:[ True  True  True  True False False], x:[ 0.2620199   0.12253093 -0.10960284 -0.16543741  0.0691172  -0.07384136]
+    step:26 -> s:[ True  True False False  True False], x:[ 0.00702877 -0.30986756  0.34809793  0.40279176 -0.38008514  0.33569678]
+    step:27 -> s:[ True False  True  True False  True], x:[-0.24614276  0.13067341 -0.19163271 -0.06832894  0.21496668 -0.19582836]
+    step:28 -> s:[False  True False False  True False], x:[ 0.4999634  -0.30514404  0.24888015  0.45427751 -0.19748233  0.2971895 ]
+    step:29 -> s:[ True False  True  True False  True], x:[ 0.24531795  0.38086046 -0.2266544  -0.05565045  0.41130859 -0.13881065]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-176
+.. GENERATED FROM PYTHON SOURCE LINES 166-180
 
 .. _default_simulation:
 
@@ -381,19 +399,16 @@ For this purpose use the
 :func:`cbadc.utilities.control_signal_2_byte_stream` and
 :func:`cbadc.utilities.write_byte_stream_to_file` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 176-201
+.. GENERATED FROM PYTHON SOURCE LINES 180-202
 
 .. code-block:: default
-   :lineno-start: 176
+   :lineno-start: 182
 
-    from cbadc.utilities import write_byte_stream_to_file
-    from cbadc.utilities import control_signal_2_byte_stream
 
 
     # Instantiate a new simulator and control.
     simulator = StateSpaceSimulator(analog_system, digital_control, [
                                     analog_signal], t_stop=end_time)
-    digital_control = DigitalControl(T, M)
 
     # Construct byte stream.
     byte_stream = control_signal_2_byte_stream(simulator, M)
@@ -435,7 +450,7 @@ For this purpose use the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 202-213
+.. GENERATED FROM PYTHON SOURCE LINES 203-214
 
 Evaluating the Analog State Vector in Between Control Signal Samples
 --------------------------------------------------------------------
@@ -449,12 +464,11 @@ unit of time. However, digital control is still restricted to only update
 the control signals at multiples of :math:`T`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 213-269
+.. GENERATED FROM PYTHON SOURCE LINES 214-269
 
 .. code-block:: default
-   :lineno-start: 213
+   :lineno-start: 215
 
-    import matplotlib.pyplot as plt
 
     # Set sampling time three orders of magnitude smaller than the control period
     Ts = T / 1000.0
@@ -582,7 +596,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 7 minutes  54.428 seconds)
+   **Total running time of the script:** ( 12 minutes  26.107 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:

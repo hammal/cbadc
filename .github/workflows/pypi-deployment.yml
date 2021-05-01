@@ -12,56 +12,56 @@ jobs:
   build_sdist:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout github repo
-      uses: actions/checkout@v2
+      - name: Checkout github repo
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    
-    - name: Install pypa/build
-      run: python -m pip install build
-        
-    - name: Build a source tarball
-      run: python -m build --sdist --outdir dist/ .
-      env: 
-        CYTHON: True
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - uses: actions/upload-artifact@v2
-      with:
-        path: dist/*.tar.gz
+      - name: Install pypa/build
+        run: python -m pip install build
 
-  build_wheels:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest] #, windows-latest]
-    steps:
-    - name: Checkout github repo
-      uses: actions/checkout@v2
+      - name: Build a source tarball
+        run: python -m build --sdist --outdir dist/ .
+        env:
+          CYTHON: True
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-      
-    - name: Install cibuildwheel
-      run: python -m pip install cibuildwheel==1.10.0
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
 
-    - name: Build wheels
-      run: python -m cibuildwheel --output-dir wheelhouse
-      env:
-        CIBW_SKIP: pp3*
-        CIBW_ENVIRONMENT: "CYTHON=True"
-        # CIBW_TEST_COMMAND: pytest {project}/tests
+  # build_wheels:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest, windows-latest]
+  #   steps:
+  #   - name: Checkout github repo
+  #     uses: actions/checkout@v2
 
-    - uses: actions/upload-artifact@v2
-      with:
-        path: ./wheelhouse/*.whl
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: 3.8
+
+  #   - name: Install cibuildwheel
+  #     run: python -m pip install cibuildwheel==1.10.0
+
+  #   - name: Build wheels
+  #     run: python -m cibuildwheel --output-dir wheelhouse
+  #     env:
+  #       CIBW_SKIP: pp3*
+  #       CIBW_ENVIRONMENT: "CYTHON=True"
+  #       # CIBW_TEST_COMMAND: pytest {project}/tests
+
+  #   - uses: actions/upload-artifact@v2
+  #     with:
+  #       path: ./wheelhouse/*.whl
 
   upload_pypi:
-    needs: [build_wheels, build_sdist]
+    needs: [build_sdist] #[build_wheels, build_sdist]
     runs-on: ubuntu-latest
     # upload to PyPI on every tag starting with 'v'
     # if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')

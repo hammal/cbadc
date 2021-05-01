@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.AnalogSystem
+cbadc.analog\_system.AnalogSystem
 =================================
 
 .. currentmodule:: cbadc.analog_system
@@ -9,7 +9,7 @@
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods
@@ -25,21 +25,6 @@
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~AnalogSystem.A
-      ~AnalogSystem.B
-      ~AnalogSystem.CT
-      ~AnalogSystem.Gamma
-      ~AnalogSystem.Gamma_tildeT
-      ~AnalogSystem.L
-      ~AnalogSystem.M
-      ~AnalogSystem.M_tilde
-      ~AnalogSystem.N
-      ~AnalogSystem.N_tilde
    
    
 

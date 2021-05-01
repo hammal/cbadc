@@ -1,4 +1,4 @@
-cbadc.simulator.StateSpaceSimulator
+﻿cbadc.simulator.StateSpaceSimulator
 ===================================
 
 .. currentmodule:: cbadc.simulator
@@ -9,7 +9,7 @@ cbadc.simulator.StateSpaceSimulator
    :inherited-members:     
 
    
-   .. automethod:: __init__
+
 
    
    .. rubric:: Methods
@@ -22,16 +22,6 @@ cbadc.simulator.StateSpaceSimulator
    
 
    
-   
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~StateSpaceSimulator.Ts
-      ~StateSpaceSimulator.analog_system
-      ~StateSpaceSimulator.digital_control
-      ~StateSpaceSimulator.t
-      ~StateSpaceSimulator.t_stop
    
    
 
