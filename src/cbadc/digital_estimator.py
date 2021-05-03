@@ -941,7 +941,7 @@ class IIRFilter(DigitalEstimator):
         Specifically fills up internal control signal buffer with
         K2 control signals.
         """
-        for _ in range(self.K2):
+        for _ in range(self.K2 + 1):
             _ = self.__next__()
 
 
@@ -1147,5 +1147,5 @@ class FIRFilter(DigitalEstimator):
         Specifically fills up internal control signal buffer with
         K2 control signals.
         """
-        for _ in range(self.K2):
+        for _ in range(self.K2 + 1):
             _ = self.__next__()
