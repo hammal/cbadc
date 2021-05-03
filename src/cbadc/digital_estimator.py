@@ -761,11 +761,11 @@ class IIRFilter(DigitalEstimator):
 
     Specifically, the estimate is of the form
 
-    :math:`\hat{\mathbf{u}}(k T) = - \mathbf{W}^{\mathsf{T}} \overrightarrow{\mathbf{m}}_k + \sum_{\ell=0}^{K_2} \mathbf{h}[\ell] \mathbf{s}[k - \ell]`
+    :math:`\hat{\mathbf{u}}(k T) = - \mathbf{W}^{\mathsf{T}} \overrightarrow{\mathbf{m}}_k + \sum_{\ell=0}^{K_2} \mathbf{h}[\ell] \mathbf{s}[k + \ell]`
 
     where
 
-    :math:`\mathbf{h}[\ell]=\\begin{cases}\mathbf{W}^{\mathsf{T}} \mathbf{A}_b^\ell \mathbf{B}_b & \mathrm{if} \, \ell \geq 0 \\\  -\mathbf{W}^{\mathsf{T}} \mathbf{A}_f^{-\ell + 1} \mathbf{B}_f & \mathrm{else} \\end{cases}`
+    :math:`\mathbf{h}[\ell]=\mathbf{W}^{\mathsf{T}} \mathbf{A}_b^\ell \mathbf{B}_b`
 
     :math:`\overrightarrow{\mathbf{m}}_k = \mathbf{A}_f \mathbf{m}_{k-1} + \mathbf{B}_f \mathbf{s}[k-1]`
 
@@ -935,6 +935,15 @@ class IIRFilter(DigitalEstimator):
     def __str__(self):
         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
 
+    def warm_up(self):
+        """Warm up filter by population control signals.
+
+        Specifically fills up internal control signal buffer with
+        K2 control signals.
+        """
+        for _ in range(self.K2):
+            _ = self.__next__()
+
 
 class FIRFilter(DigitalEstimator):
     """FIR filter implementation of the digital estimator.
@@ -945,7 +954,7 @@ class FIRFilter(DigitalEstimator):
 
     Specifically, the estimate is of the form
 
-    :math:`\hat{\mathbf{u}}(k T) = \sum_{\ell=-K_1}^{K_2} \mathbf{h}[\ell] \mathbf{s}[k - \ell]`
+    :math:`\hat{\mathbf{u}}(k T) = \sum_{\ell=-K_1}^{K_2} \mathbf{h}[\ell] \mathbf{s}[k + \ell]`
 
     where
 
@@ -1131,3 +1140,12 @@ class FIRFilter(DigitalEstimator):
 
     def __str__(self):
         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
+
+    def warm_up(self):
+        """Warm up filter by population control signals.
+
+        Specifically fills up internal control signal buffer with
+        K2 control signals.
+        """
+        for _ in range(self.K2):
+            _ = self.__next__()

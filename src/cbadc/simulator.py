@@ -10,12 +10,12 @@ These are mainly intended to produce control signals
 """
 from .analog_system import AnalogSystem
 from .digital_control import DigitalControl
-from .analog_signal import AnalogSignal
+from .analog_signal import AnalogSignal, ConstantSignal, Sinusodial
 import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.linalg import expm
 import math
-from typing import Iterator, Generator, List, Dict
+from typing import Iterator, Generator, List, Dict, Union
 
 
 class StateSpaceSimulator(Iterator[np.ndarray]):
@@ -102,7 +102,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
     def __init__(self,
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
-                 input_signal: List[AnalogSignal],
+                 input_signal: List[Union[AnalogSignal, ConstantSignal,
+                                          Sinusodial]],
                  Ts: float = None,
                  t_stop: float = math.inf,
                  atol: float = 1e-12,
