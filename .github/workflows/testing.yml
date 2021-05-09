@@ -7,6 +7,7 @@ on: [push, pull_request]
 
 jobs:
   tox_test:
+    timeout-minutes: 3000
     strategy:
       matrix:
         python-version: ["py38", "py39"]
