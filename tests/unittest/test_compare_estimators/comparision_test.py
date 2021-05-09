@@ -26,10 +26,10 @@ phase = np.pi/3*2.
 
 def test_estimation_with_circuit_simulator():
     eta2 = 1e12
-    K1 = 1 << 14
-    K2 = 1 << 14
-    size = K2 << 2
 
+    K1 = 1 << 10
+    K2 = 1 << 10
+    size = K2 << 2
     window = 1000
     size_2 = size // 2
     window_2 = window // 2
@@ -75,11 +75,6 @@ def test_estimation_with_circuit_simulator():
     e2_error = 0
     e3_error = 0
     e4_error = 0
-    
-    # Warm up FIR and IIR filter such that
-    # the next estimat is for u(0)
-    estimator3.warm_up()
-    estimator4.warm_up()
 
     for index in range(size):
         e1 = estimator1.__next__()
@@ -92,14 +87,14 @@ def test_estimation_with_circuit_simulator():
         e4_array[index] = e4
         t = index * Ts
         u = analogSignals[0].evaluate(t)
+        u_lag = analogSignals[0].evaluate(t - estimator4.filter_lag() * Ts)
         if (index > left_w and index < right_w):
             print(
-                f"""Time: {t: 0.2f}, Input Signal: {u * tf_1}, e1: {e1},
-                e2: {e2}, e3: {e3}, e4: {e4}""")
+                f"Time: {t: 0.2f}, Input Signal: {u * tf_1}, e1: {e1}, e2: {e2}, e3: {e3}, e4: {e4}")
             e1_error += np.abs(e1 - u * tf_1)**2
             e2_error += np.abs(e2 - u * tf_1)**2
-            e3_error += np.abs(e3 - u * tf_1)**2
-            e4_error += np.abs(e4 - u * tf_1)**2
+            e3_error += np.abs(e3 - u_lag * tf_1)**2
+            e4_error += np.abs(e4 - u_lag * tf_1)**2
     e1_error /= window
     e2_error /= window
     e3_error /= window
@@ -121,4 +116,3 @@ def test_estimation_with_circuit_simulator():
     assert(np.allclose(e2_error, 0, rtol=1e-6, atol=1e-6))
     assert(np.allclose(e3_error, 0, rtol=1e-6, atol=1e-6))
     assert(np.allclose(e4_error, 0, rtol=1e-6, atol=1e-6))
-    

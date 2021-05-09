@@ -935,6 +935,26 @@ class IIRFilter(DigitalEstimator):
     def __str__(self):
         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
 
+    def filter_lag(self):
+        """Return the lag of the filter.
+
+        As the filter computes the estimate as
+        ---------
+        |   K2  |
+        ---------
+        ^
+        |
+        u_hat[k]
+
+
+        Returns
+        -------
+        `int`
+            The filter lag.
+
+        """
+        return (self.K2 - 1)
+
     def warm_up(self):
         """Warm up filter by population control signals.
 
@@ -1141,11 +1161,31 @@ class FIRFilter(DigitalEstimator):
     def __str__(self):
         return f"FIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK1 = {self.K1},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nh = \n{self.h}."
 
+    def filter_lag(self):
+        """Return the lag of the filter.
+
+        As the filter computes the estimate as
+        -----------------
+        |   K1  |   K2  |
+        -----------------
+                ^
+                |
+                u_hat[k]
+
+
+        Returns
+        -------
+        `int`
+            The filter lag.
+
+        """
+        return (self.K2 - 1)
+
     def warm_up(self):
         """Warm up filter by population control signals.
 
         Specifically fills up internal control signal buffer with
         K2 control signals.
         """
-        for _ in range(self.K2):
+        for _ in range(self.K3):
             _ = self.__next__()
