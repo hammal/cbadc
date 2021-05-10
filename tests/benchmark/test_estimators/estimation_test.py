@@ -46,28 +46,31 @@ def iterate_through(iterator):
 
 
 def test_benchmark_parallel_estimator_algorithm(benchmark):
-    est = ParallelEstimator(
-        controlSequence(), analogSystem, digitalControl, eta2, K1, K2)
+    est = ParallelEstimator(analogSystem, digitalControl, eta2, K1, K2)
+    est(controlSequence())
     result = benchmark(iterate_through, est)
     assert(result == size)
 
 
 def test_benchmark_digital_estimator_algorithm(benchmark):
     est = DigitalEstimator(
-        controlSequence(), analogSystem, digitalControl, eta2, K1, K2)
+        analogSystem, digitalControl, eta2, K1, K2)
+    est(controlSequence())
     result = benchmark(iterate_through, est)
     assert(result == size)
 
 
 def test_benchmark_fir_filter_algorithm(benchmark):
     est = FIRFilter(
-        controlSequence(), analogSystem, digitalControl, eta2, K1, K2)
+        analogSystem, digitalControl, eta2, K1, K2)
+    est(controlSequence())
     result = benchmark(iterate_through, est)
     assert(result == size)
 
 
 def test_benchmark_iir_estimator_algorithm(benchmark):
     est = IIRFilter(
-        controlSequence(), analogSystem, digitalControl, eta2, K2)
+        analogSystem, digitalControl, eta2, K2)
+    est(controlSequence())
     result = benchmark(iterate_through, est)
     assert(result == size)

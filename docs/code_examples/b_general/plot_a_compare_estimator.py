@@ -144,7 +144,8 @@ K2 = 1 << 14
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).
 digital_estimator_batch = DigitalEstimator(
-    simulator1, analog_system, digital_control1, eta2, K1, K2)
+    analog_system, digital_control1, eta2, K1, K2)
+digital_estimator_batch(simulator1)
 
 print(digital_estimator_batch, "\n")
 
@@ -202,10 +203,11 @@ L1 = K2
 # Determine lookahead
 L2 = K2
 digital_estimator_fir = FIRFilter(
-    simulator2, analog_system, digital_control2, eta2, L1, L2)
+    analog_system, digital_control2, eta2, L1, L2)
 
 print(digital_estimator_fir, "\n")
 
+digital_estimator_fir(simulator2)
 
 # Next visualize the decay of the resulting filter coefficients.
 h_index = np.arange(-L1, L2)
@@ -243,9 +245,11 @@ ax[1].grid(which='both')
 L2 = K2
 
 digital_estimator_iir = IIRFilter(
-    simulator3, analog_system, digital_control3, eta2, L2)
+    analog_system, digital_control3, eta2, L2)
 
 print(digital_estimator_iir, "\n")
+
+digital_estimator_iir(simulator3)
 
 ###############################################################################
 # Parallel Estimator
@@ -260,8 +264,9 @@ print(digital_estimator_iir, "\n")
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).
 digital_estimator_parallel = ParallelEstimator(
-    simulator4, analog_system, digital_control4, eta2, K1, K2)
+    analog_system, digital_control4, eta2, K1, K2)
 
+digital_estimator_parallel(simulator4)
 print(digital_estimator_parallel, "\n")
 
 
@@ -417,32 +422,33 @@ def iterate_number_of_times(iterator, number_of_times):
 
 
 digital_estimator_batch = DigitalEstimator(
-    dummy_input_control_signal(),
     analog_system,
     digital_control1,
     eta2,
     K1,
     K2)
 digital_estimator_fir = FIRFilter(
-    dummy_input_control_signal(),
     analog_system,
     digital_control2,
     eta2,
     L1,
     L2)
 digital_estimator_parallel = ParallelEstimator(
-    dummy_input_control_signal(),
     analog_system,
     digital_control4,
     eta2,
     K1,
     K2)
 digital_estimator_iir = IIRFilter(
-    dummy_input_control_signal(),
     analog_system,
     digital_control3,
     eta2,
     L2)
+
+digital_estimator_batch(dummy_input_control_signal())
+digital_estimator_fir(dummy_input_control_signal())
+digital_estimator_parallel(dummy_input_control_signal())
+digital_estimator_iir(dummy_input_control_signal())
 
 length = 1 << 14
 repetitions = 10

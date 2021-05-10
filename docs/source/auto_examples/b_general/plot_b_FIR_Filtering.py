@@ -76,7 +76,9 @@ control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
 K1 = 250
 K2 = 250
 digital_estimator = FIRFilter(
-    control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+    analog_system, digital_control, eta2, K1, K2)
+
+digital_estimator(control_signal_sequences)
 
 # extract impulse response
 impulse_response = np.abs(np.array(digital_estimator.h[:, 0, :]))
@@ -131,7 +133,7 @@ h_index = np.arange(-K1, K2)
 plt.figure()
 for eta2 in Eta2:
     digital_estimator = FIRFilter(
-        control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+        analog_system, digital_control, eta2, K1, K2)
     impulse_response = 20 * \
         np.log10(np.abs(np.array(digital_estimator.h[:, 0, 0])))
     plt.plot(np.arange(0, K2), impulse_response[K2:],
@@ -153,7 +155,7 @@ plt.figure()
 for eta2 in Eta2:
     # Compute NTF
     digital_estimator = FIRFilter(
-        control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+        analog_system, digital_control, eta2, K1, K2)
 
     ntf = digital_estimator.noise_transfer_function(omega)
     ntf_dB = 20 * np.log10(np.abs(ntf))
@@ -219,14 +221,16 @@ u_hat = np.zeros(stop_after_number_of_iterations)
 
 
 digital_estimators = [FIRFilter(
-    cs,
     analog_system,
     digital_control,
     eta2,
     filter_lengths[index],
     filter_lengths[index],
     stop_after_number_of_iterations=stop_after_number_of_iterations
-) for index, cs in enumerate(control_signal_sequences)]
+) for index in range(len(filter_lengths))]
+
+for index, de in enumerate(digital_estimators):
+    de(control_signal_sequences[index])
 
 
 impulse_response_dB = 20 * \
@@ -244,8 +248,6 @@ plt.xlim((0, filter_lengths[-1]))
 plt.grid(which='both')
 
 digital_estimators_ref = DigitalEstimator(
-    byte_stream_2_control_signal(read_byte_stream_from_file(
-        '../a_getting_started/sinusodial_simulation.adc', M), M),
     analog_system,
     digital_control,
     eta2,
@@ -253,6 +255,9 @@ digital_estimators_ref = DigitalEstimator(
     1 << 14,
     stop_after_number_of_iterations=stop_after_number_of_iterations
 )
+
+digital_estimators_ref(byte_stream_2_control_signal(read_byte_stream_from_file(
+    '../a_getting_started/sinusodial_simulation.adc', M), M))
 
 for index, estimate in enumerate(digital_estimators_ref):
     u_hat[index] = estimate

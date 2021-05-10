@@ -158,7 +158,7 @@ Note that we will also use use the control signal sequence that we previously
 simulated in
 :doc:`../a_getting_started/plot_b_simulate_a_control_bounded_adc`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-104
+.. GENERATED FROM PYTHON SOURCE LINES 66-106
 
 .. code-block:: default
    :lineno-start: 67
@@ -176,7 +176,9 @@ simulated in
     K1 = 250
     K2 = 250
     digital_estimator = FIRFilter(
-        control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+        analog_system, digital_control, eta2, K1, K2)
+
+    digital_estimator(control_signal_sequences)
 
     # extract impulse response
     impulse_response = np.abs(np.array(digital_estimator.h[:, 0, :]))
@@ -212,7 +214,7 @@ simulated in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 105-124
+.. GENERATED FROM PYTHON SOURCE LINES 107-126
 
 -----------------------------------
 Impulse Response and :math:`\eta^2`
@@ -234,10 +236,10 @@ and does not necessarily generalize.
 We additionally plot the corresponding digital estimator transfer functions
 as a function of the bandwidth parameter :math:`\eta^2`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-183
+.. GENERATED FROM PYTHON SOURCE LINES 126-185
 
 .. code-block:: default
-   :lineno-start: 125
+   :lineno-start: 127
 
 
     Eta2 = np.logspace(0, 7, 8)
@@ -249,7 +251,7 @@ as a function of the bandwidth parameter :math:`\eta^2`.
     plt.figure()
     for eta2 in Eta2:
         digital_estimator = FIRFilter(
-            control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+            analog_system, digital_control, eta2, K1, K2)
         impulse_response = 20 * \
             np.log10(np.abs(np.array(digital_estimator.h[:, 0, 0])))
         plt.plot(np.arange(0, K2), impulse_response[K2:],
@@ -271,7 +273,7 @@ as a function of the bandwidth parameter :math:`\eta^2`.
     for eta2 in Eta2:
         # Compute NTF
         digital_estimator = FIRFilter(
-            control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+            analog_system, digital_control, eta2, K1, K2)
 
         ntf = digital_estimator.noise_transfer_function(omega)
         ntf_dB = 20 * np.log10(np.abs(ntf))
@@ -323,23 +325,23 @@ as a function of the bandwidth parameter :math:`\eta^2`.
 
  .. code-block:: none
 
-    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:161: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:161: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:161: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:161: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:161: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:161: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 184-206
+.. GENERATED FROM PYTHON SOURCE LINES 186-208
 
 Filter length
 -------------
@@ -364,10 +366,10 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 206-313
+.. GENERATED FROM PYTHON SOURCE LINES 208-318
 
 .. code-block:: default
-   :lineno-start: 207
+   :lineno-start: 209
 
 
     filter_lengths = [10, 20, 40, 80, 120, 160, 180, 200, 220]
@@ -385,14 +387,16 @@ of different lengths as their decay varies.
 
 
     digital_estimators = [FIRFilter(
-        cs,
         analog_system,
         digital_control,
         eta2,
         filter_lengths[index],
         filter_lengths[index],
         stop_after_number_of_iterations=stop_after_number_of_iterations
-    ) for index, cs in enumerate(control_signal_sequences)]
+    ) for index in range(len(filter_lengths))]
+
+    for index, de in enumerate(digital_estimators):
+        de(control_signal_sequences[index])
 
 
     impulse_response_dB = 20 * \
@@ -410,8 +414,6 @@ of different lengths as their decay varies.
     plt.grid(which='both')
 
     digital_estimators_ref = DigitalEstimator(
-        byte_stream_2_control_signal(read_byte_stream_from_file(
-            '../a_getting_started/sinusodial_simulation.adc', M), M),
         analog_system,
         digital_control,
         eta2,
@@ -419,6 +421,9 @@ of different lengths as their decay varies.
         1 << 14,
         stop_after_number_of_iterations=stop_after_number_of_iterations
     )
+
+    digital_estimators_ref(byte_stream_2_control_signal(read_byte_stream_from_file(
+        '../a_getting_started/sinusodial_simulation.adc', M), M))
 
     for index, estimate in enumerate(digital_estimators_ref):
         u_hat[index] = estimate
@@ -507,7 +512,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  40.238 seconds)
+   **Total running time of the script:** ( 1 minutes  43.476 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_b_FIR_Filtering.py:

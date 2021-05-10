@@ -287,7 +287,7 @@ computed. Therefore, this procedure could be computationally intense for a
 analog system with a large analog state order or equivalently for large
 number of independent digital controls.
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-152
+.. GENERATED FROM PYTHON SOURCE LINES 133-153
 
 .. code-block:: default
    :lineno-start: 134
@@ -306,7 +306,8 @@ number of independent digital controls.
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
     digital_estimator_batch = DigitalEstimator(
-        simulator1, analog_system, digital_control1, eta2, K1, K2)
+        analog_system, digital_control1, eta2, K1, K2)
+    digital_estimator_batch(simulator1)
 
     print(digital_estimator_batch, "\n")
 
@@ -398,16 +399,16 @@ number of independent digital controls.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 153-156
+.. GENERATED FROM PYTHON SOURCE LINES 154-157
 
 Visualize Estimator's Transfer Function (Same for Both)
 -------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 156-190
+.. GENERATED FROM PYTHON SOURCE LINES 157-191
 
 .. code-block:: default
-   :lineno-start: 157
+   :lineno-start: 158
 
 
     # Logspace frequencies
@@ -454,7 +455,7 @@ Visualize Estimator's Transfer Function (Same for Both)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 191-199
+.. GENERATED FROM PYTHON SOURCE LINES 192-200
 
 FIR Filter Estimator
 --------------------
@@ -465,10 +466,10 @@ we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
 filter coefficients. This is an aid to determine if the lookahead and
 lookback sizes L1 and L2 are set sufficiently large.
 
-.. GENERATED FROM PYTHON SOURCE LINES 199-234
+.. GENERATED FROM PYTHON SOURCE LINES 200-236
 
 .. code-block:: default
-   :lineno-start: 200
+   :lineno-start: 201
 
 
     # Determine lookback
@@ -476,10 +477,11 @@ lookback sizes L1 and L2 are set sufficiently large.
     # Determine lookahead
     L2 = K2
     digital_estimator_fir = FIRFilter(
-        simulator2, analog_system, digital_control2, eta2, L1, L2)
+        analog_system, digital_control2, eta2, L1, L2)
 
     print(digital_estimator_fir, "\n")
 
+    digital_estimator_fir(simulator2)
 
     # Next visualize the decay of the resulting filter coefficients.
     h_index = np.arange(-L1, L2)
@@ -552,7 +554,7 @@ lookback sizes L1 and L2 are set sufficiently large.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 235-241
+.. GENERATED FROM PYTHON SOURCE LINES 237-243
 
 IIR Filter Estimator
 --------------------
@@ -561,19 +563,21 @@ The IIR filter is closely related to the FIR filter with the exception
 of an moving average computation.
 See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
-.. GENERATED FROM PYTHON SOURCE LINES 241-250
+.. GENERATED FROM PYTHON SOURCE LINES 243-254
 
 .. code-block:: default
-   :lineno-start: 242
+   :lineno-start: 244
 
 
     # Determine lookahead
     L2 = K2
 
     digital_estimator_iir = IIRFilter(
-        simulator3, analog_system, digital_control3, eta2, L2)
+        analog_system, digital_control3, eta2, L2)
 
     print(digital_estimator_iir, "\n")
+
+    digital_estimator_iir(simulator3)
 
 
 
@@ -645,7 +649,7 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 251-259
+.. GENERATED FROM PYTHON SOURCE LINES 255-263
 
 Parallel Estimator
 ------------------------------
@@ -656,17 +660,18 @@ resembles the default estimator but diagonalizes the filter coefficients
 resulting in a more computationally more efficient filter that can be
 parallelized into independent filter operations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 259-268
+.. GENERATED FROM PYTHON SOURCE LINES 263-273
 
 .. code-block:: default
-   :lineno-start: 260
+   :lineno-start: 264
 
 
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
     digital_estimator_parallel = ParallelEstimator(
-        simulator4, analog_system, digital_control4, eta2, K1, K2)
+        analog_system, digital_control4, eta2, K1, K2)
 
+    digital_estimator_parallel(simulator4)
     print(digital_estimator_parallel, "\n")
 
 
@@ -761,7 +766,7 @@ parallelized into independent filter operations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 269-276
+.. GENERATED FROM PYTHON SOURCE LINES 274-281
 
 Estimating (Filtering)
 ----------------------
@@ -771,10 +776,10 @@ estimators. Note that since no stop criteria is set for either the analog
 signal, the simulator, or the digital estimator this iteration could
 potentially continue until the default stop criteria of 2^63 iterations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 276-289
+.. GENERATED FROM PYTHON SOURCE LINES 281-294
 
 .. code-block:: default
-   :lineno-start: 277
+   :lineno-start: 282
 
 
     # Set simulation length
@@ -796,7 +801,7 @@ potentially continue until the default stop criteria of 2^63 iterations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 290-295
+.. GENERATED FROM PYTHON SOURCE LINES 295-300
 
 Visualizing Results
 -------------------
@@ -804,10 +809,10 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 295-402
+.. GENERATED FROM PYTHON SOURCE LINES 300-407
 
 .. code-block:: default
-   :lineno-start: 296
+   :lineno-start: 301
 
 
     t = np.arange(size)
@@ -967,17 +972,17 @@ in both time and frequency domain.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 403-407
+.. GENERATED FROM PYTHON SOURCE LINES 408-412
 
 Compute Time
 ------------
 
 Compare the execution time of each estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 407-466
+.. GENERATED FROM PYTHON SOURCE LINES 412-472
 
 .. code-block:: default
-   :lineno-start: 409
+   :lineno-start: 414
 
 
 
@@ -992,32 +997,33 @@ Compare the execution time of each estimator
 
 
     digital_estimator_batch = DigitalEstimator(
-        dummy_input_control_signal(),
         analog_system,
         digital_control1,
         eta2,
         K1,
         K2)
     digital_estimator_fir = FIRFilter(
-        dummy_input_control_signal(),
         analog_system,
         digital_control2,
         eta2,
         L1,
         L2)
     digital_estimator_parallel = ParallelEstimator(
-        dummy_input_control_signal(),
         analog_system,
         digital_control4,
         eta2,
         K1,
         K2)
     digital_estimator_iir = IIRFilter(
-        dummy_input_control_signal(),
         analog_system,
         digital_control3,
         eta2,
         L2)
+
+    digital_estimator_batch(dummy_input_control_signal())
+    digital_estimator_fir(dummy_input_control_signal())
+    digital_estimator_parallel(dummy_input_control_signal())
+    digital_estimator_iir(dummy_input_control_signal())
 
     length = 1 << 14
     repetitions = 10
@@ -1049,16 +1055,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    5.596273067989387 sec 
+    6.179245215000265 sec 
 
     FIR Estimator:
-    38.92125307803508 sec 
+    38.39479606199893 sec 
 
     IIR Estimator:
-    22.15397312201094 sec 
+    21.939523328997893 sec 
 
     Parallel Estimator:
-    9.235927602043375 sec 
+    9.57094680499722 sec 
 
 
 
@@ -1067,7 +1073,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 27 minutes  1.918 seconds)
+   **Total running time of the script:** ( 28 minutes  8.830 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_a_compare_estimator.py:

@@ -56,13 +56,17 @@ def test_estimation_with_circuit_simulator():
     simulator4 = StateSpaceSimulator(
         analogSystem, digitalControl4, analogSignals)
     estimator1 = DigitalEstimator(
-        simulator1, analogSystem, digitalControl1, eta2, K1, K2)
+        analogSystem, digitalControl1, eta2, K1, K2)
     estimator2 = ParallelEstimator(
-        simulator2, analogSystem, digitalControl2, eta2, K1, K2)
+        analogSystem, digitalControl2, eta2, K1, K2)
     estimator3 = FIRFilter(
-        simulator3, analogSystem, digitalControl3, eta2, K1, K2)
+        analogSystem, digitalControl3, eta2, K1, K2)
     estimator4 = IIRFilter(
-        simulator4, analogSystem, digitalControl4, eta2, K2)
+        analogSystem, digitalControl4, eta2, K2)
+    estimator1(simulator1)
+    estimator2(simulator2)
+    estimator3(simulator3)
+    estimator4(simulator4)
 
     tf_1 = estimator1.signal_transfer_function(
         np.array([2 * np.pi * frequency]))[0]

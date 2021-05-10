@@ -1,4 +1,4 @@
-cbadc.digital\_estimator.FIRFilter
+﻿cbadc.digital\_estimator.FIRFilter
 ==================================
 
 .. currentmodule:: cbadc.digital_estimator
@@ -17,9 +17,12 @@ cbadc.digital\_estimator.FIRFilter
    .. autosummary::
    
       ~FIRFilter.__init__
+      ~FIRFilter.filter_lag
       ~FIRFilter.lookback
       ~FIRFilter.noise_transfer_function
+      ~FIRFilter.set_iterator
       ~FIRFilter.signal_transfer_function
+      ~FIRFilter.warm_up
    
    
 

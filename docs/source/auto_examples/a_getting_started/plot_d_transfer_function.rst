@@ -242,7 +242,7 @@ results in a row vector
 where :math:`\text{NTF}_\ell(\omega)` refers to the noise transfer function
 from the :math:`\ell`-th observation to the final estimate.
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-184
+.. GENERATED FROM PYTHON SOURCE LINES 137-180
 
 .. code-block:: default
    :lineno-start: 138
@@ -255,10 +255,6 @@ from the :math:`\ell`-th observation to the final estimate.
     digital_control = DigitalControl(T, N)
 
 
-    def control_sequence():
-        yield np.zeros(N)
-
-
     # Compute eta2 for a given bandwidth.
     omega_3dB = (4 * np.pi * beta) / 100.
     eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
@@ -266,7 +262,7 @@ from the :math:`\ell`-th observation to the final estimate.
 
     # Instantiate estimator.
     digital_estimator = DigitalEstimator(
-        control_sequence(), analog_system, digital_control, eta2, K1=1)
+        analog_system, digital_control, eta2, K1=1)
 
     # Compute NTF
     ntf = digital_estimator.noise_transfer_function(omega)
@@ -305,17 +301,17 @@ from the :math:`\ell`-th observation to the final estimate.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-189
+.. GENERATED FROM PYTHON SOURCE LINES 181-185
 
 Setting the Bandwidth of the Estimation Filter
 ----------------------------------------------
 
 Finally, we will investigate the effect of eta2 on the STF and NTF.
 
-.. GENERATED FROM PYTHON SOURCE LINES 189-222
+.. GENERATED FROM PYTHON SOURCE LINES 185-218
 
 .. code-block:: default
-   :lineno-start: 190
+   :lineno-start: 186
 
 
     # create a vector of etas to be evaluated,
@@ -325,7 +321,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
     for eta2 in eta2_vec:
         # Instantiate an estimator for each eta.
         digital_estimator = DigitalEstimator(
-            control_sequence(), analog_system, digital_control, eta2, K1=1)
+            analog_system, digital_control, eta2, K1=1)
         # Compute stf and ntf
         ntf = digital_estimator.noise_transfer_function(omega)
         ntf_dB = 20 * np.log10(np.abs(ntf))
@@ -364,11 +360,11 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
  .. code-block:: none
 
-    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:200: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:200: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /nas/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:200: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
@@ -377,7 +373,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  21.861 seconds)
+   **Total running time of the script:** ( 0 minutes  22.651 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_d_transfer_function.py:

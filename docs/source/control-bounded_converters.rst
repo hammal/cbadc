@@ -125,7 +125,6 @@ Next follows a series of tutorials demonstrating common use cases of the cbadc p
 In particular, consider the :ref:`getting_started`.
 
 .. toctree::
-   :depth: 0
    :hidden:
   
    analog_system

@@ -96,9 +96,6 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
     Parameters
     ----------
-
-    control_signal_sequence : iterator
-        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter
         coefficients).
@@ -171,7 +168,6 @@ class DigitalEstimator(Iterator[np.ndarray]):
     """
 
     def __init__(self,
-                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,
@@ -198,7 +194,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
         else:
             self.Ts = digital_control.T
         self.eta2 = eta2
-        self.control_signal = control_signal_sequence
+        self.control_signal = None
 
         if (downsample != 1):
             raise NotImplementedError(
@@ -217,6 +213,16 @@ class DigitalEstimator(Iterator[np.ndarray]):
         # Initialize filters
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
         self._allocate_memory_buffers()
+
+    def set_iterator(self, control_signal_sequence: Iterator[np.ndarray]):
+        """Set iterator of control signals
+
+        Parameters
+        -----------
+        control_signal_sequence : iterator
+            a iterator which outputs a sequence of control signals.
+        """
+        self.control_signal = control_signal_sequence
 
     def _compute_filter_coefficients(self,
                                      analog_system: AnalogSystem,
@@ -350,10 +356,16 @@ class DigitalEstimator(Iterator[np.ndarray]):
         self._control_signal_in_buffer += 1
         return self._control_signal_in_buffer > (self.K3 - 1)
 
+    def __call__(self, control_signal_sequence: Iterator[np.ndarray]):
+        return self.set_iterator(control_signal_sequence)
+
     def __iter__(self):
         return self
 
     def __next__(self) -> np.ndarray:
+        # Check if control signal iterator is set.
+        if self.control_signal is None:
+            raise BaseException("No iterator set.")
         # Check if the end of prespecified size
         if(self.number_of_iterations < self._iteration):
             raise StopIteration
@@ -504,8 +516,6 @@ class ParallelEstimator(DigitalEstimator):
 
     Parameters
     ----------
-    control_signal_sequence : iterator
-        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -581,7 +591,6 @@ class ParallelEstimator(DigitalEstimator):
     """
 
     def __init__(self,
-                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,
@@ -608,7 +617,7 @@ class ParallelEstimator(DigitalEstimator):
         else:
             self.Ts = digital_control.T
         self.eta2 = eta2
-        self.control_signal = control_signal_sequence
+        self.control_signal = None
 
         if (downsample != 1):
             raise NotImplementedError(
@@ -708,6 +717,10 @@ class ParallelEstimator(DigitalEstimator):
         return self
 
     def __next__(self) -> np.ndarray:
+        # Check if control signal iterator is set.
+        if self.control_signal is None:
+            raise BaseException("No iterator set.")
+
         # Check if the end of prespecified size
         if(self.number_of_iterations < self._iteration):
             raise StopIteration
@@ -777,8 +790,6 @@ class IIRFilter(DigitalEstimator):
 
     Parameters
     ----------
-    control_signal : iterator
-        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -840,7 +851,6 @@ class IIRFilter(DigitalEstimator):
     """
 
     def __init__(self,
-                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,
@@ -855,11 +865,12 @@ class IIRFilter(DigitalEstimator):
         if (K2 < 0):
             raise BaseException("K2 must be non negative integer.")
         self.K2 = K2
+        self._filter_lag = self.K2 - 1
         self.analog_system = analog_system
         if(eta2 < 0):
             raise BaseException("eta2 must be non negative.")
         self.eta2 = eta2
-        self.control_signal = control_signal_sequence
+        self.control_signal = None
         self.number_of_iterations = stop_after_number_of_iterations
         self._iteration = 0
         if Ts:
@@ -894,6 +905,10 @@ class IIRFilter(DigitalEstimator):
         return self
 
     def __next__(self) -> np.ndarray:
+        # Check if control signal iterator is set.
+        if self.control_signal is None:
+            raise BaseException("No iterator set.")
+
         # Check if the end of prespecified size
         self._iteration += 1
         if(self.number_of_iterations and self.number_of_iterations < self._iteration):
@@ -953,7 +968,7 @@ class IIRFilter(DigitalEstimator):
             The filter lag.
 
         """
-        return (self.K2 - 1)
+        return self._filter_lag
 
     def warm_up(self):
         """Warm up filter by population control signals.
@@ -961,6 +976,7 @@ class IIRFilter(DigitalEstimator):
         Specifically fills up internal control signal buffer with
         K2 control signals.
         """
+        self._filter_lag += self.K2
         for _ in range(self.K2):
             _ = self.__next__()
 
@@ -988,8 +1004,6 @@ class FIRFilter(DigitalEstimator):
 
     Parameters
     ----------
-    control_signal : iterator
-        a iterator which outputs a sequence of control signals.
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -1051,7 +1065,6 @@ class FIRFilter(DigitalEstimator):
     """
 
     def __init__(self,
-                 control_signal_sequence: Iterator[np.ndarray],
                  analog_system: AnalogSystem,
                  digital_control: DigitalControl,
                  eta2: float,
@@ -1070,12 +1083,13 @@ class FIRFilter(DigitalEstimator):
             raise BaseException("K2 must be a positive integer.")
         self.K2 = K2
         self.K3 = K1 + K2
+        self._filter_lag = self.K2 - 1
         self.analog_system = analog_system
         self.digital_control = digital_control
         if(eta2 < 0):
             raise BaseException("eta2 must be non negative.")
         self.eta2 = eta2
-        self.control_signal = control_signal_sequence
+        self.control_signal = None
         self.number_of_iterations = stop_after_number_of_iterations
         self._iteration = 0
         if Ts:
@@ -1113,6 +1127,10 @@ class FIRFilter(DigitalEstimator):
         return self
 
     def __next__(self) -> np.ndarray:
+        # Check if control signal iterator is set.
+        if self.control_signal is None:
+            raise BaseException("No iterator set.")
+
         # Check if the end of prespecified size
         self._iteration += 1
         if(self.number_of_iterations and self.number_of_iterations < self._iteration):
@@ -1179,7 +1197,7 @@ class FIRFilter(DigitalEstimator):
             The filter lag.
 
         """
-        return (self.K2 - 1)
+        return self._filter_lag
 
     def warm_up(self):
         """Warm up filter by population control signals.
@@ -1187,5 +1205,6 @@ class FIRFilter(DigitalEstimator):
         Specifically fills up internal control signal buffer with
         K2 control signals.
         """
+        self._filter_lag += self.K3
         for _ in range(self.K3):
             _ = self.__next__()

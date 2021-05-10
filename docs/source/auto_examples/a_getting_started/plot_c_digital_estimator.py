@@ -112,11 +112,12 @@ K1 = sequence_length
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).
 
-digital_estimator = DigitalEstimator(
-    control_signal_sequences, analog_system, digital_control, eta2, K1)
+digital_estimator = DigitalEstimator(analog_system, digital_control, eta2, K1)
 
 print(digital_estimator, "\n")
 
+# Set control signal iterator
+digital_estimator(control_signal_sequences)
 
 ###############################################################################
 # Producing Estimates
@@ -139,7 +140,10 @@ sequence_length = 11
 control_signal_sequences = random_control_signal(
     M, stop_after_number_of_iterations=sequence_length, random_seed=42)
 digital_estimator = DigitalEstimator(
-    control_signal_sequences, analog_system, digital_control, eta2, K1, K2)
+    analog_system, digital_control, eta2, K1, K2)
+
+# Set control signal iterator
+digital_estimator(control_signal_sequences)
 
 # The iterator is still called the same way.
 for i in digital_estimator:
@@ -176,13 +180,14 @@ u_hat = np.zeros(stop_after_number_of_iterations)
 K1 = 1 << 10
 K2 = 1 << 11
 digital_estimator = DigitalEstimator(
-    control_signal_sequences,
     analog_system, digital_control,
     eta2,
     K1,
     K2,
     stop_after_number_of_iterations=stop_after_number_of_iterations
 )
+# Set control signal iterator
+digital_estimator(control_signal_sequences)
 for index, u_hat_temp in enumerate(digital_estimator):
     u_hat[index] = u_hat_temp
 

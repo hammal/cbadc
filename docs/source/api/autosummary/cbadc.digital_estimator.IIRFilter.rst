@@ -1,4 +1,4 @@
-cbadc.digital\_estimator.IIRFilter
+﻿cbadc.digital\_estimator.IIRFilter
 ==================================
 
 .. currentmodule:: cbadc.digital_estimator
@@ -17,9 +17,12 @@ cbadc.digital\_estimator.IIRFilter
    .. autosummary::
    
       ~IIRFilter.__init__
+      ~IIRFilter.filter_lag
       ~IIRFilter.lookahead
       ~IIRFilter.noise_transfer_function
+      ~IIRFilter.set_iterator
       ~IIRFilter.signal_transfer_function
+      ~IIRFilter.warm_up
    
    
 

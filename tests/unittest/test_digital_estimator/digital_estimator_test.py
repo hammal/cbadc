@@ -30,8 +30,8 @@ def test_initialization(chain_of_integrators):
     eta2 = 1.0
     K1 = 100
     K2 = 0
-    DigitalEstimator(controlSequence(
-    ), chain_of_integrators['system'], digitalControl, eta2, K1, K2)
+    DigitalEstimator(
+        chain_of_integrators['system'], digitalControl, eta2, K1, K2)
 
 
 def test_estimation():
@@ -43,8 +43,9 @@ def test_estimation():
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
     estimator = DigitalEstimator(
-        controlSequence(), analogSystem, digitalControl, eta2, K1, K2,
+        analogSystem, digitalControl, eta2, K1, K2,
         stop_after_number_of_iterations=25)
+    estimator(controlSequence())
     for est in estimator:
         print(np.array(est))
 
@@ -56,9 +57,9 @@ def test_batch_iterations():
     K2 = 1000
 
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    estimator = DigitalEstimator(controlSequence(
-    ), analogSystem, digitalControl, eta2, K1, K2=K2,
-    stop_after_number_of_iterations=200)
+    estimator = DigitalEstimator(analogSystem, digitalControl, eta2, K1, K2=K2,
+                                 stop_after_number_of_iterations=200)
+    estimator(controlSequence())
     for est in estimator:
         print(np.array(est))
     # raise "temp"
@@ -76,7 +77,8 @@ def test_estimation_with_circuit_simulator():
     circuitSimulator = StateSpaceSimulator(
         analogSystem, digitalControl, analogSignals, t_stop=Ts * 1000)
     estimator = DigitalEstimator(
-        circuitSimulator, analogSystem, digitalControl, eta2, K1, K2)
+        analogSystem, digitalControl, eta2, K1, K2)
+    estimator(circuitSimulator)
     for est in estimator:
         print(est)
     # raise "Temp"

@@ -142,10 +142,6 @@ T = 1/(2 * beta)
 digital_control = DigitalControl(T, N)
 
 
-def control_sequence():
-    yield np.zeros(N)
-
-
 # Compute eta2 for a given bandwidth.
 omega_3dB = (4 * np.pi * beta) / 100.
 eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
@@ -153,7 +149,7 @@ eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
 
 # Instantiate estimator.
 digital_estimator = DigitalEstimator(
-    control_sequence(), analog_system, digital_control, eta2, K1=1)
+    analog_system, digital_control, eta2, K1=1)
 
 # Compute NTF
 ntf = digital_estimator.noise_transfer_function(omega)
@@ -194,7 +190,7 @@ plt.figure()
 for eta2 in eta2_vec:
     # Instantiate an estimator for each eta.
     digital_estimator = DigitalEstimator(
-        control_sequence(), analog_system, digital_control, eta2, K1=1)
+        analog_system, digital_control, eta2, K1=1)
     # Compute stf and ntf
     ntf = digital_estimator.noise_transfer_function(omega)
     ntf_dB = 20 * np.log10(np.abs(ntf))

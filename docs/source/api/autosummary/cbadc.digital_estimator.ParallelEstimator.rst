@@ -1,4 +1,4 @@
-cbadc.digital\_estimator.ParallelEstimator
+﻿cbadc.digital\_estimator.ParallelEstimator
 ==========================================
 
 .. currentmodule:: cbadc.digital_estimator
@@ -18,6 +18,7 @@ cbadc.digital\_estimator.ParallelEstimator
    
       ~ParallelEstimator.__init__
       ~ParallelEstimator.noise_transfer_function
+      ~ParallelEstimator.set_iterator
       ~ParallelEstimator.signal_transfer_function
    
    

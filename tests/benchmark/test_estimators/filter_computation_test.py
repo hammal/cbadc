@@ -35,26 +35,26 @@ def controlSequence():
 def test_filter_computation_parallel_estimator_algorithm(benchmark):
     def setup():
         ParallelEstimator(
-            controlSequence(), analogSystem, digitalControl, eta2, K1, K2)
+            analogSystem, digitalControl, eta2, K1, K2)
     benchmark(setup)
 
 
 def test_filter_computation_digital_estimator_algorithm(benchmark):
     def setup():
         DigitalEstimator(
-            controlSequence(), analogSystem, digitalControl, eta2, K1, K2)
+            analogSystem, digitalControl, eta2, K1, K2)
     benchmark(setup)
 
 
 def test_filter_computation_IIR_filter_algorithm(benchmark):
     def setup():
         IIRFilter(
-            controlSequence(), analogSystem, digitalControl, eta2, K2)
+            analogSystem, digitalControl, eta2, K2)
     benchmark(setup)
 
 
 def test_filter_computation_FIR_filter_algorithm(benchmark):
     def setup():
         FIRFilter(
-            controlSequence(), analogSystem, digitalControl, eta2, K1, K2)
+            analogSystem, digitalControl, eta2, K1, K2)
     benchmark(setup)
