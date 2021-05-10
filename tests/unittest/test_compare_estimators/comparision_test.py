@@ -26,6 +26,7 @@ phase = np.pi/3*2.
 
 def test_estimation_with_circuit_simulator():
     eta2 = 1e12
+
     K1 = 1 << 10
     K2 = 1 << 10
     size = K2 << 2
