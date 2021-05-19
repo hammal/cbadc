@@ -2,7 +2,7 @@
 Control-Bounded A/D Conversion
 ******************************
 
-Analog-to-digital (A/D) conversion is an ubiquities part of most of todays 
+Analog-to-digital (A/D) conversion is an ubiquitous part of most of todays 
 electronic devices as it interfaces the analog world we live in with the
 digital domain. Control-bounded A/D conversion is a type of A/D conversion 
 that indirectly converts analog signals into their digital counterpart by 
