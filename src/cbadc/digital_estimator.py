@@ -786,7 +786,8 @@ class IIRFilter(DigitalEstimator):
     :math:`\mathbf{B}_b`, :math:`\mathbf{A}_f`, and :math:`\mathbf{B}_f`
     are computed based on the analog system, the sample period :math:`T_s`, and the
     digital control's DAC waveform as described in
-    `control-bounded converters <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=67/>`_.
+    #page=67/>`_.
+    `control-bounded converters <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
 
     Parameters
     ----------
@@ -934,7 +935,9 @@ class IIRFilter(DigitalEstimator):
         self._mean = np.dot(self.Af, self._mean) + \
             np.dot(self.Bf, self._control_signal_valued[0, :])
         if (((self._iteration - 1) % self.downsample) == 0):
-            return np.einsum('ijk,ik', self.h, self._control_signal_valued) + result
+
+            return np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1))) + result
+            # return np.einsum('ijk,jk', self.h, self._control_signal_valued) + result
         return self.__next__()
 
     def lookahead(self):
@@ -990,7 +993,7 @@ class FIRFilter(DigitalEstimator):
 
     Specifically, the estimate is of the form
 
-    :math:`\hat{\mathbf{u}}(k T) = \sum_{\ell=-K_1}^{K_2} \mathbf{h}[\ell] \mathbf{s}[k + \ell]`
+    :math:`\hat{\mathbf{u}}(k T) = \hat{\mathbf{u}}_0 + \sum_{\ell=-K_1}^{K_2} \mathbf{h}[\ell] \mathbf{s}[k + \ell]`
 
     where
 
@@ -1023,6 +1026,8 @@ class FIRFilter(DigitalEstimator):
     downsample: `int`, `optional`
         specify down sampling rate in relation to the control period :math:`T`, defaults to 1, i.e.,
         no down sampling.
+    offset: `array_like`, shape=(L)
+        the estimate offset :math:`\hat{\mathbf{u}}_0`, defaults to a zero vector.
 
     Attributes
     ----------
@@ -1057,6 +1062,8 @@ class FIRFilter(DigitalEstimator):
         The W matrix transposed
     h : `array_like`, shape=(K1 + K2, L, M)
         filter impulse response
+    offset: `array_like`, shape=(L)
+        the estimate offset :math:`\hat{\mathbf{u}}_0`.
 
     Yields
     ------
@@ -1073,7 +1080,8 @@ class FIRFilter(DigitalEstimator):
                  stop_after_number_of_iterations: int = (1 << 63),
                  Ts: float = None,
                  mid_point: bool = False,
-                 downsample: int = 1):
+                 downsample: int = 1,
+                 offset: np.ndarray = None):
         """Initializes filter coefficients
         """
         if (K1 < 0):
@@ -1100,6 +1108,15 @@ class FIRFilter(DigitalEstimator):
             raise NotImplementedError("Planned for v.0.1.0")
         self.mid_point = mid_point
         self.downsample = int(downsample)
+        self._temp_controls = np.zeros(
+            (self.downsample, self.analog_system.M), dtype=np.int8)
+
+        if offset is not None:
+            self.offset = np.array(offset, dtype=np.float64)
+            if (self.offset.size != self.analog_system.L):
+                raise BaseException("offset is not of size L")
+        else:
+            self.offset = np.zeros(self.analog_system.L, dtype=np.float64)
 
         # For transfer functions
         self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
@@ -1132,39 +1149,37 @@ class FIRFilter(DigitalEstimator):
             raise BaseException("No iterator set.")
 
         # Check if the end of prespecified size
-        self._iteration += 1
+        self._iteration += self.downsample
         if(self.number_of_iterations and self.number_of_iterations < self._iteration):
             raise StopIteration
 
         # Rotate control_signal vector
         self._control_signal_valued = np.roll(
-            self._control_signal_valued, -1, axis=0)
+            self._control_signal_valued, -self.downsample, axis=0)
 
         # insert new control signal
         try:
-            temp = self.control_signal.__next__()
+            for index in range(self.downsample):
+                self._temp_controls[index, :] = 2 * \
+                    self.control_signal.__next__() - 1
         except RuntimeError:
             logger.warning("Estimator received Stop Iteration")
             raise StopIteration
 
-        self._control_signal_valued[self.K3 - 1,
-                                    :] = np.asarray(2 * temp - 1, dtype=np.int8)
+        self._control_signal_valued[self.K3 -
+                                    self.downsample:, :] = self._temp_controls
 
-        # Check for down sampling
-        if (((self._iteration - 1) % self.downsample) == 0):
-            # self._control_signal_valued.shape -> (K1 + K2, M)
-            # self.h.shape -> (K1 + K2, L, M)
-            return np.einsum('ijk,ik', self.h, self._control_signal_valued)
-            # the Einstein summation results in:
-            # result = np.zeros(self._L)
-            # for l in range(self._L):
-            #    for k in range(self.K1 + self.K2):
-            #        for m in range(self._M):
-            #            result[l] += self.h[k, l, m] * self._control_signal_valued[k, m]
-            # return result
-
-        # if not, recursively call self
-        return self.__next__()
+        # self._control_signal_valued.shape -> (K3, M)
+        # self.h.shape -> (L, K3, M)
+        return np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1))) + self.offset
+        # return np.einsum('lkm,km', self.h, self._control_signal_valued)
+        # the Einstein summation results in:
+        # result = np.zeros(self._L)
+        # for l in range(self._L):
+        #    for k in range(self.K1 + self.K2):
+        #        for m in range(self._M):
+        #            result[l] += self.h[l, k, m] * self._control_signal_valued[k, m]
+        # return result
 
     def lookback(self):
         """Return lookback size :math:`K1`.
@@ -1208,3 +1223,20 @@ class FIRFilter(DigitalEstimator):
         self._filter_lag += self.K3
         for _ in range(self.K3):
             _ = self.__next__()
+
+    def fir_filter_transfer_function(self, Ts=1.0):
+        """Compute the FFT of the system impulse response (FIR filter coefficients).
+
+        Parameters
+        ----------
+        Ts: `float`
+            the sample period of the corresponding impulse response.
+
+        Returns
+        -------
+        `array_like`, shape=(L, K3 // 2, M)
+            the FFT of the corresponding impulse responses.
+        """
+        frequency_response = np.fft.rfft(self.h, axis=1)
+        frequencies = np.fft.rfftfreq(self.K3, d=Ts)
+        return (frequencies, frequency_response)

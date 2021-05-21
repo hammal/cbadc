@@ -212,3 +212,46 @@ def compute_power_spectral_density(sequence: np.ndarray, nperseg: int = 1 << 14,
         fs=fs
     )
     return (np.asarray(freq), np.asarray(spectrum))
+
+
+def snr_spectrum_computation(spectrum: np.ndarray,
+                             signal_mask: np.ndarray,
+                             noise_mask: np.ndarray):
+    """Compute snr from spectrum
+
+    Parameters
+    ----------
+    spectrum: ndarray
+        a frequency spectrum
+    signal_mask: ndarray
+        an array containing the indices corresponding to the inband signal
+        components.
+    noise_mask: ndarray
+        an array containing the indices corresponding to the inband noise.
+
+    Returns
+    -------
+    float
+        the signal-to-noise ratio.
+    """
+    noise = np.sum(spectrum[noise_mask])
+    signal = np.sum(spectrum[signal_mask])
+    if (noise > 0):
+        return signal/noise
+    else:
+        return np.inf
+
+
+def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
+    """Find the peak in the spectrum and return indexes.
+
+    Parameters
+    ----------
+    spectrum: ndarray
+        a power spectral density or equivalent
+    mask_width: `int`
+        the width around peak to be considered.
+
+    """
+    candidate_peak = np.argmax(np.abs(spectrum))
+    return np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2)

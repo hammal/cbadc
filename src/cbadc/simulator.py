@@ -59,6 +59,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         Maximum allowed step size. Default is np.inf, i.e., the step size is not
         bounded and determined solely by the solver. Effects the underlying solver as
         described in :py:func:`scipy.integrate.solve_ivp`. Defaults to :py:obj:`math.inf`.
+    initial_state_vector: `array_like`, shape=(N), `optional`
+        initial state vector.
     See also
     --------
     :py:class:`cbadc.analog_signal.AnalogSignal`
@@ -109,6 +111,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                  atol: float = 1e-12,
                  rtol: float = 1e-12,
                  max_step: float = math.inf,
+                 initial_state_vector=None
                  ):
         if analog_system.L != len(input_signal):
             raise BaseException("""The analog system does not have as many inputs as in input
@@ -125,7 +128,16 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         if self.Ts > self.digital_control.T:
             raise BaseException(
                 f"Simulating with a sample period {self.Ts} that exceeds the control period of the digital control {self.digital_control.T}")
-        self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
+        if initial_state_vector is not None:
+            self._state_vector = np.array(
+                initial_state_vector, dtype=np.float64)
+            print("initial state vector: ", self._state_vector)
+            if self._state_vector.size != self.analog_system.N or len(self._state_vector.shape) > 1:
+                raise BaseException(
+                    "initial_state_vector not single dimension of length N")
+        else:
+            self._state_vector = np.zeros(
+                self.analog_system.N, dtype=np.double)
         self._temp_state_vector = np.zeros(
             self.analog_system.N, dtype=np.double)
         self._control_observation = np.zeros(
