@@ -13,7 +13,6 @@ import numpy as np
 from numpy.linalg import LinAlgError
 import time
 import logging
-
 logger = logging.getLogger(__name__)
 
 
@@ -467,12 +466,49 @@ class DigitalEstimator(Iterator[np.ndarray]):
         """
         result = np.zeros((self.analog_system.L, omega.size))
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function_matrix(np.array([o]))
-            G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
+            G = self.analog_system.transfer_function_matrix(np.array([o])).reshape(
+                (self.analog_system.N_tilde, self.analog_system.L))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
             result[:, index] = np.abs(
                 np.dot(GH, np.dot(linalg.inv(GGH + self.eta2Matrix), G)))
+        return result
+
+    def control_signal_transfer_function(self, omega: np.ndarray):
+        """Compute the control signal transfer function at the angular
+        frequencies of the omega array.
+
+        Specifically, computes
+
+        :math:`\\begin{pmatrix}\hat{u}_1(\omega) / s_1(\omega) & \\dots & \hat{u}_1(\omega) / s_M(\omega) \\\ \\vdots & \\ddots & \\vdots \\\ \hat{u}_L(\omega) / s_1(\omega) & \\dots & \hat{u}_L(\omega) / s_M(\omega)  \\end{pmatrix}= \mathbf{G}( \omega)^\mathsf{H} \\left( \mathbf{G}( \omega)\mathbf{G}( \omega)^\mathsf{H} + \eta^2 \mathbf{I}_N \\right)^{-1} \\bar{\mathbf{G}}( \omega)`
+
+        for each angular frequency in omega where where
+        :math:`\\bar{\mathbf{G}}( \omega)=  \mathbf{C}^\mathsf{T} \\left(\mathbf{A} - i \omega \mathbf{I}_N\\right)^{-1} \mathbf{\\Gamma} \in\mathbb{R}^{N \\times M}` 
+        is the transfer function from the control signals to the output and :math:`\mathbf{I}_N` represents a
+        square identity matrix.
+
+        Parameters
+        ----------
+        omega: `array_like`, shape=(K,)
+            an array_like object containing the angular frequencies for
+            evaluation.
+
+        Returns
+        -------
+        `array_like`, shape=(L, M, K)
+            return STF evaluated at K different angular frequencies.
+        """
+        result = np.zeros(
+            (self.analog_system.L, self.analog_system.M, omega.size))
+        for index, o in enumerate(omega):
+            G = self.analog_system.transfer_function_matrix(np.array([o])).reshape(
+                (self.analog_system.N_tilde, self.analog_system.L))
+            G_bar = self.analog_system.control_signal_transfer_function_matrix(np.array([o])).reshape(
+                (self.analog_system.N_tilde, self.analog_system.M))
+            GH = G.transpose().conjugate()
+            GGH = np.dot(G, GH)
+            result[:, index] = np.abs(
+                np.dot(GH, np.dot(linalg.inv(GGH + self.eta2Matrix), G_bar)))
         return result
 
     def __str__(self):
@@ -786,8 +822,7 @@ class IIRFilter(DigitalEstimator):
     :math:`\mathbf{B}_b`, :math:`\mathbf{A}_f`, and :math:`\mathbf{B}_f`
     are computed based on the analog system, the sample period :math:`T_s`, and the
     digital control's DAC waveform as described in
-    #page=67/>`_.
-    `control-bounded converters <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
+    `control-bounded converters <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=67/>`_.
 
     Parameters
     ----------
@@ -839,7 +874,7 @@ class IIRFilter(DigitalEstimator):
         The Bb matrix.
     WT : `array_like`, shape=(L, N)
         The W matrix transposed.
-    h : `array_like`, shape=(K2, L, M)
+    h : `array_like`, shape=(L, K2, M)
         filter impulse response.
     downsample: `int`
         down sampling rate in relation to the control period :math:`T`.
@@ -891,12 +926,12 @@ class IIRFilter(DigitalEstimator):
             self, analog_system, digital_control, eta2)
 
         # Initialize filter
-        self.h = np.zeros((self.K2, self.analog_system.L,
+        self.h = np.zeros((self.analog_system.L, self.K2,
                            self.analog_system.M), dtype=np.double)
         # Compute lookback
         temp2 = np.copy(self.Bb)
         for k2 in range(self.K2):
-            self.h[k2, :, :] = np.dot(self.WT, temp2)
+            self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
         self._control_signal_valued = np.zeros(
             (self.K2, self.analog_system.M), dtype=np.int8)
@@ -930,12 +965,11 @@ class IIRFilter(DigitalEstimator):
                                     :] = np.asarray(2 * temp - 1, dtype=np.int8)
 
         # self._control_signal_valued.shape -> (K2, M)
-        # self.h.shape -> (K2, L, M)
+        # self.h.shape -> (L, K2, M)
         result = - np.dot(self.WT, self._mean)
         self._mean = np.dot(self.Af, self._mean) + \
             np.dot(self.Bf, self._control_signal_valued[0, :])
         if (((self._iteration - 1) % self.downsample) == 0):
-
             return np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1))) + result
             # return np.einsum('ijk,jk', self.h, self._control_signal_valued) + result
         return self.__next__()
@@ -1009,15 +1043,15 @@ class FIRFilter(DigitalEstimator):
     ----------
     analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
-    digital_control : :py:class:`cbadc.digital_control.DigitalControl`
+    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         a digital control (necessary to determine the corresponding DAC waveform).
-    eta2 : `float`
+    eta2: `float`
         the :math:`\eta^2` parameter determines the bandwidth of the estimator.
-    K1 : `int`
+    K1: `int`
         The lookback size
-    K2 : `int`, `optional`
+    K2: `int`, `optional`
         lookahead size, defaults to 0.
-    stop_after_number_of_iterations : `int`
+    stop_after_number_of_iterations: `int`
         determine a max number of iterations by the iterator, defaults to  :math:`2^{63}`.
     Ts: `float`, `optional`
         the sampling time, defaults to the time period of the digital control.
@@ -1031,36 +1065,36 @@ class FIRFilter(DigitalEstimator):
 
     Attributes
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
         analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or from
         derived class.
-    eta2 : float
+    eta2: float
         eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the estimator.
-    control_signal : :py:class:`cbadc.digital_control.DigitalControl`
+    control_signal: :py:class:`cbadc.digital_control.DigitalControl`
         a iterator suppling control signals as :py:class:`cbadc.digital_control.DigitalControl`.
-    number_of_iterations : `int`
+    number_of_iterations: `int`
         number of iterations until iterator raises :py:class:`StopIteration`.
-    K1 : `int`
+    K1: `int`
         number of samples, prior to estimate, used in estimate
-    K2 : `int`
+    K2: `int`
         number of lookahead samples per computed batch.
-    Ts : `float`
+    Ts: `float`
         spacing between samples in seconds.
     mid_point: `bool`
         estimated samples shifted in between control updates, i.e., :math:`\hat{u}(kT + T/2)`.
     downsample: `int`, `optional`
         down sampling rate in relation to the control period :math:`T`.
-    Af : `array_like`, shape=(N, N)
+    Af: `array_like`, shape=(N, N)
         The Af matrix
-    Ab : `array_like`, shape=(N, N)
+    Ab: `array_like`, shape=(N, N)
         The Ab matrix
-    Bf : `array_like`, shape=(N, M)
+    Bf: `array_like`, shape=(N, M)
         The Bf matrix
-    Bb : `array_like`, shape=(N, M)
+    Bb: `array_like`, shape=(N, M)
         The Bb matrix
-    WT : `array_like`, shape=(L, N)
+    WT: `array_like`, shape=(L, N)
         The W matrix transposed
-    h : `array_like`, shape=(K1 + K2, L, M)
+    h: `array_like`, shape=(L, K1 + K2, M)
         filter impulse response
     offset: `array_like`, shape=(L)
         the estimate offset :math:`\hat{\mathbf{u}}_0`.
@@ -1125,17 +1159,17 @@ class FIRFilter(DigitalEstimator):
             self, analog_system, digital_control, eta2)
 
         # Initialize filter.
-        self.h = np.zeros((self.K3, self.analog_system.L,
+        self.h = np.zeros((self.analog_system.L, self.K3,
                            self.analog_system.M), dtype=np.double)
         # Compute lookback.
         temp1 = np.copy(self.Bf)
         for k1 in range(self.K1 - 1, -1, -1):
-            self.h[k1, :, :] = - np.dot(self.WT, temp1)
+            self.h[:, k1, :] = - np.dot(self.WT, temp1)
             temp1 = np.dot(self.Af, temp1)
         # Compute lookahead.
         temp2 = np.copy(self.Bb)
         for k2 in range(self.K1, self.K3):
-            self.h[k2, :, :] = np.dot(self.WT, temp2)
+            self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
         self._control_signal_valued = np.zeros(
             (self.K3, self.analog_system.M), dtype=np.int8)
