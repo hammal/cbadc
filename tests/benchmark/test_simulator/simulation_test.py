@@ -21,9 +21,9 @@ frequency = 10.
 phase = 0.
 
 eta2 = 1e6
-K1 = 1 << 12
-K2 = 1 << 12
-size = K2 << 4
+K1 = 1 << 8
+K2 = 1 << 8
+size = K2 << 2
 analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
 digitalControl = DigitalControl(Ts, N)
 analogSignals = [Sinusodial(amplitude, frequency, phase)]
