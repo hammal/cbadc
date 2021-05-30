@@ -5,14 +5,14 @@ Examples using ``cbadc.analog_system.AnalogSystem.transfer_function_matrix``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the analog system ...">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for downsampling.">
 
 .. only:: html
 
- .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_d_transfer_function_thumb.png
-     :alt: Transfer Functions
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_c_downsample_thumb.png
+     :alt: Downsampling
 
-     :ref:`sphx_glr_auto_examples_a_getting_started_plot_d_transfer_function.py`
+     :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`
 
 .. raw:: html
 
@@ -20,23 +20,4 @@ Examples using ``cbadc.analog_system.AnalogSystem.transfer_function_matrix``
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_a_getting_started_plot_d_transfer_function.py`
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
-
-.. only:: html
-
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
-     :alt: Compare Estimators
-
-     :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
-
-.. raw:: html
-
-    </div>
-
-.. only:: not html
-
- * :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py`
+ * :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`

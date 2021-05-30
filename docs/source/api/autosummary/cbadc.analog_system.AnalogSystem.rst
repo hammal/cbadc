@@ -21,6 +21,7 @@ cbadc.analog\_system.AnalogSystem
       ~AnalogSystem.derivative
       ~AnalogSystem.signal_observation
       ~AnalogSystem.transfer_function_matrix
+      ~AnalogSystem.zpk
    
    
 

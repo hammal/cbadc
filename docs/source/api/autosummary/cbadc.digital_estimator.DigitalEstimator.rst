@@ -17,6 +17,7 @@
    .. autosummary::
    
       ~DigitalEstimator.__init__
+      ~DigitalEstimator.control_signal_transfer_function
       ~DigitalEstimator.noise_transfer_function
       ~DigitalEstimator.set_iterator
       ~DigitalEstimator.signal_transfer_function

@@ -6,13 +6,15 @@ conterter's digital estimator.
 from typing import Iterator
 from .digital_control import DigitalControl
 from .analog_system import AnalogSystem
-from scipy.linalg import expm, solve, solve_continuous_are
+from scipy.linalg import expm, lstsq, solve_continuous_are
 from scipy.integrate import solve_ivp
 import numpy.linalg as linalg
 import numpy as np
 from numpy.linalg import LinAlgError
 import time
 import logging
+
+from cbadc import analog_system
 logger = logging.getLogger(__name__)
 
 
@@ -294,7 +296,9 @@ class DigitalEstimator(Iterator[np.ndarray]):
                                    max_step=max_step).y[:, -1]
                 self.Bf[:, m] = solBf
                 self.Bb[:, m] = solBb
-        self.WT = solve(Vf + Vb, analog_system.B).transpose()
+        # self.WT = solve(Vf + Vb, analog_system.B).transpose()
+        W, _, _, _ = lstsq(Vf + Vb, analog_system.B)
+        self.WT = W.transpose()
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
@@ -430,10 +434,10 @@ class DigitalEstimator(Iterator[np.ndarray]):
             return NTF evaluated at K different angular frequencies.
         """
         result = np.zeros(
-            (self.analog_system.L, self.analog_system.N, omega.size))
+            (self.analog_system.L, self.analog_system.N_tilde, omega.size))
         for index, o in enumerate(omega):
             G = self.analog_system.transfer_function_matrix(np.array([o]))
-            G = G.reshape((self.analog_system.N, self.analog_system.L))
+            G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
             result[:, :, index] = np.abs(
@@ -1128,7 +1132,7 @@ class FIRFilter(DigitalEstimator):
         self._filter_lag = self.K2 - 1
         self.analog_system = analog_system
         self.digital_control = digital_control
-        if(eta2 < 0):
+        if(eta2 < 0.0):
             raise BaseException("eta2 must be non negative.")
         self.eta2 = eta2
         self.control_signal = None

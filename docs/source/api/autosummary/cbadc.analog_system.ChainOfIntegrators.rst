@@ -21,6 +21,7 @@ cbadc.analog\_system.ChainOfIntegrators
       ~ChainOfIntegrators.derivative
       ~ChainOfIntegrators.signal_observation
       ~ChainOfIntegrators.transfer_function_matrix
+      ~ChainOfIntegrators.zpk
    
    
 

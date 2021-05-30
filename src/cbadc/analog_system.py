@@ -261,8 +261,14 @@ class AnalogSystem:
         return np.dot(self.Gamma_tildeT, x)
 
     def _atf(self, _omega: float) -> np.ndarray:
+        # return np.dot(
+        #     np.linalg.pinv(complex(0, _omega) *
+        #                    np.eye(self.N) - self.A, rcond=1e-600),
+        #     self.B,
+        # )
         return np.dot(
-            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
+            np.linalg.pinv(complex(0, _omega) *
+                           np.eye(self.N) - self.A, rcond=1e-300),
             self.B,
         )
 
@@ -294,7 +300,8 @@ class AnalogSystem:
         result = np.zeros((self.N, self.L, size), dtype=complex)
         for index in range(size):
             result[:, :, index] = self._atf(omega[index])
-        resp = np.einsum('ij,jkl', self.CT, result)
+        # resp = np.einsum('ij,jkl', self.CT, result)
+        resp = np.tensordot(self.CT, result, axes=((1), (0)))
         return np.asarray(resp)
 
     def zpk(self, input=0):
@@ -698,8 +705,9 @@ class ButterWorth(AnalogSystem):
         # State space order
         self.Wn = Wn
 
-        z, p, k = scipy.signal.iirfilter(
-            N, Wn, analog=True, btype='lowpass', ftype='butter', output='zpk')
+        sos = scipy.signal.iirfilter(
+            N, Wn, analog=True, btype='lowpass', ftype='butter', output='sos')
+        print(sos)
         A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
 
         # initialize parent class

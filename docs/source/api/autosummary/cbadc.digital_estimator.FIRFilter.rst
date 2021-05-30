@@ -17,7 +17,9 @@
    .. autosummary::
    
       ~FIRFilter.__init__
+      ~FIRFilter.control_signal_transfer_function
       ~FIRFilter.filter_lag
+      ~FIRFilter.fir_filter_transfer_function
       ~FIRFilter.lookback
       ~FIRFilter.noise_transfer_function
       ~FIRFilter.set_iterator

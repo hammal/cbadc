@@ -17,6 +17,7 @@
    .. autosummary::
    
       ~ParallelEstimator.__init__
+      ~ParallelEstimator.control_signal_transfer_function
       ~ParallelEstimator.noise_transfer_function
       ~ParallelEstimator.set_iterator
       ~ParallelEstimator.signal_transfer_function

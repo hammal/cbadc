@@ -21,6 +21,7 @@ cbadc.analog\_system.LeapFrog
       ~LeapFrog.derivative
       ~LeapFrog.signal_observation
       ~LeapFrog.transfer_function_matrix
+      ~LeapFrog.zpk
    
    
 

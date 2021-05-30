@@ -9,6 +9,16 @@
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :template: custom-function-template.rst
+   
+      abcd2abc
+      chain
+      stack
+   
    
 
    
@@ -20,7 +30,11 @@
       :template: custom-class-template.rst               
    
       AnalogSystem
+      ButterWorth
+      Cauer
       ChainOfIntegrators
+      ChebyshevI
+      ChebyshevII
       LeapFrog
    
    

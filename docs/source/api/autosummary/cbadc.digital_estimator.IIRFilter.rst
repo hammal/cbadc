@@ -17,6 +17,7 @@
    .. autosummary::
    
       ~IIRFilter.__init__
+      ~IIRFilter.control_signal_transfer_function
       ~IIRFilter.filter_lag
       ~IIRFilter.lookahead
       ~IIRFilter.noise_transfer_function
