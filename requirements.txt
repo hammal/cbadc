@@ -1,2 +1,6 @@
 numpy>=1.20.1
 scipy>=1.6.3
+pytest
+pytest-benchmark
+pytest-cov
+tox

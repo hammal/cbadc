@@ -1,6 +1,16 @@
 [build-system]
-requires = ["setuptools", "cython", "numpy"]
+requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+
+
+
+[project.optional-dependencies]
+tests = ['pytest', 'pytest-benchmark', 'pytest-cov']
+docs = ['sphinx_rtd_theme', 'nbsphinx', 'sphinx-gallery']
+
+dependencies = [
+    'numpy>=1.20.1','scipy>=1.6.3'
+]
 
 [tool]
 [tool.pyright]
