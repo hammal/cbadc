@@ -8,6 +8,7 @@ from typing import Generator, Iterator
 import numpy as np
 from scipy.signal import welch
 from typing import Tuple
+import tqdm
 
 
 def number_of_bytes_selector(M: int):
@@ -255,3 +256,22 @@ def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
     """
     candidate_peak = np.argmax(np.abs(spectrum))
     return np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2)
+
+
+def show_status(iterator, length: int = None):
+    """Write progress to stdout using :py:mod:`tqdm`.
+
+    Parameters
+    ----------
+    iterator : a iterator
+        a iterator to yield values from.
+    length : int
+        indicate length of iterator. Also causes a raises a StopIteration
+        if iteration exceeds length.
+    """
+    iterator_with_progress = tqdm(iterator)
+    iterator_with_progress.length = length
+    for iteration, value in enumerate(iterator_with_progress):
+        if length is not None and not iteration < length:
+            raise StopIteration
+        yield value

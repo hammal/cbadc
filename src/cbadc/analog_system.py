@@ -35,9 +35,9 @@ class AnalogSystem:
       :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
     * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
 
-    where 
-    :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}` 
-    is the control observation matrix and 
+    where
+    :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}`
+    is the control observation matrix and
     :math:`\mathbf{C}^\mathsf{T}\in\mathbb{R}^{\\tilde{N} \\times N}` is the
     signal observation matrix.
 
@@ -315,7 +315,7 @@ class AnalogSystem:
         Returns
         -------
         `array_like`, shape=(?, ?, 1)
-            z,p,k the zeros, poles and gain of the system  
+            z,p,k the zeros, poles and gain of the system
         """
         return scipy.signal.ss2zpk(self.A, self.B, self.CT, np.zeros((self.N_tilde, self.L)), input)
 
@@ -345,7 +345,8 @@ class ChainOfIntegrators(AnalogSystem):
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and
     creates a convenient way of creating chain-of-integrator A/D analog
     systems. For more information about chain-of-integrator ADCs see
-    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=96/>`_.
+    #page=96/>`_.
+    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
 
 
     Chain-of-integrators analog systems are system goverened by the
@@ -489,7 +490,8 @@ class LeapFrog(AnalogSystem):
 
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
     way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see
-    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=126/>`_.
+    #page=126/>`_.
+    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
 
 
     A leap-frog analog system is goverened by the differential equations,
@@ -699,18 +701,16 @@ class ButterWorth(AnalogSystem):
         For faulty analog system parametrization.
     """
 
-    def __init__(self, N: int, Wn: float):
+    def __init__(self, N: int, Wn: float) -> AnalogSystem:
         """Create a Butterworth filter
         """
         # State space order
         self.Wn = Wn
 
+        # Create filter as chain of biquadratic filters
         sos = scipy.signal.iirfilter(
             N, Wn, analog=True, btype='lowpass', ftype='butter', output='sos')
-        print(sos)
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
-
-        # initialize parent class
+        A, B, CT = sos2abc(sos)
         AnalogSystem.__init__(self, A, B, CT, None, None)
 
 
@@ -795,11 +795,9 @@ class ChebyshevI(AnalogSystem):
         self.Wn = Wn
         self.rp = rp
 
-        z, p, k = scipy.signal.iirfilter(
-            N, Wn, rp, analog=True, btype='lowpass', ftype='cheby1', output='zpk')
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
-
-        # initialize parent class
+        sos = scipy.signal.iirfilter(
+            N, Wn, rp, analog=True, btype='lowpass', ftype='cheby1', output='sos')
+        A, B, CT = sos2abc(sos)
         AnalogSystem.__init__(self, A, B, CT, None, None)
 
 
@@ -885,11 +883,9 @@ class ChebyshevII(AnalogSystem):
         # State space order
         self.Wn = Wn
         self.rs = rs
-        z, p, k = scipy.signal.iirfilter(
-            N, Wn, rs=rs, analog=True, btype='lowpass', ftype='cheby2', output='zpk')
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
-
-        # initialize parent class
+        sos = scipy.signal.iirfilter(
+            N, Wn, rs=rs, analog=True, btype='lowpass', ftype='cheby2', output='sos')
+        A, B, CT = sos2abc(sos)
         AnalogSystem.__init__(self, A, B, CT, None, None)
 
 
@@ -981,12 +977,76 @@ class Cauer(AnalogSystem):
         self.rp = rp
         self.rs = rs
 
-        z, p, k = scipy.signal.iirfilter(
-            N, Wn, rp, rs, analog=True, btype='lowpass', ftype='ellip', output='zpk')
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
-
-        # initialize parent class
+        sos = scipy.signal.iirfilter(
+            N, Wn, rp, rs, analog=True, btype='lowpass', ftype='ellip', output='sos')
+        A, B, CT = sos2abc(sos)
         AnalogSystem.__init__(self, A, B, CT, None, None)
+
+
+def sos2abc(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Transform a series of biquad (second order systems (sos)) filters into
+    their A,B,C state space model equivalent.
+
+    Specifcally, for a filter with the transfer function
+
+    :math:`\Pi_{\ell = 1}^{L} \\frac{b_{\ell,0}s^2 + b_{\ell,1} s + b_{\ell,2}}{s^2 + a_{\ell,1}s + a_{\ell,2}}`
+
+    represented in a sos matrix
+
+    :math:`\\text{sos} = \\begin{pmatrix} & & \\vdots  \\\ b_{\ell,0}, & b_{\ell,1}, & b_{\ell,2}, & 1, & a_{\ell,1}, & a_{\ell,2} \\\ & & \\vdots \\end{pmatrix}`
+
+    is represented in a controllable canonical state space representation form
+
+    :math:`\\begin{pmatrix} \dot{x}_{\ell, 1}(t) \\\ \dot{x}_{\ell,2}(t) \\end{pmatrix} = \\begin{pmatrix}1 , & 0 \\\ -a_{\ell,2}, & -a_{\ell,1} \\end{pmatrix} \\begin{pmatrix} x_{\ell,1}(t) \\\ x_{\ell,2}(t)\\end{pmatrix} + \\begin{pmatrix} 0 \\\ 1 \\end{pmatrix} u_\ell(t)`
+
+    :math:`y_\ell(t) = \\begin{pmatrix}b_{\ell,2}, & b_{\ell,1} \\end{pmatrix} \\begin{pmatrix} x_{\ell,1}(t) \\\ x_{\ell,2}(t) \\end{pmatrix}`
+
+    which are then chained together using :py:func:`cbadc.analog_system.chain`.
+
+    Parameters
+    ----------
+    sos: np.ndarray, shape(N, 6)
+        biquad equations
+
+    Returns
+    A: numpy.ndarray, shape=(2 * L, 2 * L)
+        a joint state transition matrix.
+    B: numpy.ndarray, shape=(2 * L, 1)
+        a joint input matrix.
+    C: numpy.ndarray, shape=(1, 2 * L) 
+        a joint signal observation matrix.
+    """
+    biquadratic_analog_systems = []
+    for row in range(sos.shape[0]):
+        b_2 = sos[row, 0]
+        b_1 = sos[row, 1]
+        b_0 = sos[row, 2]
+        a_2 = sos[row, 3]
+        a_1 = sos[row, 4]
+        a_0 = sos[row, 5]
+
+        if a_2 != 1.0:
+            b_0 /= a_2
+            b_1 /= a_2
+            b_2 /= a_2
+            a_1 /= a_2
+            a_0 /= a_2
+            a_2 = 1.0
+
+        A = np.array([
+            [0.0, 1.0],
+            [-a_2, -a_1]
+        ])
+        B = np.array([[0.0], [1.0]])
+        CT = np.array([[b_0, b_1]])
+        if b_2 != 0:
+            CT = np.array([[(b_0 - b_2 * a_0), (b_1 - b_2 * a_1)]])
+            D = np.array([[b_0]])
+            A, B, CT = abcd2abc(A, B, CT, D)
+        biquadratic_analog_systems.append(
+            AnalogSystem(A, B, CT, None, None))
+    chained_system = chain(biquadratic_analog_systems)
+    return chained_system.A, chained_system.B, chained_system.CT
 
 
 def abcd2abc(A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:

@@ -17,6 +17,7 @@
    
       abcd2abc
       chain
+      sos2abc
       stack
    
    
