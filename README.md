@@ -1,4 +1,4 @@
-![cbadc](https://github.com/hammal/cbadc/actions/workflows/testing.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)
+![cbadc](https://github.com/hammal/cbadc/actions/workflows/testing.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/hammal/cbadc)
 
 # Control-Bounded A/D Conversion (cbadc) Toolbox's Documentation
 

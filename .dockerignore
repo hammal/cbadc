@@ -1,0 +1,6 @@
+jupyter
+*__pycache__
+*build
+dist
+benchmark*
+src/cbadc.egg-info

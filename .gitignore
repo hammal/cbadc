@@ -6,14 +6,11 @@ dist
 src/cbadc.egg-info
 docs/build
 .coverage
-src/cbadc/**/*.html
-src/cbadc/**/*.so
 *.DS_Store
 .tox
-PythonADC
 ._profile_simulator_stats.txt
 docs/code_examples/a_getting_started/sinusodial_simulation.adc
 docs/._make.bat
-profile_simulator_stats
 *.svg
 jupyter
+*.pyc
