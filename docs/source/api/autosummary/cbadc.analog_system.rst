@@ -15,10 +15,11 @@
       :toctree:
       :template: custom-function-template.rst
    
-      abcd2abc
       chain
-      sos2abc
+      sos2abcd
       stack
+      tf2abcd
+      zpk2abcd
    
    
 

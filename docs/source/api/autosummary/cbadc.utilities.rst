@@ -22,6 +22,7 @@
       number_of_bytes_selector
       random_control_signal
       read_byte_stream_from_file
+      show_status
       snr_spectrum_computation
       write_byte_stream_to_file
    

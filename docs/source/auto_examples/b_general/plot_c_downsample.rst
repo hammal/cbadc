@@ -57,7 +57,7 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 27-48
+.. GENERATED FROM PYTHON SOURCE LINES 27-54
 
 .. code-block:: default
    :lineno-start: 28
@@ -65,18 +65,24 @@ analog system and digital control.
 
     # Setup analog system and digital control
 
-    N = 4
+    # We fix the number of analog states.
+    N = 6
     M = N
+    # Set the amplification factor.
     beta = 6250.
-    rho = - beta * 1e-2
-    T = 1.0/(2 * beta)
+    # In this example, each nodes amplification and local feedback will be set
+    # identically.
+    betaVec = beta * np.ones(N)
+    rhoVec = -betaVec * 1e-2
+    kappaVec = - beta * np.eye(N)
 
-    analog_system = cbc.analog_system.ChainOfIntegrators(
-        beta * np.ones(N),
-        rho * np.ones(N),
-        kappa=-beta * np.eye(N) + np.random.randn(N, N)
-    )
+    # Instantiate a chain-of-integrators analog system.
+    analog_system = cbc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+
+
+    T = 1/(2 * beta)
     digital_control = cbc.digital_control.DigitalControl(T, M)
+
 
     # Summarize the analog system, digital control, and digital estimator.
     print(analog_system, "\n")
@@ -95,40 +101,55 @@ analog system and digital control.
 
     The analog system is parameterized as:
     A =
-    [[ -62.5    0.     0.     0. ]
-     [6250.   -62.5    0.     0. ]
-     [   0.  6250.   -62.5    0. ]
-     [   0.     0.  6250.   -62.5]],
+    [[ -62.5    0.     0.     0.     0.     0. ]
+     [6250.   -62.5    0.     0.     0.     0. ]
+     [   0.  6250.   -62.5    0.     0.     0. ]
+     [   0.     0.  6250.   -62.5    0.     0. ]
+     [   0.     0.     0.  6250.   -62.5    0. ]
+     [   0.     0.     0.     0.  6250.   -62.5]],
     B =
     [[6250.]
      [   0.]
      [   0.]
+     [   0.]
+     [   0.]
      [   0.]],
     CT = 
-    [[1. 0. 0. 0.]
-     [0. 1. 0. 0.]
-     [0. 0. 1. 0.]
-     [0. 0. 0. 1.]],
+    [[1. 0. 0. 0. 0. 0.]
+     [0. 1. 0. 0. 0. 0.]
+     [0. 0. 1. 0. 0. 0.]
+     [0. 0. 0. 1. 0. 0.]
+     [0. 0. 0. 0. 1. 0.]
+     [0. 0. 0. 0. 0. 1.]],
     Gamma =
-    [[-6.25046867e+03 -1.12092240e+00 -6.99676493e-01  2.89482262e+00]
-     [-1.00432402e+00 -6.25039760e+03 -4.86842384e-01  1.00332013e+00]
-     [ 4.78923364e-02  9.29883508e-01 -6.25016096e+03 -5.94801737e-01]
-     [ 2.44135171e-01  5.03688275e-01 -1.23821855e+00 -6.25104660e+03]],
-    and Gamma_tildeT =
-    [[ 9.99999986e-01  1.60679792e-04 -7.66219915e-06 -3.90586980e-05]
-     [ 1.79336169e-04  9.99999970e-01 -1.48771892e-04 -8.05849950e-05]
-     [ 1.11945353e-04  7.78927732e-05  9.99999971e-01  1.98109859e-04]
-     [-4.63094014e-04 -1.60504324e-04  9.51523323e-05  9.99999875e-01]] 
+    [[-6250.    -0.    -0.    -0.    -0.    -0.]
+     [   -0. -6250.    -0.    -0.    -0.    -0.]
+     [   -0.    -0. -6250.    -0.    -0.    -0.]
+     [   -0.    -0.    -0. -6250.    -0.    -0.]
+     [   -0.    -0.    -0.    -0. -6250.    -0.]
+     [   -0.    -0.    -0.    -0.    -0. -6250.]],
+    Gamma_tildeT =
+    [[1. 0. 0. 0. 0. 0.]
+     [0. 1. 0. 0. 0. 0.]
+     [0. 0. 1. 0. 0. 0.]
+     [0. 0. 0. 1. 0. 0.]
+     [0. 0. 0. 0. 1. 0.]
+     [0. 0. 0. 0. 0. 1.]], and D=[[0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]] 
 
     The Digital Control is parameterized as:
     T = 8e-05,
-    M = 4, and next update at
+    M = 6, and next update at
     t = 8e-05
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 49-60
+.. GENERATED FROM PYTHON SOURCE LINES 55-66
 
 Loading Control Signal from File
 --------------------------------
@@ -142,10 +163,10 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 60-76
+.. GENERATED FROM PYTHON SOURCE LINES 66-82
 
 .. code-block:: default
-   :lineno-start: 61
+   :lineno-start: 67
 
 
     byte_stream = cbc.utilities.read_byte_stream_from_file(
@@ -170,31 +191,31 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 77-80
+.. GENERATED FROM PYTHON SOURCE LINES 83-86
 
 Oversampling
 -------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 80-86
+.. GENERATED FROM PYTHON SOURCE LINES 86-92
 
 .. code-block:: default
-   :lineno-start: 81
+   :lineno-start: 87
 
 
-    OSR = 32
+    OSR = 16
 
-    omega_3dB = 2 * np.pi / (2 * T * OSR)
-
-
-
+    omega_3dB = 2 * np.pi / (T * OSR)
 
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 87-92
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 93-98
 
 Oversampling = 1
 ----------------------------------------
@@ -202,20 +223,21 @@ Oversampling = 1
 First we initialize our default estimator without a downsampling parameter
 which then defaults to 1, i.e., no downsampling.
 
-.. GENERATED FROM PYTHON SOURCE LINES 92-111
+.. GENERATED FROM PYTHON SOURCE LINES 98-118
 
 .. code-block:: default
-   :lineno-start: 93
+   :lineno-start: 99
 
 
     # Set the bandwidth of the estimator
     G_at_omega = np.linalg.norm(
-        analog_system.transfer_function_matrix(np.array([omega_3dB])))
+        analog_system.transfer_function_matrix(np.array([omega_3dB / 2])))
     eta2 = G_at_omega**2
+    # eta2 = 1.0
     print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
     # Set the filter size
-    L1 = 1 << 10
+    L1 = 1 << 12
     L2 = L1
 
     # Instantiate the digital estimator.
@@ -236,38 +258,44 @@ which then defaults to 1, i.e., no downsampling.
 
  .. code-block:: none
 
-    eta2 = 465993.3316207895, 56.683797019667914 [dB]
+    eta2 = 87574.25572661227, 49.42376455036846 [dB]
     FIR estimator is parameterized as 
-    eta2 = 465993.33, 57 [dB],
+    eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
-    K1 = 1024,
-    K2 = 1024,
+    K1 = 4096,
+    K2 = 4096,
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
     h = 
-    [[[-3.28512220e-19  3.85724705e-20  7.06293838e-21 -2.13744839e-21]
-      [-3.48633731e-19  3.49055746e-20  8.28776246e-21 -2.14611575e-21]
-      [-3.66860943e-19  3.06012663e-20  9.52638558e-21 -2.13404366e-21]
+    [[[ 3.55990445e-95  1.42412246e-95 -8.07811499e-96 -6.45762292e-97
+        1.32955934e-96 -9.72617900e-98]
+      [ 2.76240492e-95  1.82636990e-95 -7.62786724e-96 -1.33980733e-96
+        1.38622941e-96 -1.24737454e-98]
+      [ 1.76589627e-95  2.19922553e-95 -6.82068247e-96 -2.05614928e-96
+        1.39325750e-96  8.21379656e-98]
       ...
-      [-3.66872168e-19 -3.80730850e-20  8.15232858e-21  3.01385707e-21]
-      [-3.48646275e-19 -4.20059397e-20  6.74799158e-21  2.93188987e-21]
-      [-3.28525871e-19 -4.52628194e-20  5.38380655e-21  2.82878240e-21]]]. 
+      [ 1.76589627e-95 -2.16391013e-95 -7.69373510e-96  1.62200519e-96
+        1.54381374e-96  4.50497165e-98]
+      [ 2.76240492e-95 -1.77112250e-95 -8.34780716e-96  8.61459580e-97
+        1.47844576e-96  1.38257124e-97]
+      [ 3.55990446e-95 -1.35292339e-95 -8.63396392e-96  1.44959196e-97
+        1.36586535e-96  2.17212387e-97]]]. 
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 112-115
+.. GENERATED FROM PYTHON SOURCE LINES 119-122
 
 Visualize Estimator's Transfer Function
 ---------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 115-149
+.. GENERATED FROM PYTHON SOURCE LINES 122-156
 
 .. code-block:: default
-   :lineno-start: 116
+   :lineno-start: 123
 
 
     # Logspace frequencies
@@ -311,20 +339,31 @@ Visualize Estimator's Transfer Function
     :class: sphx-glr-single-img
 
 
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:129: RuntimeWarning: divide by zero encountered in log10
+      ntf_dB = 20 * np.log10(np.abs(ntf))
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:144: RuntimeWarning: divide by zero encountered in log10
+      plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 150-154
+
+.. GENERATED FROM PYTHON SOURCE LINES 157-161
 
 FIR Filter With Downsampling
 ----------------------------
 
 Next we repeat the initialization steps above but for a downsampled estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 154-166
+.. GENERATED FROM PYTHON SOURCE LINES 161-173
 
 .. code-block:: default
-   :lineno-start: 155
+   :lineno-start: 162
 
 
     digital_estimator_dow = cbc.digital_estimator.FIRFilter(
@@ -349,40 +388,46 @@ Next we repeat the initialization steps above but for a downsampled estimator
  .. code-block:: none
 
     FIR estimator is parameterized as 
-    eta2 = 465993.33, 57 [dB],
+    eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
-    K1 = 1024,
-    K2 = 1024,
+    K1 = 4096,
+    K2 = 4096,
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
     h = 
-    [[[-3.28512220e-19  3.85724705e-20  7.06293838e-21 -2.13744839e-21]
-      [-3.48633731e-19  3.49055746e-20  8.28776246e-21 -2.14611575e-21]
-      [-3.66860943e-19  3.06012663e-20  9.52638558e-21 -2.13404366e-21]
+    [[[ 3.55990445e-95  1.42412246e-95 -8.07811499e-96 -6.45762292e-97
+        1.32955934e-96 -9.72617900e-98]
+      [ 2.76240492e-95  1.82636990e-95 -7.62786724e-96 -1.33980733e-96
+        1.38622941e-96 -1.24737454e-98]
+      [ 1.76589627e-95  2.19922553e-95 -6.82068247e-96 -2.05614928e-96
+        1.39325750e-96  8.21379656e-98]
       ...
-      [-3.66872168e-19 -3.80730850e-20  8.15232858e-21  3.01385707e-21]
-      [-3.48646275e-19 -4.20059397e-20  6.74799158e-21  2.93188987e-21]
-      [-3.28525871e-19 -4.52628194e-20  5.38380655e-21  2.82878240e-21]]]. 
+      [ 1.76589627e-95 -2.16391013e-95 -7.69373510e-96  1.62200519e-96
+        1.54381374e-96  4.50497165e-98]
+      [ 2.76240492e-95 -1.77112250e-95 -8.34780716e-96  8.61459580e-97
+        1.47844576e-96  1.38257124e-97]
+      [ 3.55990446e-95 -1.35292339e-95 -8.63396392e-96  1.44959196e-97
+        1.36586535e-96  2.17212387e-97]]]. 
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 167-170
+.. GENERATED FROM PYTHON SOURCE LINES 174-177
 
 Estimating (Filtering)
 ----------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 170-180
+.. GENERATED FROM PYTHON SOURCE LINES 177-187
 
 .. code-block:: default
-   :lineno-start: 171
+   :lineno-start: 178
 
 
     # Set simulation length
-    size = L2 << 4
+    size = 1 << 17
     u_hat_ref = np.zeros(size)
     u_hat_dow = np.zeros(size // OSR)
     for index in range(size):
@@ -397,7 +442,7 @@ Estimating (Filtering)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 181-187
+.. GENERATED FROM PYTHON SOURCE LINES 188-194
 
 Aliasing
 ========
@@ -406,10 +451,10 @@ We compare the difference between the downsampled estimate and the default.
 Clearly, we are suffering from aliasing as is also explained by considering
 the PSD plot.
 
-.. GENERATED FROM PYTHON SOURCE LINES 187-217
+.. GENERATED FROM PYTHON SOURCE LINES 194-224
 
 .. code-block:: default
-   :lineno-start: 188
+   :lineno-start: 195
 
 
     # compensate the built in L1 delay of FIR filter.
@@ -428,9 +473,9 @@ the PSD plot.
     u_hat_ref_clipped = u_hat_ref[(L1 + L2):]
     u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR:]
     f_ref, psd_ref = cbc.utilities.compute_power_spectral_density(
-        u_hat_ref_clipped)
+        u_hat_ref_clipped, fs=1.0/T)
     f_dow, psd_dow = cbc.utilities.compute_power_spectral_density(
-        u_hat_dow_clipped, fs=1.0/OSR)
+        u_hat_dow_clipped, fs=1.0/(T * OSR))
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
     plt.legend()
@@ -466,15 +511,13 @@ the PSD plot.
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 14336, using nperseg = 14336
-      warnings.warn('nperseg = {0:d} is greater than input length '
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 448, using nperseg = 448
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 218-225
+.. GENERATED FROM PYTHON SOURCE LINES 225-232
 
 Appending a Bandlimiting Filter
 -------------------------------
@@ -484,42 +527,40 @@ bandlimiting filter in front of the system. This has the wanted effect since
 we now reconstruct a signal shaped by both the STF of the system in addition
 to a bandlimiting filter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 225-305
+.. GENERATED FROM PYTHON SOURCE LINES 232-309
 
 .. code-block:: default
-   :lineno-start: 227
+   :lineno-start: 233
 
 
-
-    filter_order = 2
-    filter1 = cbc.analog_system.Cauer(filter_order, omega_3dB, 6, 20)
-    filter2 = cbc.analog_system.ChebyshevI(filter_order, omega_3dB, 6)
-    filter3 = cbc.analog_system.ChebyshevII(filter_order, omega_3dB, 20)
-    filter4 = cbc.analog_system.ButterWorth(filter_order, omega_3dB)
+    filter_order = 6
+    filter1 = cbc.analog_system.Cauer(filter_order,  omega_3dB / 2.0, 1, 60)
+    filter2 = cbc.analog_system.ChebyshevI(filter_order, omega_3dB / 2.0, 1)
+    filter3 = cbc.analog_system.ChebyshevII(filter_order, omega_3dB / 2.0, 60)
+    filter4 = cbc.analog_system.ButterWorth(filter_order,  omega_3dB / 2.0)
 
     b1, a1 = scipy.signal.ellip(
-        filter_order, 6, 60, omega_3dB, btype='low', analog=True)
+        filter_order, 1, 60, omega_3dB / 2.0, btype='low', analog=True)
 
     b3, a3 = scipy.signal.cheby2(
-        filter_order, 60, omega_3dB, btype='low', analog=True)
+        filter_order, 60, omega_3dB/2.0, btype='low', analog=True)
 
     b2, a2 = scipy.signal.cheby1(
-        filter_order, 6, omega_3dB, btype='low', analog=True)
+        filter_order, 1, omega_3dB/2.0, btype='low', analog=True)
 
     b4, a4 = scipy.signal.butter(
-        filter_order, omega_3dB, btype='low', analog=True)
+        filter_order, omega_3dB/2.0, btype='low', analog=True)
 
     w1, h1 = scipy.signal.freqs(b1, a1)
     w2, h2 = scipy.signal.freqs(b2, a2)
     w3, h3 = scipy.signal.freqs(b3, a3)
     w4, h4 = scipy.signal.freqs(b4, a4)
 
-
     print("Cauer", filter1)
     print("ChebyshevI", filter2)
     print("ChebyshevII", filter3)
     print("ButterWorth", filter4)
-    print(omega_3dB)
+    print(omega_3dB, omega_3dB / np.pi / 2)
 
     # Compute transfer functions for each frequency in frequencies
     transfer_function_filter1 = filter1.transfer_function_matrix(w1)
@@ -553,7 +594,6 @@ to a bandlimiting filter.
     plt.semilogx(w4/(2 * np.pi), 20 * np.log10(np.abs(h4)),
                  label="ButterWorth Ref")
 
-
     plt.semilogx(
         w4/(2 * np.pi),
         20 * np.log10(np.linalg.norm(
@@ -583,84 +623,256 @@ to a bandlimiting filter.
 
  .. code-block:: none
 
+    double zeros
+    double zeros
+    double zeros
+    chained system The analog system is parameterized as:
+    A =
+    [[-1.00645898e+02  2.44747724e+03  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-2.44747724e+03 -1.00645898e+02  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-2.01301157e+01 -4.40585466e+03 -3.63492193e+02  1.97149990e+03
+       0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00 -1.97149990e+03 -3.63492193e+02
+       0.00000000e+00  0.00000000e+00]
+     [-2.01310519e+00 -4.40605957e+02 -7.27018196e+01 -7.29445993e+02
+      -6.66264443e+02  8.05985809e+02]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+      -8.05985809e+02 -6.66264443e+02]],
+    B =
+    [[0.10000465]
+     [0.        ]
+     [0.01000093]
+     [0.        ]
+     [0.00100014]
+     [0.        ]],
+    CT = 
+    [[-2.01310519e+00 -4.40605957e+02 -7.27018196e+01 -7.29445993e+02
+      -1.33252889e+03 -1.38712304e+04]],
+    Gamma =
+    [],
+    Gamma_tildeT =
+    [], and D=[[0.00100014]]
+    No zero
+    No zero
+    No zero
+    chained system The analog system is parameterized as:
+    A =
+    [[ -152.61519339 -2438.19791853     0.             0.
+          0.             0.        ]
+     [ 2438.19791853  -152.61519339     0.             0.
+          0.             0.        ]
+     [    0.           974.76159789  -416.95246235 -1784.88475527
+          0.             0.        ]
+     [    0.             0.          1784.88475527  -416.95246235
+          0.             0.        ]
+     [    0.             0.             0.          1331.54910535
+       -569.56765574  -653.31316326]
+     [    0.             0.             0.             0.
+        653.31316326  -569.56765574]],
+    B =
+    [[2376661.69903271]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]],
+    CT = 
+    [[0.         0.         0.         0.         0.         0.00153066]],
+    Gamma =
+    [],
+    Gamma_tildeT =
+    [], and D=[[0.]]
+    double zeros
+    double zeros
+    double zeros
+    chained system The analog system is parameterized as:
+    A =
+    [[-2.88097769e+02  1.26058668e+03  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-1.26058668e+03 -2.88097769e+02  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-5.76195538e+01 -7.01422213e+03 -8.94625031e+02  1.04888124e+03
+       0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00 -1.04888124e+03 -8.94625031e+02
+       0.00000000e+00  0.00000000e+00]
+     [-5.76195538e+00 -7.01422213e+02 -1.78925006e+02 -1.12005617e+03
+      -1.41544826e+03  4.44663748e+02]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+      -4.44663748e+02 -1.41544826e+03]],
+    B =
+    [[0.1  ]
+     [0.   ]
+     [0.01 ]
+     [0.   ]
+     [0.001]
+     [0.   ]],
+    CT = 
+    [[-5.76195538e+00 -7.01422213e+02 -1.78925006e+02 -1.12005617e+03
+      -2.83089652e+03 -1.85807704e+04]],
+    Gamma =
+    [],
+    Gamma_tildeT =
+    [], and D=[[0.001]]
+    No zero
+    No zero
+    No zero
+    chained system The analog system is parameterized as:
+    A =
+    [[ -635.23750836 -2370.73865608     0.             0.
+          0.             0.        ]
+     [ 2370.73865608  -635.23750836     0.             0.
+          0.             0.        ]
+     [    0.          2540.95003345 -1735.50114772 -1735.50114772
+          0.             0.        ]
+     [    0.             0.          1735.50114772 -1735.50114772
+          0.             0.        ]
+     [    0.             0.             0.          3471.00229544
+      -2370.73865608  -635.23750836]
+     [    0.             0.             0.             0.
+        635.23750836 -2370.73865608]],
+    B =
+    [[6023928.46746176]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]],
+    CT = 
+    [[0.         0.         0.         0.         0.         0.00157421]],
+    Gamma =
+    [],
+    Gamma_tildeT =
+    [], and D=[[0.]]
     Cauer The analog system is parameterized as:
     A =
-    [[   0.            0.            0.        ]
-     [   0.            0.            1.        ]
-     [   1.           -1.         -424.97642508]],
+    [[-1.00645898e+02  2.44747724e+03  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-2.44747724e+03 -1.00645898e+02  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-2.01301157e+01 -4.40585466e+03 -3.63492193e+02  1.97149990e+03
+       0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00 -1.97149990e+03 -3.63492193e+02
+       0.00000000e+00  0.00000000e+00]
+     [-2.01310519e+00 -4.40605957e+02 -7.27018196e+01 -7.29445993e+02
+      -6.66264443e+02  8.05985809e+02]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+      -8.05985809e+02 -6.66264443e+02]],
     B =
-    [[1.]
-     [0.]
-     [0.]],
+    [[0.10000465]
+     [0.        ]
+     [0.01000093]
+     [0.        ]
+     [0.00100014]
+     [0.        ]],
     CT = 
-    [[ 5.09225233e+05  4.07624804e+05 -4.24962363e+01]],
+    [[-2.01310519e+00 -4.40605957e+02 -7.27018196e+01 -7.29445993e+02
+      -1.33252889e+03 -1.38712304e+04]],
     Gamma =
     None,
-    and Gamma_tildeT =
-    None
+    Gamma_tildeT =
+    None, and D=[[0.00100014]]
     ChebyshevI The analog system is parameterized as:
     A =
-    [[   0.          0.          0.      ]
-     [   0.          0.          1.      ]
-     [   1.         -1.       -484.103176]],
+    [[ -152.61519339 -2438.19791853     0.             0.
+          0.             0.        ]
+     [ 2438.19791853  -152.61519339     0.             0.
+          0.             0.        ]
+     [    0.           974.76159789  -416.95246235 -1784.88475527
+          0.             0.        ]
+     [    0.             0.          1784.88475527  -416.95246235
+          0.             0.        ]
+     [    0.             0.             0.          1331.54910535
+       -569.56765574  -653.31316326]
+     [    0.             0.             0.             0.
+        653.31316326  -569.56765574]],
     B =
-    [[1.]
-     [0.]
-     [0.]],
+    [[2376661.69903271]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]],
     CT = 
-    [[ 0.00000000e+00 -3.79496011e+11 -2.11125913e+08]],
+    [[0.         0.         0.         0.         0.         0.00153066]],
     Gamma =
     None,
-    and Gamma_tildeT =
-    None
+    Gamma_tildeT =
+    None, and D=[[0.]]
     ChebyshevII The analog system is parameterized as:
     A =
-    [[   0.            0.            0.        ]
-     [   0.            0.            1.        ]
-     [   1.           -1.         -736.31077819]],
+    [[-2.88097769e+02  1.26058668e+03  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-1.26058668e+03 -2.88097769e+02  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00]
+     [-5.76195538e+01 -7.01422213e+03 -8.94625031e+02  1.04888124e+03
+       0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00 -1.04888124e+03 -8.94625031e+02
+       0.00000000e+00  0.00000000e+00]
+     [-5.76195538e+00 -7.01422213e+02 -1.78925006e+02 -1.12005617e+03
+      -1.41544826e+03  4.44663748e+02]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+      -4.44663748e+02 -1.41544826e+03]],
     B =
-    [[1.]
-     [0.]
-     [0.]],
+    [[0.1  ]
+     [0.   ]
+     [0.01 ]
+     [0.   ]
+     [0.001]
+     [0.   ]],
     CT = 
-    [[ 3.01196423e+05  2.71076781e+05 -7.36310778e+01]],
+    [[-5.76195538e+00 -7.01422213e+02 -1.78925006e+02 -1.12005617e+03
+      -2.83089652e+03 -1.85807704e+04]],
     Gamma =
     None,
-    and Gamma_tildeT =
-    None
+    Gamma_tildeT =
+    None, and D=[[0.001]]
     ButterWorth The analog system is parameterized as:
     A =
-    [[ 0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [ 0.00000000e+00  0.00000000e+00  1.00000000e+00]
-     [ 1.00000000e+00 -1.00000000e+00 -1.73550115e+03]],
+    [[ -635.23750836 -2370.73865608     0.             0.
+          0.             0.        ]
+     [ 2370.73865608  -635.23750836     0.             0.
+          0.             0.        ]
+     [    0.          2540.95003345 -1735.50114772 -1735.50114772
+          0.             0.        ]
+     [    0.             0.          1735.50114772 -1735.50114772
+          0.             0.        ]
+     [    0.             0.             0.          3471.00229544
+      -2370.73865608  -635.23750836]
+     [    0.             0.             0.             0.
+        635.23750836 -2370.73865608]],
     B =
-    [[1.]
-     [0.]
-     [0.]],
+    [[6023928.46746176]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]
+     [      0.        ]],
     CT = 
-    [[ 0.00000000e+00 -2.26798214e+12 -2.61363369e+09]],
+    [[0.         0.         0.         0.         0.         0.00157421]],
     Gamma =
     None,
-    and Gamma_tildeT =
-    None
-    1227.1846303085129
+    Gamma_tildeT =
+    None, and D=[[0.]]
+    4908.738521234051 781.25
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 306-309
+.. GENERATED FROM PYTHON SOURCE LINES 310-313
 
 New Analog System
 -------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 309-340
+.. GENERATED FROM PYTHON SOURCE LINES 313-344
 
 .. code-block:: default
-   :lineno-start: 310
+   :lineno-start: 314
 
 
-    new_analog_system = cbc.analog_system.chain([filter4, analog_system])
+    new_analog_system = cbc.analog_system.chain([filter1, analog_system])
     print(new_analog_system)
 
     transfer_function_analog_system = analog_system.transfer_function_matrix(omega)
@@ -706,64 +918,101 @@ New Analog System
 
     The analog system is parameterized as:
     A =
-    [[ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
-       0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [ 0.00000000e+00  0.00000000e+00  1.00000000e+00  0.00000000e+00
-       0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [ 1.00000000e+00 -1.00000000e+00 -1.73550115e+03  0.00000000e+00
-       0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [ 0.00000000e+00 -1.41748884e+16 -1.63352106e+13 -6.25000000e+01
-       0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  6.25000000e+03
-      -6.25000000e+01  0.00000000e+00  0.00000000e+00]
+    [[-1.00645898e+02  2.44747724e+03  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
+     [-2.44747724e+03 -1.00645898e+02  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
+     [-2.01301157e+01 -4.40585466e+03 -3.63492193e+02  1.97149990e+03
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00 -1.97149990e+03 -3.63492193e+02
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
+     [-2.01310519e+00 -4.40605957e+02 -7.27018196e+01 -7.29445993e+02
+      -6.66264443e+02  8.05985809e+02  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
      [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
-       6.25000000e+03 -6.25000000e+01  0.00000000e+00]
+      -8.05985809e+02 -6.66264443e+02  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
+     [-1.25819074e+04 -2.75378723e+06 -4.54386372e+05 -4.55903745e+06
+      -8.32830553e+06 -8.66951903e+07 -6.25000000e+01  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
      [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
-       0.00000000e+00  6.25000000e+03 -6.25000000e+01]],
+       0.00000000e+00  0.00000000e+00  6.25000000e+03 -6.25000000e+01
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  6.25000000e+03
+      -6.25000000e+01  0.00000000e+00  0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       6.25000000e+03 -6.25000000e+01  0.00000000e+00  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  6.25000000e+03 -6.25000000e+01  0.00000000e+00]
+     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00
+       0.00000000e+00  0.00000000e+00  6.25000000e+03 -6.25000000e+01]],
     B =
-    [[1.]
-     [0.]
-     [0.]
-     [0.]
-     [0.]
-     [0.]
-     [0.]],
+    [[1.00004651e-01]
+     [0.00000000e+00]
+     [1.00009302e-02]
+     [0.00000000e+00]
+     [1.00013953e-03]
+     [0.00000000e+00]
+     [6.25087205e+00]
+     [0.00000000e+00]
+     [0.00000000e+00]
+     [0.00000000e+00]
+     [0.00000000e+00]
+     [0.00000000e+00]],
     CT = 
-    [[0. 0. 0. 1. 0. 0. 0.]
-     [0. 0. 0. 0. 1. 0. 0.]
-     [0. 0. 0. 0. 0. 1. 0.]
-     [0. 0. 0. 0. 0. 0. 1.]],
+    [[0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]],
     Gamma =
-    [[ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00]
-     [-6.25046867e+03 -1.12092240e+00 -6.99676493e-01  2.89482262e+00]
-     [-1.00432402e+00 -6.25039760e+03 -4.86842384e-01  1.00332013e+00]
-     [ 4.78923364e-02  9.29883508e-01 -6.25016096e+03 -5.94801737e-01]
-     [ 2.44135171e-01  5.03688275e-01 -1.23821855e+00 -6.25104660e+03]],
-    and Gamma_tildeT =
-    [[ 0.00000000e+00  0.00000000e+00  0.00000000e+00  9.99999986e-01
-       1.60679792e-04 -7.66219915e-06 -3.90586980e-05]
-     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.79336169e-04
-       9.99999970e-01 -1.48771892e-04 -8.05849950e-05]
-     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.11945353e-04
-       7.78927732e-05  9.99999971e-01  1.98109859e-04]
-     [ 0.00000000e+00  0.00000000e+00  0.00000000e+00 -4.63094014e-04
-      -1.60504324e-04  9.51523323e-05  9.99999875e-01]]
+    [[    0.     0.     0.     0.     0.     0.]
+     [    0.     0.     0.     0.     0.     0.]
+     [    0.     0.     0.     0.     0.     0.]
+     [    0.     0.     0.     0.     0.     0.]
+     [    0.     0.     0.     0.     0.     0.]
+     [    0.     0.     0.     0.     0.     0.]
+     [-6250.    -0.    -0.    -0.    -0.    -0.]
+     [   -0. -6250.    -0.    -0.    -0.    -0.]
+     [   -0.    -0. -6250.    -0.    -0.    -0.]
+     [   -0.    -0.    -0. -6250.    -0.    -0.]
+     [   -0.    -0.    -0.    -0. -6250.    -0.]
+     [   -0.    -0.    -0.    -0.    -0. -6250.]],
+    Gamma_tildeT =
+    [[0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.]
+     [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]], and D=[[0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 341-344
+.. GENERATED FROM PYTHON SOURCE LINES 345-348
 
 New Digital Estimator
 --------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 344-356
+.. GENERATED FROM PYTHON SOURCE LINES 348-360
 
 .. code-block:: default
-   :lineno-start: 345
+   :lineno-start: 349
 
 
     digital_estimator_dow_and_filtered = cbc.digital_estimator.FIRFilter(
@@ -787,40 +1036,42 @@ New Digital Estimator
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/sparse/linalg/matfuncs.py:709: LinAlgWarning: Ill-conditioned matrix (rcond=1.94072e-22): result may not be accurate.
-      return solve(Q, P)
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/sparse/linalg/matfuncs.py:709: LinAlgWarning: Ill-conditioned matrix (rcond=1.95636e-22): result may not be accurate.
-      return solve(Q, P)
     FIR estimator is parameterized as 
-    eta2 = 465993.33, 57 [dB],
+    eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
-    K1 = 1024,
-    K2 = 1024,
+    K1 = 4096,
+    K2 = 4096,
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
     h = 
-    [[[-1.49745425e-36  1.92728410e-37 -2.49590731e-38  3.88840218e-39]
-      [-1.60510133e-36  2.06583024e-37 -2.67532992e-38  4.16792668e-39]
-      [-1.72048680e-36  2.21433601e-37 -2.86765062e-38  4.46754527e-39]
+    [[[-4.79732182e-20 -9.23126439e-20  8.91192594e-21  1.42985826e-20
+       -1.55345108e-21 -1.88736644e-21]
+      [-1.00585874e-21 -9.54285899e-20  1.59443568e-21  1.48932651e-20
+       -4.40513579e-22 -1.97504054e-21]
+      [ 4.68338331e-20 -9.48301609e-20 -5.91575634e-21  1.49101772e-20
+        7.09554300e-22 -1.98625097e-21]
       ...
-      [-5.15659791e-36 -7.68355385e-37 -1.14595862e-37 -1.49385060e-38]
-      [-4.81076263e-36 -7.16824433e-37 -1.06910312e-37 -1.39366318e-38]
-      [-4.48812133e-36 -6.68749485e-37 -9.97402055e-38 -1.30019499e-38]]].
+      [ 8.28577706e-19 -8.33175773e-19 -1.76357390e-19  1.21198001e-19
+        3.34820048e-20 -1.47603704e-20]
+      [ 1.22680484e-18 -7.34155015e-19 -2.33629184e-19  1.02523972e-19
+        4.13166993e-20 -1.19353757e-20]
+      [ 1.57047847e-18 -6.08363656e-19 -2.80835346e-19  8.01958634e-20
+        4.74112657e-20 -8.69633004e-21]]].
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 357-360
+.. GENERATED FROM PYTHON SOURCE LINES 361-364
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 360-391
+.. GENERATED FROM PYTHON SOURCE LINES 364-413
 
 .. code-block:: default
-   :lineno-start: 361
+   :lineno-start: 365
 
 
     # Compute NTF
@@ -832,7 +1083,6 @@ Plotting the Estimator's Signal and Noise Transfer Function
     stf_dB = 20 * np.log10(np.abs(stf.flatten()))
     stf_dow = digital_estimator_dow.signal_transfer_function(omega)
     stf_dow_dB = 20 * np.log10(np.abs(stf_dow.flatten()))
-
 
     # Plot
     plt.figure()
@@ -852,39 +1102,89 @@ Plotting the Estimator's Signal and Noise Transfer Function
     # plt.xlim((frequencies[0], frequencies[-1]))
     plt.gcf().tight_layout()
 
+    plt.figure()
+    # Plot
+    plt.figure()
+    plt.semilogx(omega/(2 * np.pi), stf_dB, label='$STF(\omega)$ New')
+    plt.semilogx(omega/(2 * np.pi), stf_dow_dB, label='$STF(\omega)$ Old')
+    plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
+        ntf[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ New")
+    plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
+        ntf_dow[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ Old")
+
+    # Add labels and legends to figure
+    plt.legend()
+    plt.grid(which='both')
+    plt.title("Signal and noise transfer functions")
+    plt.xlabel("f [Hz]")
+    plt.ylabel("dB")
+    plt.ylim((-10, 1))
+    # plt.xlim((frequencies[0], frequencies[-1]))
+    plt.gcf().tight_layout()
 
 
 
 
-.. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_006.png
-    :alt: Signal and noise transfer functions
-    :class: sphx-glr-single-img
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_006.png
+          :alt: Signal and noise transfer functions
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_007.png
+          :alt: plot c downsample
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_008.png
+          :alt: Signal and noise transfer functions
+          :class: sphx-glr-multi-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:379: RuntimeWarning: divide by zero encountered in log10
+      plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:381: RuntimeWarning: divide by zero encountered in log10
+      plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:398: RuntimeWarning: divide by zero encountered in log10
+      plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:400: RuntimeWarning: divide by zero encountered in log10
+      plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
 
 
 
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 392-395
+.. GENERATED FROM PYTHON SOURCE LINES 414-417
 
 Filtering Estimate
 --------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 395-418
+.. GENERATED FROM PYTHON SOURCE LINES 417-438
 
 .. code-block:: default
-   :lineno-start: 397
-
+   :lineno-start: 418
 
 
     u_hat_dow_and_filt = np.zeros(size // OSR)
-    for index in range(size // OSR):
+    for index in cbc.utilities.show_status(range(size // OSR)):
         u_hat_dow_and_filt[index] = next(digital_estimator_dow_and_filtered)
 
     plt.figure()
     u_hat_dow_and_filt_clipped = u_hat_dow_and_filt[(L1 + L2) // OSR:]
     _, psd_dow_and_filt = cbc.utilities.compute_power_spectral_density(
-        u_hat_dow_and_filt_clipped, fs=1.0/OSR)
+        u_hat_dow_and_filt_clipped, fs=1.0/(T * OSR))
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_filt),
@@ -900,8 +1200,7 @@ Filtering Estimate
 
 
 
-
-.. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_007.png
+.. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_009.png
     :alt: plot c downsample
     :class: sphx-glr-single-img
 
@@ -912,22 +1211,60 @@ Filtering Estimate
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 448, using nperseg = 448
+      0%|          | 0/8192 [00:00<?, ?it/s]      4%|3         | 301/8192 [00:00<00:02, 3000.99it/s]      8%|7         | 627/8192 [00:00<00:02, 3153.02it/s]     12%|#1        | 953/8192 [00:00<00:02, 3201.27it/s]     16%|#5        | 1279/8192 [00:00<00:02, 3221.70it/s]     20%|#9        | 1603/8192 [00:00<00:02, 3227.78it/s]     24%|##3       | 1929/8192 [00:00<00:01, 3237.82it/s]     28%|##7       | 2256/8192 [00:00<00:01, 3245.60it/s]     32%|###1      | 2581/8192 [00:00<00:01, 3246.86it/s]     35%|###5      | 2907/8192 [00:00<00:01, 3249.81it/s]     39%|###9      | 3232/8192 [00:01<00:01, 3249.32it/s]     43%|####3     | 3557/8192 [00:01<00:01, 3187.83it/s]     47%|####7     | 3878/8192 [00:01<00:01, 3191.63it/s]     51%|#####1    | 4202/8192 [00:01<00:01, 3205.97it/s]     55%|#####5    | 4528/8192 [00:01<00:01, 3220.78it/s]     59%|#####9    | 4851/8192 [00:01<00:01, 3214.11it/s]     63%|######3   | 5176/8192 [00:01<00:00, 3223.80it/s]     67%|######7   | 5502/8192 [00:01<00:00, 3232.52it/s]     71%|#######1  | 5827/8192 [00:01<00:00, 3236.94it/s]     75%|#######5  | 6152/8192 [00:01<00:00, 3238.28it/s]     79%|#######9  | 6477/8192 [00:02<00:00, 3241.05it/s]     83%|########3 | 6803/8192 [00:02<00:00, 3243.77it/s]     87%|########7 | 7128/8192 [00:02<00:00, 3244.44it/s]     91%|######### | 7453/8192 [00:02<00:00, 3245.71it/s]     95%|#########4| 7779/8192 [00:02<00:00, 3248.16it/s]     99%|#########8| 8105/8192 [00:02<00:00, 3248.82it/s]    100%|##########| 8192/8192 [00:02<00:00, 3194.63it/s]
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 419-422
+.. GENERATED FROM PYTHON SOURCE LINES 439-442
+
+In Time Domain
+---------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 442-457
+
+.. code-block:: default
+   :lineno-start: 443
+
+
+    t = np.arange(size)
+    t_down = np.arange(size // OSR) * OSR
+    plt.plot(t, u_hat_ref, label="$\hat{u}(t)$ Reference")
+    plt.plot(t_down, u_hat_dow, label="$\hat{u}(t)$ Downsampled")
+    plt.plot(t_down, u_hat_dow_and_filt,
+             label="$\hat{u}(t)$ Downsampled and Pre-Filtered")
+    plt.xlabel('$t / T$')
+    plt.legend()
+    plt.title("Estimated input signal")
+    plt.grid(which='both')
+    offset = (L1 + L2) * 4
+    plt.xlim((offset, offset + 1000))
+    plt.tight_layout()
+
+
+
+
+.. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_010.png
+    :alt: Estimated input signal
+    :class: sphx-glr-single-img
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 458-461
 
 Compare Filter Coefficients
 ---------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 422-444
+.. GENERATED FROM PYTHON SOURCE LINES 461-481
 
 .. code-block:: default
-   :lineno-start: 422
+   :lineno-start: 461
 
     impulse_response_dB_dow = 20 * \
         np.log10(np.linalg.norm(
@@ -935,7 +1272,6 @@ Compare Filter Coefficients
     impulse_response_dB_dow_and_filt = 20 * \
         np.log10(np.linalg.norm(
             np.array(digital_estimator_dow_and_filtered.h[0, :, :]), axis=1))
-
 
     plt.figure()
     plt.plot(np.arange(0, L1),
@@ -953,8 +1289,7 @@ Compare Filter Coefficients
 
 
 
-
-.. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_008.png
+.. image:: /auto_examples/b_general/images/sphx_glr_plot_c_downsample_011.png
     :alt: plot c downsample
     :class: sphx-glr-single-img
 
@@ -965,7 +1300,7 @@ Compare Filter Coefficients
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  32.423 seconds)
+   **Total running time of the script:** ( 1 minutes  5.377 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_c_downsample.py:

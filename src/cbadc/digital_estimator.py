@@ -187,6 +187,12 @@ class DigitalEstimator(Iterator[np.ndarray]):
         self.K2 = K2
         self.K3 = K1 + K2
         self.analog_system = analog_system
+
+        if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+            raise BaseException(
+                """Can't compute filter coefficients for system with non-zero
+                D matrix. Consider chaining for removing D""")
+
         self.digital_control = digital_control
         if(eta2 < 0):
             raise BaseException("eta2 must be non negative.")

@@ -8,7 +8,7 @@ from typing import Generator, Iterator
 import numpy as np
 from scipy.signal import welch
 from typing import Tuple
-import tqdm
+from tqdm import tqdm
 
 
 def number_of_bytes_selector(M: int):
@@ -270,7 +270,8 @@ def show_status(iterator, length: int = None):
         if iteration exceeds length.
     """
     iterator_with_progress = tqdm(iterator)
-    iterator_with_progress.length = length
+    if length is not None:
+        iterator_with_progress.length = length
     for iteration, value in enumerate(iterator_with_progress):
         if length is not None and not iteration < length:
             raise StopIteration
