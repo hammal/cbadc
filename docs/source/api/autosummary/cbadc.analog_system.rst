@@ -37,6 +37,7 @@
       ChainOfIntegrators
       ChebyshevI
       ChebyshevII
+      IIRDesign
       LeapFrog
    
    

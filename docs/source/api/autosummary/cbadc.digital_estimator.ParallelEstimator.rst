@@ -1,4 +1,4 @@
-﻿cbadc.digital\_estimator.ParallelEstimator
+cbadc.digital\_estimator.ParallelEstimator
 ==========================================
 
 .. currentmodule:: cbadc.digital_estimator

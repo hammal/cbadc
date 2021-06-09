@@ -1,4 +1,4 @@
-﻿cbadc.simulator.StateSpaceSimulator
+cbadc.simulator.StateSpaceSimulator
 ===================================
 
 .. currentmodule:: cbadc.simulator
