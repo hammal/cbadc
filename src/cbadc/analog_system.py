@@ -1246,7 +1246,10 @@ def tf2abcd(b: np.ndarray, a: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.nd
 def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by chaining several analog systems.
 
-    The chaining is achieved by chainging the :math:`\hat{N}`systems as
+    The chaining is achieved by chainging :math:`\hat{N}` systems, 
+    parameterized by
+    :math:`\mathbf{A}_1, \mathbf{B}_1, \mathbf{C}^\mathsf{T}_1, \mathbf{D}_1, \mathbf{\Gamma}_1, \\tilde{\mathbf{\Gamma}}_1, \\dots, \mathbf{A}_N, \mathbf{B}_N, \mathbf{C}^\mathsf{T}_N, \mathbf{D}_N, \mathbf{\Gamma}_N, \\tilde{\mathbf{\Gamma}}_N`,  
+    as
 
     :math:`\mathbf{A} = \\begin{pmatrix} \mathbf{A}_1 \\\ \mathbf{B}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{A}_2 \\\  \mathbf{B}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_3 \mathbf{C}_2^\mathsf{T} & \mathbf{A}_3 \\\ \mathbf{B}_4 \mathbf{D}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_4\mathbf{D}_3\mathbf{C}_2^\mathsf{T} & \mathbf{B}_4 \mathbf{C}_3^\mathsf{T} & \mathbf{A}_4  \\\ \\vdots & \\vdots & \\vdots & \\vdots & \\ddots  \\end{pmatrix}`
 
