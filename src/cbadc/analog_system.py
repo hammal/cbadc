@@ -1444,7 +1444,7 @@ def zpk2abcd(z, p, k):
     while index < len(p):
         D = np.array([[0.0]])
         if index + 1 < len(p):
-            print("Two poles")
+            # print("Two poles")
             A = np.zeros((2, 2))
             B = k_per_state ** 2 * np.array([[1.0], [0.0]])
             CT = np.zeros((1, 2))
@@ -1466,7 +1466,7 @@ def zpk2abcd(z, p, k):
             if index < len(z):
                 zero_1 = z[index]
                 if index + 1 < len(z):
-                    print("double zeros")
+                    # print("double zeros")
                     # Two zeros left
                     zero_2 = z[index + 1]
                     y = np.array(
@@ -1487,7 +1487,7 @@ def zpk2abcd(z, p, k):
                     D = k_per_state ** 2 * np.array([[1.0]])
                     CT = np.array([[sol[0, 0], sol[1, 0]]])
                 else:
-                    print("single zero")
+                    # print("single zero")
                     # Single zero
                     if np.imag(zero_1) != 0:
                         raise BaseException(
@@ -1496,7 +1496,7 @@ def zpk2abcd(z, p, k):
                     c2 = (A[1, 1] - np.real(zero_1)) / A[1, 0]
                     CT = np.array([[c1, c2]])
             else:
-                print("No zero")
+                # print("No zero")
                 # No zero
                 #
                 # gain
@@ -1505,7 +1505,7 @@ def zpk2abcd(z, p, k):
             index += 2
         else:
             # Only one pole and possibly zero left
-            print("Single pole and possibly zero")
+            # print("Single pole and possibly zero")
             pole = p[index]
             if np.imag(pole) != 0:
                 raise BaseException("Can't have non-conjugate complex poles")

@@ -1268,7 +1268,7 @@ class FIRFilter(DigitalEstimator):
         for _ in range(self.K3):
             _ = self.__next__()
 
-    def fir_filter_transfer_function(self, Ts=1.0):
+    def fir_filter_transfer_function(self, Ts: float = 1.0):
         """Compute the FFT of the system impulse response (FIR filter coefficients).
 
         Parameters
@@ -1284,3 +1284,18 @@ class FIRFilter(DigitalEstimator):
         frequency_response = np.fft.rfft(self.h, axis=1)
         frequencies = np.fft.rfftfreq(self.K3, d=Ts)
         return (frequencies, frequency_response)
+
+    def convolve(self, filter: np.ndarray):
+        """Shape :math:`\mathbf{h}` filter by convolving with filter
+
+        Parameters
+        ----------
+        filter: `array_like`, shape=(K)
+            filter to be applied for each digital control filter
+            equivalently.
+        """
+        for l in range(self.analog_system.L):
+            for m in range(self.analog_system.M):
+                # self.h.shape -> (L, K3, M)
+                self.h[l, :, m] = np.convolve(
+                    self.h[l, :, m], filter, mode='same')
