@@ -14,3 +14,4 @@ docs/._make.bat
 *.svg
 jupyter
 *.pyc
+unittest.h
