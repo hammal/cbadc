@@ -347,7 +347,7 @@ plt.ylabel("dB")
 plt.gcf().tight_layout()
 
 ###############################################################################
-# Post filtering The FIR filter coefficients
+# Post filtering the FIR filter coefficients
 # -----------------------------------------------------------
 #
 # Yet another approach is to instead post filter
