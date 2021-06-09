@@ -1297,7 +1297,7 @@ def zpk2abcd(z, p, k):
         z = _sort_by_complex_descending(z)
 
     k_per_state = np.float64(
-        np.power(np.float128(np.abs(k)), 1.0/np.float128(len(p))))
+        np.power(np.float64(np.abs(k)), 1.0/np.float64(len(p))))
 
     index = 0
     systems = []
