@@ -1004,7 +1004,7 @@ class Cauer(AnalogSystem):
 
 
 class IIRDesign(AnalogSystem):
-    """A analog signal designed using standard IIRDesign tools
+    """An analog signal designed using standard IIRDesign tools
 
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and is a convenient
     way of creating IIR filters in an analog system representation.
@@ -1248,7 +1248,7 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
 
     The chaining is achieved by chainging :math:`\hat{N}` systems, 
     parameterized by
-    :math:`\mathbf{A}_1, \mathbf{B}_1, \mathbf{C}^\mathsf{T}_1, \mathbf{D}_1, \mathbf{\Gamma}_1, \\tilde{\mathbf{\Gamma}}_1, \\dots, \mathbf{A}_N, \mathbf{B}_N, \mathbf{C}^\mathsf{T}_N, \mathbf{D}_N, \mathbf{\Gamma}_N, \\tilde{\mathbf{\Gamma}}_N`,  
+    :math:`\mathbf{A}_1, \mathbf{B}_1, \mathbf{C}^\mathsf{T}_1, \mathbf{D}_1, \mathbf{\Gamma}_1, \\tilde{\mathbf{\Gamma}}_1, \\dots, \mathbf{A}_{\hat{N}}, \mathbf{B}_{\hat{N}}, \mathbf{C}^\mathsf{T}_{\hat{N}}, \mathbf{D}_{\hat{N}}, \mathbf{\Gamma}_{\hat{N}}, \\tilde{\mathbf{\Gamma}}_{\hat{N}}`,  
     as
 
     :math:`\mathbf{A} = \\begin{pmatrix} \mathbf{A}_1 \\\ \mathbf{B}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{A}_2 \\\  \mathbf{B}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_3 \mathbf{C}_2^\mathsf{T} & \mathbf{A}_3 \\\ \mathbf{B}_4 \mathbf{D}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_4\mathbf{D}_3\mathbf{C}_2^\mathsf{T} & \mathbf{B}_4 \mathbf{C}_3^\mathsf{T} & \mathbf{A}_4  \\\ \\vdots & \\vdots & \\vdots & \\vdots & \\ddots  \\end{pmatrix}`

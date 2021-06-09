@@ -222,7 +222,7 @@ plt.grid(which='both')
 plt.show()
 
 ###############################################################################
-# Appending a Bandlimiting Filter
+# Prepending a Bandlimiting Filter
 # -------------------------------
 #
 # To battle the aliasing we extend the current estimator by placing a
