@@ -1,3 +1,6 @@
+numpy>=1.20.1
+scipy>=1.6.3
+tqdm>=4.61.0
 sphinx_rtd_theme
 nbsphinx
 sphinx-gallery
