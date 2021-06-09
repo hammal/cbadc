@@ -9,7 +9,7 @@ to quickly initialize analog systems of particular structures.
 import numpy as np
 import numpy.typing as npt
 import scipy.signal
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 
 class AnalogSystem:
@@ -33,11 +33,11 @@ class AnalogSystem:
 
     * The control observation
       :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
-    * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
+    * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{C} \mathbf{u}(t)`
 
-    where 
-    :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}` 
-    is the control observation matrix and 
+    where
+    :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}`
+    is the control observation matrix and
     :math:`\mathbf{C}^\mathsf{T}\in\mathbb{R}^{\\tilde{N} \\times N}` is the
     signal observation matrix.
 
@@ -116,7 +116,8 @@ class AnalogSystem:
     """
 
     def __init__(self, A: npt.ArrayLike, B: npt.ArrayLike, CT: npt.ArrayLike,
-                 Gamma: npt.ArrayLike, Gamma_tildeT: npt.ArrayLike):
+                 Gamma: npt.ArrayLike, Gamma_tildeT: npt.ArrayLike,
+                 D: Union[npt.ArrayLike, None] = None):
         """Create an analog system.
 
         Parameters
@@ -131,6 +132,8 @@ class AnalogSystem:
             control input matrix.
         Gamma_tildeT : `array_like`, shape=(M_tilde, N)
             control observation matrix.
+        D : `array_like`, shape=(N_tilde, L), optional
+            the direct matrix, defaults to None
         """
 
         self.A = np.array(A, dtype=np.double)
@@ -186,6 +189,16 @@ class AnalogSystem:
         if self.CT.shape[1] != self.A.shape[0]:
             raise InvalidAnalogSystemError(
                 self, "N does not agree with signal observation matrix C."
+            )
+
+        if D is not None:
+            self.D = np.array(D, dtype=np.double)
+        else:
+            self.D = np.zeros((self.N_tilde, self.L))
+
+        if self.D is not None and (self.D.shape[0] != self.N_tilde or self.D.shape[1] != self.L):
+            raise InvalidAnalogSystemError(
+                self, "D matrix has wrong dimensions. Should be N_tilde x L"
             )
 
     def derivative(self, x: np.ndarray, t: float, u: np.ndarray,
@@ -261,10 +274,12 @@ class AnalogSystem:
         return np.dot(self.Gamma_tildeT, x)
 
     def _atf(self, _omega: float) -> np.ndarray:
-        return np.dot(
-            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
+        tf = np.dot(
+            np.linalg.pinv(complex(0, _omega) *
+                           np.eye(self.N) - self.A, rcond=1e-300),
             self.B,
         )
+        return tf
 
     def transfer_function_matrix(self, omega: np.ndarray) -> np.ndarray:
         """Evaluate the analog signal transfer function at the angular
@@ -272,7 +287,7 @@ class AnalogSystem:
 
         Specifically, evaluates
 
-        :math:`\mathbf{G}(\omega) = \mathbf{C}^\mathsf{T} \\left(\mathbf{A} - i \omega \mathbf{I}_N\\right)^{-1} \mathbf{B}`
+        :math:`\mathbf{G}(\omega) = \mathbf{C}^\mathsf{T} \\left(\mathbf{A} - i \omega \mathbf{I}_N\\right)^{-1} \mathbf{B} + \mathbf{D}`
 
         for each angular frequency in omega where :math:`\mathbf{I}_N`
         represents a square identity matrix of the same dimensions as
@@ -292,9 +307,12 @@ class AnalogSystem:
         """
         size: int = omega.size
         result = np.zeros((self.N, self.L, size), dtype=complex)
+        resp = np.zeros((self.N_tilde, self.L, size))
         for index in range(size):
             result[:, :, index] = self._atf(omega[index])
-        resp = np.einsum('ij,jkl', self.CT, result)
+            resp[:, :, index] = self.D
+        # resp = np.einsum('ij,jkl', self.CT, result)
+        resp = resp + np.tensordot(self.CT, result, axes=((1), (0)))
         return np.asarray(resp)
 
     def zpk(self, input=0):
@@ -308,12 +326,12 @@ class AnalogSystem:
         Returns
         -------
         `array_like`, shape=(?, ?, 1)
-            z,p,k the zeros, poles and gain of the system  
+            z,p,k the zeros, poles and gain of the system
         """
-        return scipy.signal.ss2zpk(self.A, self.B, self.CT, np.zeros((self.N_tilde, self.L)), input)
+        return scipy.signal.ss2zpk(self.A, self.B, self.CT, self.D, input=0)
 
     def __str__(self):
-        return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nand Gamma_tildeT =\n{np.array(self.Gamma_tildeT)}"
+        return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nGamma_tildeT =\n{np.array(self.Gamma_tildeT)}, and D={self.D}"
 
 
 class InvalidAnalogSystemError(Exception):
@@ -338,7 +356,8 @@ class ChainOfIntegrators(AnalogSystem):
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and
     creates a convenient way of creating chain-of-integrator A/D analog
     systems. For more information about chain-of-integrator ADCs see
-    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=96/>`_.
+    # page=96/>`_.
+    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
 
 
     Chain-of-integrators analog systems are system goverened by the
@@ -482,7 +501,8 @@ class LeapFrog(AnalogSystem):
 
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
     way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see
-    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y#page=126/>`_.
+    # page=126/>`_.
+    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
 
 
     A leap-frog analog system is goverened by the differential equations,
@@ -628,17 +648,17 @@ class ButterWorth(AnalogSystem):
 
     Specifically, we specify the filter by the differential equations
 
-    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
+    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} u(t) + \mathbf{\Gamma} \mathbf{s}(t)`
 
-    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
+    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{D} u(t)`
 
     :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
 
 
     where
 
-    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, and :math:`\mathbf{C}^\mathsf{T}` are determined using the
-    :py:func:`scipy.signal.iirfilter`.
+    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, :math:`\mathbf{C}^\mathsf{T}`, and :math:`\mathbf{D}`
+    are determined using the :py:func:`scipy.signal.iirfilter`.
 
     Furthermore, as this system is intended as a pure filter and therefore have no
 
@@ -671,6 +691,8 @@ class ButterWorth(AnalogSystem):
         input matrix :math:`\mathbf{B}`.
     CT : `array_like`, shape=(N_tilde, N)
         signal observation matrix :math:`\mathbf{C}^\mathsf{T}`.
+    D: `array_like`, shape=(N_tilde, L)
+        direct matrix
     Gamma : None
         control input matrix :math:`\mathbf{\Gamma}`.
     Gamma_tildeT : None
@@ -692,18 +714,18 @@ class ButterWorth(AnalogSystem):
         For faulty analog system parametrization.
     """
 
-    def __init__(self, N: int, Wn: float):
+    def __init__(self, N: int, Wn: float) -> AnalogSystem:
         """Create a Butterworth filter
         """
         # State space order
         self.Wn = Wn
 
+        # Create filter as chain of biquadratic filters
         z, p, k = scipy.signal.iirfilter(
             N, Wn, analog=True, btype='lowpass', ftype='butter', output='zpk')
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
 
-        # initialize parent class
-        AnalogSystem.__init__(self, A, B, CT, None, None)
+        A, B, CT, D = zpk2abcd(z, p, k)
+        AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
 
 class ChebyshevI(AnalogSystem):
@@ -714,17 +736,17 @@ class ChebyshevI(AnalogSystem):
 
     Specifically, we specify the filter by the differential equations
 
-    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
+    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} u(t) + \mathbf{\Gamma} \mathbf{s}(t)`
 
-    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
+    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{D} u(t)`
 
     :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
 
 
     where
 
-    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, and :math:`\mathbf{C}^\mathsf{T}` are determined using the
-    :py:func:`scipy.signal.iirfilter`.
+    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, :math:`\mathbf{C}^\mathsf{T}`, and :math:`\mathbf{D}` 
+    are determined using the :py:func:`scipy.signal.iirfilter`.
 
     Furthermore, as this system is intended as a pure filter and therefore have no
 
@@ -759,6 +781,8 @@ class ChebyshevI(AnalogSystem):
         input matrix :math:`\mathbf{B}`.
     CT : `array_like`, shape=(N_tilde, N)
         signal observation matrix :math:`\mathbf{C}^\mathsf{T}`.
+    D: `array_like`, shape=(N_tilde, L)
+        direct matrix
     Gamma : None
         control input matrix :math:`\mathbf{\Gamma}`.
     Gamma_tildeT : None
@@ -789,10 +813,8 @@ class ChebyshevI(AnalogSystem):
 
         z, p, k = scipy.signal.iirfilter(
             N, Wn, rp, analog=True, btype='lowpass', ftype='cheby1', output='zpk')
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
-
-        # initialize parent class
-        AnalogSystem.__init__(self, A, B, CT, None, None)
+        A, B, CT, D = zpk2abcd(z, p, k)
+        AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
 
 class ChebyshevII(AnalogSystem):
@@ -803,17 +825,17 @@ class ChebyshevII(AnalogSystem):
 
     Specifically, we specify the filter by the differential equations
 
-    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
+    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} u(t) + \mathbf{\Gamma} \mathbf{s}(t)`
 
-    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
+    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{D} u(t)`
 
     :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
 
 
     where
 
-    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, and :math:`\mathbf{C}^\mathsf{T}` are determined using the
-    :py:func:`scipy.signal.iirfilter`.
+    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, :math:`\mathbf{C}^\mathsf{T}`, and :math:`\mathbf{D}`
+    are determined using the :py:func:`scipy.signal.iirfilter`.
 
     Furthermore, as this system is intended as a pure filter and therefore have no
 
@@ -848,6 +870,8 @@ class ChebyshevII(AnalogSystem):
         input matrix :math:`\mathbf{B}`.
     CT : `array_like`, shape=(N_tilde, N)
         signal observation matrix :math:`\mathbf{C}^\mathsf{T}`.
+    D: `array_like`, shape=(N_tilde, L)
+        direct matrix
     Gamma : None
         control input matrix :math:`\mathbf{\Gamma}`.
     Gamma_tildeT : None
@@ -879,10 +903,8 @@ class ChebyshevII(AnalogSystem):
         self.rs = rs
         z, p, k = scipy.signal.iirfilter(
             N, Wn, rs=rs, analog=True, btype='lowpass', ftype='cheby2', output='zpk')
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
-
-        # initialize parent class
-        AnalogSystem.__init__(self, A, B, CT, None, None)
+        A, B, CT, D = zpk2abcd(z, p, k)
+        AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
 
 class Cauer(AnalogSystem):
@@ -893,17 +915,17 @@ class Cauer(AnalogSystem):
 
     Specifically, we specify the filter by the differential equations
 
-    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t) + \mathbf{\Gamma} \mathbf{s}(t)`
+    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} u(t) + \mathbf{\Gamma} \mathbf{s}(t)`
 
-    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t)`
+    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{D} u(t)`
 
     :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
 
 
     where
 
-    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, and :math:`\mathbf{C}^\mathsf{T}` are determined using the
-    :py:func:`scipy.signal.iirfilter`.
+    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, :math:`\mathbf{C}^\mathsf{T}`, and :math:`\mathbf{D}`
+    are determined using the :py:func:`scipy.signal.iirfilter`.
 
     Furthermore, as this system is intended as a pure filter and therefore have no
 
@@ -940,6 +962,8 @@ class Cauer(AnalogSystem):
         input matrix :math:`\mathbf{B}`.
     CT : `array_like`, shape=(N_tilde, N)
         signal observation matrix :math:`\mathbf{C}^\mathsf{T}`.
+    D: `array_like`, shape=(N_tilde, L)
+        direct matrix
     Gamma : None
         control input matrix :math:`\mathbf{\Gamma}`.
     Gamma_tildeT : None
@@ -975,67 +999,266 @@ class Cauer(AnalogSystem):
 
         z, p, k = scipy.signal.iirfilter(
             N, Wn, rp, rs, analog=True, btype='lowpass', ftype='ellip', output='zpk')
-        A, B, CT, _ = scipy.signal.zpk2ss(z, p, k)
-
-        # initialize parent class
-        AnalogSystem.__init__(self, A, B, CT, None, None)
+        A, B, CT, D = zpk2abcd(z, p, k)
+        AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
 
-def abcd2abc(A: np.ndarray, B: np.ndarray, C: np.ndarray, D: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Convert a A,B,C,D system into a A,B,C system.
+class IIRDesign(AnalogSystem):
+    """A analog signal designed using standard IIRDesign tools
 
-    Specifically, for a state space model as
+    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and is a convenient
+    way of creating IIR filters in an analog system representation.
 
-    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} \mathbf{u}(t)`
+    Specifically, we specify the filter by the differential equations
 
-    :math:`\mathbf{y}(t) = \mathbf{C} \mathbf{x}(t) + \mathbf{D} \mathbf{u}(t)`
+    :math:`\dot{\mathbf{x}}(t) = \mathbf{A} \mathbf{x}(t) + \mathbf{B} u(t) + \mathbf{\Gamma} \mathbf{s}(t)`
 
-    is reformulated as    
+    :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{D} u(t)`
 
-    :math:`\dot{\\tilde{\mathbf{x}}}(t) = \\tilde{\mathbf{A}} \\tilde{\mathbf{x}}(t) + \\tilde{\mathbf{B}} \mathbf{u}(t)`
+    :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
 
-    :math:`\mathbf{y}(t) = \\tilde{\mathbf{C}} \\tilde{\mathbf{x}}(t)`
 
     where
 
-    :math:`\\tilde{\mathbf{A}} = \\begin{pmatrix} \mathbf{0}_{L \\times L} & \mathbf{0}_{L \\times N} \\\ \mathbf{B} & \mathbf{A} \\end{pmatrix} \in \mathbb{R}^{(L + N)\\times(L + N)}`
+    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, :math:`\mathbf{C}^\mathsf{T}`, and :math:`\mathbf{D}`
+    are determined using the :py:func:`scipy.signal.iirdesign`.
 
-    :math:`\\tilde{\mathbf{B}} = \\begin{pmatrix} \mathbf{I}_L \\\ \mathbf{0}_{N \\times L} \\end{pmatrix} \in \mathbb{R}^{(N + L)\\times L}`
+    Furthermore, as this system is intended as a pure filter and therefore have no
 
-    :math:`\\tilde{\mathbf{C}} = \\begin{pmatrix} \mathbf{D} & \mathbf{C} \\end{pmatrix} \in \mathbb{R}^{(L + \\tilde{N}) \\times (L + N)}`
+    :math:`\mathbf{\Gamma}` and :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}` specified.
 
-    and :math:`\mathbf{A}\in \mathbb{R}^{N \\times N}`, :math:`\mathbf{B}\in \mathbb{R}^{N \\times L}`, 
-    :math:`\mathbf{C} \in \mathbb{R}^{\\tilde{N} \\times N}`, and :math:`\mathbf{D} \in \mathbb{R}^{\\tilde{N} \\times L}`.
+    Parameters
+    ----------
+    wp, ws: `float or array_like`, shape=(2,)
+        Passband and stopband edge frequencies. Possible values are scalars (for lowpass and highpass filters) or ranges (for bandpass and bandstop filters). For digital filters, these are in the same units as fs. By default, fs is 2 half-cycles/sample, so these are normalized from 0 to 1, where 1 is the Nyquist frequency. For example:
+
+        * Lowpass: wp = 0.2, ws = 0.3
+        * Highpass: wp = 0.3, ws = 0.2
+        * Bandpass: wp = [0.2, 0.5], ws = [0.1, 0.6]
+        * Bandstop: wp = [0.1, 0.6], ws = [0.2, 0.5]
+
+        wp and ws are angular frequencies (e.g., rad/s). Note, that for bandpass and bandstop filters passband must lie strictly inside stopband or vice versa.
+
+    gpass: `float`
+        The maximum loss in the passband (dB).
+
+    gstop: `float`
+        The minimum attenuation in the stopband (dB).
+
+    ftype: `string`, `optional`
+        IIR filter type, defaults to ellip. Complete list of choices:
+
+        * Butterworth : ‘butter’
+        * Chebyshev I : ‘cheby1’
+        * Chebyshev II : ‘cheby2’
+        * Cauer/elliptic: ‘ellip’
+        * Bessel/Thomson: ‘bessel’
+
+
+    Attributes
+    ----------
+    N : `int`
+        state space order :math:`N`.
+    N_tilde : `int`
+        number of signal observations :math:`\\tilde{N}`.
+    M : `int`
+        number of digital control signals :math:`M`.
+    M_tilde : `int`
+        number of control signal observations :math:`\\tilde{M}`.
+    L : `int`
+        number of input signals :math:`L`.
+    A : `array_like`, shape=(N, N)
+        system matrix :math:`\mathbf{A}`.
+    B : `array_like`, shape=(N, L)
+        input matrix :math:`\mathbf{B}`.
+    CT : `array_like`, shape=(N_tilde, N)
+        signal observation matrix :math:`\mathbf{C}^\mathsf{T}`.
+    D: `array_like`, shape=(N_tilde, L)
+        direct matrix
+    Gamma : None
+        control input matrix :math:`\mathbf{\Gamma}`.
+    Gamma_tildeT : None
+        control observation matrix :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}`.
+
+    Example
+    -------
+    >>> import numpy as np
+    >>> import matplotlib.pyplot as plt
+    >>> import matplotlib.ticker
+    >>> from cbadc.analog_system import IIRDesign
+    >>> wp = 2 * np.pi * 1e3
+    >>> ws = 2 * np.pi * 2e3
+    >>> gpass = 0.1
+    >>> gstop = 80
+    >>> filter = IIRDesign(wp, ws, gpass, gstop)
+    >>> f = np.logspace(1, 5)
+    >>> w = 2 * np.pi * f
+    >>> tf = filter.transfer_function_matrix(w)
+    >>> fig, ax1 = plt.subplots()
+    >>> ax1.set_title('Analog filter frequency response')
+    >>> ax1.set_ylabel('Amplitude [dB]', color='b')
+    >>> ax1.set_xlabel('Frequency [Hz]')
+    >>> ax1.semilogx(f, 20 * np.log10(np.abs(tf[0, 0, :])))
+    >>> ax1.grid()
+    >>> ax2 = ax1.twinx()
+    >>> angles = np.unwrap(np.angle(tf[0, 0, :]))
+    >>> ax2.plot(f, angles, 'g')
+    >>> ax2.set_ylabel('Angle (radians)', color='g')
+    >>> ax2.grid()
+    >>> ax2.axis('tight')
+    >>> nticks = 8
+    >>> ax1.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(nticks))
+    >>> ax2.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(nticks))
+
+    See also
+    --------
+    :py:class:`cbadc.analog_system.ButterWorth`
+    :py:class:`cbadc.analog_system.ChebyshevI`
+    :py:class:`cbadc.analog_system.ChebyshevII`
+    :py:class:`cbadc.analog_system.Cauer`
+
+    Raises
+    ------
+    :py:class:`InvalidAnalogSystemError`
+        For faulty analog system parametrization.
     """
-    A_tilde = np.zeros((A.shape[0] + B.shape[1], A.shape[1] + B.shape[1]))
-    B_tilde = np.zeros((A.shape[0] + B.shape[1], B.shape[1]))
-    C_tilde = np.zeros((C.shape[0], A.shape[0] + B.shape[1]))
 
-    A_tilde[B.shape[1]:, B.shape[1]:] = A
-    A_tilde[B.shape[1]:, :B.shape[1]] = B
+    def __init__(self, wp, ws, gpass, gstop, ftype='ellip'):
+        """Create a IIR filter
+        """
+        z, p, k = scipy.signal.iirdesign(
+            wp, ws, gpass, gstop, analog=True, ftype=ftype, output='zpk')
+        A, B, CT, D = zpk2abcd(z, p, k)
+        AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
-    B_tilde[:B.shape[1], :B.shape[1]] = np.eye(B.shape[1])
 
-    C_tilde[:, D.shape[1]:] = C
-    C_tilde[:, :D.shape[1]] = D
+def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Transform a series of biquad (second order systems (sos)) filters into
+    their A,B,C,D state space model equivalent.
 
-    return A_tilde, B_tilde, C_tilde
+    Specifcally, for a filter with the transfer function
+
+    :math:`\Pi_{\ell = 1}^{L} \\frac{b_{\ell,0}s^2 + b_{\ell,1} s + b_{\ell,2}}{s^2 + a_{\ell,1}s + a_{\ell,2}}`
+
+    represented in a sos matrix
+
+    :math:`\\text{sos} = \\begin{pmatrix} & & \\vdots  \\\ b_{\ell,0}, & b_{\ell,1}, & b_{\ell,2}, & 1, & a_{\ell,1}, & a_{\ell,2} \\\ & & \\vdots \\end{pmatrix}`
+
+    is represented in a controllable canonical state space representation form
+
+    :math:`\\begin{pmatrix} \dot{x}_{\ell, 1}(t) \\\ \dot{x}_{\ell,2}(t) \\end{pmatrix} = \\begin{pmatrix}1 , & 0 \\\ -a_{\ell,2}, & -a_{\ell,1} \\end{pmatrix} \\begin{pmatrix} x_{\ell,1}(t) \\\ x_{\ell,2}(t)\\end{pmatrix} + \\begin{pmatrix} 0 \\\ 1 \\end{pmatrix} u_\ell(t)`
+
+    :math:`y_\ell(t) = \\begin{pmatrix}b_{\ell,2} - b_{\ell,0} * a_{\ell,2}, & b_{\ell,1} - b_{\ell,0}*a_{\ell,1} \\end{pmatrix} \\begin{pmatrix} x_{\ell,1}(t) \\\ x_{\ell,2}(t) \\end{pmatrix}  + \\begin{pmatrix}b_{\ell,0}\\end{pmatrix} u_\ell(t)`
+
+    which are then chained together using :py:func:`cbadc.analog_system.chain`.
+
+    Parameters
+    ----------
+    sos: np.ndarray, shape(N, 6)
+        biquad equations
+
+    Returns
+    A: numpy.ndarray, shape=(2 * L, 2 * L)
+        a joint state transition matrix.
+    B: numpy.ndarray, shape=(2 * L, 1)
+        a joint input matrix.
+    C: numpy.ndarray, shape=(1, 2 * L)
+        a joint signal observation matrix.
+    D: numpy.ndarray, shape=(1, 1)
+        The direct matrix.
+    """
+    biquadratic_analog_systems = []
+    for row in range(sos.shape[0]):
+        b_0 = sos[row, 0]
+        b_1 = sos[row, 1]
+        b_2 = sos[row, 2]
+        a_0 = sos[row, 3]
+        a_1 = sos[row, 4]
+        a_2 = sos[row, 5]
+
+        if a_0 != 1.0:
+            b_0 /= a_0
+            b_1 /= a_0
+            b_2 /= a_0
+            a_1 /= a_0
+            a_2 /= a_0
+            a_0 = 1.0
+
+        A = np.array([
+            [0.0, 1.0],
+            [-a_2, -a_1]
+        ])
+        B = np.array([[0.0], [1.0]])
+        CT = np.array([[(b_2 - b_0 * a_2), (b_1 - b_0 * a_1)]])
+        D = np.array([[b_0]])
+        biquadratic_analog_systems.append(
+            AnalogSystem(A, B, CT, None, None, D))
+    chained_system = chain(biquadratic_analog_systems)
+    return chained_system.A, chained_system.B, chained_system.CT, chained_system.D
+
+
+def tf2abcd(b: np.ndarray, a: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Transform a transferfunctions into a controllable canonical state space form.
+
+    Specifcally, for a filter with the transfer function
+
+    :math:`\\frac{\Sigma_{\ell = 0}^{L} b_{\ell}s^\ell}{s^{L} + \Sigma_{\ell=0}^{L-1} a_{k} s^\ell}`
+
+    is represented in a controllable canonical state space representation form
+
+    :math:`\dot{\mathbf{x}}(t) = \\begin{pmatrix}0, & 1, & 0 \\\ & \\ddots & \ddots \\\ 0 & \\dots &  0, & 1 \\\ -a_{0}, & \\dots, &  & -a_{L-1} \\end{pmatrix} \mathbf{x}(t) + \\begin{pmatrix} 0 \\\ \\vdots \\\ 0 \\\ 1 \\end{pmatrix} u(t)`
+
+    :math:`y_\ell(t) = \\begin{pmatrix}b_{0} - b_L a_0, & \\dots, & b_{L-1} - b_L a_{L-1} \\end{pmatrix} \mathbf{x}(t) + \\begin{pmatrix} b_L\\end{pmatrix} u(t)`
+
+    Parameters
+    ----------
+    b: np.ndarray, shape=(L+1,)
+        transferfunction nominator :math:`\\begin{pmatrix}b_{L}, & \\dots, & b_{0}\\end{pmatrix}`.
+    a: np.ndarray, shape=(L,)
+        transferfunction denominator :math:`\\begin{pmatrix}a_{L-1}, & \\dots, & a_{0}\\end{pmatrix}`.
+
+    Returns
+    A: numpy.ndarray, shape=(L, L)
+        a joint state transition matrix.
+    B: numpy.ndarray, shape=(L, 1)
+        a joint input matrix.
+    CT: numpy.ndarray, shape=(1,L)
+        a joint signal observation matrix.
+    D: numpy.ndarray, shape=(1,1)
+        direct transition matrix.
+    """
+    if b.size != (a.size + 1) or len(b) > b.size or len(a) > a.size:
+        raise BaseException(
+            f"a and b are not correctly configures with b={b} and a={a}")
+    L = a.size
+    A = np.zeros((a.size, a.size))
+    B = np.zeros((a.size, 1))
+    CT = np.zeros((1, a.size))
+    D = np.zeros((1, 1))
+    A[:-1, 1:] = np.eye(L - 1)
+    A[-1, :] = -a[::-1]
+    B[-1, 0] = 1.0
+    CT[0, :] = (b[1::] - b[0] * a[::])[::-1]
+    D[0, 0] = b[0]
+    return A, B, CT, D
 
 
 def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by chaining several analog systems.
 
-    The chaining is achieved by constructing
+    The chaining is achieved by chainging the :math:`\hat{N}`systems as
 
-    :math:`\mathbf{A} = \\begin{pmatrix}\ddots & \ddots \\\ & \mathbf{B}_\ell \mathbf{C}^\mathsf{T}_{\ell - 1} & \mathbf{A}_\ell \\\ & & \mathbf{B}_{\ell + 1} \mathbf{C}^\mathsf{T}_{\ell} & \mathbf{A}_{\ell + 1} \\\ & & & \ddots & \ddots \\end{pmatrix}`
+    :math:`\mathbf{A} = \\begin{pmatrix} \mathbf{A}_1 \\\ \mathbf{B}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{A}_2 \\\  \mathbf{B}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_3 \mathbf{C}_2^\mathsf{T} & \mathbf{A}_3 \\\ \mathbf{B}_4 \mathbf{D}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_4\mathbf{D}_3\mathbf{C}_2^\mathsf{T} & \mathbf{B}_4 \mathbf{C}_3^\mathsf{T} & \mathbf{A}_4  \\\ \\vdots & \\vdots & \\vdots & \\vdots & \\ddots  \\end{pmatrix}`
 
-    :math:`\mathbf{B} = \\begin{pmatrix} \mathbf{B}_1 \\\ \mathbf{0}_{(N - L) \\times L} \\end{pmatrix}`
+    :math:`\mathbf{B} = \\begin{pmatrix} \mathbf{B}_1 \\\ \mathbf{B}_2 \mathbf{D}_1 \\\ \mathbf{B}_3 \mathbf{D}_2 \mathbf{D}_1 \\\ \mathbf{B}_4 \mathbf{D}_3 \mathbf{D}_2 \mathbf{D}_1 \\\ \\vdots \\end{pmatrix}`
 
-    :math:`\mathbf{C}^\mathsf{T} = \\begin{pmatrix} \mathbf{0}_{(\\tilde{N}) \\times (N - \\tilde{N})} & \mathbf{C}^\mathsf{T}_{-1} \\end{pmatrix}`
+    :math:`\mathbf{C}^\mathsf{T} = \\begin{pmatrix} \mathbf{D}_{\hat{N}}\\cdots \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{D}_{\hat{N}}\\cdots \mathbf{D}_3 \mathbf{C}_2^\mathsf{T} & \mathbf{D}_{\hat{N}} \\cdots \mathbf{D}_4 \mathbf{C}_3^{\mathsf{T}} & \\dots & \mathbf{D}_{\hat{N}} \mathbf{C}_{\hat{N}-1}^\mathsf{T} & \mathbf{C}_{\hat{N}}^\mathsf{T} \\end{pmatrix}`
 
     :math:`\mathbf{\Gamma} = \\begin{pmatrix} \ddots \\\ & \mathbf{\Gamma}_\ell  \\\ &  & \mathbf{\Gamma}_{\ell + 1} \\\ & & & \ddots \\end{pmatrix}`
 
     :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T} = \\begin{pmatrix} \ddots \\\ & \\tilde{\mathbf{\Gamma}}^\mathsf{T}_\ell  \\\ &  & \\tilde{\mathbf{\Gamma}}^\mathsf{T}_{\ell + 1} \\\ & & & \ddots \\end{pmatrix}`
+
+    :math:`\mathbf{D} = \mathbf{D}_{\hat{N}} \mathbf{D}_{\hat{N}-1} \\dots \mathbf{D}_{1}`
 
     where :math:`N = \\sum_\ell N_\ell`, :math:`L = L_1`, and :math:`\\tilde{N} = N_{-1}`.
     Above the index :math:`-1` refers to the last index of the list.
@@ -1059,48 +1282,44 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     M_tilde: int = np.sum(
         np.array([analog_system.M_tilde for analog_system in analog_systems]))
     L: int = analog_systems[0].L
-    N_tilde: int = analog_systems[-1].N_tilde
 
     A = np.zeros((N, N))
     B = np.zeros((N, L))
-    CT = np.zeros((N_tilde, N))
+    CT = np.zeros((analog_systems[0].CT.shape[0], N))
+
+    CT[:analog_systems[0].CT.shape[0],
+        :analog_systems[0].CT.shape[1]] = analog_systems[0].CT
+
     Gamma = np.zeros((N, M))
     Gamma_tilde = np.zeros((M_tilde, N))
-    previous_system = analog_systems[0]
-
-    B[:analog_systems[0].B.shape[0],
-        :analog_systems[0].B.shape[1]] = analog_systems[0].B
-
-    CT[:, -analog_systems[-1].N:] = analog_systems[-1].CT
+    D = np.eye(analog_systems[0].N_tilde, analog_systems[0].L)
 
     n: int = 0
     m: int = 0
     m_tilde: int = 0
-    l: int = 0
     for analog_system in analog_systems:
         n_end = n + analog_system.N
         m_end = m + analog_system.M
         m_tilde_end = m_tilde + analog_system.M_tilde
 
+        A[n:n_end, :] = np.dot(analog_system.B, CT)
         A[n: n_end, n:n_end] = analog_system.A
 
-        # From the second system and on connect input to output.
-        if n > 0:
-            if analog_system.B.shape[1] != previous_system.CT.shape[0]:
-                raise BaseException(
-                    f"System {previous_system} and {analog_system} don't have compatiable input output dimension")
-            A[n: n_end, l:n] = np.dot(analog_system.B, previous_system.CT)
+        B[n:n_end, :] = np.dot(analog_system.B, D)
+
+        D = np.dot(analog_system.D, D)
+
+        CT = np.dot(analog_system.D, CT)
+        CT[:, n:n_end] = analog_system.CT
 
         Gamma[n:n_end, m:m_end] = analog_system.Gamma
 
         Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_system.Gamma_tildeT
 
-        previous_system = analog_system
-        l = n
         n += analog_system.N
         m += analog_system.M
         m_tilde += analog_system.M_tilde
-    return AnalogSystem(A, B, CT, Gamma, Gamma_tilde)
+    return AnalogSystem(A, B, CT, Gamma, Gamma_tilde, D)
 
 
 def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
@@ -1118,9 +1337,11 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
 
     :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T} = \\begin{pmatrix} \ddots \\\ & \\tilde{\mathbf{\Gamma}}^\mathsf{T}_\ell  \\\ &  & \\tilde{\mathbf{\Gamma}}^\mathsf{T}_{\ell + 1} \\\ & & & \ddots \\end{pmatrix} \in \mathbb{R}^{\\tilde{M} \\times N}`
 
-    where for :math:`n` systems 
+    :math:`\mathbf{D} = \\begin{pmatrix}\\ddots \\\ & \mathbf{D}_\ell \\\ && \\ddots\\end{pmatrix}`
+
+    where for :math:`n` systems
     :math:`L = \\sum_{\ell = 1}^n L_\ell`, :math:`M = \\sum_{\ell = 1}^n M_\ell`,
-    :math:`\\tilde{M} = \\sum_{\ell = 1}^n \\tilde{M}_\ell`, :math:`N = \\sum_{\ell = 1}^n N_\ell`, 
+    :math:`\\tilde{M} = \\sum_{\ell = 1}^n \\tilde{M}_\ell`, :math:`N = \\sum_{\ell = 1}^n N_\ell`,
     and :math:`\\tilde{N} = \\sum_{\ell = 1}^n \\tilde{N}_\ell`.
 
     Parameters
@@ -1149,6 +1370,7 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     CT = np.zeros((N_tilde, N))
     Gamma = np.zeros((N, M))
     Gamma_tilde = np.zeros((M_tilde, N))
+    D = np.zeros((N_tilde, L))
 
     n: int = 0
     m: int = 0
@@ -1168,9 +1390,158 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
         Gamma[n:n_end, m:m_end] = analog_system.Gamma
         Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_system.Gamma_tildeT
 
+        D[n_tilde:n_tilde_end, l:l_end] = analog_system.D
+
         l += analog_system.L
         n += analog_system.N
         n_tilde += analog_system.N_tilde
         m += analog_system.M
         m_tilde += analog_system.M_tilde
-    return AnalogSystem(A, B, CT, Gamma, Gamma_tilde)
+    return AnalogSystem(A, B, CT, Gamma, Gamma_tilde, D)
+
+
+def zpk2abcd(z, p, k):
+    """Convert zeros and poles into A, B, C, D matrix
+
+    Futhermore, the transfer function is divided into 
+    sequences of products of Biquad filters.
+
+    Specifically, for a transfer function
+
+    :math:`k \\cdot \\frac{(s - z_N)\\dots(s - z_1)}{(s-p_N)\\dots(s-p_1)}`
+
+    we partition the transfer function into biquadratic blocks as
+
+    :math:`\\Pi_{\ell=1}^{N / 2} \\frac{Z(s)_\ell}{(s - p_{1,\ell})(s-p_{2,\ell})}`
+
+    where
+    :math:`Z(s)_\ell = \\begin{cases} 1 & \\text{if no zeros are specified} \\\  (s - z_{1,\ell})(s - z_{2,\ell}) & \\text{for real valued zeros}  \\\ (s-z_{1,\ell})(s-\\bar{z}_{1,\ell}) & \\text{for complex conjugate zero-pairs.} \\end{cases}`
+
+
+    The poles are and zeros are sorted in the following order:
+
+    1. Complex conjugate pairs
+    2. Decreasing absolute magnitude
+
+    """
+    if len(z) > len(p) or len(p) < 1:
+        raise BaseException(
+            "Incorrect specification. can't have more zeros than poles.")
+
+    # Sort poles and zeros
+    p = _sort_by_complex_descending(p)
+    if len(z) > 0:
+        z = _sort_by_complex_descending(z)
+
+    k_per_state = np.float64(
+        np.power(np.float64(np.abs(k)), 1.0/np.float64(len(p))))
+
+    index = 0
+    systems = []
+    while index < len(p):
+        D = np.array([[0.0]])
+        if index + 1 < len(p):
+            print("Two poles")
+            A = np.zeros((2, 2))
+            B = k_per_state ** 2 * np.array([[1.0], [0.0]])
+            CT = np.zeros((1, 2))
+            D = np.array([[0.0]])
+
+            pole_1, pole_2 = p[index], p[index+1]
+            # If complex conjugate pole pairs
+            if np.allclose(pole_1, np.conjugate(pole_2)):
+                a1, b1 = np.real(pole_1), np.imag(pole_1)
+                a2, b2 = np.real(pole_2), np.imag(pole_2)
+                A = np.array([[a1, b1],
+                              [b2, a2]])
+            else:
+                if np.imag(pole_1) != 0 or np.imag(pole_2) != 0:
+                    raise BaseException(
+                        "Can't have non-conjugate complex poles")
+                A = np.array([[np.real(pole_1), 0], [1.0, np.real(pole_2)]])
+
+            if index < len(z):
+                zero_1 = z[index]
+                if index + 1 < len(z):
+                    print("double zeros")
+                    # Two zeros left
+                    zero_2 = z[index + 1]
+                    y = np.array(
+                        [
+                            [zero_1 + zero_2 - A[0, 0] - A[1, 1]],
+                            [zero_1 * zero_2 - A[0, 0] *
+                                A[1, 1] + A[0, 1] * A[1, 0]]
+                        ])
+                    if not np.allclose(np.imag(y), np.zeros(2)):
+                        raise BaseException(
+                            "Can't have non-conjugate complex zeros")
+                    M = np.array(
+                        [
+                            [-1.0, 0],
+                            [-A[1, 1], A[1, 0]]
+                        ])
+                    sol = np.linalg.solve(M, np.real(y))
+                    D = k_per_state ** 2 * np.array([[1.0]])
+                    CT = np.array([[sol[0, 0], sol[1, 0]]])
+                else:
+                    print("single zero")
+                    # Single zero
+                    if np.imag(zero_1) != 0:
+                        raise BaseException(
+                            "Can't have non-conjugate complex zero")
+                    c1 = 1.0
+                    c2 = (A[1, 1] - np.real(zero_1)) / A[1, 0]
+                    CT = np.array([[c1, c2]])
+            else:
+                print("No zero")
+                # No zero
+                #
+                # gain
+                CT = 1.0 / A[1, 0] * np.array([[0.0, 1.0]])
+
+            index += 2
+        else:
+            # Only one pole and possibly zero left
+            print("Single pole and possibly zero")
+            pole = p[index]
+            if np.imag(pole) != 0:
+                raise BaseException("Can't have non-conjugate complex poles")
+            A = np.array([[np.real(pole)]])
+            B = np.array([[k_per_state]])
+            CT = np.array([[1.0]])
+            D = np.array([[0.0]])
+            if index < len(z):
+                zero = z[index]
+                if np.imag(zero) != 0:
+                    raise BaseException(
+                        "Cant have non-conjugate complex zeros")
+                D[0, 0] = k_per_state
+                CT[0, 0] = pole - np.real(zero)
+            index += 1
+        systems.append(AnalogSystem(A, B, CT, None, None, D))
+        print(systems[-1])
+    chained_system = chain(systems)
+    return chained_system.A, chained_system.B, chained_system.CT, chained_system.D
+
+
+def _sort_by_complex_descending(list: np.ndarray) -> np.ndarray:
+    sorted_indexes = np.argsort(np.abs(np.imag(list)))[::-1]
+    print(sorted_indexes)
+    list = list[sorted_indexes]
+    complex_indexes = np.imag(list) != 0
+    number_of_complex_poles = np.sum(complex_indexes)
+    if not _complex_conjugate_pairs(list[complex_indexes]):
+        raise BaseException("Not complex conjugate pairs")
+    sorted = np.zeros_like(list)
+    sorted[:number_of_complex_poles] = list[complex_indexes]
+    list[number_of_complex_poles:] = list[complex_indexes != True]
+    return list
+
+
+def _complex_conjugate_pairs(list: np.ndarray) -> bool:
+    index = 0
+    while index + 1 < len(list):
+        if not np.allclose(list[index], list[index + 1].conjugate()):
+            return False
+        index += 2
+    return True

@@ -1,4 +1,4 @@
-﻿cbadc.digital\_estimator.DigitalEstimator
+cbadc.digital\_estimator.DigitalEstimator
 =========================================
 
 .. currentmodule:: cbadc.digital_estimator
@@ -17,6 +17,7 @@
    .. autosummary::
    
       ~DigitalEstimator.__init__
+      ~DigitalEstimator.control_signal_transfer_function
       ~DigitalEstimator.noise_transfer_function
       ~DigitalEstimator.set_iterator
       ~DigitalEstimator.signal_transfer_function

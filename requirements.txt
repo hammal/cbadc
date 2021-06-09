@@ -4,3 +4,4 @@ pytest
 pytest-benchmark
 pytest-cov
 tox
+tqdm>=4.61.0
