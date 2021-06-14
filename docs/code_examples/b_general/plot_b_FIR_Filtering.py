@@ -68,7 +68,7 @@ print(digital_control)
 eta2 = 1e6
 
 # Load the control signal from previous simulation
-byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
+byte_stream = read_byte_stream_from_file('sinusodial_simulation.adcs', M)
 control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
 
 
@@ -81,7 +81,7 @@ digital_estimator = FIRFilter(
 digital_estimator(control_signal_sequences)
 
 # extract impulse response
-impulse_response = np.abs(np.array(digital_estimator.h[:, 0, :]))
+impulse_response = np.abs(np.array(digital_estimator.h[0, :, :]))
 impulse_response_dB = 20 * np.log10(impulse_response)
 
 # Visualize the impulse response
@@ -135,7 +135,7 @@ for eta2 in Eta2:
     digital_estimator = FIRFilter(
         analog_system, digital_control, eta2, K1, K2)
     impulse_response = 20 * \
-        np.log10(np.abs(np.array(digital_estimator.h[:, 0, 0])))
+        np.log10(np.abs(np.array(digital_estimator.h[0, :, 0])))
     plt.plot(np.arange(0, K2), impulse_response[K2:],
              label=f"$\eta^2 = {10 * np.log10(eta2)}$ [dB]")
 plt.legend()
@@ -213,7 +213,7 @@ eta2 = 1e6
 control_signal_sequences = [
     byte_stream_2_control_signal(
         read_byte_stream_from_file(
-            '../a_getting_started/sinusodial_simulation.adc', M), M)
+            '../a_getting_started/sinusodial_simulation.adcs', M), M)
     for _ in filter_lengths]
 
 stop_after_number_of_iterations = 1 << 16
@@ -234,7 +234,7 @@ for index, de in enumerate(digital_estimators):
 
 
 impulse_response_dB = 20 * \
-    np.log10(np.abs(np.array(digital_estimators[-1].h[:, 0, :])))
+    np.log10(np.abs(np.array(digital_estimators[-1].h[0, :, :])))
 plt.figure()
 for index in range(N):
     plt.plot(
@@ -257,7 +257,7 @@ digital_estimators_ref = DigitalEstimator(
 )
 
 digital_estimators_ref(byte_stream_2_control_signal(read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adc', M), M))
+    '../a_getting_started/sinusodial_simulation.adcs', M), M))
 
 for index, estimate in enumerate(digital_estimators_ref):
     u_hat[index] = estimate

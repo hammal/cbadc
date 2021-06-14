@@ -4,11 +4,14 @@ This module contains various helpful functions to accommodate
 the cbadc toolbox.
 """
 import struct
-from typing import Generator, Iterator
+from typing import Generator, Iterator, Union
 import numpy as np
 from scipy.signal import welch
 from typing import Tuple
 from tqdm import tqdm
+import requests
+import os
+import pickle
 
 
 def number_of_bytes_selector(M: int):
@@ -122,21 +125,47 @@ def byte_stream_2_control_signal(byte_stream: Iterator[bytes], M: int) -> Genera
 
 
 def write_byte_stream_to_file(filename: str, iterator: Iterator[bytes]):
-    """ Write an stream into binary file.
+    """Write a stream into binary file.
 
     Parameters
     ----------
     filename : `str`
         filename for output file
     iterator : [bytes]
-        an iterator of bytes to write to stream
+        an iterator of bytes to write to file
     """
     with open(filename, "wb") as f:
         for word in iterator:
             f.write(word)
 
 
-def read_byte_stream_from_file(filename: str, M: int) -> Generator[bytes, None, None]:
+def write_byte_stream_to_files(filename: str, iterator: Iterator[bytes], words_per_file: int = 100000):
+    """Write a stream into a sequence of binary files of size words_per_file.
+
+    Parameters
+    ----------
+    filename : `str`
+        filename for output file
+    iterator : [bytes]
+        an iterator of bytes to write to files
+    words_per_file: `int`
+        number of words to be written per file, defaults to 100000.
+        For byte-sized words the default corresponds to 100MB files.
+    """
+    count = 0
+    iteration = 0
+    base, ext = os.path.splitext(filename)
+    while True:
+        name = base + f"_{iteration}" + ext
+        with open(name, "wb") as f:
+            while (count < words_per_file):
+                f.write(next(iterator))
+                count += 1
+        count = 0
+        iteration += 1
+
+
+def read_byte_stream_from_file(filenames: Union[str, list], M: int) -> Generator[bytes, None, None]:
     """Generate a byte stream iterator from file
 
     Parameters
@@ -152,11 +181,50 @@ def read_byte_stream_from_file(filename: str, M: int) -> Generator[bytes, None, 
         returns bytes
     """
     format = number_of_bytes_selector(M)
-    with open(filename, "rb") as f:
-        byte = b'0'
-        while byte:
-            byte = f.read(format['number_of_bytes'])
-            yield byte
+    if type(filenames) is str:
+        filenames = [filenames]
+    for filename in filenames:
+        with open(filename, "rb") as f:
+            byte = b'0'
+            try:
+                while byte:
+                    byte = f.read(format['number_of_bytes'])
+                    yield byte
+            except StopIteration:
+                pass
+    raise StopIteration
+
+
+def read_byte_stream_from_url(urlstring: Union[str, list], M: int) -> Generator[bytes, None, None]:
+    """Generate a byte stream iterator from http request
+
+    Parameters
+    ----------
+    urlstring : `str`
+        url for input file
+    M : `int`
+        number of controls
+
+    Yields
+    ------
+    bytes :
+        returns bytes
+    """
+    session = requests.Session()
+    format = number_of_bytes_selector(M)
+    urls = []
+    if type(urlstring) is str:
+        urls = [urlstring]
+    else:
+        urls = urlstring
+    for url in urls:
+        try:
+            request = session.get(url, stream=True)
+            for chunk in request.iter_content(chunk_size=format['number_of_bytes'], decode_unicode=False):
+                yield chunk
+        except StopIteration:
+            pass
+    raise StopIteration
 
 
 def random_control_signal(M: int, stop_after_number_of_iterations: int = (1 << 63), random_seed: int = 0) -> Generator[np.ndarray, None, None]:
@@ -258,7 +326,7 @@ def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
     return np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2)
 
 
-def show_status(iterator, length: int = None):
+def show_status(iterator, length: int = 1 << 63):
     """Write progress to stdout using :py:mod:`tqdm`.
 
     Parameters
@@ -267,12 +335,57 @@ def show_status(iterator, length: int = None):
         a iterator to yield values from.
     length : int
         indicate length of iterator. Also causes a raises a StopIteration
-        if iteration exceeds length.
+        if iteration exceeds length, defaults to 2^63.
     """
     iterator_with_progress = tqdm(iterator)
-    if length is not None:
+    if length < (1 << 63):
         iterator_with_progress.length = length
     for iteration, value in enumerate(iterator_with_progress):
-        if length is not None and not iteration < length:
+        if not iteration < length:
             raise StopIteration
         yield value
+
+
+def pickle_dump(object_to_be_pickled, filename: str):
+    """Convenience function to pickle an object.
+
+    In principle all class instances in this package
+    can be pickled to a file for later use.
+
+    For example this includes:
+
+    - analog signal instances,
+    - analog system instances,
+    - digital control instance,
+    - simulation instances,
+    - and digital estimator instances.
+
+    See also
+    --------
+    :py:func:`cbadc.utilities.pickle_load`
+
+    Parameters
+    ----------
+    object_to_be_pickled: any
+        a pickleable object
+    filename: `str`
+        the path for it to be stored.
+    """
+    with open(filename, 'wb') as f:
+        pickle.dump(object_to_be_pickled, f, protocol=-1)
+
+
+def pickle_load(filename: str):
+    """Convenience function to load python object from pickled file
+
+    See also
+    --------
+    :py:func:`cbadc.utilities.pickle_dump`
+
+    Parameters
+    ----------
+    filename: `str`
+        the filename of the pickled file.
+    """
+    with open(filename, 'rb') as f:
+        return pickle.load(f)

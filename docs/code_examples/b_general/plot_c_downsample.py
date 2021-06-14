@@ -57,7 +57,7 @@ print(digital_control)
 #
 # Next, we will load an actual control signal to demonstrate the digital
 # estimator's capabilities. To this end, we will use the
-# `sinusodial_simulation.adc` file that was produced in
+# `sinusodial_simulation.adcs` file that was produced in
 # :doc:`./plot_b_simulate_a_control_bounded_adc`.
 #
 # The control signal file is encoded as raw binary data so to unpack it
@@ -65,23 +65,23 @@ print(digital_control)
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adc', M)
+    '../a_getting_started/sinusodial_simulation.adcs', M)
 control_signal_sequences1 = cbc.utilities.byte_stream_2_control_signal(
     byte_stream, M)
 
 byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adc', M)
+    '../a_getting_started/sinusodial_simulation.adcs', M)
 control_signal_sequences2 = cbc.utilities.byte_stream_2_control_signal(
     byte_stream, M)
 
 byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adc', M)
+    '../a_getting_started/sinusodial_simulation.adcs', M)
 control_signal_sequences3 = cbc.utilities.byte_stream_2_control_signal(
     byte_stream, M)
 
 
 byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adc', M)
+    '../a_getting_started/sinusodial_simulation.adcs', M)
 control_signal_sequences4 = cbc.utilities.byte_stream_2_control_signal(
     byte_stream, M)
 
@@ -230,7 +230,7 @@ plt.show()
 
 ###############################################################################
 # Prepending a Bandlimiting Filter
-# -------------------------------
+# --------------------------------
 #
 # To battle the aliasing we extend the current estimator by placing a
 # bandlimiting filter in front of the system. This has the wanted effect since
@@ -462,7 +462,8 @@ plt.plot(np.arange(0, L1),
 plt.legend()
 plt.xlabel("filter tap k")
 plt.ylabel("$|| \mathbf{h} [k]||_2$ [dB]")
-# plt.xlim((0, filter_lengths[-1]))
+plt.xlim((0, 256))
+plt.ylim((-160, -20))
 plt.grid(which='both')
 
 # sphinx_gallery_thumbnail_number = 2

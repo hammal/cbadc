@@ -129,13 +129,18 @@ example.
      [    0.     0.     0. -6250.     0.     0.]
      [    0.     0.     0.     0. -6250.     0.]
      [    0.     0.     0.     0.     0. -6250.]],
-    and Gamma_tildeT =
+    Gamma_tildeT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
      [0. 0. 0. 1. 0. 0.]
      [0. 0. 0. 0. 1. 0.]
-     [0. 0. 0. 0. 0. 1.]] 
+     [0. 0. 0. 0. 0. 1.]], and D=[[0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]] 
 
     The Digital Control is parameterized as:
     T = 8e-05,
@@ -168,7 +173,7 @@ simulated in
     eta2 = 1e6
 
     # Load the control signal from previous simulation
-    byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
+    byte_stream = read_byte_stream_from_file('sinusodial_simulation.adcs', M)
     control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
 
 
@@ -181,7 +186,7 @@ simulated in
     digital_estimator(control_signal_sequences)
 
     # extract impulse response
-    impulse_response = np.abs(np.array(digital_estimator.h[:, 0, :]))
+    impulse_response = np.abs(np.array(digital_estimator.h[0, :, :]))
     impulse_response_dB = 20 * np.log10(impulse_response)
 
     # Visualize the impulse response
@@ -253,7 +258,7 @@ as a function of the bandwidth parameter :math:`\eta^2`.
         digital_estimator = FIRFilter(
             analog_system, digital_control, eta2, K1, K2)
         impulse_response = 20 * \
-            np.log10(np.abs(np.array(digital_estimator.h[:, 0, 0])))
+            np.log10(np.abs(np.array(digital_estimator.h[0, :, 0])))
         plt.plot(np.arange(0, K2), impulse_response[K2:],
                  label=f"$\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     plt.legend()
@@ -379,7 +384,7 @@ of different lengths as their decay varies.
     control_signal_sequences = [
         byte_stream_2_control_signal(
             read_byte_stream_from_file(
-                '../a_getting_started/sinusodial_simulation.adc', M), M)
+                '../a_getting_started/sinusodial_simulation.adcs', M), M)
         for _ in filter_lengths]
 
     stop_after_number_of_iterations = 1 << 16
@@ -400,7 +405,7 @@ of different lengths as their decay varies.
 
 
     impulse_response_dB = 20 * \
-        np.log10(np.abs(np.array(digital_estimators[-1].h[:, 0, :])))
+        np.log10(np.abs(np.array(digital_estimators[-1].h[0, :, :])))
     plt.figure()
     for index in range(N):
         plt.plot(
@@ -423,7 +428,7 @@ of different lengths as their decay varies.
     )
 
     digital_estimators_ref(byte_stream_2_control_signal(read_byte_stream_from_file(
-        '../a_getting_started/sinusodial_simulation.adc', M), M))
+        '../a_getting_started/sinusodial_simulation.adcs', M), M))
 
     for index, estimate in enumerate(digital_estimators_ref):
         u_hat[index] = estimate
@@ -512,7 +517,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  43.476 seconds)
+   **Total running time of the script:** ( 1 minutes  48.027 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_b_FIR_Filtering.py:

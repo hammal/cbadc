@@ -26,6 +26,7 @@
       ~FIRFilter.set_iterator
       ~FIRFilter.signal_transfer_function
       ~FIRFilter.warm_up
+      ~FIRFilter.write_C_header
    
    
 

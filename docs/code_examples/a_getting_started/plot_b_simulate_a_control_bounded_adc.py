@@ -196,7 +196,7 @@ def print_next_10_bytes(stream):
         yield byte
 
 
-write_byte_stream_to_file("sinusodial_simulation.adc",
+write_byte_stream_to_file("sinusodial_simulation.adcs",
                           print_next_10_bytes(byte_stream))
 
 ###############################################################################

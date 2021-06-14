@@ -135,13 +135,18 @@ analog system and digital control.
      [    0.     0.     0. -6250.     0.     0.]
      [    0.     0.     0.     0. -6250.     0.]
      [    0.     0.     0.     0.     0. -6250.]],
-    and Gamma_tildeT =
+    Gamma_tildeT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
      [0. 0. 0. 1. 0. 0.]
      [0. 0. 0. 0. 1. 0.]
-     [0. 0. 0. 0. 0. 1.]] 
+     [0. 0. 0. 0. 0. 1.]], and D=[[0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]] 
 
     The Digital Control is parameterized as:
     T = 8e-05,
@@ -420,7 +425,7 @@ Loading Control Signal from File
 
 Next, we will load an actual control signal to demonstrate the digital
 estimator's capabilities. To this end, we will use the
-`sinusodial_simulation.adc` file that was produced in
+`sinusodial_simulation.adcs` file that was produced in
 :doc:`./plot_b_simulate_a_control_bounded_adc`.
 
 The control signal file is encoded as raw binary data so to unpack it
@@ -433,7 +438,7 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
    :lineno-start: 167
 
 
-    byte_stream = read_byte_stream_from_file('sinusodial_simulation.adc', M)
+    byte_stream = read_byte_stream_from_file('sinusodial_simulation.adcs', M)
     control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
 
 
@@ -531,7 +536,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  16.352 seconds)
+   **Total running time of the script:** ( 0 minutes  15.950 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_c_digital_estimator.py:

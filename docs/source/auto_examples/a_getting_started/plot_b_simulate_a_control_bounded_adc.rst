@@ -121,13 +121,18 @@ system.
      [   -0.    -0.    -0. -6250.    -0.    -0.]
      [   -0.    -0.    -0.    -0. -6250.    -0.]
      [   -0.    -0.    -0.    -0.    -0. -6250.]],
-    and Gamma_tildeT =
+    Gamma_tildeT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
      [0. 0. 0. 1. 0. 0.]
      [0. 0. 0. 0. 1. 0.]
-     [0. 0. 0. 0. 0. 1.]]
+     [0. 0. 0. 0. 0. 1.]], and D=[[0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]]
 
 
 
@@ -423,7 +428,7 @@ For this purpose use the
             yield byte
 
 
-    write_byte_stream_to_file("sinusodial_simulation.adc",
+    write_byte_stream_to_file("sinusodial_simulation.adcs",
                               print_next_10_bytes(byte_stream))
 
 
@@ -596,7 +601,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 12 minutes  26.107 seconds)
+   **Total running time of the script:** ( 12 minutes  31.195 seconds)
 
 
 .. _sphx_glr_download_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:

@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**01:16.942** total execution time for **auto_examples_b_general** files:
+**01:08.411** total execution time for **auto_examples_b_general** files:
 
 +-------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py` (``plot_c_downsample.py``)               | 01:16.942 | 0.0 MB |
+| :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py` (``plot_c_downsample.py``)               | 01:08.411 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_examples_b_general_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``) | 00:00.000 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------+-----------+--------+
