@@ -339,7 +339,7 @@ def show_status(iterator, length: int = 1 << 63):
     """
     iterator_with_progress = tqdm(iterator)
     if length < (1 << 63):
-        iterator_with_progress.length = length
+        iterator_with_progress.total = length
     for iteration, value in enumerate(iterator_with_progress):
         if not iteration < length:
             raise StopIteration

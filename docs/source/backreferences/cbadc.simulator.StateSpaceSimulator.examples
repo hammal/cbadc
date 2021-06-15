@@ -5,14 +5,14 @@ Examples using ``cbadc.simulator.StateSpaceSimulator``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to simulate the interactions between an analog system and a digital cont...">
+    <div class="sphx-glr-thumbcontainer" tooltip="Builds on...">
 
 .. only:: html
 
- .. figure:: /auto_examples/a_getting_started/images/thumb/sphx_glr_plot_b_simulate_a_control_bounded_adc_thumb.png
-     :alt: Simulating a Control-Bounded ADC
+ .. figure:: /simulations/images/thumb/sphx_glr_plot_hadamard_thumb.png
+     :alt: Loading a Hadamard Ramp Simulation
 
-     :ref:`sphx_glr_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py`
+     :ref:`sphx_glr_simulations_plot_hadamard.py`
 
 .. raw:: html
 
@@ -20,4 +20,4 @@ Examples using ``cbadc.simulator.StateSpaceSimulator``
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_a_getting_started_plot_b_simulate_a_control_bounded_adc.py`
+ * :ref:`sphx_glr_simulations_plot_hadamard.py`
