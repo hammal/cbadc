@@ -160,3 +160,76 @@ class Sinusodial(AnalogSignal):
             self.amplitude *
             np.sin(self.angluarFrequency * t + self.phase) + self.offset
         )
+
+
+class SincPulse(AnalogSignal):
+
+    """An analog continuous-time sinc pulse.
+
+    Parameters
+    ----------
+    amplitude : `float`
+        The peak amplitude of the pulse.
+    bandwidth : `float`
+        The bandwidth in [Hz].
+    delay : `float`
+        The time delay (instance of the peak) in [s].
+    offset : `float`
+        The offset value, defaults to 0.
+
+    Attributes
+    ----------
+    amplitude : `float`
+        The amplitude.
+    bandwidth : `float`
+        The bandwidth in [Hz].
+    delay : `float`
+        The the time delay in [s].
+    offset : `float`, `optional`
+        The offset
+
+    See also
+    --------
+    cbadc.analog_signal.AnalogSignal
+
+    Example
+    -------
+    >>> from cbadc.analog_signal import SincPulse
+    >>> import numpy as np
+    >>> u = SincPulse(3, 1, 5)
+    >>> print(u.evaluate(5))
+    3.0
+
+    """
+
+    def __init__(self, amplitude: float, bandwidth: float, delay: float,  
+                 offset: float = 0.0):
+        self.amplitude: float = amplitude
+        self.bandwidth: float = bandwidth
+        self.delay: float = delay
+        self.offset: float = offset
+
+    def __str__(self):
+        return f"""Sinc pulse parameterized as: delay = {self.delay}, \n
+        bandwidth = {self.bandwidth}, peak amplitude = {self.amplitude},  
+        and\noffset = {self.offset}"""
+    
+    def evaluate(self, t: float) -> float:
+        """Evaluate the signal at time :math:`t`.
+
+        Parameters
+        ----------
+        t : `float`
+            the time instance for evaluation.
+
+        Returns
+        -------
+        float
+            The analog signal value
+        """
+        return (
+            self.amplitude * 
+            np.sinc(2 * self.bandwidth * (t - self.delay)) +
+            self.offset
+        )
+
