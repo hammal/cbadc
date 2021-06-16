@@ -30,7 +30,7 @@ def test_evaluate_with_offset():
     sinc = SincPulse(amplitude, bandwidth, delay)
     assert sinc.evaluate(t) == (amplitude *
                                     math.sin(2 * math.pi * bandwidth * (t-delay)) /
-                                    (2 * math.pi * (t-delay)) + offset
+                                    (2 * math.pi * bandwidth * (t-delay)) + offset
                                 )
 
 
