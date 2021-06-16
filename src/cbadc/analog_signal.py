@@ -134,7 +134,7 @@ class Sinusodial(AnalogSignal):
                  offset: float = 0.0):
         self.amplitude: float = amplitude
         self.frequency: float = frequency
-        self.angluarFrequency: float = 2 * np.pi * self.frequency
+        self.angularFrequency: float = 2 * np.pi * self.frequency
         self.phase: float = phase
         self.offset: float = offset
 
@@ -158,7 +158,7 @@ class Sinusodial(AnalogSignal):
         """
         return (
             self.amplitude *
-            np.sin(self.angluarFrequency * t + self.phase) + self.offset
+            np.sin(self.angularFrequency * t + self.phase) + self.offset
         )
 
 
