@@ -1,7 +1,7 @@
 
 
-Examples using ``cbadc.digital_estimator.DigitalEstimator``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``cbadc.digital_control.PhaseDelayedControl``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 
