@@ -21,7 +21,7 @@ def test_evaluate():
                                 ) 
 
 
-def test_evaluate_with_offset_and_phase():
+def test_evaluate_with_offset():
     amplitude = 1.2
     bandwidth = 42.
     delay = 20
@@ -30,7 +30,7 @@ def test_evaluate_with_offset_and_phase():
     sinc = SincPulse(amplitude, bandwidth, delay)
     assert sinc.evaluate(t) == (amplitude *
                                     math.sin(2 * math.pi * bandwidth * (t-delay)) /
-                                    (math.pi * (t-delay)) + offset
+                                    (2 * math.pi * (t-delay)) + offset
                                 )
 
 
