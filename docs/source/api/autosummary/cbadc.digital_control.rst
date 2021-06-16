@@ -21,6 +21,7 @@
    
       CalibrationControl
       DigitalControl
+      PhaseDelayedControl
    
    
 

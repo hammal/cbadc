@@ -1,7 +1,7 @@
 
 
-Examples using ``cbadc.analog_system.LeapFrog``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``cbadc.digital_control.PhaseDelayedControl``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 
