@@ -18,8 +18,8 @@
 .. _sphx_glr_auto_examples_b_general_plot_d_delay_phase_control.py:
 
 
-Using Phase Shifted Digital Control
-===================================
+Using Phase Shifted Digital Control (draft)
+===========================================
 
 This example shows the benefit of using the
 phase shifted digital control delay.
@@ -376,7 +376,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  55.797 seconds)
+   **Total running time of the script:** ( 2 minutes  54.177 seconds)
 
 
 .. _sphx_glr_download_auto_examples_b_general_plot_d_delay_phase_control.py:
