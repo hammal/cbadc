@@ -24,7 +24,7 @@ simulation_wrapper = cbadc.examples.hadamard.HadamardPCB('B')
 # ---------------------------
 #
 # In this case we load
-# :py:func:`cbadc.examples.hadamard.HadamardPCB.simulation_ramp_1_B`
+# :py:func:`cbadc.examples.HadamardPCB.simulation_ramp_1_B`
 # simulation by invoking
 
 control_signal, ideal_control_signal, simulator, size = simulation_wrapper.simulation_ramp_1_B()

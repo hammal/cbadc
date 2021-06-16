@@ -109,9 +109,9 @@ class ChainOfIntegrators:
 
         Specifically for an input signal
 
-        :math:`u(t) = \mathrm{amplitude} \cdot \marhrm{ramp}(t / \mathrm{frequency} + \mathrm{phase}) + \mathrm{offset}`
+        :math:`u(t) = \mathrm{amplitude} \cdot \mathrm{ramp}(t / \mathrm{frequency} + \mathrm{phase}) + \mathrm{offset}`
 
-        where :math:`\marhrm{ramp}(\cdot)` is an unit-scale ramp
+        where :math:`\mathrm{ramp}(\cdot)` is an unit-scale ramp
         function.
 
         Parameters

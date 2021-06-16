@@ -1,3 +1,5 @@
+"""Data wrappers for control-bounded Hadamard ADC simulations
+"""
 import numpy as np
 import cbadc
 import scipy.linalg

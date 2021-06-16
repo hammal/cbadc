@@ -9,5 +9,5 @@ control signal sequences from default architectures and
 parametrizations are provided to reduce simulation time.
 """
 
-from .hadamard import HadamardPCB
-from .chain_of_integrators import ChainOfIntegrators
+# from .hadamard import HadamardPCB
+# from .chain_of_integrators import ChainOfIntegrators

@@ -24,7 +24,8 @@ These base classes are described below.
     :recursive:
     :template: custom-module-template.rst
 
-    cbadc.examples
+    cbadc.examples.chain_of_integrators
+    cbadc.examples.hadamard 
 
 ==========================
 Simulation Examples
