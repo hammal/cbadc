@@ -28,9 +28,9 @@ These base classes are described below.
 .. autosummary::
     :toctree: autosummary
     :recursive:
-    :template: custom-class-template.rst
-    
-    cbadc.examples.HadamardPCB
+    :template: custom-module-template.rst
+
+    cbadc.examples
 
 ==========================
 Simulation Examples

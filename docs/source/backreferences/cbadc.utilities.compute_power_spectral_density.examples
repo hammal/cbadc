@@ -1,0 +1,23 @@
+
+
+Examples using ``cbadc.utilities.compute_power_spectral_density``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Builds on...">
+
+.. only:: html
+
+ .. figure:: /simulations/images/thumb/sphx_glr_plot_hadamard_thumb.png
+     :alt: Loading a Hadamard Ramp Simulation
+
+     :ref:`sphx_glr_simulations_plot_hadamard.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_simulations_plot_hadamard.py`

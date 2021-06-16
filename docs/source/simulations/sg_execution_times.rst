@@ -5,8 +5,8 @@
 
 Computation times
 =================
-**00:01.586** total execution time for **simulations** files:
+**00:08.814** total execution time for **simulations** files:
 
 +---------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_simulations_plot_hadamard.py` (``plot_hadamard.py``) | 00:01.586 | 0.0 MB |
+| :ref:`sphx_glr_simulations_plot_hadamard.py` (``plot_hadamard.py``) | 00:08.814 | 0.0 MB |
 +---------------------------------------------------------------------+-----------+--------+
