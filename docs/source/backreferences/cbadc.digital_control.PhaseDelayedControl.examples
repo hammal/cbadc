@@ -1,7 +1,7 @@
 
 
-Examples using ``cbadc.analog_signal.Sinusodial``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``cbadc.digital_control.PhaseDelayedControl``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 

@@ -172,6 +172,27 @@ Next we highlight various features of the cbadc package
    :hidden:
 
    /auto_examples/b_general/plot_c_downsample
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows the benefit of using the phase shifted digital control delay.">
+
+.. only:: html
+
+ .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_d_delay_phase_control_thumb.png
+     :alt: Using Phase Shifted Digital Control
+
+     :ref:`sphx_glr_auto_examples_b_general_plot_d_delay_phase_control.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/b_general/plot_d_delay_phase_control
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

@@ -149,6 +149,82 @@ class DigitalControl:
         return f"The Digital Control is parameterized as:\nT = {self.T},\nM = {self.M}, and next update at\nt = {self._t_next}"
 
 
+class PhaseDelayedControl(DigitalControl):
+    """Represents a digital control system that switches controls individually
+    sequentially.
+
+    This digital control updates the :math:`m`-th control signals as
+
+    :math:`s_m[k] = \\tilde{s}((k+m)T)`
+
+    except for this it works similarly to 
+    :py:class`cbadc.digital_control.DigitalControl`
+
+    Parameters
+    ----------
+    T : `float`
+        clock period at which the digital control updates.
+    M : `int`
+        number of controls.
+    t0 : `float`: optional
+        determines initial time, defaults to 0.
+
+    Attributes
+    ----------
+    T : `float`
+        clock period :math:`T` of digital control system.
+    M : `int`
+        number of controls :math:`M`.
+    M_tilde : `int`
+        number of control observations :math:`\\tilde{M}`.
+
+    Note
+    ----
+    For this digital control system :math:`M=\\tilde{M}`.
+    """
+
+    def __init__(self, T: float, M: int, t0: float = 0):
+        DigitalControl.__init__(self, T, M, t0=t0)
+        self._t_next = t0 + self.T * np.arange(1, M+1)
+
+    def control_contribution(self, t: float, s_tilde: np.ndarray) -> np.ndarray:
+        """Evaluates the control contribution at time t given a control observation
+        s_tilde.
+
+        Parameters
+        ----------
+        t : `float`
+            time at which the digital control i evaluated.
+        s_tilde : `array_like`, shape=(M_tilde,)
+            state vector evaluated at time t
+
+        Returns
+        -------
+        `array_like`, shape=(M,)
+            the control signal :math:`\mathbf{s}(t)`
+
+        """
+        # Check if time t has passed the next control update
+        for m in range(self.M):
+            if t >= self._t_next[m]:
+                # if so update the control signal state
+                self._s[m] = s_tilde[m] >= 0
+                self._t_next[m] += self.T
+                # DAC
+                self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
+        return self._dac_values
+
+    def control_signal(self) -> np.ndarray:
+        """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
+
+        Returns
+        -------
+        `array_like`, shape=(M,), dtype=numpy.int8
+            current control state.
+        """
+        return self._s
+
+
 class CalibrationControl(DigitalControl):
 
     def control_contribution(self, t: float, s_tilde: np.ndarray) -> np.ndarray:
