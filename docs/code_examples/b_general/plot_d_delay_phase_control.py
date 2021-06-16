@@ -1,6 +1,6 @@
 """
-Using Phase Shifted Digital Control
-===================================
+Using Phase Shifted Digital Control (draft)
+===========================================
 
 This example shows the benefit of using the
 phase shifted digital control delay.
