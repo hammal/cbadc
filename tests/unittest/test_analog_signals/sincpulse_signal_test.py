@@ -5,19 +5,19 @@ import math
 def test_initialization():
     amplitude = 1.0
     bandwidth = 42.
-    delay = 20
+    delay = 11
     SincPulse(amplitude, bandwidth, delay)
 
 
 def test_evaluate():
     amplitude = 1.2
     bandwidth = 42.
-    delay = 20
-    t = 3.
+    delay = 11
+    t = 1
     sinc = SincPulse(amplitude, bandwidth, delay)
     assert sinc.evaluate(t) == (amplitude *
-                                    math.sin(2 * math.pi * bandwidth * (t-delay) /
-                                    (math.pi * (t-delay)))
+                                    math.sin(2 * math.pi * bandwidth * (t-delay)) /
+                                    (2 * math.pi * bandwidth * (t-delay))
                                 ) 
 
 
@@ -29,8 +29,8 @@ def test_evaluate_with_offset_and_phase():
     t = 3.7
     sinc = SincPulse(amplitude, bandwidth, delay)
     assert sinc.evaluate(t) == (amplitude *
-                                    math.sin(2 * math.pi * bandwidth * (t-delay) /
-                                    (math.pi * (t-delay))) + offset
+                                    math.sin(2 * math.pi * bandwidth * (t-delay)) /
+                                    (math.pi * (t-delay)) + offset
                                 )
 
 
