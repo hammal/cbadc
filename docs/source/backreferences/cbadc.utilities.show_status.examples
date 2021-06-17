@@ -5,14 +5,14 @@ Examples using ``cbadc.utilities.show_status``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for downsampling.">
+    <div class="sphx-glr-thumbcontainer" tooltip="Builds on...">
 
 .. only:: html
 
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_c_downsample_thumb.png
-     :alt: Downsampling
+ .. figure:: /simulations/images/thumb/sphx_glr_plot_hadamard_thumb.png
+     :alt: Loading a Hadamard Ramp Simulation
 
-     :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`
+     :ref:`sphx_glr_simulations_plot_hadamard.py`
 
 .. raw:: html
 
@@ -20,4 +20,4 @@ Examples using ``cbadc.utilities.show_status``
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`
+ * :ref:`sphx_glr_simulations_plot_hadamard.py`
