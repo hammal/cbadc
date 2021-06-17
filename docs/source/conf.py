@@ -10,6 +10,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+from sphinx_gallery.sorting import FileNameSortKey
 import os
 import sys
 import warnings
@@ -41,13 +42,13 @@ author = "Hampus Malmberg"
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-          "sphinx.ext.autosummary",
-          "sphinx.ext.mathjax",
-          "sphinx_rtd_theme",
-          "nbsphinx",
-          "sphinx.ext.napoleon",
-          "sphinx.ext.intersphinx",
-          "sphinx_gallery.gen_gallery"]
+    "sphinx.ext.autosummary",
+    "sphinx.ext.mathjax",
+    "sphinx_rtd_theme",
+    "nbsphinx",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.intersphinx",
+    "sphinx_gallery.gen_gallery"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -77,26 +78,27 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
 
 
 # Sphinx-gallery
-from sphinx_gallery.sorting import FileNameSortKey
 sphinx_gallery_conf = {
     # path to your example scripts
-     'examples_dirs': '../code_examples',
-     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+    'examples_dirs': ['../code_examples', '../simulations'],
+    # path to where to save gallery generated output
+    'gallery_dirs': ['tutorials', 'simulations'],
 
-     'compress_images': ('images', 'thumbnails', '-o7'),
-     # directory where function/class granular galleries are stored
-     'backreferences_dir': 'backreferences',
-     # Modules for which function/class level galleries are created. In
-     # this case sphinx_gallery and numpy in a tuple of strings.
-     'doc_module': ('cbadc.analog_system',
-                    'cbadc.analog_signal',
-                    'cbadc.digital_control',
-                    'cbadc.digital_estimator',
-                    'cbadc.simulator',
-                    'cbadc.utilities'),
-     'line_numbers': True,
-     'remove_config_comments': True,
-     'within_subsection_order': FileNameSortKey,
+    'compress_images': ('images', 'thumbnails', '-o7'),
+    # directory where function/class granular galleries are stored
+    'backreferences_dir': 'backreferences',
+    # Modules for which function/class level galleries are created. In
+    # this case sphinx_gallery and numpy in a tuple of strings.
+    'doc_module': ('cbadc.analog_system',
+                   'cbadc.analog_signal',
+                   'cbadc.digital_control',
+                   'cbadc.digital_estimator',
+                   'cbadc.simulator',
+                   'cbadc.utilities',
+                   'cbadc.examples'),
+    'line_numbers': True,
+    'remove_config_comments': True,
+    'within_subsection_order': FileNameSortKey,
 }
 
 # generate autosummary even if no references

@@ -6,3 +6,4 @@ pytest
 pytest-benchmark
 pytest-cov
 tox
+typing-extensions

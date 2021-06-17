@@ -1298,8 +1298,15 @@ class FIRFilter(DigitalEstimator):
         for l in range(self.analog_system.L):
             for m in range(self.analog_system.M):
                 # self.h.shape -> (L, K3, M)
-                self.h[l, :, m] = np.convolve(
-                    self.h[l, :, m], filter, mode='same')
+                temp = np.convolve(
+                    self.h[l, :, m], filter, mode='full')
+                if temp.size == self.K3:
+                    self.h[l, :, m] = temp
+                else:
+                    mid_point = temp.size // 2
+                    half_length = self.K3 // 2
+                    self.h[l, :, m] = temp[(mid_point -
+                                            half_length):(mid_point + half_length)]
 
     def write_C_header(self, filename: str):
         """Write the FIR filter coefficients h into

@@ -12,23 +12,23 @@ The cbadc toolbox enables you to:
 * **Estimate** samples :math:`\hat{\mathbf{u}}(t)` from control signals :math:`\mathbf{s}[k]`.
 * **Simulate** analog system and digital control interactions.
 
-
-
 Contents
 ========
 
-This documentation is structured in three parts. 
+This documentation is structured in four parts. 
 
 .. toctree::
    :maxdepth: 1
    
    control-bounded_converters
-   auto_examples/index
+   tutorials/index
+   simulations/index
    api/api
 
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
-A/D conversion's main concepts and terminology, :doc:`auto_examples/index` provide
-code examples that demonstrate common use cases, and the :doc:`api/api` chapter 
+A/D conversion's main concepts and terminology, :doc:`tutorials/index` provide
+tutorials demonstrating common use cases, :doc:`simulations/index` provide
+interfaces to simulation results and hardware prototypes, and the :doc:`api/api` chapter 
 contains the package documentation.
 
 Installation
