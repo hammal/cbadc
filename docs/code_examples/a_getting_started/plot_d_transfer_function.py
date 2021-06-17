@@ -5,11 +5,9 @@ Transfer Functions
 This example demonstrates how to visualize the related transfer functions of
 the analog system and digital estimator.
 """
-from cbadc.digital_control import DigitalControl
-from cbadc.digital_estimator import DigitalEstimator
 import matplotlib.pyplot as plt
-from cbadc.analog_system import ChainOfIntegrators
 import numpy as np
+import cbadc
 
 ###############################################################################
 # Chain-of-Integrators ADC Example
@@ -55,7 +53,7 @@ rhoVec = -betaVec / 50.
 kappaVec = - beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
-analog_system = ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 # print the system matrices.
 print(analog_system)
 
@@ -139,7 +137,7 @@ plt.gcf().tight_layout()
 # functions). However necessary to instantiate the digital estimator
 
 T = 1/(2 * beta)
-digital_control = DigitalControl(T, N)
+digital_control = cbadc.digital_control.DigitalControl(T, N)
 
 
 # Compute eta2 for a given bandwidth.
@@ -148,7 +146,7 @@ eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
     np.array([omega_3dB])).flatten()) ** 2
 
 # Instantiate estimator.
-digital_estimator = DigitalEstimator(
+digital_estimator = cbadc.digital_estimator.DigitalEstimator(
     analog_system, digital_control, eta2, K1=1)
 
 # Compute NTF
@@ -189,7 +187,7 @@ eta2_vec = np.logspace(0, 10, 11)[::2]
 plt.figure()
 for eta2 in eta2_vec:
     # Instantiate an estimator for each eta.
-    digital_estimator = DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
         analog_system, digital_control, eta2, K1=1)
     # Compute stf and ntf
     ntf = digital_estimator.noise_transfer_function(omega)

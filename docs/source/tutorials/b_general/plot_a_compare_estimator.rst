@@ -24,23 +24,15 @@ Compare Estimators
 In this tutorial we investigate different estimator implementation techniques
 and compare their performance.
 
-.. GENERATED FROM PYTHON SOURCE LINES 8-21
+.. GENERATED FROM PYTHON SOURCE LINES 8-13
 
 .. code-block:: default
    :lineno-start: 8
 
     import timeit
-    from cbadc.utilities import compute_power_spectral_density
-    from cbadc.digital_estimator import ParallelEstimator
-    from cbadc.digital_estimator import IIRFilter
-    from cbadc.digital_estimator import FIRFilter
     import matplotlib.pyplot as plt
-    from cbadc.digital_estimator import DigitalEstimator
-    from cbadc.simulator import StateSpaceSimulator
-    from cbadc.analog_signal import Sinusodial
-    from cbadc.analog_system import LeapFrog
-    from cbadc.digital_control import DigitalControl
     import numpy as np
+    import cbadc
 
 
 
@@ -49,7 +41,7 @@ and compare their performance.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 22-27
+.. GENERATED FROM PYTHON SOURCE LINES 14-19
 
 Analog System
 -------------
@@ -57,10 +49,10 @@ Analog System
 We will commit to a leap-frog control-bounded analog system throughtout
 this tutorial.
 
-.. GENERATED FROM PYTHON SOURCE LINES 27-46
+.. GENERATED FROM PYTHON SOURCE LINES 19-38
 
 .. code-block:: default
-   :lineno-start: 28
+   :lineno-start: 20
 
 
     # Determine system parameters
@@ -77,7 +69,7 @@ this tutorial.
     beta_vec = beta * np.ones(N)
     rho_vec = - omega_3dB ** 2 / beta * np.ones(N)
     Gamma = np.diag(-beta_vec)
-    analog_system = LeapFrog(beta_vec, rho_vec, Gamma)
+    analog_system = cbadc.analog_system.LeapFrog(beta_vec, rho_vec, Gamma)
 
     print(analog_system, "\n")
 
@@ -143,7 +135,7 @@ this tutorial.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 47-52
+.. GENERATED FROM PYTHON SOURCE LINES 39-44
 
 Analog Signal
 -------------
@@ -151,10 +143,10 @@ Analog Signal
 We will also need an analog signal for conversion.
 In this tutorial we will use a Sinusodial signal.
 
-.. GENERATED FROM PYTHON SOURCE LINES 52-68
+.. GENERATED FROM PYTHON SOURCE LINES 44-60
 
 .. code-block:: default
-   :lineno-start: 53
+   :lineno-start: 45
 
 
     # Set the peak amplitude.
@@ -167,7 +159,7 @@ In this tutorial we will use a Sinusodial signal.
     offset = 0.0
 
     # Instantiate the analog signal
-    analog_signal = Sinusodial(amplitude, frequency, phase, offset)
+    analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
 
     print(analog_signal)
 
@@ -193,7 +185,7 @@ In this tutorial we will use a Sinusodial signal.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 69-74
+.. GENERATED FROM PYTHON SOURCE LINES 61-66
 
 Simulating
 ----------
@@ -201,10 +193,10 @@ Simulating
 Each estimator will require an independent stream of control signals.
 Therefore, we will next instantiate several digital controls and simulators.
 
-.. GENERATED FROM PYTHON SOURCE LINES 74-123
+.. GENERATED FROM PYTHON SOURCE LINES 66-115
 
 .. code-block:: default
-   :lineno-start: 75
+   :lineno-start: 67
 
 
     # Set simulation precision parameters
@@ -214,14 +206,14 @@ Therefore, we will next instantiate several digital controls and simulators.
 
     # Instantiate digital controls. We will need four of them as we will compare
     # four different estimators.
-    digital_control1 = DigitalControl(T, M)
-    digital_control2 = DigitalControl(T, M)
-    digital_control3 = DigitalControl(T, M)
-    digital_control4 = DigitalControl(T, M)
+    digital_control1 = cbadc.digital_control.DigitalControl(T, M)
+    digital_control2 = cbadc.digital_control.DigitalControl(T, M)
+    digital_control3 = cbadc.digital_control.DigitalControl(T, M)
+    digital_control4 = cbadc.digital_control.DigitalControl(T, M)
     print(digital_control1)
 
     # Instantiate simulators.
-    simulator1 = StateSpaceSimulator(
+    simulator1 = cbadc.simulator.StateSpaceSimulator(
         analog_system,
         digital_control1,
         [analog_signal],
@@ -229,7 +221,7 @@ Therefore, we will next instantiate several digital controls and simulators.
         rtol=rtol,
         max_step=max_step
     )
-    simulator2 = StateSpaceSimulator(
+    simulator2 = cbadc.simulator.StateSpaceSimulator(
         analog_system,
         digital_control2,
         [analog_signal],
@@ -237,7 +229,7 @@ Therefore, we will next instantiate several digital controls and simulators.
         rtol=rtol,
         max_step=max_step
     )
-    simulator3 = StateSpaceSimulator(
+    simulator3 = cbadc.simulator.StateSpaceSimulator(
         analog_system,
         digital_control3,
         [analog_signal],
@@ -245,7 +237,7 @@ Therefore, we will next instantiate several digital controls and simulators.
         rtol=rtol,
         max_step=max_step
     )
-    simulator4 = StateSpaceSimulator(
+    simulator4 = cbadc.simulator.StateSpaceSimulator(
         analog_system,
         digital_control4,
         [analog_signal],
@@ -280,7 +272,7 @@ Therefore, we will next instantiate several digital controls and simulators.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-133
+.. GENERATED FROM PYTHON SOURCE LINES 116-125
 
 Default, Quadratic Complexity, Estimator
 ----------------------------------------
@@ -292,10 +284,10 @@ computed. Therefore, this procedure could be computationally intense for a
 analog system with a large analog state order or equivalently for large
 number of independent digital controls.
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-153
+.. GENERATED FROM PYTHON SOURCE LINES 125-145
 
 .. code-block:: default
-   :lineno-start: 134
+   :lineno-start: 126
 
 
     # Set the bandwidth of the estimator
@@ -310,7 +302,7 @@ number of independent digital controls.
 
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
-    digital_estimator_batch = DigitalEstimator(
+    digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
         analog_system, digital_control1, eta2, K1, K2)
     digital_estimator_batch(simulator1)
 
@@ -404,16 +396,16 @@ number of independent digital controls.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 154-157
+.. GENERATED FROM PYTHON SOURCE LINES 146-149
 
 Visualize Estimator's Transfer Function (Same for Both)
 -------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 157-191
+.. GENERATED FROM PYTHON SOURCE LINES 149-183
 
 .. code-block:: default
-   :lineno-start: 158
+   :lineno-start: 150
 
 
     # Logspace frequencies
@@ -460,7 +452,7 @@ Visualize Estimator's Transfer Function (Same for Both)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 192-200
+.. GENERATED FROM PYTHON SOURCE LINES 184-192
 
 FIR Filter Estimator
 --------------------
@@ -471,17 +463,17 @@ we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
 filter coefficients. This is an aid to determine if the lookahead and
 lookback sizes L1 and L2 are set sufficiently large.
 
-.. GENERATED FROM PYTHON SOURCE LINES 200-236
+.. GENERATED FROM PYTHON SOURCE LINES 192-228
 
 .. code-block:: default
-   :lineno-start: 201
+   :lineno-start: 193
 
 
     # Determine lookback
     L1 = K2
     # Determine lookahead
     L2 = K2
-    digital_estimator_fir = FIRFilter(
+    digital_estimator_fir = cbadc.digital_estimator.FIRFilter(
         analog_system, digital_control2, eta2, L1, L2)
 
     print(digital_estimator_fir, "\n")
@@ -553,7 +545,7 @@ lookback sizes L1 and L2 are set sufficiently large.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 237-243
+.. GENERATED FROM PYTHON SOURCE LINES 229-235
 
 IIR Filter Estimator
 --------------------
@@ -562,16 +554,16 @@ The IIR filter is closely related to the FIR filter with the exception
 of an moving average computation.
 See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
-.. GENERATED FROM PYTHON SOURCE LINES 243-254
+.. GENERATED FROM PYTHON SOURCE LINES 235-246
 
 .. code-block:: default
-   :lineno-start: 244
+   :lineno-start: 236
 
 
     # Determine lookahead
     L2 = K2
 
-    digital_estimator_iir = IIRFilter(
+    digital_estimator_iir = cbadc.digital_estimator.IIRFilter(
         analog_system, digital_control3, eta2, L2)
 
     print(digital_estimator_iir, "\n")
@@ -642,7 +634,7 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 255-263
+.. GENERATED FROM PYTHON SOURCE LINES 247-255
 
 Parallel Estimator
 ------------------------------
@@ -653,15 +645,15 @@ resembles the default estimator but diagonalizes the filter coefficients
 resulting in a more computationally more efficient filter that can be
 parallelized into independent filter operations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 263-273
+.. GENERATED FROM PYTHON SOURCE LINES 255-265
 
 .. code-block:: default
-   :lineno-start: 264
+   :lineno-start: 256
 
 
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
-    digital_estimator_parallel = ParallelEstimator(
+    digital_estimator_parallel = cbadc.digital_estimator.ParallelEstimator(
         analog_system, digital_control4, eta2, K1, K2)
 
     digital_estimator_parallel(simulator4)
@@ -759,7 +751,7 @@ parallelized into independent filter operations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 274-281
+.. GENERATED FROM PYTHON SOURCE LINES 266-273
 
 Estimating (Filtering)
 ----------------------
@@ -769,10 +761,10 @@ estimators. Note that since no stop criteria is set for either the analog
 signal, the simulator, or the digital estimator this iteration could
 potentially continue until the default stop criteria of 2^63 iterations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 281-294
+.. GENERATED FROM PYTHON SOURCE LINES 273-286
 
 .. code-block:: default
-   :lineno-start: 282
+   :lineno-start: 274
 
 
     # Set simulation length
@@ -794,7 +786,7 @@ potentially continue until the default stop criteria of 2^63 iterations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 295-300
+.. GENERATED FROM PYTHON SOURCE LINES 287-292
 
 Visualizing Results
 -------------------
@@ -802,10 +794,10 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 300-407
+.. GENERATED FROM PYTHON SOURCE LINES 292-399
 
 .. code-block:: default
-   :lineno-start: 301
+   :lineno-start: 293
 
 
     t = np.arange(size)
@@ -889,15 +881,15 @@ in both time and frequency domain.
     u_hat_iir_clipped = u_hat_iir[(K1 + K2):-K2]
     u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
     u_clipped = stf_at_omega * u
-    f_batch, psd_batch = compute_power_spectral_density(
+    f_batch, psd_batch = cbadc.utilities.compute_power_spectral_density(
         u_hat_batch_clipped)
-    f_fir, psd_fir = compute_power_spectral_density(
+    f_fir, psd_fir = cbadc.utilities.compute_power_spectral_density(
         u_hat_fir_clipped)
-    f_iir, psd_iir = compute_power_spectral_density(
+    f_iir, psd_iir = cbadc.utilities.compute_power_spectral_density(
         u_hat_iir_clipped)
-    f_parallel, psd_parallel = compute_power_spectral_density(
+    f_parallel, psd_parallel = cbadc.utilities.compute_power_spectral_density(
         u_hat_parallel_clipped)
-    f_ref, psd_ref = compute_power_spectral_density(u_clipped)
+    f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_clipped)
     plt.semilogx(f_ref, 10 * np.log10(psd_ref),
                  label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
     plt.semilogx(f_batch, 10 * np.log10(psd_batch), label="$\hat{U}(f)$ Batch")
@@ -965,17 +957,17 @@ in both time and frequency domain.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 408-412
+.. GENERATED FROM PYTHON SOURCE LINES 400-404
 
 Compute Time
 ------------
 
 Compare the execution time of each estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 412-472
+.. GENERATED FROM PYTHON SOURCE LINES 404-464
 
 .. code-block:: default
-   :lineno-start: 414
+   :lineno-start: 406
 
 
 
@@ -989,25 +981,25 @@ Compare the execution time of each estimator
             _ = next(iterator)
 
 
-    digital_estimator_batch = DigitalEstimator(
+    digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
         analog_system,
         digital_control1,
         eta2,
         K1,
         K2)
-    digital_estimator_fir = FIRFilter(
+    digital_estimator_fir = cbadc.digital_estimator.FIRFilter(
         analog_system,
         digital_control2,
         eta2,
         L1,
         L2)
-    digital_estimator_parallel = ParallelEstimator(
+    digital_estimator_parallel = cbadc.digital_estimator.ParallelEstimator(
         analog_system,
         digital_control4,
         eta2,
         K1,
         K2)
-    digital_estimator_iir = IIRFilter(
+    digital_estimator_iir = cbadc.digital_estimator.IIRFilter(
         analog_system,
         digital_control3,
         eta2,
@@ -1048,16 +1040,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    5.599171675043181 sec 
+    5.485120426994399 sec 
 
     FIR Estimator:
-    75.00340863404563 sec 
+    37.11588862899225 sec 
 
     IIR Estimator:
-    54.88302751700394 sec 
+    36.34378033899702 sec 
 
     Parallel Estimator:
-    9.477430624014232 sec 
+    9.21785790399008 sec 
 
 
 
@@ -1066,7 +1058,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 53 minutes  14.893 seconds)
+   **Total running time of the script:** ( 40 minutes  23.772 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_a_compare_estimator.py:

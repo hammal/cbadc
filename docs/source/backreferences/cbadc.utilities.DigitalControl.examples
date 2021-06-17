@@ -1,7 +1,7 @@
 
 
-Examples using ``cbadc.utilities.control_signal_2_byte_stream``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``cbadc.utilities.DigitalControl``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 

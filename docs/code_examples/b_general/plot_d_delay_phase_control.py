@@ -291,5 +291,4 @@ ax[0].legend()
 ax[1].legend()
 fig.tight_layout()
 
-
 # sphinx_gallery_thumbnail_number = 2

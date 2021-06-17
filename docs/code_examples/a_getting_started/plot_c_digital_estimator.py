@@ -6,12 +6,7 @@ Converting a stream of control signals into a estimate samples.
 """
 from cbadc.utilities import compute_power_spectral_density
 import matplotlib.pyplot as plt
-from cbadc.utilities import read_byte_stream_from_file, \
-    byte_stream_2_control_signal
-from cbadc.utilities import random_control_signal
-from cbadc.analog_system import AnalogSystem
-from cbadc.digital_control import DigitalControl
-from cbadc.digital_estimator import DigitalEstimator
+import cbadc
 import numpy as np
 
 ###############################################################################
@@ -51,8 +46,8 @@ Gamma = [[-beta, 0, 0, 0, 0, 0],
 Gamma_tildeT = np.eye(N)
 T = 1.0/(2 * beta)
 
-analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-digital_control = DigitalControl(T, M)
+analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+digital_control = cbadc.digital_control.DigitalControl(T, M)
 
 # Summarize the analog system, digital control, and digital estimator.
 print(analog_system, "\n")
@@ -86,7 +81,7 @@ sequence_length = 10
 
 # can conveniently be created as
 
-control_signal_sequences = random_control_signal(
+control_signal_sequences = cbadc.utilities.random_control_signal(
     M, stop_after_number_of_iterations=sequence_length, random_seed=42)
 
 # where random_seed and stop_after_number_of_iterations are fully optional
@@ -112,7 +107,7 @@ K1 = sequence_length
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).
 
-digital_estimator = DigitalEstimator(analog_system, digital_control, eta2, K1)
+digital_estimator = cbadc.digital_estimator.DigitalEstimator(analog_system, digital_control, eta2, K1)
 
 print(digital_estimator, "\n")
 
@@ -137,9 +132,9 @@ for i in digital_estimator:
 K1 = 5
 K2 = 1
 sequence_length = 11
-control_signal_sequences = random_control_signal(
+control_signal_sequences = cbadc.utilities.random_control_signal(
     M, stop_after_number_of_iterations=sequence_length, random_seed=42)
-digital_estimator = DigitalEstimator(
+digital_estimator = cbadc.digital_estimator.DigitalEstimator(
     analog_system, digital_control, eta2, K1, K2)
 
 # Set control signal iterator
@@ -164,8 +159,8 @@ for i in digital_estimator:
 # correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-byte_stream = read_byte_stream_from_file('sinusodial_simulation.adcs', M)
-control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
+byte_stream = cbadc.utilities.read_byte_stream_from_file('sinusodial_simulation.adcs', M)
+control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 ###############################################################################
 # Estimating the input
@@ -179,7 +174,7 @@ stop_after_number_of_iterations = 1 << 17
 u_hat = np.zeros(stop_after_number_of_iterations)
 K1 = 1 << 10
 K2 = 1 << 11
-digital_estimator = DigitalEstimator(
+digital_estimator = cbadc.digital_estimator.DigitalEstimator(
     analog_system, digital_control,
     eta2,
     K1,
@@ -208,7 +203,7 @@ plt.tight_layout()
 # As is typical for delta-sigma modulators, we often visualize the performance
 # of the estimate by plotting the power spectral density (PSD).
 
-f, psd = compute_power_spectral_density(u_hat[K2:])
+f, psd = cbadc.utilities.compute_power_spectral_density(u_hat[K2:])
 plt.figure()
 plt.semilogx(f, 10 * np.log10(psd))
 plt.xlabel('frequency [Hz]')

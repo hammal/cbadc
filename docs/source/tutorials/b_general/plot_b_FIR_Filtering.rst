@@ -27,20 +27,14 @@ We demonstrate how to set up the FIR filter implementation.
 .. seealso::
     :doc:`./plot_c_downsample.rst` for a FIR decimation example.
 
-.. GENERATED FROM PYTHON SOURCE LINES 11-21
+.. GENERATED FROM PYTHON SOURCE LINES 11-15
 
 .. code-block:: default
    :lineno-start: 11
 
-    from cbadc.utilities import compute_power_spectral_density
-    from cbadc.digital_estimator import FIRFilter
-    from cbadc.utilities import read_byte_stream_from_file, \
-        byte_stream_2_control_signal
     import matplotlib.pyplot as plt
-    from cbadc.analog_system import AnalogSystem
-    from cbadc.digital_control import DigitalControl
-    from cbadc.digital_estimator import DigitalEstimator
     import numpy as np
+    import cbadc
 
 
 
@@ -49,7 +43,7 @@ We demonstrate how to set up the FIR filter implementation.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 22-29
+.. GENERATED FROM PYTHON SOURCE LINES 16-23
 
 ---------------------------------------
 Analog System and Digital Control Setup
@@ -59,10 +53,10 @@ To initialize a digital estimator, we need to specify which analog system and
 digital control are used. Here we default to the chain-of-integrators
 example.
 
-.. GENERATED FROM PYTHON SOURCE LINES 29-58
+.. GENERATED FROM PYTHON SOURCE LINES 23-52
 
 .. code-block:: default
-   :lineno-start: 30
+   :lineno-start: 24
 
 
     N = 6
@@ -86,8 +80,8 @@ example.
     Gamma_tildeT = CT
     T = 1.0/(2 * beta)
 
-    analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    digital_control = DigitalControl(T, M)
+    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    digital_control = cbadc.digital_control.DigitalControl(T, M)
 
     # Summarize the analog system, digital control, and digital estimator.
     print(analog_system, "\n")
@@ -153,7 +147,7 @@ example.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-69
+.. GENERATED FROM PYTHON SOURCE LINES 53-63
 
 ----------------
 Impulse Response
@@ -166,24 +160,24 @@ Note that we will also use use the control signal sequence that we previously
 simulated in
 :doc:`../a_getting_started/plot_b_simulate_a_control_bounded_adc`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 69-109
+.. GENERATED FROM PYTHON SOURCE LINES 63-103
 
 .. code-block:: default
-   :lineno-start: 70
+   :lineno-start: 64
 
 
     # Choose an arbitrary eta2
     eta2 = 1e6
 
     # Load the control signal from previous simulation
-    byte_stream = read_byte_stream_from_file('sinusodial_simulation.adcs', M)
-    control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
+    byte_stream = cbadc.utilities.read_byte_stream_from_file('sinusodial_simulation.adcs', M)
+    control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
     # Instantiate digital estimator
     K1 = 250
     K2 = 250
-    digital_estimator = FIRFilter(
+    digital_estimator = cbadc.digital_estimator.FIRFilter(
         analog_system, digital_control, eta2, K1, K2)
 
     digital_estimator(control_signal_sequences)
@@ -222,7 +216,7 @@ simulated in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 110-129
+.. GENERATED FROM PYTHON SOURCE LINES 104-123
 
 -----------------------------------
 Impulse Response and :math:`\eta^2`
@@ -244,10 +238,10 @@ and does not necessarily generalize.
 We additionally plot the corresponding digital estimator transfer functions
 as a function of the bandwidth parameter :math:`\eta^2`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 129-188
+.. GENERATED FROM PYTHON SOURCE LINES 123-182
 
 .. code-block:: default
-   :lineno-start: 130
+   :lineno-start: 124
 
 
     Eta2 = np.logspace(0, 7, 8)
@@ -258,7 +252,7 @@ as a function of the bandwidth parameter :math:`\eta^2`.
 
     plt.figure()
     for eta2 in Eta2:
-        digital_estimator = FIRFilter(
+        digital_estimator = cbadc.digital_estimator.FIRFilter(
             analog_system, digital_control, eta2, K1, K2)
         impulse_response = 20 * \
             np.log10(np.abs(np.array(digital_estimator.h[0, :, 0])))
@@ -280,7 +274,7 @@ as a function of the bandwidth parameter :math:`\eta^2`.
     plt.figure()
     for eta2 in Eta2:
         # Compute NTF
-        digital_estimator = FIRFilter(
+        digital_estimator = cbadc.digital_estimator.FIRFilter(
             analog_system, digital_control, eta2, K1, K2)
 
         ntf = digital_estimator.noise_transfer_function(omega)
@@ -333,23 +327,23 @@ as a function of the bandwidth parameter :math:`\eta^2`.
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:164: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:164: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:164: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:164: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:164: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:164: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 189-211
+.. GENERATED FROM PYTHON SOURCE LINES 183-205
 
 Filter length
 -------------
@@ -374,10 +368,10 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 211-321
+.. GENERATED FROM PYTHON SOURCE LINES 205-315
 
 .. code-block:: default
-   :lineno-start: 212
+   :lineno-start: 206
 
 
     filter_lengths = [10, 20, 40, 80, 120, 160, 180, 200, 220]
@@ -385,8 +379,8 @@ of different lengths as their decay varies.
     eta2 = 1e6
 
     control_signal_sequences = [
-        byte_stream_2_control_signal(
-            read_byte_stream_from_file(
+        cbadc.utilities.byte_stream_2_control_signal(
+            cbadc.utilities.read_byte_stream_from_file(
                 '../a_getting_started/sinusodial_simulation.adcs', M), M)
         for _ in filter_lengths]
 
@@ -394,7 +388,7 @@ of different lengths as their decay varies.
     u_hat = np.zeros(stop_after_number_of_iterations)
 
 
-    digital_estimators = [FIRFilter(
+    digital_estimators = [cbadc.digital_estimator.FIRFilter(
         analog_system,
         digital_control,
         eta2,
@@ -421,7 +415,7 @@ of different lengths as their decay varies.
     plt.xlim((0, filter_lengths[-1]))
     plt.grid(which='both')
 
-    digital_estimators_ref = DigitalEstimator(
+    digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
         analog_system,
         digital_control,
         eta2,
@@ -430,12 +424,12 @@ of different lengths as their decay varies.
         stop_after_number_of_iterations=stop_after_number_of_iterations
     )
 
-    digital_estimators_ref(byte_stream_2_control_signal(read_byte_stream_from_file(
+    digital_estimators_ref(cbadc.utilities.byte_stream_2_control_signal(cbadc.utilities.read_byte_stream_from_file(
         '../a_getting_started/sinusodial_simulation.adcs', M), M))
 
     for index, estimate in enumerate(digital_estimators_ref):
         u_hat[index] = estimate
-    f_ref, psd_ref = compute_power_spectral_density(u_hat)
+    f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_hat)
 
     u_hats = []
     plt.rcParams['figure.figsize'] = [6.40, 6.40 * 4]
@@ -447,7 +441,7 @@ of different lengths as their decay varies.
         u_hats.append(np.copy(u_hat))
 
         # Compute power spectral density
-        f, psd = compute_power_spectral_density(
+        f, psd = cbadc.utilities.compute_power_spectral_density(
             u_hat[filter_lengths[index_de]:])
 
         # Plot the FIR filters
@@ -520,7 +514,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  50.251 seconds)
+   **Total running time of the script:** ( 1 minutes  45.998 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_b_FIR_Filtering.py:

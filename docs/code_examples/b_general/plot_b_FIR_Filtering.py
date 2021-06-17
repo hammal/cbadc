@@ -8,15 +8,9 @@ We demonstrate how to set up the FIR filter implementation.
 .. seealso::
     :doc:`./plot_c_downsample.rst` for a FIR decimation example.
 """
-from cbadc.utilities import compute_power_spectral_density
-from cbadc.digital_estimator import FIRFilter
-from cbadc.utilities import read_byte_stream_from_file, \
-    byte_stream_2_control_signal
 import matplotlib.pyplot as plt
-from cbadc.analog_system import AnalogSystem
-from cbadc.digital_control import DigitalControl
-from cbadc.digital_estimator import DigitalEstimator
 import numpy as np
+import cbadc
 
 ###############################################################################
 # ---------------------------------------
@@ -48,8 +42,8 @@ Gamma = [[-beta, 0, 0, 0, 0, 0],
 Gamma_tildeT = CT
 T = 1.0/(2 * beta)
 
-analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-digital_control = DigitalControl(T, M)
+analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+digital_control = cbadc.digital_control.DigitalControl(T, M)
 
 # Summarize the analog system, digital control, and digital estimator.
 print(analog_system, "\n")
@@ -71,14 +65,14 @@ print(digital_control)
 eta2 = 1e6
 
 # Load the control signal from previous simulation
-byte_stream = read_byte_stream_from_file('sinusodial_simulation.adcs', M)
-control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
+byte_stream = cbadc.utilities.read_byte_stream_from_file('sinusodial_simulation.adcs', M)
+control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 # Instantiate digital estimator
 K1 = 250
 K2 = 250
-digital_estimator = FIRFilter(
+digital_estimator = cbadc.digital_estimator.FIRFilter(
     analog_system, digital_control, eta2, K1, K2)
 
 digital_estimator(control_signal_sequences)
@@ -135,7 +129,7 @@ h_index = np.arange(-K1, K2)
 
 plt.figure()
 for eta2 in Eta2:
-    digital_estimator = FIRFilter(
+    digital_estimator = cbadc.digital_estimator.FIRFilter(
         analog_system, digital_control, eta2, K1, K2)
     impulse_response = 20 * \
         np.log10(np.abs(np.array(digital_estimator.h[0, :, 0])))
@@ -157,7 +151,7 @@ omega = 4 * np.pi * beta * frequencies
 plt.figure()
 for eta2 in Eta2:
     # Compute NTF
-    digital_estimator = FIRFilter(
+    digital_estimator = cbadc.digital_estimator.FIRFilter(
         analog_system, digital_control, eta2, K1, K2)
 
     ntf = digital_estimator.noise_transfer_function(omega)
@@ -214,8 +208,8 @@ filter_lengths = [10, 20, 40, 80, 120, 160, 180, 200, 220]
 eta2 = 1e6
 
 control_signal_sequences = [
-    byte_stream_2_control_signal(
-        read_byte_stream_from_file(
+    cbadc.utilities.byte_stream_2_control_signal(
+        cbadc.utilities.read_byte_stream_from_file(
             '../a_getting_started/sinusodial_simulation.adcs', M), M)
     for _ in filter_lengths]
 
@@ -223,7 +217,7 @@ stop_after_number_of_iterations = 1 << 16
 u_hat = np.zeros(stop_after_number_of_iterations)
 
 
-digital_estimators = [FIRFilter(
+digital_estimators = [cbadc.digital_estimator.FIRFilter(
     analog_system,
     digital_control,
     eta2,
@@ -250,7 +244,7 @@ plt.ylabel("$| h_\ell [k]|$ [dB]")
 plt.xlim((0, filter_lengths[-1]))
 plt.grid(which='both')
 
-digital_estimators_ref = DigitalEstimator(
+digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
     analog_system,
     digital_control,
     eta2,
@@ -259,12 +253,12 @@ digital_estimators_ref = DigitalEstimator(
     stop_after_number_of_iterations=stop_after_number_of_iterations
 )
 
-digital_estimators_ref(byte_stream_2_control_signal(read_byte_stream_from_file(
+digital_estimators_ref(cbadc.utilities.byte_stream_2_control_signal(cbadc.utilities.read_byte_stream_from_file(
     '../a_getting_started/sinusodial_simulation.adcs', M), M))
 
 for index, estimate in enumerate(digital_estimators_ref):
     u_hat[index] = estimate
-f_ref, psd_ref = compute_power_spectral_density(u_hat)
+f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_hat)
 
 u_hats = []
 plt.rcParams['figure.figsize'] = [6.40, 6.40 * 4]
@@ -276,7 +270,7 @@ for index_de in range(len(filter_lengths)):
     u_hats.append(np.copy(u_hat))
 
     # Compute power spectral density
-    f, psd = compute_power_spectral_density(
+    f, psd = cbadc.utilities.compute_power_spectral_density(
         u_hat[filter_lengths[index_de]:])
 
     # Plot the FIR filters
