@@ -6,13 +6,7 @@ This example shows how to simulate the interactions between an analog system
 and a digital control while the former is excited by an analog signal.
 """
 import matplotlib.pyplot as plt
-from cbadc.utilities import control_signal_2_byte_stream
-from cbadc.utilities import write_byte_stream_to_file
-from cbadc.simulator import extended_simulation_result
-from cbadc.simulator import StateSpaceSimulator
-from cbadc.analog_signal import Sinusodial
-from cbadc.digital_control import DigitalControl
-from cbadc.analog_system import ChainOfIntegrators
+import cbadc
 import numpy as np
 
 ###############################################################################
@@ -40,7 +34,7 @@ rhoVec = -betaVec * 1e-2
 kappaVec = - beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
-analog_system = ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 # print the analog system such that we can very it being correctly initalized.
 print(analog_system)
 
@@ -57,7 +51,7 @@ T = 1.0/(2 * beta)
 # Set the number of digital controls to be same as analog states.
 M = N
 # Initialize the digital control.
-digital_control = DigitalControl(T, M)
+digital_control = cbadc.digital_control.DigitalControl(T, M)
 # print the digital control to verify proper initialization.
 print(digital_control)
 
@@ -82,7 +76,7 @@ phase = np.pi / 3
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = Sinusodial(amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
 # print to ensure correct parametrization.
 print(analog_signal)
 
@@ -100,7 +94,7 @@ print(analog_signal)
 end_time = T * (1 << 18)
 
 # Instantiate the simulator.
-simulator = StateSpaceSimulator(analog_system, digital_control, [
+simulator = cbadc.simulator.StateSpaceSimulator(analog_system, digital_control, [
                                 analog_signal], t_stop=end_time)
 # Depending on your analog system the step above might take some time to
 # compute as it involves precomputing solutions to initial value problems.
@@ -154,7 +148,7 @@ print(simulator)
 # Repeating the steps above we now get for the following
 # ten control cycles.
 
-ext_simulator = extended_simulation_result(simulator)
+ext_simulator = cbadc.simulator.extended_simulation_result(simulator)
 for res in ext_simulator:
     if (index > 29):
         break
@@ -180,11 +174,11 @@ for res in ext_simulator:
 
 
 # Instantiate a new simulator and control.
-simulator = StateSpaceSimulator(analog_system, digital_control, [
+simulator = cbadc.simulator.StateSpaceSimulator(analog_system, digital_control, [
                                 analog_signal], t_stop=end_time)
 
 # Construct byte stream.
-byte_stream = control_signal_2_byte_stream(simulator, M)
+byte_stream = cbadc.utilities.control_signal_2_byte_stream(simulator, M)
 
 
 def print_next_10_bytes(stream):
@@ -196,7 +190,7 @@ def print_next_10_bytes(stream):
         yield byte
 
 
-write_byte_stream_to_file("sinusodial_simulation.adcs",
+cbadc.utilities.write_byte_stream_to_file("sinusodial_simulation.adcs",
                           print_next_10_bytes(byte_stream))
 
 ###############################################################################
@@ -220,10 +214,10 @@ size = 15000
 end_time = size * Ts
 
 # Initialize a new digital control.
-new_digital_control = DigitalControl(T, M)
+new_digital_control = cbadc.digital_control.DigitalControl(T, M)
 
 # Instantiate a new simulator with a sampling time.
-simulator = StateSpaceSimulator(analog_system, new_digital_control, [
+simulator = cbadc.simulator.StateSpaceSimulator(analog_system, new_digital_control, [
                                 analog_signal], t_stop=end_time, Ts=Ts)
 
 # Create data containers to hold the resulting data.
@@ -232,7 +226,7 @@ states = np.zeros((N, size))
 control_signals = np.zeros((M, size), dtype=np.int8)
 
 # Iterate through and store states and control_signals.
-for index, res in enumerate(extended_simulation_result(simulator)):
+for index, res in enumerate(cbadc.simulator.extended_simulation_result(simulator)):
     states[:, index] = res['analog_state']
     control_signals[:, index] = res['control_signal']
 

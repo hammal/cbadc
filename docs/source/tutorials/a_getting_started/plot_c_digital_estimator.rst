@@ -23,19 +23,14 @@ Digital Estimation
 
 Converting a stream of control signals into a estimate samples.
 
-.. GENERATED FROM PYTHON SOURCE LINES 7-17
+.. GENERATED FROM PYTHON SOURCE LINES 7-12
 
 .. code-block:: default
    :lineno-start: 7
 
     from cbadc.utilities import compute_power_spectral_density
     import matplotlib.pyplot as plt
-    from cbadc.utilities import read_byte_stream_from_file, \
-        byte_stream_2_control_signal
-    from cbadc.utilities import random_control_signal
-    from cbadc.analog_system import AnalogSystem
-    from cbadc.digital_control import DigitalControl
-    from cbadc.digital_estimator import DigitalEstimator
+    import cbadc
     import numpy as np
 
 
@@ -45,7 +40,7 @@ Converting a stream of control signals into a estimate samples.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 18-30
+.. GENERATED FROM PYTHON SOURCE LINES 13-25
 
 Setting up the Analog System and Digital Control
 ------------------------------------------------
@@ -60,10 +55,10 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 30-61
+.. GENERATED FROM PYTHON SOURCE LINES 25-56
 
 .. code-block:: default
-   :lineno-start: 31
+   :lineno-start: 26
 
 
     # Setup analog system and digital control
@@ -89,8 +84,8 @@ analog system and digital control.
     Gamma_tildeT = np.eye(N)
     T = 1.0/(2 * beta)
 
-    analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    digital_control = DigitalControl(T, M)
+    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    digital_control = cbadc.digital_control.DigitalControl(T, M)
 
     # Summarize the analog system, digital control, and digital estimator.
     print(analog_system, "\n")
@@ -156,7 +151,7 @@ analog system and digital control.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 62-69
+.. GENERATED FROM PYTHON SOURCE LINES 57-64
 
 Creating a Placehold Control Signal
 -----------------------------------
@@ -166,10 +161,10 @@ for a given analog signal. However, this might not always be the use case;
 instead, imagine we have acquired such a control signal from a previous
 simulation or possibly obtained it from a hardware implementation.
 
-.. GENERATED FROM PYTHON SOURCE LINES 69-94
+.. GENERATED FROM PYTHON SOURCE LINES 64-89
 
 .. code-block:: default
-   :lineno-start: 70
+   :lineno-start: 65
 
 
     # In principle, we can create a dummy generator by just
@@ -191,7 +186,7 @@ simulation or possibly obtained it from a hardware implementation.
 
     # can conveniently be created as
 
-    control_signal_sequences = random_control_signal(
+    control_signal_sequences = cbadc.utilities.random_control_signal(
         M, stop_after_number_of_iterations=sequence_length, random_seed=42)
 
     # where random_seed and stop_after_number_of_iterations are fully optional
@@ -203,7 +198,7 @@ simulation or possibly obtained it from a hardware implementation.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 95-103
+.. GENERATED FROM PYTHON SOURCE LINES 90-98
 
 Setting up the Filter
 ------------------------------------
@@ -214,10 +209,10 @@ DigitalEstimator class. However, these computations require us to
 specify both the analog system, the digital control and the filter parameters
 such as eta2, the batch size K1, and possible the lookahead K2.
 
-.. GENERATED FROM PYTHON SOURCE LINES 103-122
+.. GENERATED FROM PYTHON SOURCE LINES 98-117
 
 .. code-block:: default
-   :lineno-start: 104
+   :lineno-start: 99
 
 
     # Set the bandwidth of the estimator
@@ -231,7 +226,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
 
-    digital_estimator = DigitalEstimator(analog_system, digital_control, eta2, K1)
+    digital_estimator = cbadc.digital_estimator.DigitalEstimator(analog_system, digital_control, eta2, K1)
 
     print(digital_estimator, "\n")
 
@@ -324,17 +319,17 @@ such as eta2, the batch size K1, and possible the lookahead K2.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 123-127
+.. GENERATED FROM PYTHON SOURCE LINES 118-122
 
 Producing Estimates
 -------------------
 
 At this point, we can produce estimates by simply calling the iterator
 
-.. GENERATED FROM PYTHON SOURCE LINES 127-132
+.. GENERATED FROM PYTHON SOURCE LINES 122-127
 
 .. code-block:: default
-   :lineno-start: 128
+   :lineno-start: 123
 
 
     for i in digital_estimator:
@@ -365,24 +360,24 @@ At this point, we can produce estimates by simply calling the iterator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-137
+.. GENERATED FROM PYTHON SOURCE LINES 128-132
 
 Batch Size and Lookahead
 ------------------------
 
 Note that batch and lookahead sizes are automatically handled such that for
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-154
+.. GENERATED FROM PYTHON SOURCE LINES 132-149
 
 .. code-block:: default
-   :lineno-start: 137
+   :lineno-start: 132
 
     K1 = 5
     K2 = 1
     sequence_length = 11
-    control_signal_sequences = random_control_signal(
+    control_signal_sequences = cbadc.utilities.random_control_signal(
         M, stop_after_number_of_iterations=sequence_length, random_seed=42)
-    digital_estimator = DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
         analog_system, digital_control, eta2, K1, K2)
 
     # Set control signal iterator
@@ -418,7 +413,7 @@ Note that batch and lookahead sizes are automatically handled such that for
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 155-166
+.. GENERATED FROM PYTHON SOURCE LINES 150-161
 
 Loading Control Signal from File
 --------------------------------
@@ -432,23 +427,23 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 166-170
+.. GENERATED FROM PYTHON SOURCE LINES 161-165
 
 .. code-block:: default
-   :lineno-start: 167
+   :lineno-start: 162
 
 
-    byte_stream = read_byte_stream_from_file('sinusodial_simulation.adcs', M)
-    control_signal_sequences = byte_stream_2_control_signal(byte_stream, M)
-
-
-
+    byte_stream = cbadc.utilities.read_byte_stream_from_file('sinusodial_simulation.adcs', M)
+    control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 171-177
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 166-172
 
 Estimating the input
 --------------------
@@ -457,17 +452,17 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-204
+.. GENERATED FROM PYTHON SOURCE LINES 172-199
 
 .. code-block:: default
-   :lineno-start: 178
+   :lineno-start: 173
 
 
     stop_after_number_of_iterations = 1 << 17
     u_hat = np.zeros(stop_after_number_of_iterations)
     K1 = 1 << 10
     K2 = 1 << 11
-    digital_estimator = DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
         analog_system, digital_control,
         eta2,
         K1,
@@ -500,7 +495,7 @@ analog system and digital controls as in this example so
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 205-210
+.. GENERATED FROM PYTHON SOURCE LINES 200-205
 
 Plotting the PSD
 ----------------
@@ -508,13 +503,13 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 210-219
+.. GENERATED FROM PYTHON SOURCE LINES 205-214
 
 .. code-block:: default
-   :lineno-start: 211
+   :lineno-start: 206
 
 
-    f, psd = compute_power_spectral_density(u_hat[K2:])
+    f, psd = cbadc.utilities.compute_power_spectral_density(u_hat[K2:])
     plt.figure()
     plt.semilogx(f, 10 * np.log10(psd))
     plt.xlabel('frequency [Hz]')
@@ -536,7 +531,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  15.737 seconds)
+   **Total running time of the script:** ( 0 minutes  15.594 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:

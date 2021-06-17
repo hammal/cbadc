@@ -9,10 +9,10 @@ Examples using ``cbadc.digital_control.PhaseDelayedControl``
 
 .. only:: html
 
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_d_delay_phase_control_thumb.png
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_d_delay_phase_control_thumb.png
      :alt: Using Phase Shifted Digital Control (draft)
 
-     :ref:`sphx_glr_auto_examples_b_general_plot_d_delay_phase_control.py`
+     :ref:`sphx_glr_tutorials_b_general_plot_d_delay_phase_control.py`
 
 .. raw:: html
 
@@ -20,4 +20,4 @@ Examples using ``cbadc.digital_control.PhaseDelayedControl``
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_b_general_plot_d_delay_phase_control.py`
+ * :ref:`sphx_glr_tutorials_b_general_plot_d_delay_phase_control.py`

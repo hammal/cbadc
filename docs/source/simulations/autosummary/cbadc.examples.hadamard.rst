@@ -1,4 +1,4 @@
-cbadc.examples.hadamard
+﻿cbadc.examples.hadamard
 =======================
 
 .. automodule:: cbadc.examples.hadamard

@@ -6,17 +6,9 @@ In this tutorial we investigate different estimator implementation techniques
 and compare their performance.
 """
 import timeit
-from cbadc.utilities import compute_power_spectral_density
-from cbadc.digital_estimator import ParallelEstimator
-from cbadc.digital_estimator import IIRFilter
-from cbadc.digital_estimator import FIRFilter
 import matplotlib.pyplot as plt
-from cbadc.digital_estimator import DigitalEstimator
-from cbadc.simulator import StateSpaceSimulator
-from cbadc.analog_signal import Sinusodial
-from cbadc.analog_system import LeapFrog
-from cbadc.digital_control import DigitalControl
 import numpy as np
+import cbadc
 
 ###############################################################################
 # Analog System
@@ -39,7 +31,7 @@ omega_3dB = 2 * np.pi / (T * OSR)
 beta_vec = beta * np.ones(N)
 rho_vec = - omega_3dB ** 2 / beta * np.ones(N)
 Gamma = np.diag(-beta_vec)
-analog_system = LeapFrog(beta_vec, rho_vec, Gamma)
+analog_system = cbadc.analog_system.LeapFrog(beta_vec, rho_vec, Gamma)
 
 print(analog_system, "\n")
 
@@ -60,7 +52,7 @@ phase = 0.0
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = Sinusodial(amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
 
 print(analog_signal)
 
@@ -79,14 +71,14 @@ max_step = T / 10.
 
 # Instantiate digital controls. We will need four of them as we will compare
 # four different estimators.
-digital_control1 = DigitalControl(T, M)
-digital_control2 = DigitalControl(T, M)
-digital_control3 = DigitalControl(T, M)
-digital_control4 = DigitalControl(T, M)
+digital_control1 = cbadc.digital_control.DigitalControl(T, M)
+digital_control2 = cbadc.digital_control.DigitalControl(T, M)
+digital_control3 = cbadc.digital_control.DigitalControl(T, M)
+digital_control4 = cbadc.digital_control.DigitalControl(T, M)
 print(digital_control1)
 
 # Instantiate simulators.
-simulator1 = StateSpaceSimulator(
+simulator1 = cbadc.simulator.StateSpaceSimulator(
     analog_system,
     digital_control1,
     [analog_signal],
@@ -94,7 +86,7 @@ simulator1 = StateSpaceSimulator(
     rtol=rtol,
     max_step=max_step
 )
-simulator2 = StateSpaceSimulator(
+simulator2 = cbadc.simulator.StateSpaceSimulator(
     analog_system,
     digital_control2,
     [analog_signal],
@@ -102,7 +94,7 @@ simulator2 = StateSpaceSimulator(
     rtol=rtol,
     max_step=max_step
 )
-simulator3 = StateSpaceSimulator(
+simulator3 = cbadc.simulator.StateSpaceSimulator(
     analog_system,
     digital_control3,
     [analog_signal],
@@ -110,7 +102,7 @@ simulator3 = StateSpaceSimulator(
     rtol=rtol,
     max_step=max_step
 )
-simulator4 = StateSpaceSimulator(
+simulator4 = cbadc.simulator.StateSpaceSimulator(
     analog_system,
     digital_control4,
     [analog_signal],
@@ -143,7 +135,7 @@ K2 = 1 << 14
 
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).
-digital_estimator_batch = DigitalEstimator(
+digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
     analog_system, digital_control1, eta2, K1, K2)
 digital_estimator_batch(simulator1)
 
@@ -202,7 +194,7 @@ plt.gcf().tight_layout()
 L1 = K2
 # Determine lookahead
 L2 = K2
-digital_estimator_fir = FIRFilter(
+digital_estimator_fir = cbadc.digital_estimator.FIRFilter(
     analog_system, digital_control2, eta2, L1, L2)
 
 print(digital_estimator_fir, "\n")
@@ -244,7 +236,7 @@ ax[1].grid(which='both')
 # Determine lookahead
 L2 = K2
 
-digital_estimator_iir = IIRFilter(
+digital_estimator_iir = cbadc.digital_estimator.IIRFilter(
     analog_system, digital_control3, eta2, L2)
 
 print(digital_estimator_iir, "\n")
@@ -263,7 +255,7 @@ digital_estimator_iir(simulator3)
 
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).
-digital_estimator_parallel = ParallelEstimator(
+digital_estimator_parallel = cbadc.digital_estimator.ParallelEstimator(
     analog_system, digital_control4, eta2, K1, K2)
 
 digital_estimator_parallel(simulator4)
@@ -379,15 +371,15 @@ u_hat_fir_clipped = u_hat_fir[(L1 + L2):]
 u_hat_iir_clipped = u_hat_iir[(K1 + K2):-K2]
 u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
 u_clipped = stf_at_omega * u
-f_batch, psd_batch = compute_power_spectral_density(
+f_batch, psd_batch = cbadc.utilities.compute_power_spectral_density(
     u_hat_batch_clipped)
-f_fir, psd_fir = compute_power_spectral_density(
+f_fir, psd_fir = cbadc.utilities.compute_power_spectral_density(
     u_hat_fir_clipped)
-f_iir, psd_iir = compute_power_spectral_density(
+f_iir, psd_iir = cbadc.utilities.compute_power_spectral_density(
     u_hat_iir_clipped)
-f_parallel, psd_parallel = compute_power_spectral_density(
+f_parallel, psd_parallel = cbadc.utilities.compute_power_spectral_density(
     u_hat_parallel_clipped)
-f_ref, psd_ref = compute_power_spectral_density(u_clipped)
+f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_clipped)
 plt.semilogx(f_ref, 10 * np.log10(psd_ref),
              label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
 plt.semilogx(f_batch, 10 * np.log10(psd_batch), label="$\hat{U}(f)$ Batch")
@@ -421,25 +413,25 @@ def iterate_number_of_times(iterator, number_of_times):
         _ = next(iterator)
 
 
-digital_estimator_batch = DigitalEstimator(
+digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
     analog_system,
     digital_control1,
     eta2,
     K1,
     K2)
-digital_estimator_fir = FIRFilter(
+digital_estimator_fir = cbadc.digital_estimator.FIRFilter(
     analog_system,
     digital_control2,
     eta2,
     L1,
     L2)
-digital_estimator_parallel = ParallelEstimator(
+digital_estimator_parallel = cbadc.digital_estimator.ParallelEstimator(
     analog_system,
     digital_control4,
     eta2,
     K1,
     K2)
-digital_estimator_iir = IIRFilter(
+digital_estimator_iir = cbadc.digital_estimator.IIRFilter(
     analog_system,
     digital_control3,
     eta2,

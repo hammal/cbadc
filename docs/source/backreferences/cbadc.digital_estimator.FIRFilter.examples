@@ -5,14 +5,14 @@ Examples using ``cbadc.digital_estimator.FIRFilter``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Builds on...">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate different estimator implementation techniques and compare their...">
 
 .. only:: html
 
- .. figure:: /simulations/images/thumb/sphx_glr_plot_hadamard_thumb.png
-     :alt: Loading a Hadamard Ramp Simulation
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+     :alt: Compare Estimators
 
-     :ref:`sphx_glr_simulations_plot_hadamard.py`
+     :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py`
 
 .. raw:: html
 
@@ -20,4 +20,23 @@ Examples using ``cbadc.digital_estimator.FIRFilter``
 
 .. only:: not html
 
- * :ref:`sphx_glr_simulations_plot_hadamard.py`
+ * :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to set up the FIR filter implementation.">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
+     :alt: Digital Estimator as FIR Filter
+
+     :ref:`sphx_glr_tutorials_b_general_plot_b_FIR_Filtering.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_tutorials_b_general_plot_b_FIR_Filtering.py`
