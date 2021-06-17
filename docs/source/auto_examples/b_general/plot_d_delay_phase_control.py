@@ -7,6 +7,7 @@ phase shifted digital control delay.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.signal
 import cbadc
 
 ###############################################################################
@@ -61,8 +62,8 @@ digital_control_ref = cbadc.digital_control.DigitalControl(T, M)
 # Set the peak amplitude.
 amplitude = 0.5
 # Choose the sinusodial frequency via an oversampling ratio (OSR).
-OSR = 1 << 9
-frequency = 1.0 / (T * OSR)
+OSR = 1 << 5
+frequency = 1.0 / (T * (OSR << 3))
 
 # We also specify a phase an offset these are hovewer optional.
 phase = np.pi / 3
@@ -84,14 +85,14 @@ print(analog_signal)
 # :py:class:`cbadc.analog_system.AnalogSystem`.
 #
 
-size = 1 << 16
+size = 1 << 17
 end_time = T * (size + 100)
 
 # Instantiate the simulator.
 simulator_phase = cbadc.simulator.StateSpaceSimulator(analog_system, digital_control_phase, [
     analog_signal], t_stop=end_time)
 simulator_ref = cbadc.simulator.StateSpaceSimulator(analog_system, digital_control_ref, [
-    analog_signal], t_stop=end_time)
+    analog_signal], t_stop=end_time / M)
 
 
 ###############################################################################
@@ -105,7 +106,7 @@ eta2 = 1e4
 
 # Set the batch size
 
-K1_phase = 1 << 10
+K1_phase = 1 << 13
 K1_ref = K1_phase
 # K1_ref = K1_phase // M
 
@@ -113,20 +114,35 @@ K1_ref = K1_phase
 # computed).
 
 digital_estimator_phase = cbadc.digital_estimator.FIRFilter(
-    analog_system, digital_control_phase, eta2, K1_phase, K1_phase)
+    analog_system, digital_control_phase, eta2, K1_phase, K1_phase, downsample=OSR * M)
 digital_estimator_ref = cbadc.digital_estimator.FIRFilter(
-    analog_system, digital_control_ref, eta2, K1_ref, K1_ref)
+    analog_system, digital_control_ref, eta2, K1_ref, K1_ref, downsample=OSR)
 
 # Set control signal iterator
 digital_estimator_phase(simulator_phase)
 digital_estimator_ref(simulator_ref)
 
 ###############################################################################
+# Post filtering the FIR filter coefficients
+# -----------------------------------------------------------
+#
+# Yet another approach is to instead post filter
+# the resulting FIR filter digital_estimator.h with another lowpass FIR filter
+
+numtaps = 1001
+f_cutoff = 1.0 / OSR
+fir_filter_phase = scipy.signal.firwin(numtaps, f_cutoff / M)
+fir_filter_ref = scipy.signal.firwin(numtaps, f_cutoff)
+
+digital_estimator_phase.convolve(fir_filter_phase)
+digital_estimator_ref.convolve(fir_filter_ref)
+
+###############################################################################
 # Simulating and Estimating
 # --------------------------
 #
 
-sequence_length = size
+sequence_length = size // OSR // M
 
 u_hat_phase = np.zeros(sequence_length)
 u_hat_ref = np.zeros(sequence_length)
@@ -141,14 +157,14 @@ for index in range(sequence_length):
 # --------------------------
 #
 
-t = np.arange(sequence_length // M) * T
-plt.plot(t, u_hat_phase[::M])
-plt.plot(t, u_hat_ref[:sequence_length // M])
-plt.xlabel('$t$')
+t = np.arange(sequence_length)
+plt.plot(t, u_hat_phase)
+plt.plot(t, u_hat_ref)
+plt.xlabel('$t / T$')
 plt.ylabel('$\hat{u}(t)$')
 plt.title("Estimated input signal")
 plt.grid()
-plt.xlim((0, T * sequence_length // M))
+# plt.xlim((0, T * sequence_length // M // OSR))
 plt.ylim((-0.75, 0.75))
 plt.tight_layout()
 
@@ -160,16 +176,120 @@ plt.tight_layout()
 # of the estimate by plotting the power spectral density (PSD).
 
 f_phase, psd_phase = cbadc.utilities.compute_power_spectral_density(
-    u_hat_phase[K1_phase:], fs=1.0/digital_control_phase.T)
+    u_hat_phase[K1_phase // OSR:], fs=1.0/digital_control_phase.T / M)
 f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(
-    u_hat_ref[K1_ref:], fs=1.0/digital_control_ref.T)
+    u_hat_ref[K1_ref // OSR:], fs=1.0/digital_control_ref.T)
 plt.figure()
 plt.semilogx(f_phase, 10 * np.log10(psd_phase), label="Phase")
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="Ref")
 plt.legend()
-plt.xlim((1e1, 0.5/digital_control_phase.T))
+# plt.xlim((1e1, 0.5/digital_control_phase.T))
 plt.xlabel('frequency [Hz]')
 plt.ylabel('$ \mathrm{V}^2 \, / \, \mathrm{Hz}$')
 plt.grid(which='both')
+
+###############################################################################
+# Evaluating the Analog State Vector For both controls
+# ----------------------------------------------------
+#
+
+# Set sampling time three orders of magnitude smaller than the control period
+Ts = T / M / 10.0
+
+# Simulate for 10000 control cycles.
+size = 15000
+end_time = (size + 100) * Ts
+
+# Initialize a new digital control.
+digital_control_phase = cbadc.digital_control.PhaseDelayedControl(T / M, M)
+digital_control_ref = cbadc.digital_control.DigitalControl(T, M)
+
+# With or without input signal?
+analog_signal = cbadc.analog_signal.Sinusodial(
+    0 * amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusodial(
+    amplitude, frequency, phase, offset)
+
+# Instantiate a new simulator with a sampling time.
+simulator_phase = cbadc.simulator.extended_simulation_result(cbadc.simulator.StateSpaceSimulator(analog_system, digital_control_phase, [
+                                analog_signal], t_stop=end_time, Ts=Ts))
+simulator_ref = cbadc.simulator.extended_simulation_result(cbadc.simulator.StateSpaceSimulator(analog_system, digital_control_ref, [
+                                analog_signal], t_stop=end_time, Ts=Ts))
+
+# Create data containers to hold the resulting data.
+time_vector = np.arange(size) * Ts / T
+states = np.zeros((2, N, size))
+control_signals = np.zeros((2, M, size), dtype=np.int8)
+
+# Iterate through and store states and control_signals.
+for index in range(size):
+    res = next(simulator_phase)
+    states[0, :, index] = res['analog_state']    
+    control_signals[0, :, index] = res['control_signal']
+    print(digital_control_phase._t_next, digital_control_phase.control_signal())
+    res = next(simulator_ref)
+    states[1, :, index] = res['analog_state']
+    control_signals[1, :, index] = res['control_signal']
+
+# reset figure size and plot individual results.
+plt.rcParams['figure.figsize'] = [6.40, 6.40 * 2]
+fig, ax = plt.subplots(N, 2)
+for index in range(N):
+    color1 = next(ax[0, 0]._get_lines.prop_cycler)['color']
+    color2 = next(ax[0, 0]._get_lines.prop_cycler)['color']
+    ax[index, 0].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
+    ax[index, 1].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
+    ax[index, 0].plot(time_vector, states[0, index, :], color=color1, label="Phase")
+    ax[index, 0].plot(time_vector, states[1, index, :], color=color2, label="Ref")
+    ax[index, 1].plot(time_vector, control_signals[0, index, :],
+                    color=color1, label="Phase")
+    ax[index, 1].plot(time_vector, control_signals[1, index, :],
+                    color=color2, label="Ref")
+    ax[index, 0].set_ylabel(f"$x_{index + 1}(t)$")
+    ax[index, 1].set_ylabel(f"$s_{index + 1}(t)$")
+    ax[index, 0].set_xlim((0, 15))
+    ax[index, 1].set_xlim((0, 15))
+    ax[index, 0].set_ylim((-1, 1))
+    ax[index, 0].legend()
+    ax[index, 1].legend()
+fig.suptitle("Analog state and control contribution evolution")
+ax[-1, 0].set_xlabel("$t / T$")
+ax[-1, 1].set_xlabel("$t / T$")
+fig.tight_layout()
+
+###############################################################################
+# Analog State Statistics
+# ------------------------------------------------------------------
+#
+# As in the previous section, visualizing the analog state trajectory is a
+# good way of identifying problems and possible errors. Another way of making
+# sure that the analog states remain bounded is to estimate their
+# corresponding densities (assuming i.i.d samples).
+
+# Compute L_2 norm of analog state vector.
+L_2_norm = np.linalg.norm(states, ord=2, axis=1)
+# Similarly, compute L_infty (largest absolute value) of the analog state
+# vector.
+L_infty_norm = np.linalg.norm(states, ord=np.inf, axis=1)
+
+# Estimate and plot densities using matplotlib tools.
+bins = 150
+plt.rcParams['figure.figsize'] = [6.40, 4.80]
+fig, ax = plt.subplots(2, sharex=True)
+ax[0].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
+ax[1].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
+ax[0].hist(L_2_norm[0, :], bins=bins, density=True, label="Phase")
+ax[0].hist(L_2_norm[1, :], bins=bins, density=True, label="Ref")
+ax[1].hist(L_infty_norm[0, :], bins=bins, density=True, color="orange", label="Phase")
+ax[1].hist(L_infty_norm[1, :], bins=bins, density=True, color="purple", label="Ref")
+plt.suptitle("Estimated probability densities")
+ax[0].set_xlabel("$\|\mathbf{x}(t)\|_2$")
+ax[1].set_xlabel("$\|\mathbf{x}(t)\|_\infty$")
+ax[0].set_ylabel("$p ( \| \mathbf{x}(t) \|_2 ) $")
+ax[1].set_ylabel("$p ( \| \mathbf{x}(t) \|_\infty )$")
+ax[0].legend()
+ax[1].legend()
+fig.tight_layout()
+
 
 # sphinx_gallery_thumbnail_number = 2

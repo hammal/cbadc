@@ -1,7 +1,7 @@
 
 
-Examples using ``cbadc.digital_control.PhaseDelayedControl.control_signal``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples using ``cbadc.utilities.extended_simulation_result``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. raw:: html
 

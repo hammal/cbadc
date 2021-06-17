@@ -185,7 +185,7 @@ class PhaseDelayedControl(DigitalControl):
 
     def __init__(self, T: float, M: int, t0: float = 0):
         DigitalControl.__init__(self, T, M, t0=t0)
-        self._t_next = t0 + self.T * np.arange(1, M+1)
+        self._t_next = t0 + self.T * np.arange(M)
 
     def control_contribution(self, t: float, s_tilde: np.ndarray) -> np.ndarray:
         """Evaluates the control contribution at time t given a control observation
@@ -209,7 +209,7 @@ class PhaseDelayedControl(DigitalControl):
             if t >= self._t_next[m]:
                 # if so update the control signal state
                 self._s[m] = s_tilde[m] >= 0
-                self._t_next[m] += self.T
+                self._t_next[m] += self.T * self.M
                 # DAC
                 self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
         return self._dac_values
@@ -237,9 +237,6 @@ class CalibrationControl(DigitalControl):
             time at which the digital control i evaluated.
         s_tilde : `array_like`, shape=(M_tilde,)
             state vector evaluated at time t
-
-
-
 
         Returns
         -------
