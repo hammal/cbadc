@@ -162,6 +162,60 @@ class Sinusodial(AnalogSignal):
         )
 
 
+class Ramp(AnalogSignal):
+    """An analog continuous-time ramp signal.
+    Parameters
+    ----------
+    amplitude : `float`
+        The amplitude of the sinusodial.
+    period : `float`
+        one over the period length of the ramp, specified in [Hz].
+    phase : `float`, optional
+        The phase offset in [s], defaults to 0.
+    offset : `float`
+        The offset value.
+    Attributes
+    ----------
+    amplitude : `float`
+        The amplitude.
+    period : `float`
+        The ramp's time period in [s].
+    phase : `float`
+        The phase offset in [s].
+    offset : `float`, `optional`
+        The offset
+    See also
+    --------
+    cbadc.analog_signal.AnalogSignal
+    """
+
+    def __init__(self, amplitude: float, period: float, phase: float = 0.0,
+                 offset: float = 0.0):
+        self.amplitude: float = amplitude
+        self.period: float = period
+        self.phase: float = phase
+        self.offset: float = offset - self.amplitude / 2.0
+
+    def __str__(self):
+        return f"""Sinusodial parameterized as: \namplitude = {self.amplitude}, \n
+        frequency = {self.frequency}, \nphase = {self.phase},
+        and\noffset = {self.offset}"""
+
+    def evaluate(self, t: float) -> float:
+        """Evaluate the signal at time :math:`t`.
+        Parameters
+        ----------
+        t : `float`
+            the time instance for evaluation.
+        Returns
+        -------
+        float
+            The analog signal value
+        """
+        return(self.amplitude *
+               ((t + self.phase) % self.period) + self.offset)
+
+
 class SincPulse(AnalogSignal):
 
     """An analog continuous-time sinc pulse.
