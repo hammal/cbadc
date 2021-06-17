@@ -1,4 +1,4 @@
-﻿cbadc.digital\_estimator.FIRFilter
+cbadc.digital\_estimator.FIRFilter
 ==================================
 
 .. currentmodule:: cbadc.digital_estimator

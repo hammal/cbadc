@@ -5,14 +5,14 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator.convolve``
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for downsampling.">
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows the benefit of using the phase shifted digital control delay.">
 
 .. only:: html
 
- .. figure:: /auto_examples/b_general/images/thumb/sphx_glr_plot_c_downsample_thumb.png
-     :alt: Downsampling
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_d_delay_phase_control_thumb.png
+     :alt: Using Phase Shifted Digital Control (draft)
 
-     :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`
+     :ref:`sphx_glr_tutorials_b_general_plot_d_delay_phase_control.py`
 
 .. raw:: html
 
@@ -20,4 +20,4 @@ Examples using ``cbadc.digital_estimator.DigitalEstimator.convolve``
 
 .. only:: not html
 
- * :ref:`sphx_glr_auto_examples_b_general_plot_c_downsample.py`
+ * :ref:`sphx_glr_tutorials_b_general_plot_d_delay_phase_control.py`
