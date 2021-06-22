@@ -1,9 +1,0 @@
-numpy>=1.20.1
-scipy>=1.6.3
-tqdm>=4.61.0
-requests>=2.25.1
-pytest
-pytest-benchmark
-pytest-cov
-tox
-typing-extensions
