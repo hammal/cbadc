@@ -229,13 +229,16 @@ plt.grid(which='both')
 plt.show()
 
 ###############################################################################
-# Prepending a Bandlimiting Filter
-# --------------------------------
+# Prepending a Virtual Bandlimiting Filter
+# ----------------------------------------
 #
 # To battle the aliasing we extend the current estimator by placing a
-# bandlimiting filter in front of the system. This has the wanted effect since
-# we now reconstruct a signal shaped by both the STF of the system in addition
+# bandlimiting filter in front of the system. Note that this filter is a
+# conceptual addition and not actually part of the physical analog system.
+# Regardless, this effectively suppresses aliasing since we now reconstruct
+# a signal shaped by both the STF of the system in addition
 # to a bandlimiting filter.
+#
 
 wp = omega_3dB / 2.0
 ws = omega_3dB

@@ -21,6 +21,8 @@
    
       AnalogSignal
       ConstantSignal
+      Ramp
+      SincPulse
       Sinusodial
    
    
