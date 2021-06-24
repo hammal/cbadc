@@ -1,4 +1,4 @@
-cbadc.analog\_system.AnalogSystem
+﻿cbadc.analog\_system.AnalogSystem
 =================================
 
 .. currentmodule:: cbadc.analog_system
@@ -16,8 +16,10 @@ cbadc.analog\_system.AnalogSystem
 
    .. autosummary::
    
+      ~AnalogSystem.UGBW
       ~AnalogSystem.__init__
       ~AnalogSystem.control_observation
+      ~AnalogSystem.control_signal_transfer_function_matrix
       ~AnalogSystem.derivative
       ~AnalogSystem.signal_observation
       ~AnalogSystem.transfer_function_matrix

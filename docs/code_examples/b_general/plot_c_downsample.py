@@ -448,9 +448,9 @@ _, psd_dow_and_post_filt = cbc.utilities.compute_power_spectral_density(
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_pre_filt),
-             label="$\hat{U}(f)$ Downsampled and Pre Filtered")
+             label="$\hat{U}(f)$ Downsampled & Pre Filtered")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_post_filt),
-             label="$\hat{U}(f)$ Downsampled and Post Filtered")
+             label="$\hat{U}(f)$ Downsampled & Post Filtered")
 plt.legend()
 plt.ylim((-300, 50))
 plt.xlim((f_ref[1], f_ref[-1]))
@@ -490,8 +490,9 @@ plt.tight_layout()
 # ---------------------------
 #
 # Futhermore, the filter coefficient's magnitude decay varies for the different
-# implementations. Keep in mind that for the given example the pre filter
-# outperformed the post filter.
+# implementations. Keep in mind that the for this example the pre and post
+# filter are parametrized such that the formed slightly outperforms the latter
+# in terms of precision (see the PSD plot above).
 
 impulse_response_dB_dow_and_pre_filt = 20 * \
     np.log10(np.linalg.norm(
@@ -514,4 +515,4 @@ plt.xlim((0, 1024))
 plt.ylim((-160, -20))
 plt.grid(which='both')
 
-# sphinx_gallery_thumbnail_number = 2
+# sphinx_gallery_thumbnail_number = 9

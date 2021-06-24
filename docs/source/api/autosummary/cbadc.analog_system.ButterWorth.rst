@@ -1,4 +1,4 @@
-cbadc.analog\_system.ButterWorth
+﻿cbadc.analog\_system.ButterWorth
 ================================
 
 .. currentmodule:: cbadc.analog_system
@@ -16,8 +16,10 @@ cbadc.analog\_system.ButterWorth
 
    .. autosummary::
    
+      ~ButterWorth.UGBW
       ~ButterWorth.__init__
       ~ButterWorth.control_observation
+      ~ButterWorth.control_signal_transfer_function_matrix
       ~ButterWorth.derivative
       ~ButterWorth.signal_observation
       ~ButterWorth.transfer_function_matrix
