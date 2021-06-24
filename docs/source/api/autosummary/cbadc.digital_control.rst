@@ -19,8 +19,10 @@
       :toctree:                                          
       :template: custom-class-template.rst               
    
-      CalibrationControl
       DigitalControl
+      GenerativeControl
+      GenerativeControl2
+      JitterdControl
       PhaseDelayedControl
    
    

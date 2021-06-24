@@ -1,4 +1,4 @@
-cbadc.analog\_system.LeapFrog
+﻿cbadc.analog\_system.LeapFrog
 =============================
 
 .. currentmodule:: cbadc.analog_system
@@ -16,8 +16,10 @@ cbadc.analog\_system.LeapFrog
 
    .. autosummary::
    
+      ~LeapFrog.UGBW
       ~LeapFrog.__init__
       ~LeapFrog.control_observation
+      ~LeapFrog.control_signal_transfer_function_matrix
       ~LeapFrog.derivative
       ~LeapFrog.signal_observation
       ~LeapFrog.transfer_function_matrix

@@ -304,6 +304,8 @@ plt.gcf().tight_layout()
 # New Digital Estimator
 # --------------------------------------
 #
+# Combining the virtual pre filter together with the default analog system
+# results in the following system.
 
 digital_estimator_dow_and_pre_filt = cbc.digital_estimator.FIRFilter(
     new_analog_system,
@@ -320,8 +322,8 @@ print(digital_estimator_dow_and_pre_filt)
 # Post filtering the FIR filter coefficients
 # -----------------------------------------------------------
 #
-# Yet another approach is to instead post filter
-# the resulting FIR filter digital_estimator.h with another lowpass FIR filter
+# Yet another approach is to, instead of pre-filtering, post filter
+# the resulting FIR filter coefficients with another lowpass FIR filter.
 
 numtaps = 1 << 10
 f_cutoff = 1.0 / OSR
@@ -368,7 +370,7 @@ plt.plot(np.arange(0, numtaps//2),
          label="Post FIR Filter")
 plt.plot(np.arange(0, L1),
          impulse_response_dB_dow_and_post_filt[L1:],
-         label="Post Filtered")
+         label="Combined Post Filtered")
 
 plt.legend()
 plt.xlabel("filter tap k")
@@ -381,6 +383,8 @@ plt.grid(which='both')
 # Plotting the Estimator's Signal and Noise Transfer Function
 # -----------------------------------------------------------
 #
+# Next we visualize the resulting STF and NTF of the new digital estimator
+# filters.
 
 # Compute NTF
 ntf_pre = digital_estimator_dow_and_pre_filt.noise_transfer_function(omega)
@@ -423,6 +427,10 @@ plt.gcf().tight_layout()
 # Filtering Estimate
 # --------------------
 #
+# Finally, we plot the resulting input estimate PSD for each estimator.
+# Clearly, both the pre and post filter effectively suppresses the aliasing
+# effect.
+#
 
 u_hat_dow_and_pre_filt = np.zeros(size // OSR)
 u_hat_dow_and_post_filt = np.zeros(size // OSR)
@@ -440,9 +448,9 @@ _, psd_dow_and_post_filt = cbc.utilities.compute_power_spectral_density(
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_pre_filt),
-             label="$\hat{U}(f)$ Downsampled and Pre Filtered")
+             label="$\hat{U}(f)$ Downsampled & Pre Filtered")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_post_filt),
-             label="$\hat{U}(f)$ Downsampled and Post Filtered")
+             label="$\hat{U}(f)$ Downsampled & Post Filtered")
 plt.legend()
 plt.ylim((-300, 50))
 plt.xlim((f_ref[1], f_ref[-1]))
@@ -455,6 +463,10 @@ plt.show()
 # In Time Domain
 # ---------------
 #
+# The corresponding estimate samples are plotted. As is evident from the plots
+# the different filter realization all result in different filter lags.
+# Naturally, the filter lag follows from the choice of K1, K2, and the pre or
+# post filter design and is therefore a known parameter.
 
 t = np.arange(size)
 t_down = np.arange(size // OSR) * OSR
@@ -477,6 +489,10 @@ plt.tight_layout()
 # Compare Filter Coefficients
 # ---------------------------
 #
+# Futhermore, the filter coefficient's magnitude decay varies for the different
+# implementations. Keep in mind that the for this example the pre and post
+# filter are parametrized such that the formed slightly outperforms the latter
+# in terms of precision (see the PSD plot above).
 
 impulse_response_dB_dow_and_pre_filt = 20 * \
     np.log10(np.linalg.norm(
@@ -499,4 +515,4 @@ plt.xlim((0, 1024))
 plt.ylim((-160, -20))
 plt.grid(which='both')
 
-# sphinx_gallery_thumbnail_number = 2
+# sphinx_gallery_thumbnail_number = 9

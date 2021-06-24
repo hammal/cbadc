@@ -518,7 +518,7 @@ the PSD plot.
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
@@ -586,48 +586,48 @@ to a bandlimiting filter.
     [3 0 4 1 5 2]
     The analog system is parameterized as:
     A =
-    [[ -158.38446133  2539.20266208]
-     [-2539.20266208  -158.38446133]],
+    [[ -158.38991952  2539.20594553]
+     [-2539.20594553  -158.38991952]],
     B =
-    [[1.30658512]
+    [[1.30646843]
      [0.        ]],
     CT = 
-    [[  -316.76892266 -26436.53373967]],
+    [[  -316.77983904 -26439.53111383]],
     Gamma =
     None,
     Gamma_tildeT =
-    None, and D=[[1.30658512]]
+    None, and D=[[1.30646843]]
     The analog system is parameterized as:
     A =
-    [[ -507.41451126  2151.20875995]
-     [-2151.20875995  -507.41451126]],
+    [[ -507.42484717  2151.20032347]
+     [-2151.20032347  -507.42484717]],
     B =
-    [[1.30658512]
+    [[1.30646843]
      [0.        ]],
     CT = 
-    [[-1014.82902253 -9538.44502979]],
+    [[-1014.84969433 -9539.6006361 ]],
     Gamma =
     None,
     Gamma_tildeT =
-    None, and D=[[1.30658512]]
+    None, and D=[[1.30646843]]
     The analog system is parameterized as:
     A =
-    [[ -872.67675645  1287.52708591]
-     [-1287.52708591  -872.67675645]],
+    [[ -872.67796009  1287.51180494]
+     [-1287.51180494  -872.67796009]],
     B =
-    [[1.30658512]
+    [[1.30646843]
      [0.        ]],
     CT = 
-    [[ -1745.35351289 -12667.96410961]],
+    [[ -1745.35592017 -12669.31428504]],
     Gamma =
     None,
     Gamma_tildeT =
-    None, and D=[[1.30658512]]
+    None, and D=[[1.30646843]]
     The analog system is parameterized as:
     A =
-    [[-1049.84307128]],
+    [[-1049.83492627]],
     B =
-    [[1.14305954]],
+    [[1.1430085]],
     CT = 
     [[1.]],
     Gamma =
@@ -696,32 +696,32 @@ New Analog System
 
     The analog system is parameterized as:
     A =
-    [[  -158.38446133   2539.20266208      0.              0.
+    [[  -158.38991952   2539.20594553      0.              0.
            0.              0.              0.              0.
            0.              0.              0.              0.
            0.        ]
-     [ -2539.20266208   -158.38446133      0.              0.
+     [ -2539.20594553   -158.38991952      0.              0.
            0.              0.              0.              0.
            0.              0.              0.              0.
            0.        ]
-     [  -413.88555926 -34541.58147714   -507.41451126   2151.20875995
+     [  -413.86285921 -34542.41272467   -507.42484717   2151.20032347
            0.              0.              0.              0.
            0.              0.              0.              0.
            0.        ]
-     [     0.              0.          -2151.20875995   -507.41451126
+     [     0.              0.          -2151.20032347   -507.42484717
            0.              0.              0.              0.
            0.              0.              0.              0.
            0.        ]
-     [  -540.77671105 -45131.51620749  -1325.96049513 -12462.79029642
-        -872.67675645   1287.52708591      0.              0.
+     [  -540.69876022 -45128.57174752  -1325.86908763 -12463.18707325
+        -872.67796009   1287.51180494      0.              0.
            0.              0.              0.              0.
            0.        ]
      [     0.              0.              0.              0.
-       -1287.52708591   -872.67675645      0.              0.
+       -1287.51180494   -872.67796009      0.              0.
            0.              0.              0.              0.
            0.        ]
-     [  -618.13997929 -51588.01021568  -1515.65179538 -14245.71135992
-       -1995.04298591 -14480.23724472  -1049.84307128      0.
+     [  -618.0232788  -51582.34109438  -1515.47963687 -14245.52876018
+       -1994.95665205 -14481.13391532  -1049.83492627      0.
            0.              0.              0.              0.
            0.        ]
      [     0.              0.              0.              0.
@@ -749,13 +749,13 @@ New Analog System
            0.              0.              0.           6250.
          -62.5       ]],
     B =
-    [[1.30658512]
+    [[1.30646843]
      [0.        ]
-     [1.70716466]
+     [1.70685976]
      [0.        ]
-     [2.23055594]
+     [2.22995839]
      [0.        ]
-     [2.54965825]
+     [2.5488614 ]
      [0.        ]
      [0.        ]
      [0.        ]
@@ -799,16 +799,18 @@ New Analog System
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 304-307
+.. GENERATED FROM PYTHON SOURCE LINES 304-309
 
 New Digital Estimator
 --------------------------------------
 
+Combining the virtual pre filter together with the default analog system
+results in the following system.
 
-.. GENERATED FROM PYTHON SOURCE LINES 307-319
+.. GENERATED FROM PYTHON SOURCE LINES 309-321
 
 .. code-block:: default
-   :lineno-start: 308
+   :lineno-start: 310
 
 
     digital_estimator_dow_and_pre_filt = cbc.digital_estimator.FIRFilter(
@@ -841,35 +843,35 @@ New Digital Estimator
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
     h = 
-    [[[ 3.23449483e-26 -8.89358827e-27 -5.19630790e-27  1.64716076e-27
-        8.10518769e-28 -2.46888208e-28]
-      [ 3.62914575e-26 -6.13580581e-27 -5.94456334e-27  1.20507066e-27
-        9.45237450e-28 -1.86803231e-28]
-      [ 3.87873811e-26 -3.04624955e-27 -6.45778401e-27  7.00334792e-28
-        1.04298116e-27 -1.17220607e-28]
+    [[[ 3.22671732e-26 -8.89499869e-27 -5.18313820e-27  1.64702740e-27
+        8.08357583e-28 -2.46832942e-28]
+      [ 3.62156532e-26 -6.14381653e-27 -5.93153659e-27  1.20605140e-27
+        9.43071238e-28 -1.86905231e-28]
+      [ 3.87168333e-26 -3.06068193e-27 -6.44545999e-27  7.02415336e-28
+        1.04090230e-27 -1.17479413e-28]
       ...
-      [-7.48346618e-25  2.52727954e-26  1.28850114e-25  4.60839464e-27
-       -2.10077161e-26 -1.74328192e-27]
-      [-7.48744833e-25 -3.83507906e-26  1.24483001e-25  1.50727060e-26
-       -1.95992087e-26 -3.15809035e-27]
-      [-7.17936773e-25 -9.88088319e-26  1.15036906e-25  2.46511766e-26
-       -1.74088050e-26 -4.40645660e-27]]].
+      [-7.47293263e-25  2.48522571e-26  1.28642368e-25  4.66541431e-27
+       -2.09696790e-26 -1.74944274e-27]
+      [-7.47502086e-25 -3.86626172e-26  1.24250568e-25  1.51096568e-26
+       -1.95583874e-26 -3.16125633e-27]
+      [-7.16560992e-25 -9.90015793e-26  1.14790067e-25  2.46670037e-26
+       -1.73669678e-26 -4.40656818e-27]]].
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 320-325
+.. GENERATED FROM PYTHON SOURCE LINES 322-327
 
 Post filtering the FIR filter coefficients
 -----------------------------------------------------------
 
-Yet another approach is to instead post filter
-the resulting FIR filter digital_estimator.h with another lowpass FIR filter
+Yet another approach is to, instead of pre-filtering, post filter
+the resulting FIR filter coefficients with another lowpass FIR filter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 325-380
+.. GENERATED FROM PYTHON SOURCE LINES 327-382
 
 .. code-block:: default
-   :lineno-start: 326
+   :lineno-start: 328
 
 
     numtaps = 1 << 10
@@ -917,7 +919,7 @@ the resulting FIR filter digital_estimator.h with another lowpass FIR filter
              label="Post FIR Filter")
     plt.plot(np.arange(0, L1),
              impulse_response_dB_dow_and_post_filt[L1:],
-             label="Post Filtered")
+             label="Combined Post Filtered")
 
     plt.legend()
     plt.xlabel("filter tap k")
@@ -978,16 +980,18 @@ the resulting FIR filter digital_estimator.h with another lowpass FIR filter
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 381-384
+.. GENERATED FROM PYTHON SOURCE LINES 383-388
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
 
+Next we visualize the resulting STF and NTF of the new digital estimator
+filters.
 
-.. GENERATED FROM PYTHON SOURCE LINES 384-422
+.. GENERATED FROM PYTHON SOURCE LINES 388-426
 
 .. code-block:: default
-   :lineno-start: 385
+   :lineno-start: 389
 
 
     # Compute NTF
@@ -1043,20 +1047,26 @@ Plotting the Estimator's Signal and Noise Transfer Function
 
     /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:410: RuntimeWarning: divide by zero encountered in log10
       plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:414: RuntimeWarning: divide by zero encountered in log10
+      plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 423-426
+.. GENERATED FROM PYTHON SOURCE LINES 427-434
 
 Filtering Estimate
 --------------------
 
+Finally, we plot the resulting input estimate PSD for each estimator.
+Clearly, both the pre and post filter effectively suppresses the aliasing
+effect.
 
-.. GENERATED FROM PYTHON SOURCE LINES 426-454
+
+.. GENERATED FROM PYTHON SOURCE LINES 434-462
 
 .. code-block:: default
-   :lineno-start: 427
+   :lineno-start: 435
 
 
     u_hat_dow_and_pre_filt = np.zeros(size // OSR)
@@ -1075,9 +1085,9 @@ Filtering Estimate
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_pre_filt),
-                 label="$\hat{U}(f)$ Downsampled and Pre Filtered")
+                 label="$\hat{U}(f)$ Downsampled & Pre Filtered")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_post_filt),
-                 label="$\hat{U}(f)$ Downsampled and Post Filtered")
+                 label="$\hat{U}(f)$ Downsampled & Post Filtered")
     plt.legend()
     plt.ylim((-300, 50))
     plt.xlim((f_ref[1], f_ref[-1]))
@@ -1100,23 +1110,27 @@ Filtering Estimate
 
  .. code-block:: none
 
-      0%|          | 0/8192 [00:00<?, ?it/s]      1%|          | 56/8192 [00:00<00:14, 557.37it/s]      1%|1         | 112/8192 [00:00<00:18, 446.84it/s]      2%|2         | 182/8192 [00:00<00:14, 537.63it/s]      3%|3         | 260/8192 [00:00<00:12, 623.64it/s]      5%|4         | 408/8192 [00:00<00:08, 910.74it/s]      6%|6         | 502/8192 [00:00<00:08, 903.98it/s]      7%|7         | 595/8192 [00:00<00:08, 850.39it/s]      8%|8         | 684/8192 [00:00<00:08, 861.31it/s]      9%|9         | 774/8192 [00:00<00:08, 870.68it/s]     11%|#         | 862/8192 [00:01<00:08, 816.50it/s]     12%|#1        | 945/8192 [00:01<00:09, 786.25it/s]     13%|#2        | 1035/8192 [00:01<00:08, 816.49it/s]     14%|#3        | 1118/8192 [00:01<00:08, 819.10it/s]     15%|#4        | 1201/8192 [00:01<00:10, 638.33it/s]     16%|#5        | 1272/8192 [00:01<00:10, 639.50it/s]     16%|#6        | 1349/8192 [00:01<00:10, 671.38it/s]     17%|#7        | 1432/8192 [00:01<00:09, 712.26it/s]     18%|#8        | 1507/8192 [00:02<00:09, 722.30it/s]     19%|#9        | 1582/8192 [00:02<00:09, 713.83it/s]     20%|##        | 1662/8192 [00:02<00:08, 737.16it/s]     21%|##1       | 1745/8192 [00:02<00:08, 761.43it/s]     22%|##2       | 1823/8192 [00:02<00:08, 734.49it/s]     23%|##3       | 1906/8192 [00:02<00:08, 760.61it/s]     24%|##4       | 1983/8192 [00:02<00:08, 758.28it/s]     25%|##5       | 2066/8192 [00:02<00:07, 778.92it/s]     26%|##6       | 2159/8192 [00:02<00:07, 823.06it/s]     27%|##7       | 2242/8192 [00:02<00:07, 819.41it/s]     28%|##8       | 2325/8192 [00:03<00:07, 790.43it/s]     29%|##9       | 2405/8192 [00:03<00:07, 756.27it/s]     30%|###       | 2494/8192 [00:03<00:07, 792.90it/s]     31%|###1      | 2574/8192 [00:03<00:07, 791.39it/s]     32%|###2      | 2654/8192 [00:03<00:07, 785.97it/s]     33%|###3      | 2733/8192 [00:03<00:07, 760.76it/s]     34%|###4      | 2810/8192 [00:03<00:07, 745.60it/s]     35%|###5      | 2893/8192 [00:03<00:06, 767.67it/s]     37%|###6      | 2999/8192 [00:03<00:06, 851.92it/s]     38%|###7      | 3091/8192 [00:04<00:05, 870.17it/s]     39%|###8      | 3179/8192 [00:04<00:06, 804.20it/s]     40%|###9      | 3261/8192 [00:04<00:06, 781.75it/s]     41%|####      | 3344/8192 [00:04<00:06, 793.12it/s]     42%|####1     | 3437/8192 [00:04<00:05, 827.66it/s]     43%|####2     | 3521/8192 [00:04<00:05, 781.31it/s]     44%|####3     | 3604/8192 [00:04<00:05, 792.45it/s]     45%|####5     | 3688/8192 [00:04<00:05, 804.43it/s]     46%|####6     | 3769/8192 [00:04<00:05, 779.91it/s]     47%|####7     | 3859/8192 [00:04<00:05, 813.79it/s]     48%|####8     | 3941/8192 [00:05<00:05, 790.04it/s]     49%|####9     | 4037/8192 [00:05<00:04, 836.28it/s]     50%|#####     | 4122/8192 [00:05<00:04, 833.22it/s]     51%|#####1    | 4206/8192 [00:05<00:05, 775.37it/s]     52%|#####2    | 4294/8192 [00:05<00:04, 804.45it/s]     54%|#####3    | 4388/8192 [00:05<00:04, 840.68it/s]     55%|#####4    | 4473/8192 [00:05<00:04, 793.83it/s]     56%|#####5    | 4554/8192 [00:05<00:04, 773.84it/s]     57%|#####6    | 4633/8192 [00:05<00:04, 764.61it/s]     57%|#####7    | 4710/8192 [00:06<00:04, 741.78it/s]     59%|#####8    | 4793/8192 [00:06<00:04, 765.72it/s]     59%|#####9    | 4870/8192 [00:06<00:04, 729.34it/s]     60%|######    | 4948/8192 [00:06<00:04, 743.11it/s]     61%|######1   | 5023/8192 [00:06<00:04, 729.46it/s]     62%|######2   | 5097/8192 [00:06<00:04, 713.77it/s]     63%|######3   | 5195/8192 [00:06<00:03, 789.32it/s]     64%|######4   | 5275/8192 [00:06<00:04, 685.39it/s]     66%|######5   | 5382/8192 [00:06<00:03, 786.21it/s]     67%|######6   | 5466/8192 [00:07<00:03, 798.92it/s]     68%|######7   | 5556/8192 [00:07<00:03, 826.01it/s]     69%|######8   | 5641/8192 [00:07<00:03, 795.30it/s]     70%|######9   | 5723/8192 [00:07<00:03, 757.30it/s]     71%|#######   | 5808/8192 [00:07<00:03, 782.26it/s]     72%|#######1  | 5888/8192 [00:07<00:03, 743.54it/s]     73%|#######2  | 5964/8192 [00:07<00:03, 733.08it/s]     74%|#######3  | 6047/8192 [00:07<00:02, 758.40it/s]     75%|#######4  | 6136/8192 [00:07<00:02, 794.75it/s]     76%|#######5  | 6217/8192 [00:08<00:02, 781.37it/s]     77%|#######6  | 6300/8192 [00:08<00:02, 794.58it/s]     78%|#######8  | 6391/8192 [00:08<00:02, 826.74it/s]     79%|#######9  | 6475/8192 [00:08<00:02, 812.86it/s]     80%|########  | 6557/8192 [00:08<00:02, 791.59it/s]     81%|########1 | 6638/8192 [00:08<00:01, 792.41it/s]     82%|########2 | 6718/8192 [00:08<00:01, 793.66it/s]     83%|########2 | 6798/8192 [00:08<00:01, 754.64it/s]     84%|########4 | 6883/8192 [00:08<00:01, 781.33it/s]     85%|########5 | 6974/8192 [00:08<00:01, 817.07it/s]     86%|########6 | 7057/8192 [00:09<00:01, 819.82it/s]     87%|########7 | 7146/8192 [00:09<00:01, 838.81it/s]     88%|########8 | 7231/8192 [00:09<00:01, 826.27it/s]     89%|########9 | 7316/8192 [00:09<00:01, 832.31it/s]     90%|######### | 7400/8192 [00:09<00:00, 829.85it/s]     91%|#########1| 7484/8192 [00:09<00:00, 773.86it/s]     92%|#########2| 7571/8192 [00:09<00:00, 798.46it/s]     93%|#########3| 7652/8192 [00:09<00:00, 772.41it/s]     94%|#########4| 7737/8192 [00:09<00:00, 793.91it/s]     96%|#########5| 7832/8192 [00:10<00:00, 835.32it/s]     97%|#########6| 7922/8192 [00:10<00:00, 853.95it/s]     98%|#########7| 8008/8192 [00:10<00:00, 803.29it/s]    100%|#########9| 8158/8192 [00:10<00:00, 998.92it/s]    100%|##########| 8192/8192 [00:10<00:00, 787.92it/s]
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
+      0%|          | 0/8192 [00:00<?, ?it/s]      2%|1         | 155/8192 [00:00<00:05, 1543.39it/s]      4%|3         | 310/8192 [00:00<00:05, 1539.65it/s]      6%|5         | 464/8192 [00:00<00:05, 1297.73it/s]      7%|7         | 598/8192 [00:00<00:07, 1056.32it/s]     10%|9         | 804/8192 [00:00<00:05, 1346.42it/s]     12%|#2        | 1005/8192 [00:00<00:04, 1539.44it/s]     15%|#5        | 1240/8192 [00:00<00:03, 1777.56it/s]     19%|#9        | 1582/8192 [00:00<00:02, 2261.52it/s]     22%|##2       | 1819/8192 [00:01<00:03, 2058.66it/s]     25%|##4       | 2035/8192 [00:01<00:03, 1628.45it/s]     27%|##7       | 2218/8192 [00:01<00:04, 1368.62it/s]     29%|##8       | 2374/8192 [00:01<00:04, 1288.00it/s]     31%|###       | 2515/8192 [00:01<00:05, 1087.10it/s]     32%|###2      | 2645/8192 [00:01<00:04, 1120.37it/s]     34%|###3      | 2767/8192 [00:02<00:05, 1033.33it/s]     36%|###5      | 2923/8192 [00:02<00:04, 1150.74it/s]     37%|###7      | 3047/8192 [00:02<00:04, 1118.71it/s]     39%|###8      | 3179/8192 [00:02<00:04, 1168.04it/s]     41%|####      | 3342/8192 [00:02<00:03, 1287.37it/s]     43%|####2     | 3505/8192 [00:02<00:03, 1380.36it/s]     45%|####4     | 3669/8192 [00:02<00:03, 1451.12it/s]     47%|####6     | 3833/8192 [00:02<00:02, 1502.86it/s]     49%|####8     | 3997/8192 [00:02<00:02, 1540.55it/s]     51%|#####     | 4159/8192 [00:02<00:02, 1563.67it/s]     53%|#####2    | 4323/8192 [00:03<00:02, 1583.96it/s]     55%|#####4    | 4486/8192 [00:03<00:02, 1597.15it/s]     57%|#####6    | 4650/8192 [00:03<00:02, 1607.91it/s]     59%|#####8    | 4814/8192 [00:03<00:02, 1615.67it/s]     61%|######    | 4978/8192 [00:03<00:01, 1621.21it/s]     63%|######2   | 5142/8192 [00:03<00:01, 1625.66it/s]     65%|######4   | 5306/8192 [00:03<00:01, 1628.27it/s]     67%|######6   | 5469/8192 [00:03<00:01, 1626.31it/s]     69%|######8   | 5633/8192 [00:03<00:01, 1627.55it/s]     71%|#######   | 5796/8192 [00:03<00:01, 1627.92it/s]     73%|#######2  | 5960/8192 [00:04<00:01, 1630.60it/s]     75%|#######4  | 6124/8192 [00:04<00:01, 1629.89it/s]     77%|#######6  | 6288/8192 [00:04<00:01, 1629.33it/s]     79%|#######8  | 6451/8192 [00:04<00:01, 1627.21it/s]     81%|########  | 6615/8192 [00:04<00:00, 1629.67it/s]     83%|########2 | 6779/8192 [00:04<00:00, 1631.42it/s]     85%|########4 | 6943/8192 [00:04<00:00, 1632.01it/s]     87%|########6 | 7107/8192 [00:04<00:00, 1396.07it/s]     89%|########8 | 7269/8192 [00:04<00:00, 1455.60it/s]     91%|######### | 7432/8192 [00:05<00:00, 1502.62it/s]     93%|#########2| 7595/8192 [00:05<00:00, 1536.32it/s]     95%|#########4| 7758/8192 [00:05<00:00, 1561.62it/s]     97%|#########6| 7921/8192 [00:05<00:00, 1579.43it/s]     99%|#########8| 8084/8192 [00:05<00:00, 1592.15it/s]    100%|##########| 8192/8192 [00:05<00:00, 1491.19it/s]
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 455-458
+.. GENERATED FROM PYTHON SOURCE LINES 463-470
 
 In Time Domain
 ---------------
 
+The corresponding estimate samples are plotted. As is evident from the plots
+the different filter realization all result in different filter lags.
+Naturally, the filter lag follows from the choice of K1, K2, and the pre or
+post filter design and is therefore a known parameter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 458-476
+.. GENERATED FROM PYTHON SOURCE LINES 470-488
 
 .. code-block:: default
-   :lineno-start: 459
+   :lineno-start: 471
 
 
     t = np.arange(size)
@@ -1147,16 +1161,20 @@ In Time Domain
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 477-480
+.. GENERATED FROM PYTHON SOURCE LINES 489-496
 
 Compare Filter Coefficients
 ---------------------------
 
+Futhermore, the filter coefficient's magnitude decay varies for the different
+implementations. Keep in mind that the for this example the pre and post
+filter are parametrized such that the formed slightly outperforms the latter
+in terms of precision (see the PSD plot above).
 
-.. GENERATED FROM PYTHON SOURCE LINES 480-502
+.. GENERATED FROM PYTHON SOURCE LINES 496-518
 
 .. code-block:: default
-   :lineno-start: 481
+   :lineno-start: 497
 
 
     impulse_response_dB_dow_and_pre_filt = 20 * \
@@ -1194,7 +1212,7 @@ Compare Filter Coefficients
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  25.369 seconds)
+   **Total running time of the script:** ( 1 minutes  11.926 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_c_downsample.py:

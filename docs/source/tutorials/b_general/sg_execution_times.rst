@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**01:25.369** total execution time for **tutorials_b_general** files:
+**01:11.926** total execution time for **tutorials_b_general** files:
 
 +-------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_c_downsample.py` (``plot_c_downsample.py``)                   | 01:25.369 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_c_downsample.py` (``plot_c_downsample.py``)                   | 01:11.926 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``)     | 00:00.000 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------+-----------+--------+
