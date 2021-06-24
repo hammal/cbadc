@@ -524,20 +524,23 @@ the PSD plot.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 232-239
+.. GENERATED FROM PYTHON SOURCE LINES 232-242
 
-Prepending a Bandlimiting Filter
---------------------------------
+Prepending a Virtual Bandlimiting Filter
+----------------------------------------
 
 To battle the aliasing we extend the current estimator by placing a
-bandlimiting filter in front of the system. This has the wanted effect since
-we now reconstruct a signal shaped by both the STF of the system in addition
+bandlimiting filter in front of the system. Note that this filter is a
+conceptual addition and not actually part of the physical analog system.
+Regardless, this effectively suppresses aliasing since we now reconstruct
+a signal shaped by both the STF of the system in addition
 to a bandlimiting filter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 239-265
+
+.. GENERATED FROM PYTHON SOURCE LINES 242-268
 
 .. code-block:: default
-   :lineno-start: 240
+   :lineno-start: 243
 
 
     wp = omega_3dB / 2.0
@@ -635,16 +638,16 @@ to a bandlimiting filter.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 266-269
+.. GENERATED FROM PYTHON SOURCE LINES 269-272
 
 New Analog System
 -------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 269-300
+.. GENERATED FROM PYTHON SOURCE LINES 272-303
 
 .. code-block:: default
-   :lineno-start: 270
+   :lineno-start: 273
 
 
     new_analog_system = cbc.analog_system.chain([filter, analog_system])
@@ -796,16 +799,16 @@ New Analog System
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 301-304
+.. GENERATED FROM PYTHON SOURCE LINES 304-307
 
 New Digital Estimator
 --------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 304-316
+.. GENERATED FROM PYTHON SOURCE LINES 307-319
 
 .. code-block:: default
-   :lineno-start: 305
+   :lineno-start: 308
 
 
     digital_estimator_dow_and_pre_filt = cbc.digital_estimator.FIRFilter(
@@ -855,7 +858,7 @@ New Digital Estimator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 317-322
+.. GENERATED FROM PYTHON SOURCE LINES 320-325
 
 Post filtering the FIR filter coefficients
 -----------------------------------------------------------
@@ -863,10 +866,10 @@ Post filtering the FIR filter coefficients
 Yet another approach is to instead post filter
 the resulting FIR filter digital_estimator.h with another lowpass FIR filter
 
-.. GENERATED FROM PYTHON SOURCE LINES 322-377
+.. GENERATED FROM PYTHON SOURCE LINES 325-380
 
 .. code-block:: default
-   :lineno-start: 323
+   :lineno-start: 326
 
 
     numtaps = 1 << 10
@@ -975,16 +978,16 @@ the resulting FIR filter digital_estimator.h with another lowpass FIR filter
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 378-381
+.. GENERATED FROM PYTHON SOURCE LINES 381-384
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 381-419
+.. GENERATED FROM PYTHON SOURCE LINES 384-422
 
 .. code-block:: default
-   :lineno-start: 382
+   :lineno-start: 385
 
 
     # Compute NTF
@@ -1038,22 +1041,22 @@ Plotting the Estimator's Signal and Noise Transfer Function
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:407: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:410: RuntimeWarning: divide by zero encountered in log10
       plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 420-423
+.. GENERATED FROM PYTHON SOURCE LINES 423-426
 
 Filtering Estimate
 --------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 423-451
+.. GENERATED FROM PYTHON SOURCE LINES 426-454
 
 .. code-block:: default
-   :lineno-start: 424
+   :lineno-start: 427
 
 
     u_hat_dow_and_pre_filt = np.zeros(size // OSR)
@@ -1097,23 +1100,23 @@ Filtering Estimate
 
  .. code-block:: none
 
-      0%|          | 0/8192 [00:00<?, ?it/s]      1%|          | 74/8192 [00:00<00:11, 736.91it/s]      2%|1         | 148/8192 [00:00<00:11, 700.35it/s]      3%|2         | 219/8192 [00:00<00:13, 576.95it/s]      4%|3         | 323/8192 [00:00<00:10, 734.61it/s]      5%|4         | 403/8192 [00:00<00:10, 754.91it/s]      6%|5         | 482/8192 [00:00<00:12, 600.21it/s]      7%|6         | 548/8192 [00:00<00:14, 540.92it/s]      7%|7         | 607/8192 [00:01<00:14, 507.49it/s]      8%|8         | 661/8192 [00:01<00:15, 492.39it/s]     10%|#         | 823/8192 [00:01<00:09, 775.12it/s]     12%|#1        | 973/8192 [00:01<00:07, 965.76it/s]     13%|#3        | 1078/8192 [00:01<00:08, 827.91it/s]     14%|#4        | 1170/8192 [00:01<00:08, 809.47it/s]     15%|#5        | 1258/8192 [00:01<00:09, 749.90it/s]     17%|#7        | 1413/8192 [00:01<00:07, 945.76it/s]     19%|#8        | 1551/8192 [00:01<00:06, 1037.02it/s]     21%|##        | 1683/8192 [00:02<00:05, 1110.58it/s]     22%|##1       | 1800/8192 [00:02<00:06, 1038.87it/s]     23%|##3       | 1909/8192 [00:02<00:06, 1046.11it/s]     25%|##4       | 2017/8192 [00:02<00:05, 1046.71it/s]     27%|##6       | 2177/8192 [00:02<00:05, 1201.26it/s]     28%|##8       | 2300/8192 [00:02<00:05, 1125.96it/s]     30%|##9       | 2456/8192 [00:02<00:04, 1244.20it/s]     32%|###2      | 2643/8192 [00:02<00:03, 1418.93it/s]     34%|###4      | 2788/8192 [00:03<00:04, 1246.12it/s]     36%|###5      | 2919/8192 [00:03<00:05, 1048.95it/s]     37%|###7      | 3033/8192 [00:03<00:05, 968.88it/s]      38%|###8      | 3137/8192 [00:03<00:05, 946.22it/s]     40%|####      | 3295/8192 [00:03<00:04, 1098.75it/s]     42%|####1     | 3412/8192 [00:03<00:04, 998.29it/s]      44%|####3     | 3578/8192 [00:03<00:03, 1160.90it/s]     45%|####5     | 3702/8192 [00:03<00:04, 1102.00it/s]     47%|####7     | 3889/8192 [00:04<00:03, 1298.60it/s]     49%|####9     | 4026/8192 [00:04<00:03, 1114.39it/s]     51%|#####     | 4147/8192 [00:04<00:03, 1058.75it/s]     52%|#####1    | 4259/8192 [00:04<00:03, 988.26it/s]      53%|#####3    | 4363/8192 [00:04<00:04, 954.11it/s]     54%|#####4    | 4462/8192 [00:04<00:05, 744.09it/s]     56%|#####5    | 4575/8192 [00:04<00:04, 826.37it/s]     57%|#####6    | 4667/8192 [00:05<00:04, 706.41it/s]     59%|#####8    | 4826/8192 [00:05<00:03, 899.00it/s]     61%|######    | 4960/8192 [00:05<00:03, 1003.81it/s]     62%|######1   | 5073/8192 [00:05<00:03, 936.38it/s]      63%|######3   | 5176/8192 [00:05<00:03, 832.08it/s]     64%|######4   | 5267/8192 [00:05<00:03, 790.14it/s]     65%|######5   | 5352/8192 [00:05<00:03, 796.75it/s]     67%|######6   | 5449/8192 [00:05<00:03, 838.61it/s]     68%|######7   | 5553/8192 [00:06<00:02, 890.74it/s]     70%|#######   | 5735/8192 [00:06<00:02, 1143.17it/s]     71%|#######1  | 5854/8192 [00:06<00:02, 1090.19it/s]     73%|#######2  | 5967/8192 [00:06<00:02, 972.17it/s]      74%|#######4  | 6069/8192 [00:06<00:02, 898.56it/s]     75%|#######5  | 6163/8192 [00:06<00:02, 879.10it/s]     76%|#######6  | 6254/8192 [00:06<00:02, 853.93it/s]     77%|#######7  | 6341/8192 [00:06<00:02, 858.04it/s]     79%|#######9  | 6497/8192 [00:06<00:01, 1047.65it/s]     81%|########  | 6605/8192 [00:07<00:01, 949.42it/s]      82%|########1 | 6704/8192 [00:07<00:01, 926.63it/s]     83%|########3 | 6817/8192 [00:07<00:01, 980.87it/s]     85%|########5 | 6998/8192 [00:07<00:00, 1208.44it/s]     87%|########6 | 7123/8192 [00:07<00:00, 1111.73it/s]     89%|########9 | 7293/8192 [00:07<00:00, 1238.49it/s]     91%|######### | 7421/8192 [00:07<00:00, 966.66it/s]      92%|#########1| 7529/8192 [00:08<00:00, 893.51it/s]     93%|#########3| 7646/8192 [00:08<00:00, 955.44it/s]     95%|#########4| 7749/8192 [00:08<00:00, 797.85it/s]     96%|#########5| 7838/8192 [00:08<00:00, 786.86it/s]     97%|#########6| 7923/8192 [00:08<00:00, 665.60it/s]     98%|#########7| 7996/8192 [00:08<00:00, 627.67it/s]     98%|#########8| 8063/8192 [00:08<00:00, 613.70it/s]    100%|#########9| 8171/8192 [00:08<00:00, 723.34it/s]    100%|##########| 8192/8192 [00:08<00:00, 910.91it/s]
+      0%|          | 0/8192 [00:00<?, ?it/s]      1%|          | 56/8192 [00:00<00:14, 557.37it/s]      1%|1         | 112/8192 [00:00<00:18, 446.84it/s]      2%|2         | 182/8192 [00:00<00:14, 537.63it/s]      3%|3         | 260/8192 [00:00<00:12, 623.64it/s]      5%|4         | 408/8192 [00:00<00:08, 910.74it/s]      6%|6         | 502/8192 [00:00<00:08, 903.98it/s]      7%|7         | 595/8192 [00:00<00:08, 850.39it/s]      8%|8         | 684/8192 [00:00<00:08, 861.31it/s]      9%|9         | 774/8192 [00:00<00:08, 870.68it/s]     11%|#         | 862/8192 [00:01<00:08, 816.50it/s]     12%|#1        | 945/8192 [00:01<00:09, 786.25it/s]     13%|#2        | 1035/8192 [00:01<00:08, 816.49it/s]     14%|#3        | 1118/8192 [00:01<00:08, 819.10it/s]     15%|#4        | 1201/8192 [00:01<00:10, 638.33it/s]     16%|#5        | 1272/8192 [00:01<00:10, 639.50it/s]     16%|#6        | 1349/8192 [00:01<00:10, 671.38it/s]     17%|#7        | 1432/8192 [00:01<00:09, 712.26it/s]     18%|#8        | 1507/8192 [00:02<00:09, 722.30it/s]     19%|#9        | 1582/8192 [00:02<00:09, 713.83it/s]     20%|##        | 1662/8192 [00:02<00:08, 737.16it/s]     21%|##1       | 1745/8192 [00:02<00:08, 761.43it/s]     22%|##2       | 1823/8192 [00:02<00:08, 734.49it/s]     23%|##3       | 1906/8192 [00:02<00:08, 760.61it/s]     24%|##4       | 1983/8192 [00:02<00:08, 758.28it/s]     25%|##5       | 2066/8192 [00:02<00:07, 778.92it/s]     26%|##6       | 2159/8192 [00:02<00:07, 823.06it/s]     27%|##7       | 2242/8192 [00:02<00:07, 819.41it/s]     28%|##8       | 2325/8192 [00:03<00:07, 790.43it/s]     29%|##9       | 2405/8192 [00:03<00:07, 756.27it/s]     30%|###       | 2494/8192 [00:03<00:07, 792.90it/s]     31%|###1      | 2574/8192 [00:03<00:07, 791.39it/s]     32%|###2      | 2654/8192 [00:03<00:07, 785.97it/s]     33%|###3      | 2733/8192 [00:03<00:07, 760.76it/s]     34%|###4      | 2810/8192 [00:03<00:07, 745.60it/s]     35%|###5      | 2893/8192 [00:03<00:06, 767.67it/s]     37%|###6      | 2999/8192 [00:03<00:06, 851.92it/s]     38%|###7      | 3091/8192 [00:04<00:05, 870.17it/s]     39%|###8      | 3179/8192 [00:04<00:06, 804.20it/s]     40%|###9      | 3261/8192 [00:04<00:06, 781.75it/s]     41%|####      | 3344/8192 [00:04<00:06, 793.12it/s]     42%|####1     | 3437/8192 [00:04<00:05, 827.66it/s]     43%|####2     | 3521/8192 [00:04<00:05, 781.31it/s]     44%|####3     | 3604/8192 [00:04<00:05, 792.45it/s]     45%|####5     | 3688/8192 [00:04<00:05, 804.43it/s]     46%|####6     | 3769/8192 [00:04<00:05, 779.91it/s]     47%|####7     | 3859/8192 [00:04<00:05, 813.79it/s]     48%|####8     | 3941/8192 [00:05<00:05, 790.04it/s]     49%|####9     | 4037/8192 [00:05<00:04, 836.28it/s]     50%|#####     | 4122/8192 [00:05<00:04, 833.22it/s]     51%|#####1    | 4206/8192 [00:05<00:05, 775.37it/s]     52%|#####2    | 4294/8192 [00:05<00:04, 804.45it/s]     54%|#####3    | 4388/8192 [00:05<00:04, 840.68it/s]     55%|#####4    | 4473/8192 [00:05<00:04, 793.83it/s]     56%|#####5    | 4554/8192 [00:05<00:04, 773.84it/s]     57%|#####6    | 4633/8192 [00:05<00:04, 764.61it/s]     57%|#####7    | 4710/8192 [00:06<00:04, 741.78it/s]     59%|#####8    | 4793/8192 [00:06<00:04, 765.72it/s]     59%|#####9    | 4870/8192 [00:06<00:04, 729.34it/s]     60%|######    | 4948/8192 [00:06<00:04, 743.11it/s]     61%|######1   | 5023/8192 [00:06<00:04, 729.46it/s]     62%|######2   | 5097/8192 [00:06<00:04, 713.77it/s]     63%|######3   | 5195/8192 [00:06<00:03, 789.32it/s]     64%|######4   | 5275/8192 [00:06<00:04, 685.39it/s]     66%|######5   | 5382/8192 [00:06<00:03, 786.21it/s]     67%|######6   | 5466/8192 [00:07<00:03, 798.92it/s]     68%|######7   | 5556/8192 [00:07<00:03, 826.01it/s]     69%|######8   | 5641/8192 [00:07<00:03, 795.30it/s]     70%|######9   | 5723/8192 [00:07<00:03, 757.30it/s]     71%|#######   | 5808/8192 [00:07<00:03, 782.26it/s]     72%|#######1  | 5888/8192 [00:07<00:03, 743.54it/s]     73%|#######2  | 5964/8192 [00:07<00:03, 733.08it/s]     74%|#######3  | 6047/8192 [00:07<00:02, 758.40it/s]     75%|#######4  | 6136/8192 [00:07<00:02, 794.75it/s]     76%|#######5  | 6217/8192 [00:08<00:02, 781.37it/s]     77%|#######6  | 6300/8192 [00:08<00:02, 794.58it/s]     78%|#######8  | 6391/8192 [00:08<00:02, 826.74it/s]     79%|#######9  | 6475/8192 [00:08<00:02, 812.86it/s]     80%|########  | 6557/8192 [00:08<00:02, 791.59it/s]     81%|########1 | 6638/8192 [00:08<00:01, 792.41it/s]     82%|########2 | 6718/8192 [00:08<00:01, 793.66it/s]     83%|########2 | 6798/8192 [00:08<00:01, 754.64it/s]     84%|########4 | 6883/8192 [00:08<00:01, 781.33it/s]     85%|########5 | 6974/8192 [00:08<00:01, 817.07it/s]     86%|########6 | 7057/8192 [00:09<00:01, 819.82it/s]     87%|########7 | 7146/8192 [00:09<00:01, 838.81it/s]     88%|########8 | 7231/8192 [00:09<00:01, 826.27it/s]     89%|########9 | 7316/8192 [00:09<00:01, 832.31it/s]     90%|######### | 7400/8192 [00:09<00:00, 829.85it/s]     91%|#########1| 7484/8192 [00:09<00:00, 773.86it/s]     92%|#########2| 7571/8192 [00:09<00:00, 798.46it/s]     93%|#########3| 7652/8192 [00:09<00:00, 772.41it/s]     94%|#########4| 7737/8192 [00:09<00:00, 793.91it/s]     96%|#########5| 7832/8192 [00:10<00:00, 835.32it/s]     97%|#########6| 7922/8192 [00:10<00:00, 853.95it/s]     98%|#########7| 8008/8192 [00:10<00:00, 803.29it/s]    100%|#########9| 8158/8192 [00:10<00:00, 998.92it/s]    100%|##########| 8192/8192 [00:10<00:00, 787.92it/s]
     /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 452-455
+.. GENERATED FROM PYTHON SOURCE LINES 455-458
 
 In Time Domain
 ---------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 455-473
+.. GENERATED FROM PYTHON SOURCE LINES 458-476
 
 .. code-block:: default
-   :lineno-start: 456
+   :lineno-start: 459
 
 
     t = np.arange(size)
@@ -1144,16 +1147,16 @@ In Time Domain
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 474-477
+.. GENERATED FROM PYTHON SOURCE LINES 477-480
 
 Compare Filter Coefficients
 ---------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 477-499
+.. GENERATED FROM PYTHON SOURCE LINES 480-502
 
 .. code-block:: default
-   :lineno-start: 478
+   :lineno-start: 481
 
 
     impulse_response_dB_dow_and_pre_filt = 20 * \
@@ -1191,7 +1194,7 @@ Compare Filter Coefficients
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  35.644 seconds)
+   **Total running time of the script:** ( 1 minutes  25.369 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_c_downsample.py:
