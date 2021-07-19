@@ -27,9 +27,9 @@ This documentation is structured in four parts.
    
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
 A/D conversion's main concepts and terminology, :doc:`tutorials/index` provide
-tutorials demonstrating common use cases, :doc:`datasets/index` provide
-interfaces to simulation results and hardware prototypes, and the :doc:`api/api` chapter 
-contains the package documentation.
+tutorials demonstrating common use cases, the :doc:`api/api` chapter 
+contains the package documentation, and :doc:`datasets/index` provide
+access to datasets for benchmarking and from hardware prototypes.
 
 Installation
 ============
