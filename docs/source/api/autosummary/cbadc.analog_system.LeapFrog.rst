@@ -16,10 +16,8 @@
 
    .. autosummary::
    
-      ~LeapFrog.UGBW
       ~LeapFrog.__init__
       ~LeapFrog.control_observation
-      ~LeapFrog.control_signal_transfer_function_matrix
       ~LeapFrog.derivative
       ~LeapFrog.signal_observation
       ~LeapFrog.transfer_function_matrix

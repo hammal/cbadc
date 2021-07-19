@@ -16,10 +16,8 @@
 
    .. autosummary::
    
-      ~AnalogSystem.UGBW
       ~AnalogSystem.__init__
       ~AnalogSystem.control_observation
-      ~AnalogSystem.control_signal_transfer_function_matrix
       ~AnalogSystem.derivative
       ~AnalogSystem.signal_observation
       ~AnalogSystem.transfer_function_matrix
