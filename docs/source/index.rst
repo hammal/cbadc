@@ -24,6 +24,7 @@ This documentation is structured in four parts.
    tutorials/index
    api/api
    datasets/index
+   terminology
    
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
 A/D conversion's main concepts and terminology, :doc:`tutorials/index` provide

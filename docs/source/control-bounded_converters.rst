@@ -131,4 +131,3 @@ In particular, consider the :ref:`getting_started`.
    digital_control
    digital_estimator
    MASH_delta_sigma
-   terminology
