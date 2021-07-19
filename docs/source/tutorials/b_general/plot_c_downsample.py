@@ -32,10 +32,11 @@ N = 6
 M = N
 # Set the amplification factor.
 beta = 6250.
+rho = 1e-2
 # In this example, each nodes amplification and local feedback will be set
 # identically.
 betaVec = beta * np.ones(N)
-rhoVec = -betaVec * 1e-2
+rhoVec = - betaVec * rho
 kappaVec = - beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.

@@ -5,6 +5,25 @@ Examples using ``cbadc.analog_system.ChainOfIntegrators.transfer_function_matrix
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This example demonstrates how to visualize the related transfer functions of the analog system ...">
+
+.. only:: html
+
+ .. figure:: /tutorials/a_getting_started/images/thumb/sphx_glr_plot_d_transfer_function_thumb.png
+     :alt: Transfer Functions
+
+     :ref:`sphx_glr_tutorials_a_getting_started_plot_d_transfer_function.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_tutorials_a_getting_started_plot_d_transfer_function.py`
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for downsampling.">
 
 .. only:: html

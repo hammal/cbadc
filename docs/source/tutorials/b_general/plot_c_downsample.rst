@@ -57,7 +57,7 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 27-54
+.. GENERATED FROM PYTHON SOURCE LINES 27-55
 
 .. code-block:: default
    :lineno-start: 28
@@ -70,10 +70,11 @@ analog system and digital control.
     M = N
     # Set the amplification factor.
     beta = 6250.
+    rho = 1e-2
     # In this example, each nodes amplification and local feedback will be set
     # identically.
     betaVec = beta * np.ones(N)
-    rhoVec = -betaVec * 1e-2
+    rhoVec = - betaVec * rho
     kappaVec = - beta * np.eye(N)
 
     # Instantiate a chain-of-integrators analog system.
@@ -149,7 +150,7 @@ analog system and digital control.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 55-66
+.. GENERATED FROM PYTHON SOURCE LINES 56-67
 
 Loading Control Signal from File
 --------------------------------
@@ -163,10 +164,10 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-89
+.. GENERATED FROM PYTHON SOURCE LINES 67-90
 
 .. code-block:: default
-   :lineno-start: 67
+   :lineno-start: 68
 
 
     byte_stream = cbc.utilities.read_byte_stream_from_file(
@@ -198,16 +199,16 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 90-93
+.. GENERATED FROM PYTHON SOURCE LINES 91-94
 
 Oversampling
 -------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 93-99
+.. GENERATED FROM PYTHON SOURCE LINES 94-100
 
 .. code-block:: default
-   :lineno-start: 94
+   :lineno-start: 95
 
 
     OSR = 16
@@ -222,7 +223,7 @@ Oversampling
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 100-105
+.. GENERATED FROM PYTHON SOURCE LINES 101-106
 
 Oversampling = 1
 ----------------------------------------
@@ -230,10 +231,10 @@ Oversampling = 1
 First we initialize our default estimator without a downsampling parameter
 which then defaults to 1, i.e., no downsampling.
 
-.. GENERATED FROM PYTHON SOURCE LINES 105-125
+.. GENERATED FROM PYTHON SOURCE LINES 106-126
 
 .. code-block:: default
-   :lineno-start: 106
+   :lineno-start: 107
 
 
     # Set the bandwidth of the estimator
@@ -293,16 +294,16 @@ which then defaults to 1, i.e., no downsampling.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 126-129
+.. GENERATED FROM PYTHON SOURCE LINES 127-130
 
 Visualize Estimator's Transfer Function
 ---------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 129-163
+.. GENERATED FROM PYTHON SOURCE LINES 130-164
 
 .. code-block:: default
-   :lineno-start: 130
+   :lineno-start: 131
 
 
     # Logspace frequencies
@@ -352,25 +353,25 @@ Visualize Estimator's Transfer Function
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:136: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:137: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:151: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:152: RuntimeWarning: divide by zero encountered in log10
       plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 164-168
+.. GENERATED FROM PYTHON SOURCE LINES 165-169
 
 FIR Filter With Downsampling
 ----------------------------
 
 Next we repeat the initialization steps above but for a downsampled estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 168-180
+.. GENERATED FROM PYTHON SOURCE LINES 169-181
 
 .. code-block:: default
-   :lineno-start: 169
+   :lineno-start: 170
 
 
     digital_estimator_dow = cbc.digital_estimator.FIRFilter(
@@ -421,16 +422,16 @@ Next we repeat the initialization steps above but for a downsampled estimator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 181-184
+.. GENERATED FROM PYTHON SOURCE LINES 182-185
 
 Estimating (Filtering)
 ----------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 184-194
+.. GENERATED FROM PYTHON SOURCE LINES 185-195
 
 .. code-block:: default
-   :lineno-start: 185
+   :lineno-start: 186
 
 
     # Set simulation length
@@ -449,7 +450,7 @@ Estimating (Filtering)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 195-201
+.. GENERATED FROM PYTHON SOURCE LINES 196-202
 
 Aliasing
 ========
@@ -458,10 +459,10 @@ We compare the difference between the downsampled estimate and the default.
 Clearly, we are suffering from aliasing as is also explained by considering
 the PSD plot.
 
-.. GENERATED FROM PYTHON SOURCE LINES 201-231
+.. GENERATED FROM PYTHON SOURCE LINES 202-232
 
 .. code-block:: default
-   :lineno-start: 202
+   :lineno-start: 203
 
 
     # compensate the built in L1 delay of FIR filter.
@@ -524,7 +525,7 @@ the PSD plot.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 232-242
+.. GENERATED FROM PYTHON SOURCE LINES 233-243
 
 Prepending a Virtual Bandlimiting Filter
 ----------------------------------------
@@ -537,10 +538,10 @@ a signal shaped by both the STF of the system in addition
 to a bandlimiting filter.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 242-268
+.. GENERATED FROM PYTHON SOURCE LINES 243-269
 
 .. code-block:: default
-   :lineno-start: 243
+   :lineno-start: 244
 
 
     wp = omega_3dB / 2.0
@@ -638,16 +639,16 @@ to a bandlimiting filter.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 269-272
+.. GENERATED FROM PYTHON SOURCE LINES 270-273
 
 New Analog System
 -------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 272-303
+.. GENERATED FROM PYTHON SOURCE LINES 273-304
 
 .. code-block:: default
-   :lineno-start: 273
+   :lineno-start: 274
 
 
     new_analog_system = cbc.analog_system.chain([filter, analog_system])
@@ -799,7 +800,7 @@ New Analog System
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 304-309
+.. GENERATED FROM PYTHON SOURCE LINES 305-310
 
 New Digital Estimator
 --------------------------------------
@@ -807,10 +808,10 @@ New Digital Estimator
 Combining the virtual pre filter together with the default analog system
 results in the following system.
 
-.. GENERATED FROM PYTHON SOURCE LINES 309-321
+.. GENERATED FROM PYTHON SOURCE LINES 310-322
 
 .. code-block:: default
-   :lineno-start: 310
+   :lineno-start: 311
 
 
     digital_estimator_dow_and_pre_filt = cbc.digital_estimator.FIRFilter(
@@ -860,7 +861,7 @@ results in the following system.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 322-327
+.. GENERATED FROM PYTHON SOURCE LINES 323-328
 
 Post filtering the FIR filter coefficients
 -----------------------------------------------------------
@@ -868,10 +869,10 @@ Post filtering the FIR filter coefficients
 Yet another approach is to, instead of pre-filtering, post filter
 the resulting FIR filter coefficients with another lowpass FIR filter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 327-382
+.. GENERATED FROM PYTHON SOURCE LINES 328-383
 
 .. code-block:: default
-   :lineno-start: 328
+   :lineno-start: 329
 
 
     numtaps = 1 << 10
@@ -980,7 +981,7 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 383-388
+.. GENERATED FROM PYTHON SOURCE LINES 384-389
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
@@ -988,10 +989,10 @@ Plotting the Estimator's Signal and Noise Transfer Function
 Next we visualize the resulting STF and NTF of the new digital estimator
 filters.
 
-.. GENERATED FROM PYTHON SOURCE LINES 388-426
+.. GENERATED FROM PYTHON SOURCE LINES 389-427
 
 .. code-block:: default
-   :lineno-start: 389
+   :lineno-start: 390
 
 
     # Compute NTF
@@ -1045,15 +1046,15 @@ filters.
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:410: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:411: RuntimeWarning: divide by zero encountered in log10
       plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:414: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:415: RuntimeWarning: divide by zero encountered in log10
       plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 427-434
+.. GENERATED FROM PYTHON SOURCE LINES 428-435
 
 Filtering Estimate
 --------------------
@@ -1063,10 +1064,10 @@ Clearly, both the pre and post filter effectively suppresses the aliasing
 effect.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 434-462
+.. GENERATED FROM PYTHON SOURCE LINES 435-463
 
 .. code-block:: default
-   :lineno-start: 435
+   :lineno-start: 436
 
 
     u_hat_dow_and_pre_filt = np.zeros(size // OSR)
@@ -1110,14 +1111,14 @@ effect.
 
  .. code-block:: none
 
-      0%|          | 0/8192 [00:00<?, ?it/s]      2%|1         | 155/8192 [00:00<00:05, 1543.39it/s]      4%|3         | 310/8192 [00:00<00:05, 1539.65it/s]      6%|5         | 464/8192 [00:00<00:05, 1297.73it/s]      7%|7         | 598/8192 [00:00<00:07, 1056.32it/s]     10%|9         | 804/8192 [00:00<00:05, 1346.42it/s]     12%|#2        | 1005/8192 [00:00<00:04, 1539.44it/s]     15%|#5        | 1240/8192 [00:00<00:03, 1777.56it/s]     19%|#9        | 1582/8192 [00:00<00:02, 2261.52it/s]     22%|##2       | 1819/8192 [00:01<00:03, 2058.66it/s]     25%|##4       | 2035/8192 [00:01<00:03, 1628.45it/s]     27%|##7       | 2218/8192 [00:01<00:04, 1368.62it/s]     29%|##8       | 2374/8192 [00:01<00:04, 1288.00it/s]     31%|###       | 2515/8192 [00:01<00:05, 1087.10it/s]     32%|###2      | 2645/8192 [00:01<00:04, 1120.37it/s]     34%|###3      | 2767/8192 [00:02<00:05, 1033.33it/s]     36%|###5      | 2923/8192 [00:02<00:04, 1150.74it/s]     37%|###7      | 3047/8192 [00:02<00:04, 1118.71it/s]     39%|###8      | 3179/8192 [00:02<00:04, 1168.04it/s]     41%|####      | 3342/8192 [00:02<00:03, 1287.37it/s]     43%|####2     | 3505/8192 [00:02<00:03, 1380.36it/s]     45%|####4     | 3669/8192 [00:02<00:03, 1451.12it/s]     47%|####6     | 3833/8192 [00:02<00:02, 1502.86it/s]     49%|####8     | 3997/8192 [00:02<00:02, 1540.55it/s]     51%|#####     | 4159/8192 [00:02<00:02, 1563.67it/s]     53%|#####2    | 4323/8192 [00:03<00:02, 1583.96it/s]     55%|#####4    | 4486/8192 [00:03<00:02, 1597.15it/s]     57%|#####6    | 4650/8192 [00:03<00:02, 1607.91it/s]     59%|#####8    | 4814/8192 [00:03<00:02, 1615.67it/s]     61%|######    | 4978/8192 [00:03<00:01, 1621.21it/s]     63%|######2   | 5142/8192 [00:03<00:01, 1625.66it/s]     65%|######4   | 5306/8192 [00:03<00:01, 1628.27it/s]     67%|######6   | 5469/8192 [00:03<00:01, 1626.31it/s]     69%|######8   | 5633/8192 [00:03<00:01, 1627.55it/s]     71%|#######   | 5796/8192 [00:03<00:01, 1627.92it/s]     73%|#######2  | 5960/8192 [00:04<00:01, 1630.60it/s]     75%|#######4  | 6124/8192 [00:04<00:01, 1629.89it/s]     77%|#######6  | 6288/8192 [00:04<00:01, 1629.33it/s]     79%|#######8  | 6451/8192 [00:04<00:01, 1627.21it/s]     81%|########  | 6615/8192 [00:04<00:00, 1629.67it/s]     83%|########2 | 6779/8192 [00:04<00:00, 1631.42it/s]     85%|########4 | 6943/8192 [00:04<00:00, 1632.01it/s]     87%|########6 | 7107/8192 [00:04<00:00, 1396.07it/s]     89%|########8 | 7269/8192 [00:04<00:00, 1455.60it/s]     91%|######### | 7432/8192 [00:05<00:00, 1502.62it/s]     93%|#########2| 7595/8192 [00:05<00:00, 1536.32it/s]     95%|#########4| 7758/8192 [00:05<00:00, 1561.62it/s]     97%|#########6| 7921/8192 [00:05<00:00, 1579.43it/s]     99%|#########8| 8084/8192 [00:05<00:00, 1592.15it/s]    100%|##########| 8192/8192 [00:05<00:00, 1491.19it/s]
+      0%|          | 0/8192 [00:00<?, ?it/s]      1%|1         | 119/8192 [00:00<00:06, 1184.26it/s]      3%|3         | 272/8192 [00:00<00:05, 1382.55it/s]      5%|5         | 428/8192 [00:00<00:05, 1462.81it/s]      7%|7         | 584/8192 [00:00<00:05, 1499.75it/s]      9%|9         | 740/8192 [00:00<00:04, 1520.61it/s]     11%|#         | 897/8192 [00:00<00:04, 1535.27it/s]     13%|#2        | 1052/8192 [00:00<00:04, 1538.91it/s]     15%|#4        | 1209/8192 [00:00<00:04, 1547.16it/s]     17%|#6        | 1365/8192 [00:00<00:04, 1548.42it/s]     19%|#8        | 1521/8192 [00:01<00:04, 1551.37it/s]     20%|##        | 1677/8192 [00:01<00:04, 1546.43it/s]     22%|##2       | 1833/8192 [00:01<00:04, 1548.69it/s]     24%|##4       | 1989/8192 [00:01<00:03, 1551.98it/s]     26%|##6       | 2145/8192 [00:01<00:03, 1552.75it/s]     28%|##8       | 2301/8192 [00:01<00:03, 1554.46it/s]     30%|##9       | 2457/8192 [00:01<00:03, 1554.89it/s]     32%|###1      | 2613/8192 [00:01<00:03, 1554.27it/s]     34%|###3      | 2769/8192 [00:01<00:03, 1554.68it/s]     36%|###5      | 2925/8192 [00:01<00:03, 1554.32it/s]     38%|###7      | 3081/8192 [00:02<00:03, 1385.01it/s]     39%|###9      | 3223/8192 [00:02<00:03, 1331.82it/s]     41%|####1     | 3379/8192 [00:02<00:03, 1393.27it/s]     43%|####2     | 3522/8192 [00:02<00:03, 1402.73it/s]     45%|####4     | 3667/8192 [00:02<00:03, 1414.94it/s]     47%|####6     | 3822/8192 [00:02<00:03, 1452.98it/s]     49%|####8     | 3976/8192 [00:02<00:02, 1478.20it/s]     50%|#####     | 4133/8192 [00:02<00:02, 1503.20it/s]     52%|#####2    | 4290/8192 [00:02<00:02, 1520.41it/s]     54%|#####4    | 4446/8192 [00:02<00:02, 1530.20it/s]     56%|#####6    | 4603/8192 [00:03<00:02, 1541.25it/s]     58%|#####8    | 4760/8192 [00:03<00:02, 1547.69it/s]     60%|######    | 4917/8192 [00:03<00:02, 1553.04it/s]     62%|######1   | 5074/8192 [00:03<00:02, 1556.27it/s]     64%|######3   | 5230/8192 [00:03<00:02, 1411.18it/s]     66%|######5   | 5374/8192 [00:03<00:02, 1288.03it/s]     67%|######7   | 5511/8192 [00:03<00:02, 1308.01it/s]     69%|######9   | 5661/8192 [00:03<00:01, 1360.38it/s]     71%|#######1  | 5817/8192 [00:03<00:01, 1416.27it/s]     73%|#######2  | 5974/8192 [00:04<00:01, 1457.99it/s]     75%|#######4  | 6122/8192 [00:04<00:01, 1403.85it/s]     76%|#######6  | 6264/8192 [00:04<00:01, 1405.57it/s]     78%|#######8  | 6406/8192 [00:04<00:01, 1280.22it/s]     80%|#######9  | 6552/8192 [00:04<00:01, 1328.08it/s]     82%|########1 | 6688/8192 [00:04<00:01, 1319.58it/s]     84%|########3 | 6844/8192 [00:04<00:00, 1385.60it/s]     85%|########5 | 7000/8192 [00:04<00:00, 1435.52it/s]     87%|########7 | 7145/8192 [00:05<00:00, 1068.97it/s]     89%|########9 | 7301/8192 [00:05<00:00, 1183.57it/s]     91%|#########1| 7458/8192 [00:05<00:00, 1278.85it/s]     93%|#########2| 7615/8192 [00:05<00:00, 1354.18it/s]     95%|#########4| 7772/8192 [00:05<00:00, 1411.42it/s]     97%|#########6| 7929/8192 [00:05<00:00, 1453.85it/s]     99%|#########8| 8085/8192 [00:05<00:00, 1483.31it/s]    100%|##########| 8192/8192 [00:05<00:00, 1440.00it/s]
     /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 463-470
+.. GENERATED FROM PYTHON SOURCE LINES 464-471
 
 In Time Domain
 ---------------
@@ -1127,10 +1128,10 @@ the different filter realization all result in different filter lags.
 Naturally, the filter lag follows from the choice of K1, K2, and the pre or
 post filter design and is therefore a known parameter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 470-488
+.. GENERATED FROM PYTHON SOURCE LINES 471-489
 
 .. code-block:: default
-   :lineno-start: 471
+   :lineno-start: 472
 
 
     t = np.arange(size)
@@ -1161,7 +1162,7 @@ post filter design and is therefore a known parameter.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 489-496
+.. GENERATED FROM PYTHON SOURCE LINES 490-497
 
 Compare Filter Coefficients
 ---------------------------
@@ -1171,10 +1172,10 @@ implementations. Keep in mind that the for this example the pre and post
 filter are parametrized such that the formed slightly outperforms the latter
 in terms of precision (see the PSD plot above).
 
-.. GENERATED FROM PYTHON SOURCE LINES 496-518
+.. GENERATED FROM PYTHON SOURCE LINES 497-519
 
 .. code-block:: default
-   :lineno-start: 497
+   :lineno-start: 498
 
 
     impulse_response_dB_dow_and_pre_filt = 20 * \
@@ -1212,7 +1213,7 @@ in terms of precision (see the PSD plot above).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  11.926 seconds)
+   **Total running time of the script:** ( 1 minutes  14.107 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_c_downsample.py:

@@ -31,8 +31,8 @@ import cbadc
 # setup. With the following analog system parameters
 #
 # - :math:`\beta = \beta_1 = \dots = \beta_N = 6250`
-# - :math:`\rho_1 = \dots = \rho_N = - \beta / 10`
-# - :math:`\kappa_1 = \dots = \kappa_N = - \beta`
+# - :math:`\rho_1 = \dots = \rho_N = - 0.02`
+# - :math:`\kappa_1 = \dots = \kappa_N = - 1`
 # - :math:`N = 6`
 #
 # note that :math:`\mathbf{C}^\mathsf{T}` is automatically assumed an identity

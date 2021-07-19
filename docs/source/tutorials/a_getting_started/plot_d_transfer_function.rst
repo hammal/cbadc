@@ -63,8 +63,8 @@ First we will import dependent modules and initialize a chain-of-integrators
 setup. With the following analog system parameters
 
 - :math:`\beta = \beta_1 = \dots = \beta_N = 6250`
-- :math:`\rho_1 = \dots = \rho_N = - \beta / 10`
-- :math:`\kappa_1 = \dots = \kappa_N = - \beta`
+- :math:`\rho_1 = \dots = \rho_N = - 0.02`
+- :math:`\kappa_1 = \dots = \kappa_N = - 1`
 - :math:`N = 6`
 
 note that :math:`\mathbf{C}^\mathsf{T}` is automatically assumed an identity
@@ -376,7 +376,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  21.368 seconds)
+   **Total running time of the script:** ( 0 minutes  21.746 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:
