@@ -19,6 +19,7 @@
       compute_power_spectral_density
       control_signal_2_byte_stream
       find_sinusoidal
+      iterator_to_numpy_array
       number_of_bytes_selector
       pickle_dump
       pickle_load
@@ -29,6 +30,7 @@
       snr_spectrum_computation
       write_byte_stream_to_file
       write_byte_stream_to_files
+      write_wave
    
    
 
