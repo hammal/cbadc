@@ -55,7 +55,7 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 25-56
+.. GENERATED FROM PYTHON SOURCE LINES 25-57
 
 .. code-block:: default
    :lineno-start: 26
@@ -66,21 +66,22 @@ analog system and digital control.
     N = 6
     M = N
     beta = 6250.
-    rho = - beta * 1e-2
-    A = [[rho, 0, 0, 0, 0, 0],
-         [beta, rho, 0, 0, 0, 0],
-         [0, beta, rho, 0, 0, 0],
-         [0, 0, beta, rho, 0, 0],
-         [0, 0, 0, beta, rho, 0],
-         [0, 0, 0, 0, beta, rho]]
+    rho = - 1e-2
+    kappa = - 1.0
+    A = [[beta * rho, 0, 0, 0, 0, 0],
+         [beta, beta * rho, 0, 0, 0, 0],
+         [0, beta, beta * rho, 0, 0, 0],
+         [0, 0, beta, beta * rho, 0, 0],
+         [0, 0, 0, beta, beta * rho, 0],
+         [0, 0, 0, 0, beta, beta * rho]]
     B = [[beta], [0], [0], [0], [0], [0]]
     CT = np.eye(N)
-    Gamma = [[-beta, 0, 0, 0, 0, 0],
-             [0, -beta, 0, 0, 0, 0],
-             [0, 0, -beta, 0, 0, 0],
-             [0, 0, 0, -beta, 0, 0],
-             [0, 0, 0, 0, -beta, 0],
-             [0, 0, 0, 0, 0, -beta]]
+    Gamma = [[kappa * beta, 0, 0, 0, 0, 0],
+             [0, kappa * beta, 0, 0, 0, 0],
+             [0, 0, kappa * beta, 0, 0, 0],
+             [0, 0, 0, kappa * beta, 0, 0],
+             [0, 0, 0, 0, kappa * beta, 0],
+             [0, 0, 0, 0, 0, kappa * beta]]
     Gamma_tildeT = np.eye(N)
     T = 1.0/(2 * beta)
 
@@ -151,7 +152,7 @@ analog system and digital control.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 57-64
+.. GENERATED FROM PYTHON SOURCE LINES 58-65
 
 Creating a Placehold Control Signal
 -----------------------------------
@@ -161,10 +162,10 @@ for a given analog signal. However, this might not always be the use case;
 instead, imagine we have acquired such a control signal from a previous
 simulation or possibly obtained it from a hardware implementation.
 
-.. GENERATED FROM PYTHON SOURCE LINES 64-89
+.. GENERATED FROM PYTHON SOURCE LINES 65-90
 
 .. code-block:: default
-   :lineno-start: 65
+   :lineno-start: 66
 
 
     # In principle, we can create a dummy generator by just
@@ -198,7 +199,7 @@ simulation or possibly obtained it from a hardware implementation.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 90-98
+.. GENERATED FROM PYTHON SOURCE LINES 91-99
 
 Setting up the Filter
 ------------------------------------
@@ -209,10 +210,10 @@ DigitalEstimator class. However, these computations require us to
 specify both the analog system, the digital control and the filter parameters
 such as eta2, the batch size K1, and possible the lookahead K2.
 
-.. GENERATED FROM PYTHON SOURCE LINES 98-117
+.. GENERATED FROM PYTHON SOURCE LINES 99-118
 
 .. code-block:: default
-   :lineno-start: 99
+   :lineno-start: 100
 
 
     # Set the bandwidth of the estimator
@@ -319,17 +320,17 @@ such as eta2, the batch size K1, and possible the lookahead K2.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 118-122
+.. GENERATED FROM PYTHON SOURCE LINES 119-123
 
 Producing Estimates
 -------------------
 
 At this point, we can produce estimates by simply calling the iterator
 
-.. GENERATED FROM PYTHON SOURCE LINES 122-127
+.. GENERATED FROM PYTHON SOURCE LINES 123-128
 
 .. code-block:: default
-   :lineno-start: 123
+   :lineno-start: 124
 
 
     for i in digital_estimator:
@@ -360,17 +361,17 @@ At this point, we can produce estimates by simply calling the iterator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 128-132
+.. GENERATED FROM PYTHON SOURCE LINES 129-133
 
 Batch Size and Lookahead
 ------------------------
 
 Note that batch and lookahead sizes are automatically handled such that for
 
-.. GENERATED FROM PYTHON SOURCE LINES 132-149
+.. GENERATED FROM PYTHON SOURCE LINES 133-150
 
 .. code-block:: default
-   :lineno-start: 132
+   :lineno-start: 133
 
     K1 = 5
     K2 = 1
@@ -413,7 +414,7 @@ Note that batch and lookahead sizes are automatically handled such that for
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 150-161
+.. GENERATED FROM PYTHON SOURCE LINES 151-162
 
 Loading Control Signal from File
 --------------------------------
@@ -427,10 +428,10 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 161-165
+.. GENERATED FROM PYTHON SOURCE LINES 162-166
 
 .. code-block:: default
-   :lineno-start: 162
+   :lineno-start: 163
 
 
     byte_stream = cbadc.utilities.read_byte_stream_from_file('sinusodial_simulation.adcs', M)
@@ -443,7 +444,7 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 166-172
+.. GENERATED FROM PYTHON SOURCE LINES 167-173
 
 Estimating the input
 --------------------
@@ -452,10 +453,10 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 172-199
+.. GENERATED FROM PYTHON SOURCE LINES 173-200
 
 .. code-block:: default
-   :lineno-start: 173
+   :lineno-start: 174
 
 
     stop_after_number_of_iterations = 1 << 17
@@ -495,7 +496,7 @@ analog system and digital controls as in this example so
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 200-205
+.. GENERATED FROM PYTHON SOURCE LINES 201-206
 
 Plotting the PSD
 ----------------
@@ -503,10 +504,10 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 205-214
+.. GENERATED FROM PYTHON SOURCE LINES 206-215
 
 .. code-block:: default
-   :lineno-start: 206
+   :lineno-start: 207
 
 
     f, psd = cbadc.utilities.compute_power_spectral_density(u_hat[K2:])
@@ -531,7 +532,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  15.594 seconds)
+   **Total running time of the script:** ( 0 minutes  14.936 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:

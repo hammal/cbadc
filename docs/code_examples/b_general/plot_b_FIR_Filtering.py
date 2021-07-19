@@ -24,21 +24,22 @@ import cbadc
 N = 6
 M = N
 beta = 6250.
-rho = - beta * 1e-2
-A = [[rho, 0, 0, 0, 0, 0],
-     [beta, rho, 0, 0, 0, 0],
-     [0, beta, rho, 0, 0, 0],
-     [0, 0, beta, rho, 0, 0],
-     [0, 0, 0, beta, rho, 0],
-     [0, 0, 0, 0, beta, rho]]
+rho = - 1e-2
+kappa = - 1.0
+A = [[beta * rho, 0, 0, 0, 0, 0],
+     [beta, beta * rho, 0, 0, 0, 0],
+     [0, beta, beta * rho, 0, 0, 0],
+     [0, 0, beta, beta * rho, 0, 0],
+     [0, 0, 0, beta, beta * rho, 0],
+     [0, 0, 0, 0, beta, beta * rho]]
 B = [[beta], [0], [0], [0], [0], [0]]
 CT = np.eye(N)
-Gamma = [[-beta, 0, 0, 0, 0, 0],
-         [0, -beta, 0, 0, 0, 0],
-         [0, 0, -beta, 0, 0, 0],
-         [0, 0, 0, -beta, 0, 0],
-         [0, 0, 0, 0, -beta, 0],
-         [0, 0, 0, 0, 0, -beta]]
+Gamma = [[kappa * beta, 0, 0, 0, 0, 0],
+         [0, kappa * beta, 0, 0, 0, 0],
+         [0, 0, kappa * beta, 0, 0, 0],
+         [0, 0, 0, kappa * beta, 0, 0],
+         [0, 0, 0, 0, kappa * beta, 0],
+         [0, 0, 0, 0, 0, kappa * beta]]
 Gamma_tildeT = CT
 T = 1.0/(2 * beta)
 

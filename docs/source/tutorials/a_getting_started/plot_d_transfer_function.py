@@ -31,8 +31,8 @@ import cbadc
 # setup. With the following analog system parameters
 #
 # - :math:`\beta = \beta_1 = \dots = \beta_N = 6250`
-# - :math:`\rho_1 = \dots = \rho_N = - \beta / 10`
-# - :math:`\kappa_1 = \dots = \kappa_N = - \beta`
+# - :math:`\rho_1 = \dots = \rho_N = - 0.02`
+# - :math:`\kappa_1 = \dots = \kappa_N = - 1`
 # - :math:`N = 6`
 #
 # note that :math:`\mathbf{C}^\mathsf{T}` is automatically assumed an identity
@@ -46,11 +46,13 @@ import cbadc
 N = 6
 # Set the amplification factor.
 beta = 6250.
+rho = - 0.02
+kappa = - 1.0
 # In this example, each nodes amplification and local feedback will be set
 # identically.
 betaVec = beta * np.ones(N)
-rhoVec = -betaVec / 50.
-kappaVec = - beta * np.eye(N)
+rhoVec = betaVec * rho
+kappaVec = kappa * beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
 analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)

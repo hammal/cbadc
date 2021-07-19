@@ -49,7 +49,7 @@ The Analog System
 In this example we commit to using a forth order leap-frog analog system,
 see :py:class:`cbadc.analog_system.LeapFrog`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 19-35
+.. GENERATED FROM PYTHON SOURCE LINES 19-37
 
 .. code-block:: default
    :lineno-start: 20
@@ -59,11 +59,13 @@ see :py:class:`cbadc.analog_system.LeapFrog`.
     N = 4
     # Set the amplification factor.
     beta = 6250.
+    rho = - 1e-2
+    kappa = - 1.0
     # In this example, each nodes amplification and local feedback will be set
     # identically.
     betaVec = beta * np.ones(N)
-    rhoVec = -betaVec * 1e-2
-    kappaVec = - beta * np.eye(N)
+    rhoVec = betaVec * rho
+    kappaVec = kappa * beta * np.eye(N)
 
     # Instantiate a chain-of-integrators analog system.
     analog_system = cbadc.analog_system.LeapFrog(betaVec, rhoVec, kappaVec)
@@ -113,7 +115,7 @@ see :py:class:`cbadc.analog_system.LeapFrog`.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 36-42
+.. GENERATED FROM PYTHON SOURCE LINES 38-44
 
 The Digital Control
 -------------------
@@ -122,10 +124,10 @@ we use the delayed version :py:class:`cbadc.digital_control.PhaseDelayedControl`
 as well as the
 :py:class:`cbadc.digital_control.DigitalControl` for comparision.
 
-.. GENERATED FROM PYTHON SOURCE LINES 42-54
+.. GENERATED FROM PYTHON SOURCE LINES 44-56
 
 .. code-block:: default
-   :lineno-start: 43
+   :lineno-start: 45
 
 
     # Set the time period which determines how often the digital control updates.
@@ -146,7 +148,7 @@ as well as the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 55-61
+.. GENERATED FROM PYTHON SOURCE LINES 57-63
 
 The Analog Signal
 -----------------
@@ -155,10 +157,10 @@ The final and third component of the simulation is an analog signal.
 For this tutorial, we will choose a
 :py:class:`cbadc.analog_signal.Sinusodial`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 61-78
+.. GENERATED FROM PYTHON SOURCE LINES 63-80
 
 .. code-block:: default
-   :lineno-start: 62
+   :lineno-start: 64
 
 
     # Set the peak amplitude.
@@ -198,7 +200,7 @@ For this tutorial, we will choose a
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 79-87
+.. GENERATED FROM PYTHON SOURCE LINES 81-89
 
 Simulating
 -------------
@@ -209,10 +211,10 @@ involved differential equations as outlined in
 :py:class:`cbadc.analog_system.AnalogSystem`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 87-98
+.. GENERATED FROM PYTHON SOURCE LINES 89-100
 
 .. code-block:: default
-   :lineno-start: 88
+   :lineno-start: 90
 
 
     size = 1 << 17
@@ -232,16 +234,16 @@ involved differential equations as outlined in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 99-102
+.. GENERATED FROM PYTHON SOURCE LINES 101-104
 
 Setting up the Digital Estimation Filters
 -----------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 102-125
+.. GENERATED FROM PYTHON SOURCE LINES 104-127
 
 .. code-block:: default
-   :lineno-start: 103
+   :lineno-start: 105
 
 
     # Set the bandwidth of the estimator
@@ -273,7 +275,7 @@ Setting up the Digital Estimation Filters
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 126-131
+.. GENERATED FROM PYTHON SOURCE LINES 128-133
 
 Post filtering the FIR filter coefficients
 -----------------------------------------------------------
@@ -281,10 +283,10 @@ Post filtering the FIR filter coefficients
 Yet another approach is to instead post filter
 the resulting FIR filter digital_estimator.h with another lowpass FIR filter
 
-.. GENERATED FROM PYTHON SOURCE LINES 131-140
+.. GENERATED FROM PYTHON SOURCE LINES 133-142
 
 .. code-block:: default
-   :lineno-start: 132
+   :lineno-start: 134
 
 
     numtaps = 1001
@@ -302,16 +304,16 @@ the resulting FIR filter digital_estimator.h with another lowpass FIR filter
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 141-144
+.. GENERATED FROM PYTHON SOURCE LINES 143-146
 
 Simulating and Estimating
 --------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 144-155
+.. GENERATED FROM PYTHON SOURCE LINES 146-157
 
 .. code-block:: default
-   :lineno-start: 145
+   :lineno-start: 147
 
 
     sequence_length = size // OSR // M
@@ -331,16 +333,16 @@ Simulating and Estimating
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 156-159
+.. GENERATED FROM PYTHON SOURCE LINES 158-161
 
 Visualize in Time Domain
 --------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 159-171
+.. GENERATED FROM PYTHON SOURCE LINES 161-173
 
 .. code-block:: default
-   :lineno-start: 160
+   :lineno-start: 162
 
 
     t = np.arange(sequence_length)
@@ -365,7 +367,7 @@ Visualize in Time Domain
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 172-177
+.. GENERATED FROM PYTHON SOURCE LINES 174-179
 
 Plotting the PSD
 ----------------
@@ -373,10 +375,10 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-191
+.. GENERATED FROM PYTHON SOURCE LINES 179-193
 
 .. code-block:: default
-   :lineno-start: 178
+   :lineno-start: 180
 
 
     f_phase, psd_phase = cbadc.utilities.compute_power_spectral_density(
@@ -406,22 +408,22 @@ of the estimate by plotting the power spectral density (PSD).
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1961: UserWarning: nperseg = 16384 is greater than input length  = 768, using nperseg = 768
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 768, using nperseg = 768
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 192-195
+.. GENERATED FROM PYTHON SOURCE LINES 194-197
 
 Evaluating the Analog State Vector For both controls
 ----------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 195-260
+.. GENERATED FROM PYTHON SOURCE LINES 197-262
 
 .. code-block:: default
-   :lineno-start: 196
+   :lineno-start: 198
 
 
     # Set sampling time three orders of magnitude smaller than the control period
@@ -15506,7 +15508,7 @@ Evaluating the Analog State Vector For both controls
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 261-268
+.. GENERATED FROM PYTHON SOURCE LINES 263-270
 
 Analog State Statistics
 ------------------------------------------------------------------
@@ -15516,10 +15518,10 @@ good way of identifying problems and possible errors. Another way of making
 sure that the analog states remain bounded is to estimate their
 corresponding densities (assuming i.i.d samples).
 
-.. GENERATED FROM PYTHON SOURCE LINES 268-294
+.. GENERATED FROM PYTHON SOURCE LINES 270-296
 
 .. code-block:: default
-   :lineno-start: 269
+   :lineno-start: 271
 
 
     # Compute L_2 norm of analog state vector.
@@ -15561,7 +15563,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 4 minutes  28.488 seconds)
+   **Total running time of the script:** ( 4 minutes  28.731 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_d_delay_phase_control.py:
