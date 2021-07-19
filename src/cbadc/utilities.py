@@ -12,6 +12,8 @@ from tqdm import tqdm
 import requests
 import os
 import pickle
+import scipy.io.wavfile
+import numpy.typing as npt
 
 
 def number_of_bytes_selector(M: int):
@@ -389,3 +391,44 @@ def pickle_load(filename: str):
     """
     with open(filename, 'rb') as f:
         return pickle.load(f)
+
+
+def iterator_to_numpy_array(iterator: Iterator[bytes], size: int, L: int = 1):
+    """Convert an iterator into a numpy array
+
+    Parameters
+    ----------
+    iterator: 
+        a iterator with data points to fill up numpy array.
+    size: `int`
+        length of numpy array.
+    L: `int`
+        dimenson of the datapoints.
+
+    Returns
+    -------
+    array_like, shape=(size, L)
+    """
+    if size < 1 or L < 1:
+        raise BaseException("Both size and L must be positive integers.")
+    data = np.zeros((size, L), dtype=np.double)
+    for index in range(size):
+        data[index, :] = next(iterator)
+    return data
+
+
+def write_wave(filename: str, sample_rate: int, data: npt.ArrayLike):
+    """Create wave file from data array.
+
+    This is a wrapper function for :py:func:`scipy.io.wavefile.write`.
+
+    Parameters
+    ----------
+    filename: `str`
+        name of the file to be generated
+    sample_rate: `int`
+        the sample rate in samples/second
+    data: `array_like, shape=(number of samples, number of channels)
+        the data array to be encoded as wave file
+    """
+    scipy.io.wavfile.write(filename, sample_rate, data)
