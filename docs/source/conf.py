@@ -80,9 +80,9 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
 # Sphinx-gallery
 sphinx_gallery_conf = {
     # path to your example scripts
-    'examples_dirs': ['../code_examples', '../simulations'],
+    'examples_dirs': ['../code_examples', '../datasets'],
     # path to where to save gallery generated output
-    'gallery_dirs': ['tutorials', 'simulations'],
+    'gallery_dirs': ['tutorials', 'datasets'],
 
     'compress_images': ('images', 'thumbnails', '-o7'),
     # directory where function/class granular galleries are stored
@@ -95,7 +95,7 @@ sphinx_gallery_conf = {
                    'cbadc.digital_estimator',
                    'cbadc.simulator',
                    'cbadc.utilities',
-                   'cbadc.examples'),
+                   'cbadc.datasets'),
     'line_numbers': True,
     'remove_config_comments': True,
     'within_subsection_order': FileNameSortKey,

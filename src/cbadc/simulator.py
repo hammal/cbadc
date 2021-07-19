@@ -284,7 +284,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         Parameters
         ----------
         t_span : (float, float)
-            the initial time :math:`t_1` and end time :math:`t_2` of the simulations.
+            the initial time :math:`t_1` and end time :math:`t_2` of the simulation.
 
         Returns
         -------

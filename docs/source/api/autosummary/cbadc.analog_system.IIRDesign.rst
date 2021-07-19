@@ -16,10 +16,8 @@
 
    .. autosummary::
    
-      ~IIRDesign.UGBW
       ~IIRDesign.__init__
       ~IIRDesign.control_observation
-      ~IIRDesign.control_signal_transfer_function_matrix
       ~IIRDesign.derivative
       ~IIRDesign.signal_observation
       ~IIRDesign.transfer_function_matrix
