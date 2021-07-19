@@ -46,11 +46,13 @@ import cbadc
 N = 6
 # Set the amplification factor.
 beta = 6250.
+rho = - 0.02
+kappa = - 1.0
 # In this example, each nodes amplification and local feedback will be set
 # identically.
 betaVec = beta * np.ones(N)
-rhoVec = -betaVec / 50.
-kappaVec = - beta * np.eye(N)
+rhoVec = betaVec * rho
+kappaVec = kappa * beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
 analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)

@@ -53,7 +53,7 @@ To initialize a digital estimator, we need to specify which analog system and
 digital control are used. Here we default to the chain-of-integrators
 example.
 
-.. GENERATED FROM PYTHON SOURCE LINES 23-52
+.. GENERATED FROM PYTHON SOURCE LINES 23-53
 
 .. code-block:: default
    :lineno-start: 24
@@ -63,6 +63,7 @@ example.
     M = N
     beta = 6250.
     rho = - 1e-2
+    kappa = - 1.0
     A = [[beta * rho, 0, 0, 0, 0, 0],
          [beta, beta * rho, 0, 0, 0, 0],
          [0, beta, beta * rho, 0, 0, 0],
@@ -71,12 +72,12 @@ example.
          [0, 0, 0, 0, beta, beta * rho]]
     B = [[beta], [0], [0], [0], [0], [0]]
     CT = np.eye(N)
-    Gamma = [[-beta, 0, 0, 0, 0, 0],
-             [0, -beta, 0, 0, 0, 0],
-             [0, 0, -beta, 0, 0, 0],
-             [0, 0, 0, -beta, 0, 0],
-             [0, 0, 0, 0, -beta, 0],
-             [0, 0, 0, 0, 0, -beta]]
+    Gamma = [[kappa * beta, 0, 0, 0, 0, 0],
+             [0, kappa * beta, 0, 0, 0, 0],
+             [0, 0, kappa * beta, 0, 0, 0],
+             [0, 0, 0, kappa * beta, 0, 0],
+             [0, 0, 0, 0, kappa * beta, 0],
+             [0, 0, 0, 0, 0, kappa * beta]]
     Gamma_tildeT = CT
     T = 1.0/(2 * beta)
 
@@ -147,7 +148,7 @@ example.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 53-63
+.. GENERATED FROM PYTHON SOURCE LINES 54-64
 
 ----------------
 Impulse Response
@@ -160,10 +161,10 @@ Note that we will also use use the control signal sequence that we previously
 simulated in
 :doc:`../a_getting_started/plot_b_simulate_a_control_bounded_adc`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 63-103
+.. GENERATED FROM PYTHON SOURCE LINES 64-104
 
 .. code-block:: default
-   :lineno-start: 64
+   :lineno-start: 65
 
 
     # Choose an arbitrary eta2
@@ -216,7 +217,7 @@ simulated in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 104-123
+.. GENERATED FROM PYTHON SOURCE LINES 105-124
 
 -----------------------------------
 Impulse Response and :math:`\eta^2`
@@ -238,10 +239,10 @@ and does not necessarily generalize.
 We additionally plot the corresponding digital estimator transfer functions
 as a function of the bandwidth parameter :math:`\eta^2`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 123-182
+.. GENERATED FROM PYTHON SOURCE LINES 124-183
 
 .. code-block:: default
-   :lineno-start: 124
+   :lineno-start: 125
 
 
     Eta2 = np.logspace(0, 7, 8)
@@ -327,23 +328,23 @@ as a function of the bandwidth parameter :math:`\eta^2`.
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:158: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:159: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 183-205
+.. GENERATED FROM PYTHON SOURCE LINES 184-206
 
 Filter length
 -------------
@@ -368,10 +369,10 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 205-315
+.. GENERATED FROM PYTHON SOURCE LINES 206-316
 
 .. code-block:: default
-   :lineno-start: 206
+   :lineno-start: 207
 
 
     filter_lengths = [10, 20, 40, 80, 120, 160, 180, 200, 220]
@@ -514,7 +515,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  48.441 seconds)
+   **Total running time of the script:** ( 1 minutes  47.634 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_b_FIR_Filtering.py:

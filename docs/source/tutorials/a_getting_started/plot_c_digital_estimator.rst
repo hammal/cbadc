@@ -67,7 +67,7 @@ analog system and digital control.
     M = N
     beta = 6250.
     rho = - 1e-2
-    kappa = 1.0
+    kappa = - 1.0
     A = [[beta * rho, 0, 0, 0, 0, 0],
          [beta, beta * rho, 0, 0, 0, 0],
          [0, beta, beta * rho, 0, 0, 0],
@@ -76,12 +76,12 @@ analog system and digital control.
          [0, 0, 0, 0, beta, beta * rho]]
     B = [[beta], [0], [0], [0], [0], [0]]
     CT = np.eye(N)
-    Gamma = [[-kappa * beta, 0, 0, 0, 0, 0],
-             [0, -kappa * beta, 0, 0, 0, 0],
-             [0, 0, -kappa * beta, 0, 0, 0],
-             [0, 0, 0, -kappa * beta, 0, 0],
-             [0, 0, 0, 0, -kappa * beta, 0],
-             [0, 0, 0, 0, 0, -kappa * beta]]
+    Gamma = [[kappa * beta, 0, 0, 0, 0, 0],
+             [0, kappa * beta, 0, 0, 0, 0],
+             [0, 0, kappa * beta, 0, 0, 0],
+             [0, 0, 0, kappa * beta, 0, 0],
+             [0, 0, 0, 0, kappa * beta, 0],
+             [0, 0, 0, 0, 0, kappa * beta]]
     Gamma_tildeT = np.eye(N)
     T = 1.0/(2 * beta)
 
@@ -532,7 +532,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  15.745 seconds)
+   **Total running time of the script:** ( 0 minutes  14.936 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:

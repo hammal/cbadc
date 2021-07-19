@@ -55,7 +55,7 @@ commit to a chain-of-integrators ADC,
 see :py:class:`cbadc.analog_system.ChainOfIntegrators`, as our analog
 system.
 
-.. GENERATED FROM PYTHON SOURCE LINES 25-41
+.. GENERATED FROM PYTHON SOURCE LINES 25-43
 
 .. code-block:: default
    :lineno-start: 26
@@ -65,11 +65,13 @@ system.
     N = 6
     # Set the amplification factor.
     beta = 6250.
+    rho = - 1e-2
+    kappa = - 1.0
     # In this example, each nodes amplification and local feedback will be set
     # identically.
     betaVec = beta * np.ones(N)
-    rhoVec = -betaVec * 1e-2
-    kappaVec = - beta * np.eye(N)
+    rhoVec = betaVec * rho
+    kappaVec = kappa * beta * np.eye(N)
 
     # Instantiate a chain-of-integrators analog system.
     analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
@@ -131,7 +133,7 @@ system.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 42-48
+.. GENERATED FROM PYTHON SOURCE LINES 44-50
 
 The Digital Control
 -------------------
@@ -140,10 +142,10 @@ In addition to the analog system, our simulation will require us to specify a
 digital control. For this tutorial, we will use
 :py:class:`cbadc.digital_control.DigitalControl`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 48-59
+.. GENERATED FROM PYTHON SOURCE LINES 50-61
 
 .. code-block:: default
-   :lineno-start: 49
+   :lineno-start: 51
 
 
     # Set the time period which determines how often the digital control updates.
@@ -174,7 +176,7 @@ digital control. For this tutorial, we will use
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 60-67
+.. GENERATED FROM PYTHON SOURCE LINES 62-69
 
 The Analog Signal
 -----------------
@@ -184,10 +186,10 @@ For this tutorial, we will choose a
 :py:class:`cbadc.analog_signal.Sinusodial`. Again, this is one of several
 possible choices.
 
-.. GENERATED FROM PYTHON SOURCE LINES 67-83
+.. GENERATED FROM PYTHON SOURCE LINES 69-85
 
 .. code-block:: default
-   :lineno-start: 68
+   :lineno-start: 70
 
 
     # Set the peak amplitude.
@@ -226,7 +228,7 @@ possible choices.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-92
+.. GENERATED FROM PYTHON SOURCE LINES 86-94
 
 Simulating
 -------------
@@ -237,10 +239,10 @@ involved differential equations as outlined in
 :py:class:`cbadc.analog_system.AnalogSystem`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 92-113
+.. GENERATED FROM PYTHON SOURCE LINES 94-115
 
 .. code-block:: default
-   :lineno-start: 93
+   :lineno-start: 95
 
 
     # Simulate for 2^18 control cycles.
@@ -304,7 +306,7 @@ involved differential equations as outlined in
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 114-147
+.. GENERATED FROM PYTHON SOURCE LINES 116-149
 
 Tracking the Analog State Vector
 --------------------------------
@@ -340,10 +342,10 @@ output.
 We can achieve this by appending yet another generator to the control signal
 stream as:
 
-.. GENERATED FROM PYTHON SOURCE LINES 147-159
+.. GENERATED FROM PYTHON SOURCE LINES 149-161
 
 .. code-block:: default
-   :lineno-start: 148
+   :lineno-start: 150
 
 
     # Repeating the steps above we now get for the following
@@ -381,7 +383,7 @@ stream as:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 160-174
+.. GENERATED FROM PYTHON SOURCE LINES 162-176
 
 .. _default_simulation:
 
@@ -398,10 +400,10 @@ For this purpose use the
 :func:`cbadc.utilities.control_signal_2_byte_stream` and
 :func:`cbadc.utilities.write_byte_stream_to_file` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 174-196
+.. GENERATED FROM PYTHON SOURCE LINES 176-198
 
 .. code-block:: default
-   :lineno-start: 176
+   :lineno-start: 178
 
 
 
@@ -449,7 +451,7 @@ For this purpose use the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 197-208
+.. GENERATED FROM PYTHON SOURCE LINES 199-210
 
 Evaluating the Analog State Vector in Between Control Signal Samples
 --------------------------------------------------------------------
@@ -463,10 +465,10 @@ unit of time. However, digital control is still restricted to only update
 the control signals at multiples of :math:`T`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 208-263
+.. GENERATED FROM PYTHON SOURCE LINES 210-265
 
 .. code-block:: default
-   :lineno-start: 209
+   :lineno-start: 211
 
 
     # Set sampling time three orders of magnitude smaller than the control period
@@ -545,7 +547,7 @@ the control signals at multiples of :math:`T`.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 264-271
+.. GENERATED FROM PYTHON SOURCE LINES 266-273
 
 Analog State Statistics
 ------------------------------------------------------------------
@@ -555,10 +557,10 @@ good way of identifying problems and possible errors. Another way of making
 sure that the analog states remain bounded is to estimate their
 corresponding densities (assuming i.i.d samples).
 
-.. GENERATED FROM PYTHON SOURCE LINES 271-292
+.. GENERATED FROM PYTHON SOURCE LINES 273-294
 
 .. code-block:: default
-   :lineno-start: 272
+   :lineno-start: 274
 
 
     # Compute L_2 norm of analog state vector.
@@ -595,7 +597,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 11 minutes  43.560 seconds)
+   **Total running time of the script:** ( 11 minutes  39.103 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:

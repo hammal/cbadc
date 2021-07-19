@@ -74,7 +74,7 @@ Using the :py:class:`cbadc.analog_system.ChainOfIntegrators` class which
 derives from the main analog system class
 :py:class:`cbadc.analog_system.AnalogSystem`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 44-60
+.. GENERATED FROM PYTHON SOURCE LINES 44-62
 
 .. code-block:: default
    :lineno-start: 45
@@ -84,11 +84,13 @@ derives from the main analog system class
     N = 6
     # Set the amplification factor.
     beta = 6250.
+    rho = - 0.02
+    kappa = - 1.0
     # In this example, each nodes amplification and local feedback will be set
     # identically.
     betaVec = beta * np.ones(N)
-    rhoVec = -betaVec / 50.
-    kappaVec = - beta * np.eye(N)
+    rhoVec = betaVec * rho
+    kappaVec = kappa * beta * np.eye(N)
 
     # Instantiate a chain-of-integrators analog system.
     analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
@@ -150,7 +152,7 @@ derives from the main analog system class
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 61-70
+.. GENERATED FROM PYTHON SOURCE LINES 63-72
 
 Plotting the Analog System's Transfer Function
 ----------------------------------------------
@@ -162,10 +164,10 @@ Next, we plot the transfer function of the analog system
 using the class method
 :func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 70-103
+.. GENERATED FROM PYTHON SOURCE LINES 72-105
 
 .. code-block:: default
-   :lineno-start: 71
+   :lineno-start: 73
 
 
     # Logspace frequencies
@@ -211,7 +213,7 @@ using the class method
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 104-135
+.. GENERATED FROM PYTHON SOURCE LINES 106-137
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
@@ -245,10 +247,10 @@ results in a row vector
 where :math:`\text{NTF}_\ell(\omega)` refers to the noise transfer function
 from the :math:`\ell`-th observation to the final estimate.
 
-.. GENERATED FROM PYTHON SOURCE LINES 135-178
+.. GENERATED FROM PYTHON SOURCE LINES 137-180
 
 .. code-block:: default
-   :lineno-start: 136
+   :lineno-start: 138
 
 
     # Define dummy control and control sequence (not used when computing transfer
@@ -304,17 +306,17 @@ from the :math:`\ell`-th observation to the final estimate.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 179-183
+.. GENERATED FROM PYTHON SOURCE LINES 181-185
 
 Setting the Bandwidth of the Estimation Filter
 ----------------------------------------------
 
 Finally, we will investigate the effect of eta2 on the STF and NTF.
 
-.. GENERATED FROM PYTHON SOURCE LINES 183-216
+.. GENERATED FROM PYTHON SOURCE LINES 185-218
 
 .. code-block:: default
-   :lineno-start: 184
+   :lineno-start: 186
 
 
     # create a vector of etas to be evaluated,
@@ -363,11 +365,11 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:194: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:194: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:194: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
@@ -376,7 +378,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  21.746 seconds)
+   **Total running time of the script:** ( 0 minutes  21.316 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:
