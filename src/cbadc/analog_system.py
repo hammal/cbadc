@@ -281,6 +281,43 @@ class AnalogSystem:
         )
         return tf
 
+    def _ctf(self, _omega: float) -> np.ndarray:
+        return np.dot(
+            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
+            self.Gamma,
+        )
+
+    def control_signal_transfer_function_matrix(self, omega:  np.ndarray) -> np.ndarray:
+        """Evaluates the transfer functions between control signals and the system
+        output.
+
+        Specifically, evaluates
+
+        :math:`\\bar{\mathbf{G}}(\omega) = \mathbf{C}^\mathsf{T} \\left(\mathbf{A} - i \omega \mathbf{I}_N\\right)^{-1} \mathbf{\\Gamma} \in \mathbb{R}^{\\tilde{N} \\times M}`
+
+        for each angular frequency in omega where :math:`\mathbf{I}_N`
+        represents a square identity matrix of the same dimensions as
+        :math:`\mathbf{A}` and :math:`i=\sqrt{-1}`.
+
+        Parameters
+        ----------
+        omega: `array_like`, shape=(K,)
+            an array_like object containing the angular frequencies for
+            evaluation.
+
+        Returns
+        -------
+        `array_like`, shape=(N_tilde, M, K)
+            the signal transfer function evaluated at K different angular
+            frequencies.
+        """
+        size: int = omega.size
+        result = np.zeros((self.N, self.M, size), dtype=complex)
+        for index in range(size):
+            result[:, :, index] = self._ctf(omega[index])
+        resp = np.einsum('ij,jkl', self.CT, result)
+        return np.asarray(resp)
+
     def transfer_function_matrix(self, omega: np.ndarray) -> np.ndarray:
         """Evaluate the analog signal transfer function at the angular
         frequencies of the omega array.
@@ -714,7 +751,7 @@ class ButterWorth(AnalogSystem):
         For faulty analog system parametrization.
     """
 
-    def __init__(self, N: int, Wn: float) -> AnalogSystem:
+    def __init__(self, N: int, Wn: float):
         """Create a Butterworth filter
         """
         # State space order

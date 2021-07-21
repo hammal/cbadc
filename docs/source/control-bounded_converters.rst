@@ -113,7 +113,7 @@ For a more in-depth description, consider the following references.
 
 
 * `H. Malmberg, Control-bounded converters, Ph.D. dissertation, Dept. Inf. Technol. Elect. Eng., ETH Zurich, 2020.  <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf>`_
-* `H.-A. Loeliger, H. Malmberg, and G. Wilckens, Control-bounded analog-to-digital conversion: transfer function analysis, proof of concept, and digital filter implementation," arXiv:2001.05929 <https://arxiv.org/abs/2001.05929>`_
+* `H.-A. Loeliger, H. Malmberg, and G. Wilckens, Control-bounded analog-to-digital conversion: transfer function analysis, proof of concept, and digital filter implementation, arXiv:2001.05929 <https://arxiv.org/abs/2001.05929>`_
 * `H.-A. Loeliger and G. Wilckens, Control-based analog-to-digital conversion without sampling and quantization, 2015 Information Theory & Applications Workshop (ITA), UCSD, La Jolla, CA, USA, Feb. 1-6, 2015 <https://ieeexplore.ieee.org/document/7308975>`_
 * `H.-A. Loeliger, L. Bolliger, G. Wilckens, and J. Biveroni, Analog-to-digital conversion using unstable filters, 2011 Information Theory & Applications Workshop (ITA), UCSD, La Jolla, CA, USA, Feb. 6-11, 2011 <https://ieeexplore.ieee.org/abstract/document/5743620>`_
 
