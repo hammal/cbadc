@@ -1,6 +1,5 @@
 import numpy as np
-from cbadc.digital_estimator import DigitalControl, ParallelEstimator, \
-    IIRFilter, FIRFilter
+from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from cbadc.analog_signal import Sinusodial
 from cbadc.simulator import StateSpaceSimulator
