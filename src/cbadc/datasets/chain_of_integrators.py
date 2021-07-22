@@ -3,12 +3,19 @@
 import numpy as np
 import cbadc
 import logging
+import cbadc.datasets
 logger = logging.getLogger(__name__)
 
 # map (N, beta, rho, kappa, input_signal_type, amplitude, frequency, phase, offset) -> url_string
-chain_of_integrators_pre_simulations = {
-    (1, 6250.0, 0.0, 1.0, "sin", 1.0, 1.0, 0.0, 0.0): ['http:localhost.com']
-}
+# chain_of_integrators_pre_simulations = {
+#     (1, 6250.0, 0.0, 1.0, "sin", 1.0, 1.0, 0.0, 0.0): ['http:localhost.com']
+# }
+chain_of_integrators_pre_simulations = {}
+try:
+    chain_of_integrators_pre_simulations = cbadc.utilities.pickle_load(
+        'chain_of_integrators.pickle')
+except FileNotFoundError:
+    print("No pre-simulations dictionary found")
 
 
 class ChainOfIntegrators:
@@ -45,7 +52,7 @@ class ChainOfIntegrators:
         self.beta = beta
         self.rho = rho
         self.kappa = kappa
-        A = beta * np.eye(N, k=-1) + rho * np.eye(N)
+        A = beta * np.eye(N, k=-1) + rho * beta * np.eye(N)
         B = np.zeros((N, 1))
         B[0, 0] = beta
         CT = np.eye(N)
@@ -96,11 +103,12 @@ class ChainOfIntegrators:
         if params in chain_of_integrators_pre_simulations:
             control_signal = cbadc.utilities.byte_stream_2_control_signal(
                 cbadc.utilities.read_byte_stream_from_url(
+                    cbadc.datasets.chain_of_integrators_url +
                     chain_of_integrators_pre_simulations[params],
                     self.M), self.M)
         else:
             logger.warn(
-                "No pre-computed simulation found. Iterating will invlove time consuming simulating.")
+                "No pre-computed simulation found.")
             control_signal = simulator
         return control_signal, simulator, self.size
 
@@ -141,9 +149,13 @@ class ChainOfIntegrators:
                   "ramp", amplitude, frequency, phase, offset)
         if params in chain_of_integrators_pre_simulations:
             control_signal = cbadc.utilities.byte_stream_2_control_signal(
-                cbadc.utilities.read_byte_stream_from_url(chain_of_integrators_pre_simulations[params], self.M), self.M)
+                cbadc.utilities.read_byte_stream_from_url(
+                    cbadc.datasets.chain_of_integrators_url +
+                    chain_of_integrators_pre_simulations[params],
+                    self.M
+                ), self.M)
         else:
             logger.warn(
-                "No pre-computed simulation found. Iterating will invlove time consuming simulating.")
+                "No pre-computed simulation found.")
             control_signal = simulator
         return control_signal, simulator, self.size

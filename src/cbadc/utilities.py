@@ -153,18 +153,28 @@ def write_byte_stream_to_files(filename: str, iterator: Iterator[bytes], words_p
     words_per_file: `int`
         number of words to be written per file, defaults to 100000.
         For byte-sized words the default corresponds to 100MB files.
+
+    Returns
+    -------
+    list[str]:
+        list of filenames.
     """
     count = 0
     iteration = 0
     base, ext = os.path.splitext(filename)
-    while True:
-        name = base + f"_{iteration}" + ext
-        with open(name, "wb") as f:
-            while (count < words_per_file):
-                f.write(next(iterator))
-                count += 1
-        count = 0
-        iteration += 1
+    names = []
+    try:
+        while True:
+            name = base + f"_{iteration}" + ext
+            with open(name, "wb") as f:
+                while (count < words_per_file):
+                    f.write(next(iterator))
+                    count += 1
+            names.append(name)
+            count = 0
+            iteration += 1
+    except StopIteration:
+        return names
 
 
 def read_byte_stream_from_file(filenames: Union[str, list], M: int) -> Generator[bytes, None, None]:
@@ -432,3 +442,22 @@ def write_wave(filename: str, sample_rate: int, data: npt.ArrayLike):
         the data array to be encoded as wave file
     """
     scipy.io.wavfile.write(filename, sample_rate, data)
+
+
+def finite_iteration(iterator: Iterator, length=1) -> Iterator:
+    """End iterator after a given length.
+
+    Parameters
+    ----------
+    iterator : any iterator
+        the iterator to be made finite
+    length : int
+        length until end of iteration.
+
+    """
+    count = 0
+    for value in iterator:
+        if count < length:
+            yield value
+        else:
+            raise StopIteration

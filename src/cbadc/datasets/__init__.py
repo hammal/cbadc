@@ -10,3 +10,5 @@ reduce simulation time.
 
 # from .hadamard import HadamardPCB
 # from .chain_of_integrators import ChainOfIntegrators
+
+chain_of_integrators_url = "https://localhost"
