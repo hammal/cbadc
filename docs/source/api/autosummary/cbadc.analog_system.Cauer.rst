@@ -18,6 +18,7 @@
    
       ~Cauer.__init__
       ~Cauer.control_observation
+      ~Cauer.control_signal_transfer_function_matrix
       ~Cauer.derivative
       ~Cauer.signal_observation
       ~Cauer.transfer_function_matrix

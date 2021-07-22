@@ -1,9 +1,9 @@
 import numpy as np
-from cbadc.digital_estimator import DigitalControl, ParallelEstimator, \
-    IIRFilter, FIRFilter
+from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from cbadc.analog_signal import Sinusodial
-from cbadc.digital_estimator import DigitalEstimator
+from cbadc.digital_estimator import DigitalEstimator, ParallelEstimator, \
+    IIRFilter, FIRFilter
 
 beta = 6250.0
 rho = -62.5

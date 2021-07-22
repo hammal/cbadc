@@ -18,6 +18,7 @@
    
       ~ChebyshevII.__init__
       ~ChebyshevII.control_observation
+      ~ChebyshevII.control_signal_transfer_function_matrix
       ~ChebyshevII.derivative
       ~ChebyshevII.signal_observation
       ~ChebyshevII.transfer_function_matrix

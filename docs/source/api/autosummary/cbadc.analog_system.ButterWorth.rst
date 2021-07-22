@@ -18,6 +18,7 @@
    
       ~ButterWorth.__init__
       ~ButterWorth.control_observation
+      ~ButterWorth.control_signal_transfer_function_matrix
       ~ButterWorth.derivative
       ~ButterWorth.signal_observation
       ~ButterWorth.transfer_function_matrix

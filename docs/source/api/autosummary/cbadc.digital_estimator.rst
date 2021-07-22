@@ -31,6 +31,7 @@
       DigitalEstimator
       FIRFilter
       IIRFilter
+      NUVEstimator
       ParallelEstimator
    
    
