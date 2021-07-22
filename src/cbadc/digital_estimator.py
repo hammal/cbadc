@@ -1690,7 +1690,13 @@ class NUVEstimator():
             ).y[:, -1]
             self.Bf[:, m] = solBf
 
-        BBT = np.dot(analog_system.B, analog_system.B.transpose())
+        BBT = np.dot(
+            analog_system.B,
+            np.dot(
+                self.covU,
+                analog_system.B.transpose()
+            )
+        )
 
         def _derivative_input(t, x):
             t_minus_tau = self.Ts - t
@@ -1703,19 +1709,15 @@ class NUVEstimator():
                 )
             ).flatten()
 
-        self.Vu = np.dot(
-            self.covU,
-            scipy.integrate.solve_ivp(
-                _derivative_input,
-                (0, self.Ts),
-                np.zeros(self.analog_system.N ** 2),
-                atol=atol,
-                rtol=rtol,
-                max_step=max_step
-            )
-            .y[:, -1].reshape(
-                (self.analog_system.N, self.analog_system.N)
-            )
+        self.Vu = scipy.integrate.solve_ivp(
+            _derivative_input,
+            (0, self.Ts),
+            np.zeros(self.analog_system.N ** 2),
+            atol=atol,
+            rtol=rtol,
+            max_step=max_step
+        ).y[:, -1].reshape(
+            (self.analog_system.N, self.analog_system.N)
         )
 
     def _compute_batch(self):
