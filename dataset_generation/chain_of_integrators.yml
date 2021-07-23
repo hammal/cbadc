@@ -1,0 +1,96 @@
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-0.0'
+- '-1'
+- sin
+- '1.0'
+- '1.2732395447351628e-05'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1.0_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1.0_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=1.cbs
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-0.0'
+- '-1'
+- sin
+- '1.0'
+- '6.366197723675814e-06'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1.0_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1.0_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=1.cbs
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-0.0'
+- '-1'
+- sin
+- 1e-10
+- '1.2732395447351628e-05'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1e-10_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1e-10_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=1.cbs
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-0.0'
+- '-1'
+- sin
+- 1e-10
+- '6.366197723675814e-06'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1e-10_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-0.0_kappa=-1_amplitude=1e-10_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=1.cbs
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-3125.0'
+- '-1'
+- sin
+- '1.0'
+- '1.2732395447351628e-05'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1.0_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1.0_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=1.cbs
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-3125.0'
+- '-1'
+- sin
+- '1.0'
+- '6.366197723675814e-06'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1.0_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1.0_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=1.cbs
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-3125.0'
+- '-1'
+- sin
+- 1e-10
+- '1.2732395447351628e-05'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1e-10_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1e-10_frequency=1.2732395447351628e-05_phase=0.0_offset=0.0_fileNR=1.cbs
+? !!python/tuple
+- '1'
+- '6250.0'
+- '-3125.0'
+- '-1'
+- sin
+- 1e-10
+- '6.366197723675814e-06'
+- '0.0'
+- '0.0'
+: - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1e-10_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=0.cbs
+  - data/chain_of_integrators.N=1_beta=6250.0_rho=-3125.0_kappa=-1_amplitude=1e-10_frequency=6.366197723675814e-06_phase=0.0_offset=0.0_fileNR=1.cbs

@@ -4,6 +4,7 @@ import numpy as np
 import cbadc
 import logging
 import cbadc.datasets
+import yaml
 logger = logging.getLogger(__name__)
 
 # map (N, beta, rho, kappa, input_signal_type, amplitude, frequency, phase, offset) -> url_string
@@ -12,8 +13,9 @@ logger = logging.getLogger(__name__)
 # }
 chain_of_integrators_pre_simulations = {}
 try:
-    chain_of_integrators_pre_simulations = cbadc.utilities.pickle_load(
-        'chain_of_integrators.pickle')
+    with open('chain_of_integrators.yml') as f:
+        chain_of_integrators_pre_simulations = dict(yaml.load(
+            f, Loader=yaml.FullLoader))
 except FileNotFoundError:
     print("No pre-simulations dictionary found")
 
@@ -98,13 +100,12 @@ class ChainOfIntegrators:
             amplitude, frequency, phase, offset)
         simulator = cbadc.simulator.StateSpaceSimulator(
             self.analog_system, self.digital_control, [input_signal])
-        params = (self.N, self.beta, self.rho, self.kappa,
-                  "sin", amplitude, frequency, phase, offset)
+        params = (str(self.N), str(self.beta), str(self.rho), str(self.kappa),
+                  "sin", str(amplitude), str(frequency), str(phase), str(offset))
         if params in chain_of_integrators_pre_simulations:
             control_signal = cbadc.utilities.byte_stream_2_control_signal(
                 cbadc.utilities.read_byte_stream_from_url(
-                    cbadc.datasets.chain_of_integrators_url +
-                    chain_of_integrators_pre_simulations[params],
+                    [cbadc.datasets.chain_of_integrators_url + link for link in chain_of_integrators_pre_simulations[params]],
                     self.M), self.M)
         else:
             logger.warn(
@@ -145,13 +146,13 @@ class ChainOfIntegrators:
             amplitude, frequency, phase, offset)
         simulator = cbadc.simulator.StateSpaceSimulator(
             self.analog_system, self.digital_control, [input_signal])
-        params = (self.N, self.beta, self.rho, self.kappa,
-                  "ramp", amplitude, frequency, phase, offset)
+        params = (str(self.N), str(self.beta), str(self.rho), str(self.kappa),
+                  "ramp", str(amplitude), str(frequency), str(phase), str(offset))
         if params in chain_of_integrators_pre_simulations:
             control_signal = cbadc.utilities.byte_stream_2_control_signal(
                 cbadc.utilities.read_byte_stream_from_url(
-                    cbadc.datasets.chain_of_integrators_url +
-                    chain_of_integrators_pre_simulations[params],
+                    [cbadc.datasets.chain_of_integrators_url + temp for temp in 
+                    chain_of_integrators_pre_simulations[params]],
                     self.M
                 ), self.M)
         else:

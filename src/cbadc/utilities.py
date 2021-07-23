@@ -163,18 +163,26 @@ def write_byte_stream_to_files(filename: str, iterator: Iterator[bytes], words_p
     iteration = 0
     base, ext = os.path.splitext(filename)
     names = []
-    try:
-        while True:
-            name = base + f"_{iteration}" + ext
-            with open(name, "wb") as f:
-                while (count < words_per_file):
-                    f.write(next(iterator))
-                    count += 1
-            names.append(name)
+    data_temp = [None for _ in range(words_per_file)]
+    while True:
+        for value in iterator:
+            if (count < words_per_file):
+                data_temp[count] = value                
+                count += 1
+            else:
+                break
+        # Check if iteration was ended early.
+        if (count < words_per_file - 1):
+            return names
+        else:
             count = 0
-            iteration += 1
-    except StopIteration:
-        return names
+    
+        name = base + "_fileNR=" + str(iteration) + ext
+        with open(name, "wb") as f:
+            for word in range(words_per_file):
+                f.write(data_temp[word])
+        names.append(name)
+        iteration += 1
 
 
 def read_byte_stream_from_file(filenames: Union[str, list], M: int) -> Generator[bytes, None, None]:
@@ -458,6 +466,8 @@ def finite_iteration(iterator: Iterator, length=1) -> Iterator:
     count = 0
     for value in iterator:
         if count < length:
+            count += 1
             yield value
+
         else:
-            raise StopIteration
+            return
