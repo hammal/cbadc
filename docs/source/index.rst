@@ -15,7 +15,7 @@ The cbadc toolbox enables you to:
 Contents
 ========
 
-This documentation is structured in four parts. 
+This documentation is structured in five parts. 
 
 .. toctree::
    :maxdepth: 1
