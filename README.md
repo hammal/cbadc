@@ -1,6 +1,6 @@
 ![cbadc](https://github.com/hammal/cbadc/actions/workflows/testing.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/hammal/cbadc)
 
-# Control-Bounded A/D Conversion (cbadc) Toolbox's Documentation
+# Control-Bounded A/D Conversion (cbadc) Toolbox
 
 This package is intended as a design tool for aiding the construction of control-bounded A/D converters.
 Specifically, it is capable of:
@@ -27,8 +27,8 @@ pip install cbadc
 
 into your console. Note that, currently cbadc is only supported for Python3.8 and later.
 
-<!-- # Changelog
+# Changelog
 
 ## 0.1.0
 
-- First public release -->
+- First public release
