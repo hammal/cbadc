@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.ButterWorth
+cbadc.analog\_system.ButterWorth
 ================================
 
 .. currentmodule:: cbadc.analog_system

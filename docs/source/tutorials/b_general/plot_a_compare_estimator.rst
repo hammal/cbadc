@@ -1040,16 +1040,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    5.485120426994399 sec 
+    5.073600958974566 sec 
 
     FIR Estimator:
-    37.11588862899225 sec 
+    53.24715116398875 sec 
 
     IIR Estimator:
-    36.34378033899702 sec 
+    30.63456824599416 sec 
 
     Parallel Estimator:
-    9.21785790399008 sec 
+    9.186485144979088 sec 
 
 
 
@@ -1058,7 +1058,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 40 minutes  23.772 seconds)
+   **Total running time of the script:** ( 40 minutes  57.082 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_a_compare_estimator.py:

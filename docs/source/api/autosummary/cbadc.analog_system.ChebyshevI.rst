@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.ChebyshevI
+cbadc.analog\_system.ChebyshevI
 ===============================
 
 .. currentmodule:: cbadc.analog_system

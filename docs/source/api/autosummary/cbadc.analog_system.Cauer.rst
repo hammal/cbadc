@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.Cauer
+cbadc.analog\_system.Cauer
 ==========================
 
 .. currentmodule:: cbadc.analog_system

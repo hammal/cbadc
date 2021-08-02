@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.AnalogSystem
+cbadc.analog\_system.AnalogSystem
 =================================
 
 .. currentmodule:: cbadc.analog_system

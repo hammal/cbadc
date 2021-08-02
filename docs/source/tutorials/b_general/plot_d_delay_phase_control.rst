@@ -15563,7 +15563,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 4 minutes  28.731 seconds)
+   **Total running time of the script:** ( 4 minutes  22.113 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_d_delay_phase_control.py:

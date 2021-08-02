@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.IIRDesign
+cbadc.analog\_system.IIRDesign
 ==============================
 
 .. currentmodule:: cbadc.analog_system

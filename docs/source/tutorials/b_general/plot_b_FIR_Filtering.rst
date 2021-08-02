@@ -515,7 +515,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  47.634 seconds)
+   **Total running time of the script:** ( 1 minutes  45.909 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_b_FIR_Filtering.py:

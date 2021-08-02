@@ -206,7 +206,7 @@ Filtering Estimate
 
  .. code-block:: none
 
-      0%|          | 0/128 [00:00<?, ?it/s]      1%|          | 1/128 [00:00<01:06,  1.91it/s]     76%|#######5  | 97/128 [00:00<00:00, 207.19it/s]    100%|##########| 128/128 [00:00<00:00, 194.49it/s]
+      0%|          | 0/128 [00:00<?, ?it/s]      1%|          | 1/128 [00:00<00:58,  2.19it/s]     69%|######8   | 88/128 [00:00<00:00, 208.19it/s]    100%|##########| 128/128 [00:00<00:00, 212.78it/s]
 
 
 
@@ -292,7 +292,7 @@ Visualize Estimate Spectrum
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  9.377 seconds)
+   **Total running time of the script:** ( 0 minutes  8.775 seconds)
 
 
 .. _sphx_glr_download_datasets_plot_hadamard.py:

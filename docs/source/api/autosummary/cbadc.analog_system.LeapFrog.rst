@@ -1,4 +1,4 @@
-﻿cbadc.analog\_system.LeapFrog
+cbadc.analog\_system.LeapFrog
 =============================
 
 .. currentmodule:: cbadc.analog_system
