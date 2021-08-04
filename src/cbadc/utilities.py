@@ -14,6 +14,7 @@ import os
 import pickle
 import scipy.io.wavfile
 import numpy.typing as npt
+import scipy.signal
 
 
 def number_of_bytes_selector(M: int):
@@ -274,7 +275,8 @@ def compute_power_spectral_density(sequence: np.ndarray, nperseg: int = 1 << 14,
     """
     freq, spectrum = welch(
         sequence,
-        window='hanning',
+        # window='hanning',
+        window='blackman',
         nperseg=nperseg,
         noverlap=None,
         nfft=None,
@@ -313,6 +315,67 @@ def snr_spectrum_computation(spectrum: np.ndarray,
         return np.inf
 
 
+def snr_spectrum_computation_extended(spectrum: np.ndarray,
+                                      signal_mask: np.ndarray,
+                                      noise_mask: np.ndarray,
+                                      fs):
+    """Extended spectrum computations
+
+    Parameters
+    ----------
+    spectrum: ndarray
+        a frequency spectrum
+    signal_mask: ndarray
+        an array containing the indices corresponding to the inband signal
+        components.
+    noise_mask: ndarray
+        an array containing the indices corresponding to the inband noise.
+    fs: `float`
+        the sampling frequency of spectrum [Hz].
+
+    Returns
+    -------
+    {
+        noise_rms: `float`
+        signal_rms: `float`
+        snr: `float`
+        window: `str`
+        CG: `float`
+        NG: `float`
+    }
+        Python dict containing relevant spectrum information.
+    """
+    window = 'blackman'
+    CG = 1.0
+    NG = 1.0
+    N = spectrum.size
+    f_bin = fs / N
+    if window == 'blackman':
+        window = scipy.signal.windows.blackman(N)
+        CG = np.mean(window)
+        NG = np.sum(window ** 2) / N
+    if window == 'hanning':
+        window = scipy.signal.windows.blackman(N)
+        CG = np.mean(window)
+        NG = np.sum(window ** 2) / N
+
+    noise = np.sum(spectrum[noise_mask])
+    signal = np.sum(spectrum[signal_mask])
+
+    snr = signal / noise
+    signal_rms = np.sqrt(signal * NG * f_bin / (CG ** 2))
+    noise_rms = np.sqrt(noise * f_bin)
+
+    return {
+        'noise_rms': noise_rms,
+        'signal_rms': signal_rms,
+        'snr': snr,
+        'window': window,
+        'CG': CG,
+        'NG': NG,
+    }
+
+
 def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
     """Find the peak in the spectrum and return indexes.
 
@@ -325,7 +388,10 @@ def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
 
     """
     candidate_peak = np.argmax(np.abs(spectrum))
-    return np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2)
+    return np.arange(
+        candidate_peak - mask_width // 2,
+        candidate_peak + mask_width // 2
+    )
 
 
 def show_status(iterator, length: int = 1 << 63):
