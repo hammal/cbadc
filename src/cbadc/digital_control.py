@@ -5,6 +5,7 @@ class to enabled the creation of a general independently controlled digital
 control system.
 """
 import numpy as np
+import scipy.optimize
 
 
 class DigitalControl:
@@ -142,14 +143,15 @@ class DigitalControl:
 
         """
         temp = np.zeros(self.M, dtype=np.double)
-        temp[m] = 1
+        if t >= 0 and t < self.T:
+            temp[m] = 1
         return temp
 
     def __str__(self):
         return f"The Digital Control is parameterized as:\nT = {self.T},\nM = {self.M}, and next update at\nt = {self._t_next}"
 
 
-class PhaseDelayedControl(DigitalControl):
+class MultiPhaseDigitalControl(DigitalControl):
     """Represents a digital control system that switches controls individually
     sequentially.
 
@@ -157,7 +159,7 @@ class PhaseDelayedControl(DigitalControl):
 
     :math:`s_m[k] = \\tilde{s}((k+m)T)`
 
-    except for this it works similarly to 
+    except for this it works similarly to
     :py:class`cbadc.digital_control.DigitalControl`
 
     Parameters
@@ -166,6 +168,11 @@ class PhaseDelayedControl(DigitalControl):
         clock period at which the digital control updates.
     M : `int`
         number of controls.
+    phases: array_like, shape=(M,), dtype=int
+        the phase number associated with each phase,
+        for example phases = [0, 1, 2, 0] would assign first
+        and forth control to phase 0 and the second to phase 1
+        etc.
     t0 : `float`: optional
         determines initial time, defaults to 0.
 
@@ -183,9 +190,13 @@ class PhaseDelayedControl(DigitalControl):
     For this digital control system :math:`M=\\tilde{M}`.
     """
 
-    def __init__(self, T: float, M: int, t0: float = 0):
+    def __init__(self, T: float, M: int, phases: np.ndarray, t0: float = 0):
         DigitalControl.__init__(self, T, M, t0=t0)
-        self._t_next = t0 + self.T * np.arange(M)
+        self._phases = phases
+        if self._phases.size != self.M:
+            raise BaseException("phase must be an M sized numpy array")
+        self._t_next = t0 + self._phases * T
+        self.number_of_phases = np.max(self._phases) + 1
 
     def control_contribution(self, t: float, s_tilde: np.ndarray) -> np.ndarray:
         """Evaluates the control contribution at time t given a control observation
@@ -209,24 +220,14 @@ class PhaseDelayedControl(DigitalControl):
             if t >= self._t_next[m]:
                 # if so update the control signal state
                 self._s[m] = s_tilde[m] >= 0
-                self._t_next[m] += self.T * self.M
+                self._t_next[m] += self.T * self.number_of_phases
                 # DAC
                 self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
+                # print(f"m = {m}, t = {t}, s = {self._dac_values}")
         return self._dac_values
-
-    def control_signal(self) -> np.ndarray:
-        """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
-
-        Returns
-        -------
-        `array_like`, shape=(M,), dtype=numpy.int8
-            current control state.
-        """
-        return self._s
 
 
 class CalibrationControl(DigitalControl):
-
     def control_contribution(self, t: float, s_tilde: np.ndarray) -> np.ndarray:
         """Evaluates the control contribution at time t given a control observation
         s_tilde.
@@ -252,6 +253,34 @@ class CalibrationControl(DigitalControl):
             self._s[0] = np.random.randint(2)
             self._t_next += self.T
             # DAC
-            self._dac_values = np.asarray(
-                2 * self._s - 1, dtype=np.double)
+            self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
         return self._dac_values
+
+
+def overcomplete_set(
+    Gamma: np.ndarray, M: int,
+):
+    T = np.copy(Gamma.transpose())
+    for dim in range(T.shape[0]):
+        T[dim, :] /= np.linalg.norm(T[dim, :], ord=2)
+    number_of_candidates_per_new_vector = 100
+    while T.shape[0] < M:
+        candidate_set = np.random.randn(T.shape[1], number_of_candidates_per_new_vector)
+        candidate_set /= np.linalg.norm(candidate_set, ord=2, axis=0)
+
+        cost = np.zeros(number_of_candidates_per_new_vector)
+
+        def cost_function(alpha):
+            return np.linalg.norm(np.dot(T, alpha), ord=2) / np.linalg.norm(
+                alpha, ord=2
+            )
+
+        for index in range(number_of_candidates_per_new_vector):
+            sol = scipy.optimize.minimize(cost_function, candidate_set[:, index])
+            cost[index] = sol.fun
+            candidate_set[:, index] = sol.x / np.linalg.norm(sol.x, ord=2)
+
+        T = np.vstack(
+            (T, candidate_set[:, best_candidate_index].reshape((1, T.shape[1])))
+        )
+    return T.transpose()

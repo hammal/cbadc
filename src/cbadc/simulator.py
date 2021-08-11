@@ -16,6 +16,7 @@ from scipy.integrate import solve_ivp
 from scipy.linalg import expm
 import math
 from typing import Iterator, Generator, List, Dict, Union
+import cbadc.digital_control
 
 
 class StateSpaceSimulator(Iterator[np.ndarray]):
@@ -36,6 +37,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         than :py:class:`digitalControl.Ts`.
     t_stop : `float`, optional
         determines a stop time, defaults to :py:obj:`math.inf`
+    pre_compute_control_interactions: `bool`, `optional`
+        determine if precomputed control interactions should be used, defaults to True.
 
 
 
@@ -111,7 +114,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                  atol: float = 1e-12,
                  rtol: float = 1e-12,
                  max_step: float = math.inf,
-                 initial_state_vector=None
+                 initial_state_vector=None,
+                 pre_compute_control_interactions = True,
                  ):
         if analog_system.L != len(input_signal):
             raise BaseException("""The analog system does not have as many inputs as in input
@@ -155,7 +159,9 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             self.max_step = self.Ts / 1e-1
         else:
             self.max_step = max_step
-        self._pre_computations()
+        if pre_compute_control_interactions:
+            self._pre_computations()
+        self._pre_compute_control_interactions = pre_compute_control_interactions
         # self.solve_oder = self._ordinary_differential_solution
         # self.solve_oder = self._full_ordinary_differential_solution
 
@@ -203,8 +209,10 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         t_span = np.array((self.t, t_end))
         if t_end >= self.t_stop:
             raise StopIteration
-        self._state_vector = self._ordinary_differential_solution(t_span)
-        # self._state_vector = self._full_ordinary_differential_solution(t_span)
+        if self._pre_compute_control_interactions:
+            self._state_vector = self._ordinary_differential_solution(t_span)
+        else:
+            self._state_vector = self._full_ordinary_differential_solution(t_span)
         self.t = t_end
         return self.digital_control.control_signal()
 
@@ -356,7 +364,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         self._temp_state_vector = np.dot(self.analog_system.Gamma_tildeT, y)
         self._control_vector = self.digital_control.control_contribution(
             t, self._temp_state_vector)
-        return np.asarray(self.analog_system.derivative(self._temp_state_vector, t, self._input_vector, self._control_vector)).flatten()
+        return np.asarray(self.analog_system.derivative(y, t, self._input_vector, self._control_vector)).flatten()
 
     def __str__(self):
         return f"t = {self.t}, (current simulator time)\nTs = {self.Ts},\nt_stop = {self.t_stop},\nrtol = {self.rtol},\natol = {self.atol}, and\nmax_step = {self.max_step}\n"
