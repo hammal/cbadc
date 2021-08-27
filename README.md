@@ -32,3 +32,11 @@ into your console. Note that, currently cbadc is only supported for Python3.8 an
 ## 0.1.0
 
 - First public release
+
+## 0.1.1
+
+Added support for switched capacitor digital control by adding a new:
+
+- [simulator](),
+- [digital control](),
+- and [digital estimator]().
