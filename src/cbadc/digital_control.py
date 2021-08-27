@@ -6,6 +6,7 @@ control system.
 """
 import numpy as np
 import scipy.optimize
+import itertools
 
 
 class DigitalControl:
@@ -143,7 +144,7 @@ class DigitalControl:
 
         """
         temp = np.zeros(self.M, dtype=np.double)
-        if t >= 0 and t < self.T:
+        if t >= 0 and t <= self.T:
             temp[m] = 1
         return temp
 
@@ -257,9 +258,22 @@ class CalibrationControl(DigitalControl):
         return self._dac_values
 
 
-def overcomplete_set(
-    Gamma: np.ndarray, M: int,
-):
+def overcomplete_set(Gamma: np.ndarray, M: int):
+    """
+    Construct a overcomplete set of normalized column vectors
+
+    Parameters
+    ----------
+    Gamma: array_like
+        the initial set of vectors
+    M : `int`
+        the desired number of column vectors
+
+    Returns
+    -------
+    array_like
+        the resulting set of column vectors.
+    """
     T = np.copy(Gamma.transpose())
     for dim in range(T.shape[0]):
         T[dim, :] /= np.linalg.norm(T[dim, :], ord=2)
@@ -284,3 +298,174 @@ def overcomplete_set(
             (T, candidate_set[:, best_candidate_index].reshape((1, T.shape[1])))
         )
     return T.transpose()
+
+
+def unit_element_set(N: int, M: int):
+    """
+    Construct an overcomplete set of vectors only using a single element, i.e.,
+
+    :math:`\mathbf{v} \in \\{ - \\alpha, \\alpha , 0 \\}^{N \\times M}`
+
+    where duplicates and the :math:`\\begin{pmatrix}0, \dots, 0 \\end{pmatrix}`
+    is excluded from the set.
+
+    Parameters
+    ----------
+    N: `int`
+        the length of the vectors
+    M: `int`
+        the number of unique vectors
+
+    Returns
+    -------
+    array_like, shape=(N, M)
+        a matrix containing the unique vectors as column vectors.
+    """
+    candidate_set = []
+    for item in itertools.product(*[[-1, 1, 0] for _ in range(N)]):
+        duplicate = False
+        sum = np.sum(np.abs(np.array(item)))
+        if sum == 0:
+            break
+        candidate = np.array(item)
+        for item in candidate_set:
+            s1 = np.sum(np.abs(np.array(item) - candidate))
+            s2 = np.sum(np.abs(np.array(item) + candidate))
+            if s1 == 0 or s2 == 0:
+                # print(item, candidate)
+                duplicate = True
+        if not duplicate:
+            candidate_set.append(candidate)
+
+    candidate_set = np.array(candidate_set)  # [
+    #        np.random.permutation(len(candidate_set)), :
+    # ]
+    # print(candidate_set)
+    if candidate_set.shape[0] < M:
+        raise BaseException("Not enough unique combinations; M is set to large.")
+    set = candidate_set[0, :].reshape((N, 1))
+    candidate_set = np.delete(candidate_set, 0, 0)
+
+    while set.shape[1] < M:
+        costs = np.linalg.norm(
+            np.dot(candidate_set, set), ord=2, axis=1
+        ) / np.linalg.norm(candidate_set, axis=1, ord=2)
+        next_index = np.argmin(costs)
+        # print(candidate_set, costs, next_index)
+        set = np.hstack((set, candidate_set[next_index, :].reshape((N, 1))))
+        candidate_set = np.delete(candidate_set, next_index, 0)
+    # return np.array(set)[:, np.random.permutation(set.shape[1])]
+    return np.array(set)
+
+
+class SwitchedCapacitorControl:
+    """Represents a digital control system that uses switched capacitor control
+
+    Parameters
+    ----------
+    T : `float
+        total clock period
+    T1 : `float`, `array_like`, shape=(M,)
+        time at which the digital control empties the capacitor into the system.
+        Can be either float or array of float.
+    T2 : `float`, `array_like`, shape=(M,)
+        time at which the switched capacitor is re-charged and disconnected
+        from the analog system.
+    M : `int`
+        number of controls.
+    A: array_like, shape(M,M)
+        dynamical system model.
+    t0 : `float`, optional
+        determines initial time, defaults to 0.
+    VCap: `float`, optional
+        the voltage stored on each capacitor before discharge,
+        defaults to 1.
+
+
+    Attributes
+    ----------
+    T : `float`
+        total clock period :math:`T` of digital control system.
+    T1 : `array_like`, shape=(M,)
+        discharge phase time
+    T2 : `float`
+        charge phase time
+    M : `int`
+        number of controls :math:`M`.
+    M_tilde : `int`
+        number of control observations :math:`\\tilde{M}`.
+
+    Note
+    ----
+    For this digital control system :math:`M=\\tilde{M}`.
+    """
+
+    def __init__(self, T, T1, T2, M, A, t0=0, VCap=1.0):
+        if isinstance(T1, (list, tuple, np.ndarray)):
+            self.T1 = np.array(T1, dtype=np.double)
+        else:
+            self.T1 = T1 * np.ones(M, dtype=np.double)
+
+        self._T1_next = t0 + self.T1
+
+        if isinstance(T2, (list, tuple, np.ndarray)):
+            self.T2 = np.array(T2, dtype=np.double)
+        else:
+            self.T2 = T2 * np.ones(T2, dtype=np.double)
+        self._T2_next = t0 + self.T2
+
+        self.M = M
+
+        # Check for invalid period times.
+        for m in range(self.M):
+            if self.T2[m] <= self.T1[m] or (self.T2[m] + T == self.T1[m]):
+                raise BaseException(
+                    f"Invalid T1={self.T1[m]} and T2={self.T2[m]} for m={m}"
+                )
+
+        self.T = T
+        if (self.T < self.T1).any() or (2 * self.T < self.T2).any():
+            raise BaseException("T1 cannot exceed T and T2 cannot exceed 2T.")
+
+        self.phase = np.zeros(M, dtype=int)
+
+        if not isinstance(self.M, int):
+            raise BaseException("M must be an integer.")
+
+        self._s = np.zeros(self.M, dtype=int)
+        self.A = np.array(A, dtype=np.double)
+        self.VCap = VCap
+
+    def next_update(self):
+        t_next = np.inf
+        for m in range(self.M):
+            if self._T1_next[m] < t_next:
+                t_next = self._T1_next[m]
+            if self._T2_next[m] < t_next:
+                t_next = self._T2_next[m]
+        return t_next
+
+    def control_update(self, t, s_tilde: np.ndarray):
+        # Check if time t has passed the next control update\
+        reset = np.zeros(self.M, dtype=bool)
+        for m in range(self.M):
+            if not t < self._T2_next[m]:
+                self.phase[m] = 1
+                reset[m] = True
+                self._T2_next[m] += self.T
+            elif not t < self._T1_next[m]:
+                self._s[m] = s_tilde[m] > 0
+                self.phase[m] = 0
+                reset[m] = True
+                self._T1_next[m] += self.T
+        return self.phase, reset, self._s
+
+    def control_signal(self) -> np.ndarray:
+        """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
+
+        Returns
+        -------
+        `array_like`, shape=(M,), dtype=numpy.int8
+            current control state.
+        """
+        return self._s

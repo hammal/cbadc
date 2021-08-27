@@ -401,8 +401,7 @@ class ChainOfIntegrators(AnalogSystem):
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and
     creates a convenient way of creating chain-of-integrator A/D analog
     systems. For more information about chain-of-integrator ADCs see
-    # page=96/>`_.
-    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
+    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y&page=96/>`_.
 
 
     Chain-of-integrators analog systems are system goverened by the
@@ -546,8 +545,7 @@ class LeapFrog(AnalogSystem):
 
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
     way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see
-    # page=126/>`_.
-    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
+    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y&page=126/>`_.
 
 
     A leap-frog analog system is goverened by the differential equations,
@@ -1484,7 +1482,7 @@ def zpk2abcd(z, p, k):
     while index < len(p):
         D = np.array([[0.0]])
         if index + 1 < len(p):
-            # print("Two poles")
+            # Two poles
             A = np.zeros((2, 2))
             B = k_per_state ** 2 * np.array([[1.0], [0.0]])
             CT = np.zeros((1, 2))
@@ -1504,7 +1502,6 @@ def zpk2abcd(z, p, k):
             if index < len(z):
                 zero_1 = z[index]
                 if index + 1 < len(z):
-                    # print("double zeros")
                     # Two zeros left
                     zero_2 = z[index + 1]
                     y = np.array(
@@ -1520,7 +1517,6 @@ def zpk2abcd(z, p, k):
                     D = k_per_state ** 2 * np.array([[1.0]])
                     CT = np.array([[sol[0, 0], sol[1, 0]]])
                 else:
-                    # print("single zero")
                     # Single zero
                     if np.imag(zero_1) != 0:
                         raise BaseException("Can't have non-conjugate complex zero")
@@ -1528,7 +1524,6 @@ def zpk2abcd(z, p, k):
                     c2 = (A[1, 1] - np.real(zero_1)) / A[1, 0]
                     CT = np.array([[c1, c2]])
             else:
-                # print("No zero")
                 # No zero
                 #
                 # gain
@@ -1537,7 +1532,6 @@ def zpk2abcd(z, p, k):
             index += 2
         else:
             # Only one pole and possibly zero left
-            # print("Single pole and possibly zero")
             pole = p[index]
             if np.imag(pole) != 0:
                 raise BaseException("Can't have non-conjugate complex poles")
@@ -1553,14 +1547,12 @@ def zpk2abcd(z, p, k):
                 CT[0, 0] = pole - np.real(zero)
             index += 1
         systems.append(AnalogSystem(A, B, CT, None, None, D))
-        print(systems[-1])
     chained_system = chain(systems)
     return chained_system.A, chained_system.B, chained_system.CT, chained_system.D
 
 
 def _sort_by_complex_descending(list: np.ndarray) -> np.ndarray:
     sorted_indexes = np.argsort(np.abs(np.imag(list)))[::-1]
-    print(sorted_indexes)
     list = list[sorted_indexes]
     complex_indexes = np.imag(list) != 0
     number_of_complex_poles = np.sum(complex_indexes)
