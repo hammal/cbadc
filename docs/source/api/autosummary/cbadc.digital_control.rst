@@ -9,6 +9,15 @@
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :template: custom-function-template.rst
+   
+      overcomplete_set
+      unit_element_set
+   
    
 
    
@@ -21,7 +30,8 @@
    
       CalibrationControl
       DigitalControl
-      PhaseDelayedControl
+      MultiPhaseDigitalControl
+      SwitchedCapacitorControl
    
    
 
