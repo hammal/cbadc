@@ -37,6 +37,6 @@ into your console. Note that, currently cbadc is only supported for Python3.8 an
 
 Added support for switched capacitor digital control by adding a new:
 
-- [simulator](),
-- [digital control](),
-- and [digital estimator]().
+- [simulator](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.simulator.SwitchedCapacitorStateSpaceSimulator.html#cbadc.simulator.SwitchedCapacitorStateSpaceSimulator),
+- [digital control](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.digital_control.SwitchedCapacitorControl.html#cbadc.digital_control.SwitchedCapacitorControl),
+- and modifications to the FIR [digital estimator](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.digital_estimator.FIRFilter.html#cbadc.digital_estimator.FIRFilter) to handle the switch cap case.
