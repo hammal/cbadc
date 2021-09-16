@@ -23,3 +23,8 @@ vscode:
     - coenraads.bracket-pair-colorizer
     - eamodio.gitlens
     - vscode-icons-team.vscode-icons
+
+tasks:
+  - name: Install cbadc
+    init: python -m pip install . 
+    
