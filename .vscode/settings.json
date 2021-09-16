@@ -1,0 +1,9 @@
+{
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--config=tox.ini"
+    ],
+    "python.formatting.provider": "black"
+}
