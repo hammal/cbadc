@@ -17,3 +17,9 @@ github:
     addBadge: true
     # add a label once the prebuild is ready to pull requests (defaults to false)
     addLabel: prebuilt-in-gitpod
+
+vscode:
+  extensions:
+    - coenraads.bracket-pair-colorizer
+    - eamodio.gitlens
+    - vscode-icons-team.vscode-icons
