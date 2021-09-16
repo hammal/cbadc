@@ -7,3 +7,5 @@ pytest-benchmark
 pytest-cov
 tox
 typing-extensions
+flake8
+pylint
