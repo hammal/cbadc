@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "build documentation",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "command": "cd docs; /usr/bin/zsh -c '/home/hammal/anaconda3/bin/conda activate py38; make html'",
+      "presentation": {
+        "reveal": "always",
+        "focus": true
+      }
+    }
+  ]
+}
