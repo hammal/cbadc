@@ -1,6 +1,5 @@
 .pytest_cache
 *__pycache__
-.vscode
 build
 dist
 src/cbadc.egg-info
