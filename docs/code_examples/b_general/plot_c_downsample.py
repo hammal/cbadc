@@ -8,7 +8,7 @@ for downsampling.
 """
 import scipy.signal
 import numpy as np
-import cbadc as cbc
+import cbadc
 import matplotlib.pyplot as plt
 
 ###############################################################################
@@ -31,9 +31,9 @@ import matplotlib.pyplot as plt
 N = 6
 M = N
 # Set the amplification factor.
-beta = 6250.
-rho = - 1e-2
-kappa = - 1.0
+beta = 6250.0
+rho = -1e-2
+kappa = -1.0
 # In this example, each nodes amplification and local feedback will be set
 # identically.
 betaVec = beta * np.ones(N)
@@ -41,11 +41,11 @@ rhoVec = betaVec * rho
 kappaVec = kappa * beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
-analog_system = cbc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 
 
-T = 1/(2 * beta)
-digital_control = cbc.digital_control.DigitalControl(T, M)
+T = 1 / (2 * beta)
+digital_control = cbadc.digital_control.DigitalControl(T, M)
 
 
 # Summarize the analog system, digital control, and digital estimator.
@@ -66,26 +66,26 @@ print(digital_control)
 # correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adcs', M)
-control_signal_sequences1 = cbc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+byte_stream = cbadc.utilities.read_byte_stream_from_file(
+    "../a_getting_started/sinusodial_simulation.adcs", M
+)
+control_signal_sequences1 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
-byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adcs', M)
-control_signal_sequences2 = cbc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+byte_stream = cbadc.utilities.read_byte_stream_from_file(
+    "../a_getting_started/sinusodial_simulation.adcs", M
+)
+control_signal_sequences2 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
-byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adcs', M)
-control_signal_sequences3 = cbc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+byte_stream = cbadc.utilities.read_byte_stream_from_file(
+    "../a_getting_started/sinusodial_simulation.adcs", M
+)
+control_signal_sequences3 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
-byte_stream = cbc.utilities.read_byte_stream_from_file(
-    '../a_getting_started/sinusodial_simulation.adcs', M)
-control_signal_sequences4 = cbc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+byte_stream = cbadc.utilities.read_byte_stream_from_file(
+    "../a_getting_started/sinusodial_simulation.adcs", M
+)
+control_signal_sequences4 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 ###############################################################################
@@ -107,8 +107,9 @@ omega_3dB = 2 * np.pi / (T * OSR)
 
 # Set the bandwidth of the estimator
 G_at_omega = np.linalg.norm(
-    analog_system.transfer_function_matrix(np.array([omega_3dB / 2])))
-eta2 = G_at_omega**2
+    analog_system.transfer_function_matrix(np.array([omega_3dB / 2]))
+)
+eta2 = G_at_omega ** 2
 # eta2 = 1.0
 print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
@@ -117,8 +118,9 @@ L1 = 1 << 12
 L2 = L1
 
 # Instantiate the digital estimator.
-digital_estimator_ref = cbc.digital_estimator.FIRFilter(
-    analog_system, digital_control, eta2, L1, L2)
+digital_estimator_ref = cbadc.digital_estimator.FIRFilter(
+    analog_system, digital_control, eta2, L1, L2
+)
 digital_estimator_ref(control_signal_sequences1)
 
 print(digital_estimator_ref, "\n")
@@ -142,20 +144,23 @@ stf = digital_estimator_ref.signal_transfer_function(omega)
 stf_dB = 20 * np.log10(np.abs(stf.flatten()))
 
 # Signal attenuation at the input signal frequency
-stf_at_omega = digital_estimator_ref.signal_transfer_function(
-    np.array([omega_3dB]))[0]
+stf_at_omega = digital_estimator_ref.signal_transfer_function(np.array([omega_3dB]))[0]
 
 # Plot
 plt.figure()
-plt.semilogx(frequencies, stf_dB, label='$STF(\omega)$')
+plt.semilogx(frequencies, stf_dB, label="$STF(\omega)$")
 for n in range(N):
     plt.semilogx(frequencies, ntf_dB[0, n, :], label=f"$|NTF_{n+1}(\omega)|$")
-plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-    ntf[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $")
+plt.semilogx(
+    frequencies,
+    20 * np.log10(np.linalg.norm(ntf[:, 0, :], axis=0)),
+    "--",
+    label="$ || NTF(\omega) ||_2 $",
+)
 
 # Add labels and legends to figure
 plt.legend()
-plt.grid(which='both')
+plt.grid(which="both")
 plt.title("Signal and noise transfer functions")
 plt.xlabel("$\omega / (4 \pi \\beta ) $")
 plt.ylabel("dB")
@@ -168,13 +173,9 @@ plt.gcf().tight_layout()
 #
 # Next we repeat the initialization steps above but for a downsampled estimator
 
-digital_estimator_dow = cbc.digital_estimator.FIRFilter(
-    analog_system,
-    digital_control,
-    eta2,
-    L1,
-    L2,
-    downsample=OSR)
+digital_estimator_dow = cbadc.digital_estimator.FIRFilter(
+    analog_system, digital_control, eta2, L1, L2, downsample=OSR
+)
 digital_estimator_dow(control_signal_sequences2)
 
 print(digital_estimator_dow, "\n")
@@ -206,28 +207,30 @@ t = np.arange(-L1 + 1, size - L1 + 1)
 t_down = np.arange(-(L1) // OSR, (size - L1) // OSR) * OSR + 1
 plt.plot(t, u_hat_ref, label="$\hat{u}(t)$ Reference")
 plt.plot(t_down, u_hat_dow, label="$\hat{u}(t)$ Downsampled")
-plt.xlabel('$t / T$')
+plt.xlabel("$t / T$")
 plt.legend()
 plt.title("Estimated input signal")
-plt.grid(which='both')
+plt.grid(which="both")
 plt.xlim((-50, 1000))
 plt.tight_layout()
 
 plt.figure()
-u_hat_ref_clipped = u_hat_ref[(L1 + L2):]
-u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR:]
-f_ref, psd_ref = cbc.utilities.compute_power_spectral_density(
-    u_hat_ref_clipped, fs=1.0/T)
-f_dow, psd_dow = cbc.utilities.compute_power_spectral_density(
-    u_hat_dow_clipped, fs=1.0/(T * OSR))
+u_hat_ref_clipped = u_hat_ref[(L1 + L2) :]
+u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR :]
+f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(
+    u_hat_ref_clipped, fs=1.0 / T
+)
+f_dow, psd_dow = cbadc.utilities.compute_power_spectral_density(
+    u_hat_dow_clipped, fs=1.0 / (T * OSR)
+)
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
 plt.legend()
 plt.ylim((-300, 50))
 plt.xlim((f_ref[1], f_ref[-1]))
-plt.xlabel('$f$ [Hz]')
-plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
-plt.grid(which='both')
+plt.xlabel("$f$ [Hz]")
+plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
+plt.grid(which="both")
 plt.show()
 
 ###############################################################################
@@ -247,20 +250,19 @@ ws = omega_3dB
 gpass = 0.1
 gstop = 80
 
-filter = cbc.analog_system.IIRDesign(wp, ws, gpass, gstop, ftype="ellip")
+filter = cbadc.analog_system.IIRDesign(wp, ws, gpass, gstop, ftype="ellip")
 
 # Compute transfer functions for each frequency in frequencies
 transfer_function_filter = filter.transfer_function_matrix(omega)
 
 plt.semilogx(
-    omega/(2 * np.pi),
-    20 * np.log10(np.linalg.norm(
-        transfer_function_filter[:, 0, :],
-        axis=0)),
-    label="Cauer")
+    omega / (2 * np.pi),
+    20 * np.log10(np.linalg.norm(transfer_function_filter[:, 0, :], axis=0)),
+    label="Cauer",
+)
 # Add labels and legends to figure
 # plt.legend()
-plt.grid(which='both')
+plt.grid(which="both")
 plt.title("Filter Transfer Functions")
 plt.xlabel("$f$ [Hz]")
 plt.ylabel("dB")
@@ -272,30 +274,27 @@ plt.gcf().tight_layout()
 # -------------------------------
 #
 
-new_analog_system = cbc.analog_system.chain([filter, analog_system])
+new_analog_system = cbadc.analog_system.chain([filter, analog_system])
 print(new_analog_system)
 
 transfer_function_analog_system = analog_system.transfer_function_matrix(omega)
 
-transfer_function_new_analog_system = new_analog_system.transfer_function_matrix(
-    omega)
+transfer_function_new_analog_system = new_analog_system.transfer_function_matrix(omega)
 
 plt.semilogx(
-    omega/(2 * np.pi),
-    20 * np.log10(np.linalg.norm(
-        transfer_function_analog_system[:, 0, :],
-        axis=0)),
-    label="Default Analog System")
+    omega / (2 * np.pi),
+    20 * np.log10(np.linalg.norm(transfer_function_analog_system[:, 0, :], axis=0)),
+    label="Default Analog System",
+)
 plt.semilogx(
-    omega/(2 * np.pi),
-    20 * np.log10(np.linalg.norm(
-        transfer_function_new_analog_system[:, 0, :],
-        axis=0)),
-    label="Combined Analog System")
+    omega / (2 * np.pi),
+    20 * np.log10(np.linalg.norm(transfer_function_new_analog_system[:, 0, :], axis=0)),
+    label="Combined Analog System",
+)
 
 # Add labels and legends to figure
 plt.legend()
-plt.grid(which='both')
+plt.grid(which="both")
 plt.title("Analog System Transfer Function")
 plt.xlabel("$f$ [Hz]")
 plt.ylabel("$||\mathbf{G}(\omega)||_2$ dB")
@@ -309,13 +308,9 @@ plt.gcf().tight_layout()
 # Combining the virtual pre filter together with the default analog system
 # results in the following system.
 
-digital_estimator_dow_and_pre_filt = cbc.digital_estimator.FIRFilter(
-    new_analog_system,
-    digital_control,
-    eta2,
-    L1,
-    L2,
-    downsample=OSR)
+digital_estimator_dow_and_pre_filt = cbadc.digital_estimator.FIRFilter(
+    new_analog_system, digital_control, eta2, L1, L2, downsample=OSR
+)
 digital_estimator_dow_and_pre_filt(control_signal_sequences3)
 print(digital_estimator_dow_and_pre_filt)
 
@@ -331,13 +326,9 @@ numtaps = 1 << 10
 f_cutoff = 1.0 / OSR
 fir_filter = scipy.signal.firwin(numtaps, f_cutoff)
 
-digital_estimator_dow_and_post_filt = cbc.digital_estimator.FIRFilter(
-    analog_system,
-    digital_control,
-    eta2,
-    L1,
-    L2,
-    downsample=OSR)
+digital_estimator_dow_and_post_filt = cbadc.digital_estimator.FIRFilter(
+    analog_system, digital_control, eta2, L1, L2, downsample=OSR
+)
 digital_estimator_dow_and_post_filt(control_signal_sequences4)
 
 # Apply the FIR post filter
@@ -349,37 +340,35 @@ FIR_frequency_response = np.fft.rfft(fir_filter)
 f_FIR = np.fft.rfftfreq(numtaps, d=T)
 plt.figure()
 plt.semilogx(f_FIR, 20 * np.log10(np.abs(FIR_frequency_response)))
-plt.xlabel('$f$ [Hz]')
-plt.ylabel('$|h|$ dB')
-plt.grid(which='both')
-
-impulse_response_dB_dow = 20 * \
-    np.log10(np.linalg.norm(
-        np.array(digital_estimator_dow.h[0, :, :]), axis=1))
-
-impulse_response_dB_dow_and_post_filt = 20 * \
-    np.log10(np.linalg.norm(
-        np.array(digital_estimator_dow_and_post_filt.h[0, :, :]), axis=1))
-
-impulse_response_dB_FIR_filter = 20 * np.log10(np.abs(fir_filter[numtaps//2:]))
+plt.xlabel("$f$ [Hz]")
+plt.ylabel("$|h|$")
+plt.grid(which="both")
 
 plt.figure()
-plt.plot(np.arange(0, L1),
-         impulse_response_dB_dow[L1:],
-         label="Ref")
-plt.plot(np.arange(0, numtaps//2),
-         impulse_response_dB_FIR_filter,
-         label="Post FIR Filter")
-plt.plot(np.arange(0, L1),
-         impulse_response_dB_dow_and_post_filt[L1:],
-         label="Combined Post Filtered")
+plt.semilogy(
+    np.arange(0, L1),
+    np.linalg.norm(np.array(digital_estimator_dow.h[0, :, :]), axis=1)[L1:],
+    label="Ref",
+)
+plt.semilogy(
+    np.arange(0, numtaps // 2),
+    np.abs(fir_filter[numtaps // 2 :]),
+    label="Post FIR Filter",
+)
+plt.semilogy(
+    np.arange(0, L1),
+    np.linalg.norm(np.array(digital_estimator_dow_and_post_filt.h[0, :, :]), axis=1)[
+        L1:
+    ],
+    label="Combined Post Filtered",
+)
 
 plt.legend()
 plt.xlabel("filter tap k")
-plt.ylabel("$|| \mathbf{h} [k]||_2$ [dB]")
+plt.ylabel("$|| \mathbf{h} [k]||_2$")
 plt.xlim((0, 1024))
-plt.ylim((-160, 0))
-plt.grid(which='both')
+plt.ylim((1e-16, 1))
+plt.grid(which="both")
 
 ###############################################################################
 # Plotting the Estimator's Signal and Noise Transfer Function
@@ -390,35 +379,51 @@ plt.grid(which='both')
 
 # Compute NTF
 ntf_pre = digital_estimator_dow_and_pre_filt.noise_transfer_function(omega)
-ntf_post = digital_estimator_dow_and_post_filt.noise_transfer_function(
-    2 * np.pi * f_FIR) * FIR_frequency_response
+ntf_post = (
+    digital_estimator_dow_and_post_filt.noise_transfer_function(2 * np.pi * f_FIR)
+    * FIR_frequency_response
+)
 ntf_dow = digital_estimator_dow.noise_transfer_function(omega)
 
 # Compute STF
 stf_pre = digital_estimator_dow_and_pre_filt.signal_transfer_function(omega)
 stf_dB_pre = 20 * np.log10(np.abs(stf_pre.flatten()))
-stf_post = digital_estimator_dow_and_post_filt.signal_transfer_function(
-    2 * np.pi * f_FIR) * FIR_frequency_response
+stf_post = (
+    digital_estimator_dow_and_post_filt.signal_transfer_function(2 * np.pi * f_FIR)
+    * FIR_frequency_response
+)
 stf_dB_post = 20 * np.log10(np.abs(stf_post.flatten()))
 stf_dow = digital_estimator_dow.signal_transfer_function(omega)
 stf_dow_dB = 20 * np.log10(np.abs(stf_dow.flatten()))
 
 # Plot
 plt.figure()
-plt.semilogx(omega/(2 * np.pi), stf_dB_pre, label='$STF(\omega)$ pre-filter')
-plt.semilogx(f_FIR, stf_dB_post, label='$STF(\omega)$ post-filter')
-plt.semilogx(omega/(2 * np.pi), stf_dow_dB,
-             label='$STF(\omega)$ ref',  color='black')
-plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
-    ntf_pre[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ pre-filter")
-plt.semilogx(f_FIR, 20 * np.log10(np.linalg.norm(
-    ntf_post[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ post-filter")
-plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
-    ntf_dow[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ ref", color='black')
+plt.semilogx(omega / (2 * np.pi), stf_dB_pre, label="$STF(\omega)$ pre-filter")
+plt.semilogx(f_FIR, stf_dB_post, label="$STF(\omega)$ post-filter")
+plt.semilogx(omega / (2 * np.pi), stf_dow_dB, label="$STF(\omega)$ ref", color="black")
+plt.semilogx(
+    omega / (2 * np.pi),
+    20 * np.log10(np.linalg.norm(ntf_pre[:, 0, :], axis=0)),
+    "--",
+    label="$ || NTF(\omega) ||_2 $ pre-filter",
+)
+plt.semilogx(
+    f_FIR,
+    20 * np.log10(np.linalg.norm(ntf_post[:, 0, :], axis=0)),
+    "--",
+    label="$ || NTF(\omega) ||_2 $ post-filter",
+)
+plt.semilogx(
+    omega / (2 * np.pi),
+    20 * np.log10(np.linalg.norm(ntf_dow[:, 0, :], axis=0)),
+    "--",
+    label="$ || NTF(\omega) ||_2 $ ref",
+    color="black",
+)
 
 # Add labels and legends to figure
 plt.legend()
-plt.grid(which='both')
+plt.grid(which="both")
 plt.title("Signal and noise transfer functions")
 plt.xlabel("$f$ [Hz]")
 plt.ylabel("dB")
@@ -436,29 +441,37 @@ plt.gcf().tight_layout()
 
 u_hat_dow_and_pre_filt = np.zeros(size // OSR)
 u_hat_dow_and_post_filt = np.zeros(size // OSR)
-for index in cbc.utilities.show_status(range(size // OSR)):
+for index in cbadc.utilities.show_status(range(size // OSR)):
     u_hat_dow_and_pre_filt[index] = next(digital_estimator_dow_and_pre_filt)
     u_hat_dow_and_post_filt[index] = next(digital_estimator_dow_and_post_filt)
 
 plt.figure()
-u_hat_dow_and_pre_filt_clipped = u_hat_dow_and_pre_filt[(L1 + L2) // OSR:]
-u_hat_dow_and_post_filt_clipped = u_hat_dow_and_post_filt[(L1 + L2) // OSR:]
-_, psd_dow_and_pre_filt = cbc.utilities.compute_power_spectral_density(
-    u_hat_dow_and_pre_filt_clipped, fs=1.0/(T * OSR))
-_, psd_dow_and_post_filt = cbc.utilities.compute_power_spectral_density(
-    u_hat_dow_and_post_filt_clipped, fs=1.0/(T * OSR))
+u_hat_dow_and_pre_filt_clipped = u_hat_dow_and_pre_filt[(L1 + L2) // OSR :]
+u_hat_dow_and_post_filt_clipped = u_hat_dow_and_post_filt[(L1 + L2) // OSR :]
+_, psd_dow_and_pre_filt = cbadc.utilities.compute_power_spectral_density(
+    u_hat_dow_and_pre_filt_clipped, fs=1.0 / (T * OSR)
+)
+_, psd_dow_and_post_filt = cbadc.utilities.compute_power_spectral_density(
+    u_hat_dow_and_post_filt_clipped, fs=1.0 / (T * OSR)
+)
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
 plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
-plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_pre_filt),
-             label="$\hat{U}(f)$ Downsampled & Pre Filtered")
-plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_post_filt),
-             label="$\hat{U}(f)$ Downsampled & Post Filtered")
+plt.semilogx(
+    f_dow,
+    10 * np.log10(psd_dow_and_pre_filt),
+    label="$\hat{U}(f)$ Downsampled & Pre Filtered",
+)
+plt.semilogx(
+    f_dow,
+    10 * np.log10(psd_dow_and_post_filt),
+    label="$\hat{U}(f)$ Downsampled & Post Filtered",
+)
 plt.legend()
 plt.ylim((-300, 50))
 plt.xlim((f_ref[1], f_ref[-1]))
-plt.xlabel('$f$ [Hz]')
-plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
-plt.grid(which='both')
+plt.xlabel("$f$ [Hz]")
+plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
+plt.grid(which="both")
 plt.show()
 
 ###############################################################################
@@ -474,14 +487,16 @@ t = np.arange(size)
 t_down = np.arange(size // OSR) * OSR
 plt.plot(t, u_hat_ref, label="$\hat{u}(t)$ Reference")
 plt.plot(t_down, u_hat_dow, label="$\hat{u}(t)$ Downsampled")
-plt.plot(t_down, u_hat_dow_and_pre_filt,
-         label="$\hat{u}(t)$ Downsampled and Pre Filtered")
-plt.plot(t_down, u_hat_dow_and_post_filt,
-         label="$\hat{u}(t)$ Downsampled and Post Filtered")
-plt.xlabel('$t / T$')
+plt.plot(
+    t_down, u_hat_dow_and_pre_filt, label="$\hat{u}(t)$ Downsampled and Pre Filtered"
+)
+plt.plot(
+    t_down, u_hat_dow_and_post_filt, label="$\hat{u}(t)$ Downsampled and Post Filtered"
+)
+plt.xlabel("$t / T$")
 plt.legend()
 plt.title("Estimated input signal")
-plt.grid(which='both')
+plt.grid(which="both")
 offset = (L1 + L2) * 4
 plt.xlim((offset, offset + 1000))
 plt.ylim((-0.6, 0.6))
@@ -496,25 +511,31 @@ plt.tight_layout()
 # filter are parametrized such that the formed slightly outperforms the latter
 # in terms of precision (see the PSD plot above).
 
-impulse_response_dB_dow_and_pre_filt = 20 * \
-    np.log10(np.linalg.norm(
-        np.array(digital_estimator_dow_and_pre_filt.h[0, :, :]), axis=1))
+plt.semilogy(
+    np.arange(0, L1),
+    np.linalg.norm(np.array(digital_estimator_dow.h[0, :, :]), axis=1)[L1:],
+    label="Ref",
+)
 
-plt.plot(np.arange(0, L1),
-         impulse_response_dB_dow[L1:],
-         label="Ref")
-
-plt.plot(np.arange(0, L1),
-         impulse_response_dB_dow_and_pre_filt[L1:],
-         label="Pre Filtered")
-plt.plot(np.arange(0, L1),
-         impulse_response_dB_dow_and_post_filt[L1:],
-         label="Post Filtered")
+plt.semilogy(
+    np.arange(0, L1),
+    np.linalg.norm(np.array(digital_estimator_dow_and_pre_filt.h[0, :, :]), axis=1)[
+        L1:
+    ],
+    label="Pre Filtered",
+)
+plt.semilogy(
+    np.arange(0, L1),
+    np.linalg.norm(np.array(digital_estimator_dow_and_post_filt.h[0, :, :]), axis=1)[
+        L1:
+    ],
+    label="Post Filtered",
+)
 plt.legend()
 plt.xlabel("filter tap k")
-plt.ylabel("$|| \mathbf{h} [k]||_2$ [dB]")
+plt.ylabel("$|| \mathbf{h} [k]||_2$")
 plt.xlim((0, 1024))
-plt.ylim((-160, -20))
-plt.grid(which='both')
+plt.ylim((1e-16, 1))
+plt.grid(which="both")
 
 # sphinx_gallery_thumbnail_number = 9

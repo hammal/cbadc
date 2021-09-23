@@ -1,4 +1,4 @@
-cbadc.digital\_estimator.IIRFilter
+﻿cbadc.digital\_estimator.IIRFilter
 ==================================
 
 .. currentmodule:: cbadc.digital_estimator
