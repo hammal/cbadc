@@ -396,7 +396,7 @@ Resulting Estimate Precision
 ----------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 180-260
+.. GENERATED FROM PYTHON SOURCE LINES 180-272
 
 .. code-block:: default
    :lineno-start: 181
@@ -415,17 +415,23 @@ Resulting Estimate Precision
         # Compute power spectral density
         f, psd = cbadc.utilities.compute_power_spectral_density(u_hat[K1:])
         signal_index = cbadc.utilities.find_sinusoidal(psd, 50)
+        harm_index = 2 * signal_index[24]
+        harmonics_index = []
+        while harm_index < (size // OSR):
+            harmonics_index.append(signal_index + harm_index)
+            harm_index += signal_index[24]
+        harmonics_index = np.array(harmonics_index).flatten()
         noise_index = np.ones(psd.size, dtype=bool)
         noise_index[signal_index] = False
         noise_index[0:2] = False
         noise_index[size // OSR :] = False
         res = cbadc.utilities.snr_spectrum_computation_extended(
-            psd, signal_index, noise_index, fs=1 / T
+            psd, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
         )
         SNR = 10 * np.log10(res["snr"])
         ENOB = np.round((SNR - 1.76) / 6.02, 1)
         description.append(
-            f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()})"
+            f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()}, thd={round(res['thd']*100, 1)}%"
         )
         # Plot the FIR filters
         plt.semilogx(f, 10 * np.log10(psd), label=description[-1])
@@ -448,12 +454,18 @@ Resulting Estimate Precision
     u_hats.append(np.copy(u_hat))
     f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_hat[K1:])
     signal_index = cbadc.utilities.find_sinusoidal(psd_ref, 50)
+    harm_index = 2 * signal_index[24]
+    harmonics_index = []
+    while harm_index < (size // OSR):
+        harmonics_index.append(signal_index + harm_index)
+        harm_index += signal_index[24]
+    harmonics_index = np.array(harmonics_index).flatten()
     noise_index = np.ones(psd_ref.size, dtype=bool)
     noise_index[signal_index] = False
     noise_index[0:2] = False
     noise_index[size // OSR :] = False
     res = cbadc.utilities.snr_spectrum_computation_extended(
-        psd_ref, signal_index, noise_index, fs=1 / T
+        psd_ref, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
     )
     SNR = 10 * np.log10(res["snr"])
     ENOB = np.round((SNR - 1.76) / 6.02, 1)
@@ -506,7 +518,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  50.090 seconds)
+   **Total running time of the script:** ( 1 minutes  39.459 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_e_fixed_point_aritmetics.py:
