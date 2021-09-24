@@ -262,4 +262,4 @@ plt.ylim((-0.6, 0.6))
 plt.xlabel("$t / T$")
 _ = plt.legend()
 
-# sphinx_gallery_thumbnail_number = 4
+# sphinx_gallery_thumbnail_number = 8

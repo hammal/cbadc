@@ -518,7 +518,7 @@ Time Snap Shot
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  39.845 seconds)
+   **Total running time of the script:** ( 1 minutes  39.941 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_e_fixed_point_aritmetics.py:
