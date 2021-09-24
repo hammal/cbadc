@@ -196,12 +196,12 @@ Next we highlight various features of the cbadc package
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate we can evaluate the FIR filter using fixed point arithmetics.">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate we can evaluate the FIR filter using fixed-point precision arit...">
 
 .. only:: html
 
  .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_e_fixed_point_aritmetics_thumb.png
-     :alt: Fixed Point Arithmetics
+     :alt: Fixed-Point Arithmetics
 
      :ref:`sphx_glr_tutorials_b_general_plot_e_fixed_point_aritmetics.py`
 

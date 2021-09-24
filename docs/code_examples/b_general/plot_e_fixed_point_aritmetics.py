@@ -1,10 +1,10 @@
 """
 =======================
-Fixed Point Arithmetics
+Fixed-Point Arithmetics
 =======================
 
 In this tutorial we demonstrate we can evaluate the FIR filter using
-fixed point arithmetics.
+fixed-point precision arithmetics.
 """
 import scipy.signal
 import numpy as np
@@ -55,10 +55,10 @@ print(digital_control)
 
 ###############################################################################
 # -------------------------
-# Fixed Point Configuration
+# Fixed-Point Configuration
 # -------------------------
 #
-# Next we configure the fixed point by instantiating
+# Next we configure the fixed-point precision by instantiating
 # :py:class:`cbadc.utilities.FixedPoint`.
 #
 
@@ -117,8 +117,8 @@ print(
 )
 
 ###############################################################################
-# Fixed Point Arithmetic Precision
-# --------------------------------
+# Impulse Response Truncation and Fixed-Point Precision
+# -----------------------------------------------------
 #
 #
 
@@ -174,8 +174,8 @@ for m in range(M):
     plt.grid(which="both")
 
 ###############################################################################
-# Resulting PSD
-# ---------------
+# Resulting Estimate Precision
+# ----------------------------
 #
 
 plt.rcParams["figure.figsize"] = [12, 8]
@@ -201,7 +201,7 @@ for index_de, bits in enumerate(fixed_point_precision):
     SNR = 10 * np.log10(res["snr"])
     ENOB = np.round((SNR - 1.76) / 6.02, 1)
     description.append(
-        f"ENOB={ENOB}, fixed point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()})"
+        f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()})"
     )
     # Plot the FIR filters
     plt.semilogx(f, 10 * np.log10(psd), label=description[-1])
@@ -243,11 +243,6 @@ plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
 plt.ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
 plt.xlim((0.0002, 0.5))
 _ = plt.ylim((-150, 40))
-
-###############################################################################
-# Time Snap Shot
-# --------------
-#
 
 # Plot snapshot in time domain
 plt.rcParams["figure.figsize"] = [6.40, 6.40]

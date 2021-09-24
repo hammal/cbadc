@@ -19,11 +19,11 @@
 
 
 =======================
-Fixed Point Arithmetics
+Fixed-Point Arithmetics
 =======================
 
 In this tutorial we demonstrate we can evaluate the FIR filter using
-fixed point arithmetics.
+fixed-point precision arithmetics.
 
 .. GENERATED FROM PYTHON SOURCE LINES 9-14
 
@@ -154,10 +154,10 @@ analog system and digital control.
 .. GENERATED FROM PYTHON SOURCE LINES 57-64
 
 -------------------------
-Fixed Point Configuration
+Fixed-Point Configuration
 -------------------------
 
-Next we configure the fixed point by instantiating
+Next we configure the fixed-point precision by instantiating
 :py:class:`cbadc.utilities.FixedPoint`.
 
 
@@ -268,8 +268,8 @@ Note the truncation in the impulse response as a result of the
 
 .. GENERATED FROM PYTHON SOURCE LINES 120-124
 
-Fixed Point Arithmetic Precision
---------------------------------
+Impulse Response Truncation and Fixed-Point Precision
+-----------------------------------------------------
 
 
 
@@ -392,11 +392,11 @@ Fixed Point Arithmetic Precision
 
 .. GENERATED FROM PYTHON SOURCE LINES 177-180
 
-Resulting PSD
----------------
+Resulting Estimate Precision
+----------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 180-247
+.. GENERATED FROM PYTHON SOURCE LINES 180-260
 
 .. code-block:: default
    :lineno-start: 181
@@ -425,7 +425,7 @@ Resulting PSD
         SNR = 10 * np.log10(res["snr"])
         ENOB = np.round((SNR - 1.76) / 6.02, 1)
         description.append(
-            f"ENOB={ENOB}, fixed point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()})"
+            f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()})"
         )
         # Plot the FIR filters
         plt.semilogx(f, 10 * np.log10(psd), label=description[-1])
@@ -468,29 +468,6 @@ Resulting PSD
     plt.xlim((0.0002, 0.5))
     _ = plt.ylim((-150, 40))
 
-
-
-
-.. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_008.png
-    :alt: plot e fixed point aritmetics
-    :class: sphx-glr-single-img
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 248-251
-
-Time Snap Shot
---------------
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 251-265
-
-.. code-block:: default
-   :lineno-start: 252
-
-
     # Plot snapshot in time domain
     plt.rcParams["figure.figsize"] = [6.40, 6.40]
     plt.figure()
@@ -507,9 +484,20 @@ Time Snap Shot
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_009.png
-    :alt: Estimates in time domain
-    :class: sphx-glr-single-img
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_008.png
+          :alt: plot e fixed point aritmetics
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_009.png
+          :alt: Estimates in time domain
+          :class: sphx-glr-multi-img
 
 
 
@@ -518,7 +506,7 @@ Time Snap Shot
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  39.941 seconds)
+   **Total running time of the script:** ( 1 minutes  50.090 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_e_fixed_point_aritmetics.py:
