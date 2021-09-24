@@ -319,7 +319,11 @@ def snr_spectrum_computation(
 
 
 def snr_spectrum_computation_extended(
-    spectrum: np.ndarray, signal_mask: np.ndarray, noise_mask: np.ndarray, fs
+    spectrum: np.ndarray,
+    signal_mask: np.ndarray,
+    noise_mask: np.ndarray,
+    harmonics_mask: np.ndarray = np.array([0]),
+    fs: float = 1,
 ):
     """Extended spectrum computations
 
@@ -344,27 +348,34 @@ def snr_spectrum_computation_extended(
         window: `str`
         CG: `float`
         NG: `float`
+        thd: `float`
+        thd_n: `float`
+        sinad: `float`
     }
         Python dict containing relevant spectrum information.
     """
-    window = "blackman"
+    win = "blackman"
     CG = 1.0
     NG = 1.0
     N = spectrum.size
     f_bin = fs / N
-    if window == "blackman":
+    if win == "blackman":
         window = scipy.signal.windows.blackman(N)
         CG = np.mean(window)
         NG = np.sum(window ** 2) / N
-    if window == "hanning":
+    if win == "hanning":
         window = scipy.signal.windows.blackman(N)
         CG = np.mean(window)
         NG = np.sum(window ** 2) / N
 
     noise = np.sum(spectrum[noise_mask])
     signal = np.sum(spectrum[signal_mask])
+    harmonics = np.sum(spectrum[harmonics_mask])
 
     snr = signal / noise
+    sinad = (signal + noise + harmonics) / (noise + harmonics)
+    thd = np.sqrt(harmonics / signal)
+    thd_n = np.sqrt((harmonics + noise) / signal)
     signal_rms = np.sqrt(signal * NG * f_bin / (CG ** 2))
     noise_rms = np.sqrt(noise * f_bin)
 
@@ -375,6 +386,9 @@ def snr_spectrum_computation_extended(
         "window": window,
         "CG": CG,
         "NG": NG,
+        "thd": thd,
+        "thd_n": thd_n,
+        "sinad": sinad,
     }
 
 
