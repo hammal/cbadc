@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**01:39.459** total execution time for **tutorials_b_general** files:
+**01:40.118** total execution time for **tutorials_b_general** files:
 
 +-------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_e_fixed_point_aritmetics.py` (``plot_e_fixed_point_aritmetics.py``) | 01:39.459 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_e_fixed_point_aritmetics.py` (``plot_e_fixed_point_aritmetics.py``) | 01:40.118 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``)           | 00:00.000 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------+-----------+--------+
