@@ -200,6 +200,7 @@ for index_de, bits in enumerate(fixed_point_precision):
     noise_index = np.ones(psd.size, dtype=bool)
     noise_index[signal_index] = False
     noise_index[0:2] = False
+    noise_index[harmonics_index] = False
     noise_index[size // OSR :] = False
     res = cbadc.utilities.snr_spectrum_computation_extended(
         psd, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
@@ -239,6 +240,7 @@ harmonics_index = np.array(harmonics_index).flatten()
 noise_index = np.ones(psd_ref.size, dtype=bool)
 noise_index[signal_index] = False
 noise_index[0:2] = False
+noise_index[harmonics_index] = False
 noise_index[size // OSR :] = False
 res = cbadc.utilities.snr_spectrum_computation_extended(
     psd_ref, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
