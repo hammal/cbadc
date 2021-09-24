@@ -28,6 +28,7 @@
       read_byte_stream_from_url
       show_status
       snr_spectrum_computation
+      snr_spectrum_computation_extended
       write_byte_stream_to_file
       write_byte_stream_to_files
       write_wave

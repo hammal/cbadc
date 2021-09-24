@@ -28,6 +28,7 @@
       :template: custom-class-template.rst               
    
       StateSpaceSimulator
+      SwitchedCapacitorStateSpaceSimulator
    
    
 

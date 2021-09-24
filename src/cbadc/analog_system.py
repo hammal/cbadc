@@ -115,9 +115,15 @@ class AnalogSystem:
         For faulty analog system parametrization.
     """
 
-    def __init__(self, A: npt.ArrayLike, B: npt.ArrayLike, CT: npt.ArrayLike,
-                 Gamma: npt.ArrayLike, Gamma_tildeT: npt.ArrayLike,
-                 D: Union[npt.ArrayLike, None] = None):
+    def __init__(
+        self,
+        A: npt.ArrayLike,
+        B: npt.ArrayLike,
+        CT: npt.ArrayLike,
+        Gamma: npt.ArrayLike,
+        Gamma_tildeT: npt.ArrayLike,
+        D: Union[npt.ArrayLike, None] = None,
+    ):
         """Create an analog system.
 
         Parameters
@@ -196,13 +202,16 @@ class AnalogSystem:
         else:
             self.D = np.zeros((self.N_tilde, self.L))
 
-        if self.D is not None and (self.D.shape[0] != self.N_tilde or self.D.shape[1] != self.L):
+        if self.D is not None and (
+            self.D.shape[0] != self.N_tilde or self.D.shape[1] != self.L
+        ):
             raise InvalidAnalogSystemError(
                 self, "D matrix has wrong dimensions. Should be N_tilde x L"
             )
 
-    def derivative(self, x: np.ndarray, t: float, u: np.ndarray,
-                   s: np.ndarray) -> np.ndarray:
+    def derivative(
+        self, x: np.ndarray, t: float, u: np.ndarray, s: np.ndarray
+    ) -> np.ndarray:
         """Compute the derivative of the analog system.
 
         Specifically, produces the state derivative
@@ -275,8 +284,7 @@ class AnalogSystem:
 
     def _atf(self, _omega: float) -> np.ndarray:
         tf = np.dot(
-            np.linalg.pinv(complex(0, _omega) *
-                           np.eye(self.N) - self.A, rcond=1e-300),
+            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
             self.B,
         )
         return tf
@@ -287,7 +295,7 @@ class AnalogSystem:
             self.Gamma,
         )
 
-    def control_signal_transfer_function_matrix(self, omega:  np.ndarray) -> np.ndarray:
+    def control_signal_transfer_function_matrix(self, omega: np.ndarray) -> np.ndarray:
         """Evaluates the transfer functions between control signals and the system
         output.
 
@@ -315,7 +323,7 @@ class AnalogSystem:
         result = np.zeros((self.N, self.M, size), dtype=complex)
         for index in range(size):
             result[:, :, index] = self._ctf(omega[index])
-        resp = np.einsum('ij,jkl', self.CT, result)
+        resp = np.einsum("ij,jkl", self.CT, result)
         return np.asarray(resp)
 
     def transfer_function_matrix(self, omega: np.ndarray) -> np.ndarray:
@@ -393,8 +401,7 @@ class ChainOfIntegrators(AnalogSystem):
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and
     creates a convenient way of creating chain-of-integrator A/D analog
     systems. For more information about chain-of-integrator ADCs see
-    # page=96/>`_.
-    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
+    `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y&page=96/>`_.
 
 
     Chain-of-integrators analog systems are system goverened by the
@@ -493,20 +500,20 @@ class ChainOfIntegrators(AnalogSystem):
     """
 
     def __init__(self, beta: np.ndarray, rho: np.ndarray, kappa: np.ndarray):
-        """Create an chain-of-integrators analog system.
-        """
-        if (beta.shape[0] != beta.size):
+        """Create an chain-of-integrators analog system."""
+        if beta.shape[0] != beta.size:
+            InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
+        if rho.shape[0] != rho.size:
+            InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
+        if kappa.shape[0] != rho.size:
             InvalidAnalogSystemError(
-                self, "beta must be a one dimensional vector")
-        if (rho.shape[0] != rho.size):
+                self,
+                "kappa must be a one dimensional vector of size N or matrix with N rows",
+            )
+        if beta.size != rho.size and rho.size != kappa[:, 0].size:
             InvalidAnalogSystemError(
-                self, "rho must be a one dimensional vector")
-        if (kappa.shape[0] != rho.size):
-            InvalidAnalogSystemError(
-                self, "kappa must be a one dimensional vector of size N or matrix with N rows")
-        if(beta.size != rho.size and rho.size != kappa[:, 0].size):
-            InvalidAnalogSystemError(
-                self, "beta, rho, kappa vector must be of same size")
+                self, "beta, rho, kappa vector must be of same size"
+            )
 
         # State space order
         N = beta.size
@@ -525,9 +532,9 @@ class ChainOfIntegrators(AnalogSystem):
 
         Gamma_tildeT = -Gamma.transpose()
         for row_index in range(Gamma_tildeT.shape[0]):
-            Gamma_tildeT[row_index, :] = \
-                Gamma_tildeT[row_index, :] / \
-                np.linalg.norm(Gamma_tildeT[row_index, :])
+            Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(
+                Gamma_tildeT[row_index, :]
+            )
 
         # initialize parent class
         AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)
@@ -538,8 +545,7 @@ class LeapFrog(AnalogSystem):
 
     This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
     way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see
-    # page=126/>`_.
-    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
+    `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y&page=126/>`_.
 
 
     A leap-frog analog system is goverened by the differential equations,
@@ -636,20 +642,17 @@ class LeapFrog(AnalogSystem):
     """
 
     def __init__(self, beta: np.ndarray, rho: np.ndarray, kappa: np.ndarray):
-        """Create an leap-frog analog system.
-        """
-        if (beta.shape[0] != beta.size):
+        """Create an leap-frog analog system."""
+        if beta.shape[0] != beta.size:
+            InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
+        if rho.shape[0] != rho.size:
+            InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
+        if kappa.shape[0] != kappa.size:
+            InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
+        if beta.size != rho.size and rho.size != kappa.size:
             InvalidAnalogSystemError(
-                self, "beta must be a one dimensional vector")
-        if (rho.shape[0] != rho.size):
-            InvalidAnalogSystemError(
-                self, "rho must be a one dimensional vector")
-        if (kappa.shape[0] != kappa.size):
-            InvalidAnalogSystemError(
-                self, "kappa must be a one dimensional vector")
-        if(beta.size != rho.size and rho.size != kappa.size):
-            InvalidAnalogSystemError(
-                self, "beta, rho, kappa vector must be of same size")
+                self, "beta, rho, kappa vector must be of same size"
+            )
 
         # State space order
         N = beta.size
@@ -669,9 +672,9 @@ class LeapFrog(AnalogSystem):
 
         Gamma_tildeT = -Gamma.transpose()
         for row_index in range(Gamma_tildeT.shape[0]):
-            Gamma_tildeT[row_index, :] = \
-                Gamma_tildeT[row_index, :] / \
-                np.linalg.norm(Gamma_tildeT[row_index, :])
+            Gamma_tildeT[row_index, :] = Gamma_tildeT[row_index, :] / np.linalg.norm(
+                Gamma_tildeT[row_index, :]
+            )
 
         # initialize parent class
         AnalogSystem.__init__(self, A, B, CT, Gamma, Gamma_tildeT)
@@ -752,14 +755,14 @@ class ButterWorth(AnalogSystem):
     """
 
     def __init__(self, N: int, Wn: float):
-        """Create a Butterworth filter
-        """
+        """Create a Butterworth filter"""
         # State space order
         self.Wn = Wn
 
         # Create filter as chain of biquadratic filters
         z, p, k = scipy.signal.iirfilter(
-            N, Wn, analog=True, btype='lowpass', ftype='butter', output='zpk')
+            N, Wn, analog=True, btype="lowpass", ftype="butter", output="zpk"
+        )
 
         A, B, CT, D = zpk2abcd(z, p, k)
         AnalogSystem.__init__(self, A, B, CT, None, None, D)
@@ -782,7 +785,7 @@ class ChebyshevI(AnalogSystem):
 
     where
 
-    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, :math:`\mathbf{C}^\mathsf{T}`, and :math:`\mathbf{D}` 
+    internally :math:`\mathbf{A}` :math:`\mathbf{B}`, :math:`\mathbf{C}^\mathsf{T}`, and :math:`\mathbf{D}`
     are determined using the :py:func:`scipy.signal.iirfilter`.
 
     Furthermore, as this system is intended as a pure filter and therefore have no
@@ -842,14 +845,14 @@ class ChebyshevI(AnalogSystem):
     """
 
     def __init__(self, N: int, Wn: float, rp: float):
-        """Create a Chebyshev type I filter
-        """
+        """Create a Chebyshev type I filter"""
         # State space order
         self.Wn = Wn
         self.rp = rp
 
         z, p, k = scipy.signal.iirfilter(
-            N, Wn, rp, analog=True, btype='lowpass', ftype='cheby1', output='zpk')
+            N, Wn, rp, analog=True, btype="lowpass", ftype="cheby1", output="zpk"
+        )
         A, B, CT, D = zpk2abcd(z, p, k)
         AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
@@ -933,13 +936,13 @@ class ChebyshevII(AnalogSystem):
     """
 
     def __init__(self, N: int, Wn: float, rs: float):
-        """Create a Chebyshev type II filter
-        """
+        """Create a Chebyshev type II filter"""
         # State space order
         self.Wn = Wn
         self.rs = rs
         z, p, k = scipy.signal.iirfilter(
-            N, Wn, rs=rs, analog=True, btype='lowpass', ftype='cheby2', output='zpk')
+            N, Wn, rs=rs, analog=True, btype="lowpass", ftype="cheby2", output="zpk"
+        )
         A, B, CT, D = zpk2abcd(z, p, k)
         AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
@@ -1027,15 +1030,15 @@ class Cauer(AnalogSystem):
     """
 
     def __init__(self, N: int, Wn: float, rp: float, rs: float):
-        """Create a Cauer filter
-        """
+        """Create a Cauer filter"""
         # State space order
         self.Wn = Wn
         self.rp = rp
         self.rs = rs
 
         z, p, k = scipy.signal.iirfilter(
-            N, Wn, rp, rs, analog=True, btype='lowpass', ftype='ellip', output='zpk')
+            N, Wn, rp, rs, analog=True, btype="lowpass", ftype="ellip", output="zpk"
+        )
         A, B, CT, D = zpk2abcd(z, p, k)
         AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
@@ -1160,11 +1163,11 @@ class IIRDesign(AnalogSystem):
         For faulty analog system parametrization.
     """
 
-    def __init__(self, wp, ws, gpass, gstop, ftype='ellip'):
-        """Create a IIR filter
-        """
+    def __init__(self, wp, ws, gpass, gstop, ftype="ellip"):
+        """Create a IIR filter"""
         z, p, k = scipy.signal.iirdesign(
-            wp, ws, gpass, gstop, analog=True, ftype=ftype, output='zpk')
+            wp, ws, gpass, gstop, analog=True, ftype=ftype, output="zpk"
+        )
         A, B, CT, D = zpk2abcd(z, p, k)
         AnalogSystem.__init__(self, A, B, CT, None, None, D)
 
@@ -1221,20 +1224,18 @@ def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.nd
             a_2 /= a_0
             a_0 = 1.0
 
-        A = np.array([
-            [0.0, 1.0],
-            [-a_2, -a_1]
-        ])
+        A = np.array([[0.0, 1.0], [-a_2, -a_1]])
         B = np.array([[0.0], [1.0]])
         CT = np.array([[(b_2 - b_0 * a_2), (b_1 - b_0 * a_1)]])
         D = np.array([[b_0]])
-        biquadratic_analog_systems.append(
-            AnalogSystem(A, B, CT, None, None, D))
+        biquadratic_analog_systems.append(AnalogSystem(A, B, CT, None, None, D))
     chained_system = chain(biquadratic_analog_systems)
     return chained_system.A, chained_system.B, chained_system.CT, chained_system.D
 
 
-def tf2abcd(b: np.ndarray, a: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def tf2abcd(
+    b: np.ndarray, a: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Transform a transferfunctions into a controllable canonical state space form.
 
     Specifcally, for a filter with the transfer function
@@ -1266,7 +1267,8 @@ def tf2abcd(b: np.ndarray, a: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.nd
     """
     if b.size != (a.size + 1) or len(b) > b.size or len(a) > a.size:
         raise BaseException(
-            f"a and b are not correctly configures with b={b} and a={a}")
+            f"a and b are not correctly configures with b={b} and a={a}"
+        )
     L = a.size
     A = np.zeros((a.size, a.size))
     B = np.zeros((a.size, 1))
@@ -1283,9 +1285,9 @@ def tf2abcd(b: np.ndarray, a: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.nd
 def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by chaining several analog systems.
 
-    The chaining is achieved by chainging :math:`\hat{N}` systems, 
+    The chaining is achieved by chainging :math:`\hat{N}` systems,
     parameterized by
-    :math:`\mathbf{A}_1, \mathbf{B}_1, \mathbf{C}^\mathsf{T}_1, \mathbf{D}_1, \mathbf{\Gamma}_1, \\tilde{\mathbf{\Gamma}}_1, \\dots, \mathbf{A}_{\hat{N}}, \mathbf{B}_{\hat{N}}, \mathbf{C}^\mathsf{T}_{\hat{N}}, \mathbf{D}_{\hat{N}}, \mathbf{\Gamma}_{\hat{N}}, \\tilde{\mathbf{\Gamma}}_{\hat{N}}`,  
+    :math:`\mathbf{A}_1, \mathbf{B}_1, \mathbf{C}^\mathsf{T}_1, \mathbf{D}_1, \mathbf{\Gamma}_1, \\tilde{\mathbf{\Gamma}}_1, \\dots, \mathbf{A}_{\hat{N}}, \mathbf{B}_{\hat{N}}, \mathbf{C}^\mathsf{T}_{\hat{N}}, \mathbf{D}_{\hat{N}}, \mathbf{\Gamma}_{\hat{N}}, \\tilde{\mathbf{\Gamma}}_{\hat{N}}`,
     as
 
     :math:`\mathbf{A} = \\begin{pmatrix} \mathbf{A}_1 \\\ \mathbf{B}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{A}_2 \\\  \mathbf{B}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_3 \mathbf{C}_2^\mathsf{T} & \mathbf{A}_3 \\\ \mathbf{B}_4 \mathbf{D}_3 \mathbf{D}_2 \mathbf{C}_1^\mathsf{T} & \mathbf{B}_4\mathbf{D}_3\mathbf{C}_2^\mathsf{T} & \mathbf{B}_4 \mathbf{C}_3^\mathsf{T} & \mathbf{A}_4  \\\ \\vdots & \\vdots & \\vdots & \\vdots & \\ddots  \\end{pmatrix}`
@@ -1315,20 +1317,20 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     :py:class:`cbadc.analog_system.AnalogSystem`
         a new analog system
     """
-    N: int = np.sum(
-        np.array([analog_system.N for analog_system in analog_systems]))
-    M: int = np.sum(
-        np.array([analog_system.M for analog_system in analog_systems]))
+    N: int = np.sum(np.array([analog_system.N for analog_system in analog_systems]))
+    M: int = np.sum(np.array([analog_system.M for analog_system in analog_systems]))
     M_tilde: int = np.sum(
-        np.array([analog_system.M_tilde for analog_system in analog_systems]))
+        np.array([analog_system.M_tilde for analog_system in analog_systems])
+    )
     L: int = analog_systems[0].L
 
     A = np.zeros((N, N))
     B = np.zeros((N, L))
     CT = np.zeros((analog_systems[0].CT.shape[0], N))
 
-    CT[:analog_systems[0].CT.shape[0],
-        :analog_systems[0].CT.shape[1]] = analog_systems[0].CT
+    CT[
+        : analog_systems[0].CT.shape[0], : analog_systems[0].CT.shape[1]
+    ] = analog_systems[0].CT
 
     Gamma = np.zeros((N, M))
     Gamma_tilde = np.zeros((M_tilde, N))
@@ -1343,7 +1345,7 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
         m_tilde_end = m_tilde + analog_system.M_tilde
 
         A[n:n_end, :] = np.dot(analog_system.B, CT)
-        A[n: n_end, n:n_end] = analog_system.A
+        A[n:n_end, n:n_end] = analog_system.A
 
         B[n:n_end, :] = np.dot(analog_system.B, D)
 
@@ -1394,16 +1396,15 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     :py:class:`cbadc.analog_system.AnalogSystem`
         a new analog system
     """
-    N: int = np.sum(
-        np.array([analog_system.N for analog_system in analog_systems]))
-    M: int = np.sum(
-        np.array([analog_system.M for analog_system in analog_systems]))
+    N: int = np.sum(np.array([analog_system.N for analog_system in analog_systems]))
+    M: int = np.sum(np.array([analog_system.M for analog_system in analog_systems]))
     M_tilde: int = np.sum(
-        np.array([analog_system.M_tilde for analog_system in analog_systems]))
-    L: int = np.sum(
-        np.array([analog_system.L for analog_system in analog_systems]))
+        np.array([analog_system.M_tilde for analog_system in analog_systems])
+    )
+    L: int = np.sum(np.array([analog_system.L for analog_system in analog_systems]))
     N_tilde: int = np.sum(
-        np.array([analog_system.N_tilde for analog_system in analog_systems]))
+        np.array([analog_system.N_tilde for analog_system in analog_systems])
+    )
 
     A = np.zeros((N, N))
     B = np.zeros((N, L))
@@ -1424,8 +1425,8 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
         l_end = l + analog_system.L
         n_tilde_end = n_tilde + analog_system.N_tilde
 
-        A[n: n_end, n:n_end] = analog_system.A
-        B[n: n_end, l:l_end] = analog_system.B
+        A[n:n_end, n:n_end] = analog_system.A
+        B[n:n_end, l:l_end] = analog_system.B
         CT[n_tilde:n_tilde_end, n:n_end] = analog_system.CT
         Gamma[n:n_end, m:m_end] = analog_system.Gamma
         Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_system.Gamma_tildeT
@@ -1443,7 +1444,7 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
 def zpk2abcd(z, p, k):
     """Convert zeros and poles into A, B, C, D matrix
 
-    Futhermore, the transfer function is divided into 
+    Futhermore, the transfer function is divided into
     sequences of products of Biquad filters.
 
     Specifically, for a transfer function
@@ -1466,74 +1467,63 @@ def zpk2abcd(z, p, k):
     """
     if len(z) > len(p) or len(p) < 1:
         raise BaseException(
-            "Incorrect specification. can't have more zeros than poles.")
+            "Incorrect specification. can't have more zeros than poles."
+        )
 
     # Sort poles and zeros
     p = _sort_by_complex_descending(p)
     if len(z) > 0:
         z = _sort_by_complex_descending(z)
 
-    k_per_state = np.float64(
-        np.power(np.float64(np.abs(k)), 1.0/np.float64(len(p))))
+    k_per_state = np.float64(np.power(np.float64(np.abs(k)), 1.0 / np.float64(len(p))))
 
     index = 0
     systems = []
     while index < len(p):
         D = np.array([[0.0]])
         if index + 1 < len(p):
-            # print("Two poles")
+            # Two poles
             A = np.zeros((2, 2))
             B = k_per_state ** 2 * np.array([[1.0], [0.0]])
             CT = np.zeros((1, 2))
             D = np.array([[0.0]])
 
-            pole_1, pole_2 = p[index], p[index+1]
+            pole_1, pole_2 = p[index], p[index + 1]
             # If complex conjugate pole pairs
             if np.allclose(pole_1, np.conjugate(pole_2)):
                 a1, b1 = np.real(pole_1), np.imag(pole_1)
                 a2, b2 = np.real(pole_2), np.imag(pole_2)
-                A = np.array([[a1, b1],
-                              [b2, a2]])
+                A = np.array([[a1, b1], [b2, a2]])
             else:
                 if np.imag(pole_1) != 0 or np.imag(pole_2) != 0:
-                    raise BaseException(
-                        "Can't have non-conjugate complex poles")
+                    raise BaseException("Can't have non-conjugate complex poles")
                 A = np.array([[np.real(pole_1), 0], [1.0, np.real(pole_2)]])
 
             if index < len(z):
                 zero_1 = z[index]
                 if index + 1 < len(z):
-                    # print("double zeros")
                     # Two zeros left
                     zero_2 = z[index + 1]
                     y = np.array(
                         [
                             [zero_1 + zero_2 - A[0, 0] - A[1, 1]],
-                            [zero_1 * zero_2 - A[0, 0] *
-                                A[1, 1] + A[0, 1] * A[1, 0]]
-                        ])
+                            [zero_1 * zero_2 - A[0, 0] * A[1, 1] + A[0, 1] * A[1, 0]],
+                        ]
+                    )
                     if not np.allclose(np.imag(y), np.zeros(2)):
-                        raise BaseException(
-                            "Can't have non-conjugate complex zeros")
-                    M = np.array(
-                        [
-                            [-1.0, 0],
-                            [-A[1, 1], A[1, 0]]
-                        ])
+                        raise BaseException("Can't have non-conjugate complex zeros")
+                    M = np.array([[-1.0, 0], [-A[1, 1], A[1, 0]]])
                     sol = np.linalg.solve(M, np.real(y))
                     D = k_per_state ** 2 * np.array([[1.0]])
                     CT = np.array([[sol[0, 0], sol[1, 0]]])
                 else:
-                    # print("single zero")
                     # Single zero
                     if np.imag(zero_1) != 0:
-                        raise BaseException(
-                            "Can't have non-conjugate complex zero")
+                        raise BaseException("Can't have non-conjugate complex zero")
                     c1 = 1.0
                     c2 = (A[1, 1] - np.real(zero_1)) / A[1, 0]
                     CT = np.array([[c1, c2]])
             else:
-                # print("No zero")
                 # No zero
                 #
                 # gain
@@ -1542,7 +1532,6 @@ def zpk2abcd(z, p, k):
             index += 2
         else:
             # Only one pole and possibly zero left
-            # print("Single pole and possibly zero")
             pole = p[index]
             if np.imag(pole) != 0:
                 raise BaseException("Can't have non-conjugate complex poles")
@@ -1553,20 +1542,17 @@ def zpk2abcd(z, p, k):
             if index < len(z):
                 zero = z[index]
                 if np.imag(zero) != 0:
-                    raise BaseException(
-                        "Cant have non-conjugate complex zeros")
+                    raise BaseException("Cant have non-conjugate complex zeros")
                 D[0, 0] = k_per_state
                 CT[0, 0] = pole - np.real(zero)
             index += 1
         systems.append(AnalogSystem(A, B, CT, None, None, D))
-        print(systems[-1])
     chained_system = chain(systems)
     return chained_system.A, chained_system.B, chained_system.CT, chained_system.D
 
 
 def _sort_by_complex_descending(list: np.ndarray) -> np.ndarray:
     sorted_indexes = np.argsort(np.abs(np.imag(list)))[::-1]
-    print(sorted_indexes)
     list = list[sorted_indexes]
     complex_indexes = np.imag(list) != 0
     number_of_complex_poles = np.sum(complex_indexes)

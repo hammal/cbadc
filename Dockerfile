@@ -1,7 +1,5 @@
-FROM python:3.9
+FROM gitpod/workspace-full
 
-ADD . /cbadc
-
-WORKDIR /cbadc
-
-RUN python -m pip install --upgrade pip . -r docs/requirements.txt
+RUN sudo apt update && sudo apt upgrade -y
+RUN sudo apt install python3.9 -y
+RUN python -m pip install --upgrade pip
