@@ -200,6 +200,7 @@ for index_de, bits in enumerate(fixed_point_precision):
     noise_index = np.ones(psd.size, dtype=bool)
     noise_index[signal_index] = False
     noise_index[0:2] = False
+    noise_index[harmonics_index] = False
     noise_index[size // OSR :] = False
     res = cbadc.utilities.snr_spectrum_computation_extended(
         psd, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
@@ -207,7 +208,7 @@ for index_de, bits in enumerate(fixed_point_precision):
     SNR = 10 * np.log10(res["snr"])
     ENOB = np.round((SNR - 1.76) / 6.02, 1)
     description.append(
-        f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()}, thd={round(res['thd']*100, 1)}%"
+        f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()}, THD={round(20 * np.log10(res['thd']))} dB"
     )
     # Plot the FIR filters
     plt.semilogx(f, 10 * np.log10(psd), label=description[-1])
@@ -239,13 +240,14 @@ harmonics_index = np.array(harmonics_index).flatten()
 noise_index = np.ones(psd_ref.size, dtype=bool)
 noise_index[signal_index] = False
 noise_index[0:2] = False
+noise_index[harmonics_index] = False
 noise_index[size // OSR :] = False
 res = cbadc.utilities.snr_spectrum_computation_extended(
     psd_ref, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
 )
 SNR = 10 * np.log10(res["snr"])
 ENOB = np.round((SNR - 1.76) / 6.02, 1)
-description.append(f"Ref, ENOB={ENOB}")
+description.append(f"Ref, ENOB={ENOB}, THD={round(20 * np.log10(res['thd']))} dB")
 
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label=description[-1])
 

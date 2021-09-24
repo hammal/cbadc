@@ -396,7 +396,7 @@ Resulting Estimate Precision
 ----------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 180-272
+.. GENERATED FROM PYTHON SOURCE LINES 180-274
 
 .. code-block:: default
    :lineno-start: 181
@@ -424,6 +424,7 @@ Resulting Estimate Precision
         noise_index = np.ones(psd.size, dtype=bool)
         noise_index[signal_index] = False
         noise_index[0:2] = False
+        noise_index[harmonics_index] = False
         noise_index[size // OSR :] = False
         res = cbadc.utilities.snr_spectrum_computation_extended(
             psd, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
@@ -431,7 +432,7 @@ Resulting Estimate Precision
         SNR = 10 * np.log10(res["snr"])
         ENOB = np.round((SNR - 1.76) / 6.02, 1)
         description.append(
-            f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()}, thd={round(res['thd']*100, 1)}%"
+            f"ENOB={ENOB}, fixed-point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()}, THD={round(20 * np.log10(res['thd']))} dB"
         )
         # Plot the FIR filters
         plt.semilogx(f, 10 * np.log10(psd), label=description[-1])
@@ -463,13 +464,14 @@ Resulting Estimate Precision
     noise_index = np.ones(psd_ref.size, dtype=bool)
     noise_index[signal_index] = False
     noise_index[0:2] = False
+    noise_index[harmonics_index] = False
     noise_index[size // OSR :] = False
     res = cbadc.utilities.snr_spectrum_computation_extended(
         psd_ref, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
     )
     SNR = 10 * np.log10(res["snr"])
     ENOB = np.round((SNR - 1.76) / 6.02, 1)
-    description.append(f"Ref, ENOB={ENOB}")
+    description.append(f"Ref, ENOB={ENOB}, THD={round(20 * np.log10(res['thd']))} dB")
 
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label=description[-1])
 
@@ -518,7 +520,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  39.459 seconds)
+   **Total running time of the script:** ( 1 minutes  41.659 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_e_fixed_point_aritmetics.py:
