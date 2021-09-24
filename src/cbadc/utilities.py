@@ -576,7 +576,7 @@ class FixedPoint:
         """Smallest floating point
 
         :Returns
-        -------
+        --------
         `float`
             smallest floating point representation.
         """
