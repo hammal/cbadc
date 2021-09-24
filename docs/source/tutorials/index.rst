@@ -193,6 +193,27 @@ Next we highlight various features of the cbadc package
    :hidden:
 
    /tutorials/b_general/plot_d_delay_phase_control
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate we can evaluate the FIR filter using fixed point arithmetics.">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_e_fixed_point_aritmetics_thumb.png
+     :alt: Fixed Point Arithmetics
+
+     :ref:`sphx_glr_tutorials_b_general_plot_e_fixed_point_aritmetics.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/b_general/plot_e_fixed_point_aritmetics
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

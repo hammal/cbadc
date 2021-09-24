@@ -361,13 +361,14 @@ def unit_element_set(N: int, M: int):
 class SwitchedCapacitorControl:
     """Represents a digital control system that uses switched capacitor control
 
+
     Parameters
     ----------
     T : `float
         total clock period
     T1 : `float`, `array_like`, shape=(M,)
-        time at which the digital control empties the capacitor into the system.
-        Can be either float or array of float.
+        time at which the digital control empties the capacitor into the
+        system. Can be either float or array of float.
     T2 : `float`, `array_like`, shape=(M,)
         time at which the switched capacitor is re-charged and disconnected
         from the analog system.

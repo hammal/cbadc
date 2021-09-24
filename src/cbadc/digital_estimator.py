@@ -3,9 +3,9 @@
 This module provides alternative implementations for the control-bounded A/D
 conterter's digital estimator.
 """
-from typing import Iterator
-
+from typing import Iterator, Union
 import cbadc
+import cbadc.utilities
 import scipy.linalg
 import scipy.integrate
 import numpy as np
@@ -963,7 +963,9 @@ class IIRFilter(DigitalEstimator):
         mid_point: bool = False,
         downsample: int = 1,
     ):
-        """Initializes filter coefficients"""
+        """Initializes filter coefficients
+
+        """
         if K2 < 0:
             raise BaseException("K2 must be non negative integer.")
         self.K2 = K2
@@ -1114,7 +1116,7 @@ class FIRFilter(DigitalEstimator):
 
     Parameters
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         a digital control (necessary to determine the corresponding DAC waveform).
@@ -1135,6 +1137,8 @@ class FIRFilter(DigitalEstimator):
         no down sampling.
     offset: `array_like`, shape=(L), `optional`
         the estimate offset :math:`\hat{\mathbf{u}}_0`, defaults to a zero vector.
+    fixed_point: :py:class:`cbadc.utilities.FixedPoint`, `optional`
+        fixed point arithmetic configuration, defaults to None.
 
     Attributes
     ----------
@@ -1171,6 +1175,9 @@ class FIRFilter(DigitalEstimator):
         filter impulse response
     offset: `array_like`, shape=(L)
         the estimate offset :math:`\hat{\mathbf{u}}_0`.
+    fixed_point: `bool`
+        using fixed point?
+
 
     Yields
     ------
@@ -1190,8 +1197,11 @@ class FIRFilter(DigitalEstimator):
         mid_point: bool = False,
         downsample: int = 1,
         offset: np.ndarray = None,
+        fixed_point: Union[cbadc.utilities.FixedPoint, None] = None,
+        # fixed_point=None,
     ):
-        """Initializes filter coefficients"""
+        """Initializes filter coefficients
+        """
         if K1 < 0:
             raise BaseException("K1 must be non negative integer.")
         self.K1 = K1
@@ -1227,27 +1237,48 @@ class FIRFilter(DigitalEstimator):
         else:
             self.offset = np.zeros(self.analog_system.L, dtype=np.float64)
 
+        if fixed_point is not None:
+            self.fixed_point = True
+            self.__fixed_point = fixed_point
+            self.__fixed_to_float = np.vectorize(self.__fixed_point.fixed_to_float)
+            self.__float_to_fixed = np.vectorize(self.__fixed_point.float_to_fixed)
+        else:
+            self.fixed_point = False
+
         # For transfer functions
         self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
         # Compute filter coefficients
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
 
         # Initialize filter.
-        self.h = np.zeros(
-            (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.double
-        )
-
+        if self.fixed_point:
+            self.h = np.zeros(
+                (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.int64
+            )
+        else:
+            self.h = np.zeros(
+                (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.double
+            )
         # Compute lookback.
-        self.h[:, self.K1 - 1, :] = -np.dot(self.WT, self.Bf)
+        if self.fixed_point:
+            self.h[:, self.K1 - 1, :] = self.__float_to_fixed(-np.dot(self.WT, self.Bf))
+        else:
+            self.h[:, self.K1 - 1, :] = -np.dot(self.WT, self.Bf)
         temp1 = np.copy(self._Bf_2T)
         for k1 in range(self.K1 - 2, -1, -1):
-            self.h[:, k1, :] = -np.dot(self.WT, temp1)
+            if self.fixed_point:
+                self.h[:, k1, :] = self.__float_to_fixed(-np.dot(self.WT, temp1))
+            else:
+                self.h[:, k1, :] = -np.dot(self.WT, temp1)
             temp1 = np.dot(self.Af, temp1)
 
         # Compute lookahead.
         temp2 = np.copy(self.Bb)
         for k2 in range(self.K1, self.K3):
-            self.h[:, k2, :] = np.dot(self.WT, temp2)
+            if self.fixed_point:
+                self.h[:, k2, :] = self.__float_to_fixed(np.dot(self.WT, temp2))
+            else:
+                self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
         self._control_signal_valued = np.zeros(
             (self.K3, self.analog_system.M), dtype=np.int8
@@ -1607,10 +1638,14 @@ class FIRFilter(DigitalEstimator):
 
         # self._control_signal_valued.shape -> (K3, M)
         # self.h.shape -> (L, K3, M)
-        return (
+        res = (
             np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1)))
             + self.offset
         )
+        if self.fixed_point:
+            return self.__fixed_to_float(res)
+        else:
+            return res
         # return np.einsum('lkm,km', self.h, self._control_signal_valued)
         # the Einstein summation results in:
         # result = np.zeros(self._L)
@@ -1725,7 +1760,10 @@ class FIRFilter(DigitalEstimator):
             f.write(f"#define K2 {self.K2}" + os.linesep)
             f.write(f"#define K3 {self.K3}" + os.linesep)
             # self.h.shape -> (L, K3, M)
-            f.write("double h[L][M][K3] = ")
+            if self.fixed_point:
+                f.write("int h[L][M][K3] = ")
+            else:
+                f.write("double h[L][M][K3] = ")
             f.write("{")
             for l in range(self.analog_system.L):
                 f.write("{")
@@ -1740,6 +1778,16 @@ class FIRFilter(DigitalEstimator):
                 if l < (self.analog_system.L - 1):
                     f.write(",")
             f.write("}" + os.linesep)
+
+    def number_of_filter_coefficients(self) -> int:
+        """Number of non-zero filter coefficients
+
+        Returns
+        -------
+        `int`
+            total number of non-zero filter coefficients
+        """
+        return np.sum(self.h > 0)
 
 
 class NUVEstimator:
@@ -1893,10 +1941,10 @@ class NUVEstimator:
         # )
         self._xi_tilde = np.zeros((self.K3 + 1, self.analog_system.N), dtype=np.double)
         self._sigma_squared_1 = np.ones(
-            (self.K3, self.analog_system.N_tilde,), dtype=np.double,
+            (self.K3, self.analog_system.N_tilde,), dtype=np.double
         )
         self._sigma_squared_2 = np.ones(
-            (self.K3, self.analog_system.N_tilde,), dtype=np.double,
+            (self.K3, self.analog_system.N_tilde,), dtype=np.double
         )
         self._posterior_observation_mean = np.zeros(
             (self.K3, self.analog_system.N_tilde), dtype=np.double
@@ -2003,7 +2051,7 @@ class NUVEstimator:
             ).y[:, -1]
             self.Bf[:, m] = solBf
 
-        BBT = np.dot(analog_system.B, analog_system.B.transpose())
+        BBT = np.dot(analog_system.B, np.dot(self.covU, analog_system.B.transpose()))
 
         def _derivative_input(t, x):
             t_minus_tau = self.Ts - t

@@ -33,33 +33,22 @@ def number_of_bytes_selector(M: int):
     """
     if M < 9:
         return {
-            'number_of_bytes': 1,
-            'format_marker': 'B',
-            'c_type_name': 'unsigned char'
+            "number_of_bytes": 1,
+            "format_marker": "B",
+            "c_type_name": "unsigned char",
         }
     if M < 17:
-        return {
-            'number_of_bytes': 2,
-            'format_marker': 'h',
-            'c_type_name': 'short'
-        }
+        return {"number_of_bytes": 2, "format_marker": "h", "c_type_name": "short"}
     if M < 65:
-        return {
-            'number_of_bytes': 4,
-            'format_marker': 'i',
-            'c_type_name': 'int'
-        }
+        return {"number_of_bytes": 4, "format_marker": "i", "c_type_name": "int"}
     if M < 129:
-        return {
-            'number_of_bytes': 8,
-            'format_marker': 'q',
-            'c_type_name': 'long long'
-        }
-    raise BaseException(
-        f"M={M} is larger than 128 which is the largest allowed size")
+        return {"number_of_bytes": 8, "format_marker": "q", "c_type_name": "long long"}
+    raise BaseException(f"M={M} is larger than 128 which is the largest allowed size")
 
 
-def control_signal_2_byte_stream(control_signal: Iterator[np.ndarray], M: int) -> Generator[bytes, None, None]:
+def control_signal_2_byte_stream(
+    control_signal: Iterator[np.ndarray], M: int
+) -> Generator[bytes, None, None]:
     """Convert a control signal into a byte stream
 
     Parameters
@@ -76,7 +65,7 @@ def control_signal_2_byte_stream(control_signal: Iterator[np.ndarray], M: int) -
 
     """
     format = number_of_bytes_selector(M)
-    format_marker = format['format_marker']
+    format_marker = format["format_marker"]
     for s in control_signal:
         sum = 0
         for m in range(M):
@@ -86,7 +75,9 @@ def control_signal_2_byte_stream(control_signal: Iterator[np.ndarray], M: int) -
         yield struct.pack(format_marker, sum)
 
 
-def byte_stream_2_control_signal(byte_stream: Iterator[bytes], M: int) -> Generator[np.ndarray, None, None]:
+def byte_stream_2_control_signal(
+    byte_stream: Iterator[bytes], M: int
+) -> Generator[np.ndarray, None, None]:
     """Convert a byte stream into a control_sequence
 
     Parameters
@@ -114,10 +105,10 @@ def byte_stream_2_control_signal(byte_stream: Iterator[bytes], M: int) -> Genera
     array([0, 0, 1], dtype=int8)
     """
     format = number_of_bytes_selector(M)
-    format_marker = format['format_marker']
+    format_marker = format["format_marker"]
     mask = 1
     for bs in byte_stream:
-        if (not bs):
+        if not bs:
             raise StopIteration
         sum = struct.unpack(format_marker, bs)[0]
         s = np.zeros(M, dtype=np.int8)
@@ -142,7 +133,9 @@ def write_byte_stream_to_file(filename: str, iterator: Iterator[bytes]):
             f.write(word)
 
 
-def write_byte_stream_to_files(filename: str, iterator: Iterator[bytes], words_per_file: int = 100000):
+def write_byte_stream_to_files(
+    filename: str, iterator: Iterator[bytes], words_per_file: int = 100000
+):
     """Write a stream into a sequence of binary files of size words_per_file.
 
     Parameters
@@ -161,14 +154,16 @@ def write_byte_stream_to_files(filename: str, iterator: Iterator[bytes], words_p
     while True:
         name = base + f"_{iteration}" + ext
         with open(name, "wb") as f:
-            while (count < words_per_file):
+            while count < words_per_file:
                 f.write(next(iterator))
                 count += 1
         count = 0
         iteration += 1
 
 
-def read_byte_stream_from_file(filenames: Union[str, list], M: int) -> Generator[bytes, None, None]:
+def read_byte_stream_from_file(
+    filenames: Union[str, list], M: int
+) -> Generator[bytes, None, None]:
     """Generate a byte stream iterator from file
 
     Parameters
@@ -188,17 +183,19 @@ def read_byte_stream_from_file(filenames: Union[str, list], M: int) -> Generator
         filenames = [filenames]
     for filename in filenames:
         with open(filename, "rb") as f:
-            byte = b'0'
+            byte = b"0"
             try:
                 while byte:
-                    byte = f.read(format['number_of_bytes'])
+                    byte = f.read(format["number_of_bytes"])
                     yield byte
             except StopIteration:
                 pass
     raise StopIteration
 
 
-def read_byte_stream_from_url(urlstring: Union[str, list], M: int) -> Generator[bytes, None, None]:
+def read_byte_stream_from_url(
+    urlstring: Union[str, list], M: int
+) -> Generator[bytes, None, None]:
     """Generate a byte stream iterator from http request
 
     Parameters
@@ -223,14 +220,18 @@ def read_byte_stream_from_url(urlstring: Union[str, list], M: int) -> Generator[
     for url in urls:
         try:
             request = session.get(url, stream=True)
-            for chunk in request.iter_content(chunk_size=format['number_of_bytes'], decode_unicode=False):
+            for chunk in request.iter_content(
+                chunk_size=format["number_of_bytes"], decode_unicode=False
+            ):
                 yield chunk
         except StopIteration:
             pass
     raise StopIteration
 
 
-def random_control_signal(M: int, stop_after_number_of_iterations: int = (1 << 63), random_seed: int = 0) -> Generator[np.ndarray, None, None]:
+def random_control_signal(
+    M: int, stop_after_number_of_iterations: int = (1 << 63), random_seed: int = 0
+) -> Generator[np.ndarray, None, None]:
     """Creates a iterator producing random control signals.
 
     Parameters
@@ -251,14 +252,16 @@ def random_control_signal(M: int, stop_after_number_of_iterations: int = (1 << 6
     if random_seed:
         np.random.seed(random_seed)
     iteration: int = 0
-    while (iteration < stop_after_number_of_iterations):
+    while iteration < stop_after_number_of_iterations:
         iteration += 1
         yield np.random.randint(2, size=M, dtype=np.int8)
     else:
         raise StopIteration
 
 
-def compute_power_spectral_density(sequence: np.ndarray, nperseg: int = 1 << 14, fs: float = 1.0) -> Tuple[np.ndarray, np.ndarray]:
+def compute_power_spectral_density(
+    sequence: np.ndarray, nperseg: int = 1 << 14, fs: float = 1.0
+) -> Tuple[np.ndarray, np.ndarray]:
     """Compute power spectral density of sequence.
 
     Parameters
@@ -276,20 +279,20 @@ def compute_power_spectral_density(sequence: np.ndarray, nperseg: int = 1 << 14,
     freq, spectrum = welch(
         sequence,
         # window='hanning',
-        window='blackman',
+        window="blackman",
         nperseg=nperseg,
         noverlap=None,
         nfft=None,
         return_onesided=True,
-        scaling='density',
-        fs=fs
+        scaling="density",
+        fs=fs,
     )
     return (np.asarray(freq), np.asarray(spectrum))
 
 
-def snr_spectrum_computation(spectrum: np.ndarray,
-                             signal_mask: np.ndarray,
-                             noise_mask: np.ndarray):
+def snr_spectrum_computation(
+    spectrum: np.ndarray, signal_mask: np.ndarray, noise_mask: np.ndarray
+):
     """Compute snr from spectrum
 
     Parameters
@@ -309,16 +312,15 @@ def snr_spectrum_computation(spectrum: np.ndarray,
     """
     noise = np.sum(spectrum[noise_mask])
     signal = np.sum(spectrum[signal_mask])
-    if (noise > 0):
-        return signal/noise
+    if noise > 0:
+        return signal / noise
     else:
         return np.inf
 
 
-def snr_spectrum_computation_extended(spectrum: np.ndarray,
-                                      signal_mask: np.ndarray,
-                                      noise_mask: np.ndarray,
-                                      fs):
+def snr_spectrum_computation_extended(
+    spectrum: np.ndarray, signal_mask: np.ndarray, noise_mask: np.ndarray, fs
+):
     """Extended spectrum computations
 
     Parameters
@@ -345,16 +347,16 @@ def snr_spectrum_computation_extended(spectrum: np.ndarray,
     }
         Python dict containing relevant spectrum information.
     """
-    window = 'blackman'
+    window = "blackman"
     CG = 1.0
     NG = 1.0
     N = spectrum.size
     f_bin = fs / N
-    if window == 'blackman':
+    if window == "blackman":
         window = scipy.signal.windows.blackman(N)
         CG = np.mean(window)
         NG = np.sum(window ** 2) / N
-    if window == 'hanning':
+    if window == "hanning":
         window = scipy.signal.windows.blackman(N)
         CG = np.mean(window)
         NG = np.sum(window ** 2) / N
@@ -367,12 +369,12 @@ def snr_spectrum_computation_extended(spectrum: np.ndarray,
     noise_rms = np.sqrt(noise * f_bin)
 
     return {
-        'noise_rms': noise_rms,
-        'signal_rms': signal_rms,
-        'snr': snr,
-        'window': window,
-        'CG': CG,
-        'NG': NG,
+        "noise_rms": noise_rms,
+        "signal_rms": signal_rms,
+        "snr": snr,
+        "window": window,
+        "CG": CG,
+        "NG": NG,
     }
 
 
@@ -388,10 +390,10 @@ def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
 
     """
     candidate_peak = np.argmax(np.abs(spectrum))
-    return np.arange(
-        candidate_peak - mask_width // 2,
-        candidate_peak + mask_width // 2
-    )
+    # if no peak then put at first frequencies
+    if (candidate_peak + mask_width) // 2 >= spectrum.size:
+        candidate_peak = mask_width
+    return np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2)
 
 
 def show_status(iterator, length: int = 1 << 63):
@@ -439,7 +441,7 @@ def pickle_dump(object_to_be_pickled, filename: str):
     filename: `str`
         the path for it to be stored.
     """
-    with open(filename, 'wb') as f:
+    with open(filename, "wb") as f:
         pickle.dump(object_to_be_pickled, f, protocol=-1)
 
 
@@ -455,7 +457,7 @@ def pickle_load(filename: str):
     filename: `str`
         the filename of the pickled file.
     """
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         return pickle.load(f)
 
 
@@ -498,3 +500,94 @@ def write_wave(filename: str, sample_rate: int, data: npt.ArrayLike):
         the data array to be encoded as wave file
     """
     scipy.io.wavfile.write(filename, sample_rate, data)
+
+
+class FixedPoint:
+    """Fixed point description class.
+
+    Parameters
+    ----------
+    number_of_bits: `int`
+        number of bits used including sign bit.
+    max: `float`
+        the largest (or smallest) floating number to be represented.
+
+    """
+
+    def __init__(self, number_of_bits: int, max: float):
+        self.__number_of_bits = number_of_bits
+        self.__max = max
+        self.__int_max = 1 << (self.__number_of_bits - 1)
+        self.__scale = self.__int_max / self.__max
+        self.__min = self.fixed_to_float(1)
+
+    def float_to_fixed(self, value: float) -> int:
+        """Convert floating point to fixed point number.
+
+        Parameters
+        ----------
+        value: `float`
+            number to be converted.
+        
+        Returns
+        -------
+        `int`
+            fixed point representation
+        """
+        if abs(value) > self.__max:
+            raise ArithmeticError("abs(Value) exceeds max value.")
+        return int(value * self.__scale)
+
+    def fixed_to_float(self, value: int) -> float:
+        """Convert fixed point to floating point number.
+
+        Parameters
+        ----------
+        value: `int`
+            number to be converted.
+        
+        Returns
+        -------
+        `float`
+            the floating point representation.
+        """
+        if abs(value) > self.__int_max:
+            raise ArithmeticError("abs(Value) exceeds max integer value")
+        return float(value / self.__scale)
+
+    def __str__(self):
+        return f"""
+        number of bits = {self.__number_of_bits} including sign bit,
+        max float value = {self.__max},
+        and min float value = {self.__min}
+        """
+
+    def max(self):
+        """Largest floating point.
+
+        Returns
+        -------
+        `float`
+            largest floating point representation.
+        """
+        return self.__max
+
+    def min(self):
+        """Smallest floating point
+
+        :Returns
+        --------
+        `float`
+            smallest floating point representation.
+        """
+        return self.__min
+
+    def max_int(self):
+        """max integer value.
+
+        Returns
+        -------
+        `int`
+            largest fixed point integer representation.
+        """
+        return self.__int_max

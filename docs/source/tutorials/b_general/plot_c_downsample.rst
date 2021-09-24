@@ -32,7 +32,7 @@ for downsampling.
 
     import scipy.signal
     import numpy as np
-    import cbadc as cbc
+    import cbadc
     import matplotlib.pyplot as plt
 
 
@@ -69,9 +69,9 @@ analog system and digital control.
     N = 6
     M = N
     # Set the amplification factor.
-    beta = 6250.
-    rho = - 1e-2
-    kappa = - 1.0
+    beta = 6250.0
+    rho = -1e-2
+    kappa = -1.0
     # In this example, each nodes amplification and local feedback will be set
     # identically.
     betaVec = beta * np.ones(N)
@@ -79,11 +79,11 @@ analog system and digital control.
     kappaVec = kappa * beta * np.eye(N)
 
     # Instantiate a chain-of-integrators analog system.
-    analog_system = cbc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+    analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 
 
-    T = 1/(2 * beta)
-    digital_control = cbc.digital_control.DigitalControl(T, M)
+    T = 1 / (2 * beta)
+    digital_control = cbadc.digital_control.DigitalControl(T, M)
 
 
     # Summarize the analog system, digital control, and digital estimator.
@@ -171,26 +171,26 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
    :lineno-start: 69
 
 
-    byte_stream = cbc.utilities.read_byte_stream_from_file(
-        '../a_getting_started/sinusodial_simulation.adcs', M)
-    control_signal_sequences1 = cbc.utilities.byte_stream_2_control_signal(
-        byte_stream, M)
+    byte_stream = cbadc.utilities.read_byte_stream_from_file(
+        "../a_getting_started/sinusodial_simulation.adcs", M
+    )
+    control_signal_sequences1 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
-    byte_stream = cbc.utilities.read_byte_stream_from_file(
-        '../a_getting_started/sinusodial_simulation.adcs', M)
-    control_signal_sequences2 = cbc.utilities.byte_stream_2_control_signal(
-        byte_stream, M)
+    byte_stream = cbadc.utilities.read_byte_stream_from_file(
+        "../a_getting_started/sinusodial_simulation.adcs", M
+    )
+    control_signal_sequences2 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
-    byte_stream = cbc.utilities.read_byte_stream_from_file(
-        '../a_getting_started/sinusodial_simulation.adcs', M)
-    control_signal_sequences3 = cbc.utilities.byte_stream_2_control_signal(
-        byte_stream, M)
+    byte_stream = cbadc.utilities.read_byte_stream_from_file(
+        "../a_getting_started/sinusodial_simulation.adcs", M
+    )
+    control_signal_sequences3 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
-    byte_stream = cbc.utilities.read_byte_stream_from_file(
-        '../a_getting_started/sinusodial_simulation.adcs', M)
-    control_signal_sequences4 = cbc.utilities.byte_stream_2_control_signal(
-        byte_stream, M)
+    byte_stream = cbadc.utilities.read_byte_stream_from_file(
+        "../a_getting_started/sinusodial_simulation.adcs", M
+    )
+    control_signal_sequences4 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 
@@ -232,7 +232,7 @@ Oversampling = 1
 First we initialize our default estimator without a downsampling parameter
 which then defaults to 1, i.e., no downsampling.
 
-.. GENERATED FROM PYTHON SOURCE LINES 107-127
+.. GENERATED FROM PYTHON SOURCE LINES 107-129
 
 .. code-block:: default
    :lineno-start: 108
@@ -240,8 +240,9 @@ which then defaults to 1, i.e., no downsampling.
 
     # Set the bandwidth of the estimator
     G_at_omega = np.linalg.norm(
-        analog_system.transfer_function_matrix(np.array([omega_3dB / 2])))
-    eta2 = G_at_omega**2
+        analog_system.transfer_function_matrix(np.array([omega_3dB / 2]))
+    )
+    eta2 = G_at_omega ** 2
     # eta2 = 1.0
     print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
@@ -250,8 +251,9 @@ which then defaults to 1, i.e., no downsampling.
     L2 = L1
 
     # Instantiate the digital estimator.
-    digital_estimator_ref = cbc.digital_estimator.FIRFilter(
-        analog_system, digital_control, eta2, L1, L2)
+    digital_estimator_ref = cbadc.digital_estimator.FIRFilter(
+        analog_system, digital_control, eta2, L1, L2
+    )
     digital_estimator_ref(control_signal_sequences1)
 
     print(digital_estimator_ref, "\n")
@@ -295,16 +297,16 @@ which then defaults to 1, i.e., no downsampling.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 128-131
+.. GENERATED FROM PYTHON SOURCE LINES 130-133
 
 Visualize Estimator's Transfer Function
 ---------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 131-165
+.. GENERATED FROM PYTHON SOURCE LINES 133-170
 
 .. code-block:: default
-   :lineno-start: 132
+   :lineno-start: 134
 
 
     # Logspace frequencies
@@ -320,20 +322,23 @@ Visualize Estimator's Transfer Function
     stf_dB = 20 * np.log10(np.abs(stf.flatten()))
 
     # Signal attenuation at the input signal frequency
-    stf_at_omega = digital_estimator_ref.signal_transfer_function(
-        np.array([omega_3dB]))[0]
+    stf_at_omega = digital_estimator_ref.signal_transfer_function(np.array([omega_3dB]))[0]
 
     # Plot
     plt.figure()
-    plt.semilogx(frequencies, stf_dB, label='$STF(\omega)$')
+    plt.semilogx(frequencies, stf_dB, label="$STF(\omega)$")
     for n in range(N):
         plt.semilogx(frequencies, ntf_dB[0, n, :], label=f"$|NTF_{n+1}(\omega)|$")
-    plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-        ntf[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $")
+    plt.semilogx(
+        frequencies,
+        20 * np.log10(np.linalg.norm(ntf[:, 0, :], axis=0)),
+        "--",
+        label="$ || NTF(\omega) ||_2 $",
+    )
 
     # Add labels and legends to figure
     plt.legend()
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.title("Signal and noise transfer functions")
     plt.xlabel("$\omega / (4 \pi \\beta ) $")
     plt.ylabel("dB")
@@ -354,34 +359,30 @@ Visualize Estimator's Transfer Function
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:138: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:140: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:153: RuntimeWarning: divide by zero encountered in log10
-      plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:156: RuntimeWarning: divide by zero encountered in log10
+      20 * np.log10(np.linalg.norm(ntf[:, 0, :], axis=0)),
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 166-170
+.. GENERATED FROM PYTHON SOURCE LINES 171-175
 
 FIR Filter With Downsampling
 ----------------------------
 
 Next we repeat the initialization steps above but for a downsampled estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 170-182
+.. GENERATED FROM PYTHON SOURCE LINES 175-183
 
 .. code-block:: default
-   :lineno-start: 171
+   :lineno-start: 176
 
 
-    digital_estimator_dow = cbc.digital_estimator.FIRFilter(
-        analog_system,
-        digital_control,
-        eta2,
-        L1,
-        L2,
-        downsample=OSR)
+    digital_estimator_dow = cbadc.digital_estimator.FIRFilter(
+        analog_system, digital_control, eta2, L1, L2, downsample=OSR
+    )
     digital_estimator_dow(control_signal_sequences2)
 
     print(digital_estimator_dow, "\n")
@@ -423,16 +424,16 @@ Next we repeat the initialization steps above but for a downsampled estimator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 183-186
+.. GENERATED FROM PYTHON SOURCE LINES 184-187
 
 Estimating (Filtering)
 ----------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 186-196
+.. GENERATED FROM PYTHON SOURCE LINES 187-197
 
 .. code-block:: default
-   :lineno-start: 187
+   :lineno-start: 188
 
 
     # Set simulation length
@@ -451,7 +452,7 @@ Estimating (Filtering)
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 197-203
+.. GENERATED FROM PYTHON SOURCE LINES 198-204
 
 Aliasing
 ========
@@ -460,10 +461,10 @@ We compare the difference between the downsampled estimate and the default.
 Clearly, we are suffering from aliasing as is also explained by considering
 the PSD plot.
 
-.. GENERATED FROM PYTHON SOURCE LINES 203-233
+.. GENERATED FROM PYTHON SOURCE LINES 204-236
 
 .. code-block:: default
-   :lineno-start: 204
+   :lineno-start: 205
 
 
     # compensate the built in L1 delay of FIR filter.
@@ -471,28 +472,30 @@ the PSD plot.
     t_down = np.arange(-(L1) // OSR, (size - L1) // OSR) * OSR + 1
     plt.plot(t, u_hat_ref, label="$\hat{u}(t)$ Reference")
     plt.plot(t_down, u_hat_dow, label="$\hat{u}(t)$ Downsampled")
-    plt.xlabel('$t / T$')
+    plt.xlabel("$t / T$")
     plt.legend()
     plt.title("Estimated input signal")
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.xlim((-50, 1000))
     plt.tight_layout()
 
     plt.figure()
-    u_hat_ref_clipped = u_hat_ref[(L1 + L2):]
-    u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR:]
-    f_ref, psd_ref = cbc.utilities.compute_power_spectral_density(
-        u_hat_ref_clipped, fs=1.0/T)
-    f_dow, psd_dow = cbc.utilities.compute_power_spectral_density(
-        u_hat_dow_clipped, fs=1.0/(T * OSR))
+    u_hat_ref_clipped = u_hat_ref[(L1 + L2) :]
+    u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR :]
+    f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(
+        u_hat_ref_clipped, fs=1.0 / T
+    )
+    f_dow, psd_dow = cbadc.utilities.compute_power_spectral_density(
+        u_hat_dow_clipped, fs=1.0 / (T * OSR)
+    )
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
     plt.legend()
     plt.ylim((-300, 50))
     plt.xlim((f_ref[1], f_ref[-1]))
-    plt.xlabel('$f$ [Hz]')
-    plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
-    plt.grid(which='both')
+    plt.xlabel("$f$ [Hz]")
+    plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
+    plt.grid(which="both")
     plt.show()
 
 
@@ -526,7 +529,7 @@ the PSD plot.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 234-244
+.. GENERATED FROM PYTHON SOURCE LINES 237-247
 
 Prepending a Virtual Bandlimiting Filter
 ----------------------------------------
@@ -539,10 +542,10 @@ a signal shaped by both the STF of the system in addition
 to a bandlimiting filter.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 244-270
+.. GENERATED FROM PYTHON SOURCE LINES 247-272
 
 .. code-block:: default
-   :lineno-start: 245
+   :lineno-start: 248
 
 
     wp = omega_3dB / 2.0
@@ -550,20 +553,19 @@ to a bandlimiting filter.
     gpass = 0.1
     gstop = 80
 
-    filter = cbc.analog_system.IIRDesign(wp, ws, gpass, gstop, ftype="ellip")
+    filter = cbadc.analog_system.IIRDesign(wp, ws, gpass, gstop, ftype="ellip")
 
     # Compute transfer functions for each frequency in frequencies
     transfer_function_filter = filter.transfer_function_matrix(omega)
 
     plt.semilogx(
-        omega/(2 * np.pi),
-        20 * np.log10(np.linalg.norm(
-            transfer_function_filter[:, 0, :],
-            axis=0)),
-        label="Cauer")
+        omega / (2 * np.pi),
+        20 * np.log10(np.linalg.norm(transfer_function_filter[:, 0, :], axis=0)),
+        label="Cauer",
+    )
     # Add labels and legends to figure
     # plt.legend()
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.title("Filter Transfer Functions")
     plt.xlabel("$f$ [Hz]")
     plt.ylabel("dB")
@@ -640,42 +642,39 @@ to a bandlimiting filter.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 271-274
+.. GENERATED FROM PYTHON SOURCE LINES 273-276
 
 New Analog System
 -------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 274-305
+.. GENERATED FROM PYTHON SOURCE LINES 276-304
 
 .. code-block:: default
-   :lineno-start: 275
+   :lineno-start: 277
 
 
-    new_analog_system = cbc.analog_system.chain([filter, analog_system])
+    new_analog_system = cbadc.analog_system.chain([filter, analog_system])
     print(new_analog_system)
 
     transfer_function_analog_system = analog_system.transfer_function_matrix(omega)
 
-    transfer_function_new_analog_system = new_analog_system.transfer_function_matrix(
-        omega)
+    transfer_function_new_analog_system = new_analog_system.transfer_function_matrix(omega)
 
     plt.semilogx(
-        omega/(2 * np.pi),
-        20 * np.log10(np.linalg.norm(
-            transfer_function_analog_system[:, 0, :],
-            axis=0)),
-        label="Default Analog System")
+        omega / (2 * np.pi),
+        20 * np.log10(np.linalg.norm(transfer_function_analog_system[:, 0, :], axis=0)),
+        label="Default Analog System",
+    )
     plt.semilogx(
-        omega/(2 * np.pi),
-        20 * np.log10(np.linalg.norm(
-            transfer_function_new_analog_system[:, 0, :],
-            axis=0)),
-        label="Combined Analog System")
+        omega / (2 * np.pi),
+        20 * np.log10(np.linalg.norm(transfer_function_new_analog_system[:, 0, :], axis=0)),
+        label="Combined Analog System",
+    )
 
     # Add labels and legends to figure
     plt.legend()
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.title("Analog System Transfer Function")
     plt.xlabel("$f$ [Hz]")
     plt.ylabel("$||\mathbf{G}(\omega)||_2$ dB")
@@ -801,7 +800,7 @@ New Analog System
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 306-311
+.. GENERATED FROM PYTHON SOURCE LINES 305-310
 
 New Digital Estimator
 --------------------------------------
@@ -809,19 +808,15 @@ New Digital Estimator
 Combining the virtual pre filter together with the default analog system
 results in the following system.
 
-.. GENERATED FROM PYTHON SOURCE LINES 311-323
+.. GENERATED FROM PYTHON SOURCE LINES 310-318
 
 .. code-block:: default
-   :lineno-start: 312
+   :lineno-start: 311
 
 
-    digital_estimator_dow_and_pre_filt = cbc.digital_estimator.FIRFilter(
-        new_analog_system,
-        digital_control,
-        eta2,
-        L1,
-        L2,
-        downsample=OSR)
+    digital_estimator_dow_and_pre_filt = cbadc.digital_estimator.FIRFilter(
+        new_analog_system, digital_control, eta2, L1, L2, downsample=OSR
+    )
     digital_estimator_dow_and_pre_filt(control_signal_sequences3)
     print(digital_estimator_dow_and_pre_filt)
 
@@ -862,7 +857,7 @@ results in the following system.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 324-329
+.. GENERATED FROM PYTHON SOURCE LINES 319-324
 
 Post filtering the FIR filter coefficients
 -----------------------------------------------------------
@@ -870,23 +865,19 @@ Post filtering the FIR filter coefficients
 Yet another approach is to, instead of pre-filtering, post filter
 the resulting FIR filter coefficients with another lowpass FIR filter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 329-384
+.. GENERATED FROM PYTHON SOURCE LINES 324-373
 
 .. code-block:: default
-   :lineno-start: 330
+   :lineno-start: 325
 
 
     numtaps = 1 << 10
     f_cutoff = 1.0 / OSR
     fir_filter = scipy.signal.firwin(numtaps, f_cutoff)
 
-    digital_estimator_dow_and_post_filt = cbc.digital_estimator.FIRFilter(
-        analog_system,
-        digital_control,
-        eta2,
-        L1,
-        L2,
-        downsample=OSR)
+    digital_estimator_dow_and_post_filt = cbadc.digital_estimator.FIRFilter(
+        analog_system, digital_control, eta2, L1, L2, downsample=OSR
+    )
     digital_estimator_dow_and_post_filt(control_signal_sequences4)
 
     # Apply the FIR post filter
@@ -898,37 +889,35 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
     f_FIR = np.fft.rfftfreq(numtaps, d=T)
     plt.figure()
     plt.semilogx(f_FIR, 20 * np.log10(np.abs(FIR_frequency_response)))
-    plt.xlabel('$f$ [Hz]')
-    plt.ylabel('$|h|$ dB')
-    plt.grid(which='both')
-
-    impulse_response_dB_dow = 20 * \
-        np.log10(np.linalg.norm(
-            np.array(digital_estimator_dow.h[0, :, :]), axis=1))
-
-    impulse_response_dB_dow_and_post_filt = 20 * \
-        np.log10(np.linalg.norm(
-            np.array(digital_estimator_dow_and_post_filt.h[0, :, :]), axis=1))
-
-    impulse_response_dB_FIR_filter = 20 * np.log10(np.abs(fir_filter[numtaps//2:]))
+    plt.xlabel("$f$ [Hz]")
+    plt.ylabel("$|h|$")
+    plt.grid(which="both")
 
     plt.figure()
-    plt.plot(np.arange(0, L1),
-             impulse_response_dB_dow[L1:],
-             label="Ref")
-    plt.plot(np.arange(0, numtaps//2),
-             impulse_response_dB_FIR_filter,
-             label="Post FIR Filter")
-    plt.plot(np.arange(0, L1),
-             impulse_response_dB_dow_and_post_filt[L1:],
-             label="Combined Post Filtered")
+    plt.semilogy(
+        np.arange(0, L1),
+        np.linalg.norm(np.array(digital_estimator_dow.h[0, :, :]), axis=1)[L1:],
+        label="Ref",
+    )
+    plt.semilogy(
+        np.arange(0, numtaps // 2),
+        np.abs(fir_filter[numtaps // 2 :]),
+        label="Post FIR Filter",
+    )
+    plt.semilogy(
+        np.arange(0, L1),
+        np.linalg.norm(np.array(digital_estimator_dow_and_post_filt.h[0, :, :]), axis=1)[
+            L1:
+        ],
+        label="Combined Post Filtered",
+    )
 
     plt.legend()
     plt.xlabel("filter tap k")
-    plt.ylabel("$|| \mathbf{h} [k]||_2$ [dB]")
+    plt.ylabel("$|| \mathbf{h} [k]||_2$")
     plt.xlim((0, 1024))
-    plt.ylim((-160, 0))
-    plt.grid(which='both')
+    plt.ylim((1e-16, 1))
+    plt.grid(which="both")
 
 
 
@@ -982,7 +971,7 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 385-390
+.. GENERATED FROM PYTHON SOURCE LINES 374-379
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
@@ -990,43 +979,59 @@ Plotting the Estimator's Signal and Noise Transfer Function
 Next we visualize the resulting STF and NTF of the new digital estimator
 filters.
 
-.. GENERATED FROM PYTHON SOURCE LINES 390-428
+.. GENERATED FROM PYTHON SOURCE LINES 379-433
 
 .. code-block:: default
-   :lineno-start: 391
+   :lineno-start: 380
 
 
     # Compute NTF
     ntf_pre = digital_estimator_dow_and_pre_filt.noise_transfer_function(omega)
-    ntf_post = digital_estimator_dow_and_post_filt.noise_transfer_function(
-        2 * np.pi * f_FIR) * FIR_frequency_response
+    ntf_post = (
+        digital_estimator_dow_and_post_filt.noise_transfer_function(2 * np.pi * f_FIR)
+        * FIR_frequency_response
+    )
     ntf_dow = digital_estimator_dow.noise_transfer_function(omega)
 
     # Compute STF
     stf_pre = digital_estimator_dow_and_pre_filt.signal_transfer_function(omega)
     stf_dB_pre = 20 * np.log10(np.abs(stf_pre.flatten()))
-    stf_post = digital_estimator_dow_and_post_filt.signal_transfer_function(
-        2 * np.pi * f_FIR) * FIR_frequency_response
+    stf_post = (
+        digital_estimator_dow_and_post_filt.signal_transfer_function(2 * np.pi * f_FIR)
+        * FIR_frequency_response
+    )
     stf_dB_post = 20 * np.log10(np.abs(stf_post.flatten()))
     stf_dow = digital_estimator_dow.signal_transfer_function(omega)
     stf_dow_dB = 20 * np.log10(np.abs(stf_dow.flatten()))
 
     # Plot
     plt.figure()
-    plt.semilogx(omega/(2 * np.pi), stf_dB_pre, label='$STF(\omega)$ pre-filter')
-    plt.semilogx(f_FIR, stf_dB_post, label='$STF(\omega)$ post-filter')
-    plt.semilogx(omega/(2 * np.pi), stf_dow_dB,
-                 label='$STF(\omega)$ ref',  color='black')
-    plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
-        ntf_pre[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ pre-filter")
-    plt.semilogx(f_FIR, 20 * np.log10(np.linalg.norm(
-        ntf_post[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ post-filter")
-    plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
-        ntf_dow[:, 0, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $ ref", color='black')
+    plt.semilogx(omega / (2 * np.pi), stf_dB_pre, label="$STF(\omega)$ pre-filter")
+    plt.semilogx(f_FIR, stf_dB_post, label="$STF(\omega)$ post-filter")
+    plt.semilogx(omega / (2 * np.pi), stf_dow_dB, label="$STF(\omega)$ ref", color="black")
+    plt.semilogx(
+        omega / (2 * np.pi),
+        20 * np.log10(np.linalg.norm(ntf_pre[:, 0, :], axis=0)),
+        "--",
+        label="$ || NTF(\omega) ||_2 $ pre-filter",
+    )
+    plt.semilogx(
+        f_FIR,
+        20 * np.log10(np.linalg.norm(ntf_post[:, 0, :], axis=0)),
+        "--",
+        label="$ || NTF(\omega) ||_2 $ post-filter",
+    )
+    plt.semilogx(
+        omega / (2 * np.pi),
+        20 * np.log10(np.linalg.norm(ntf_dow[:, 0, :], axis=0)),
+        "--",
+        label="$ || NTF(\omega) ||_2 $ ref",
+        color="black",
+    )
 
     # Add labels and legends to figure
     plt.legend()
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.title("Signal and noise transfer functions")
     plt.xlabel("$f$ [Hz]")
     plt.ylabel("dB")
@@ -1047,15 +1052,15 @@ filters.
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:412: RuntimeWarning: divide by zero encountered in log10
-      plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:416: RuntimeWarning: divide by zero encountered in log10
-      plt.semilogx(omega/(2 * np.pi), 20 * np.log10(np.linalg.norm(
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:406: RuntimeWarning: divide by zero encountered in log10
+      20 * np.log10(np.linalg.norm(ntf_pre[:, 0, :], axis=0)),
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_c_downsample.py:418: RuntimeWarning: divide by zero encountered in log10
+      20 * np.log10(np.linalg.norm(ntf_dow[:, 0, :], axis=0)),
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 429-436
+.. GENERATED FROM PYTHON SOURCE LINES 434-441
 
 Filtering Estimate
 --------------------
@@ -1065,37 +1070,45 @@ Clearly, both the pre and post filter effectively suppresses the aliasing
 effect.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 436-464
+.. GENERATED FROM PYTHON SOURCE LINES 441-477
 
 .. code-block:: default
-   :lineno-start: 437
+   :lineno-start: 442
 
 
     u_hat_dow_and_pre_filt = np.zeros(size // OSR)
     u_hat_dow_and_post_filt = np.zeros(size // OSR)
-    for index in cbc.utilities.show_status(range(size // OSR)):
+    for index in cbadc.utilities.show_status(range(size // OSR)):
         u_hat_dow_and_pre_filt[index] = next(digital_estimator_dow_and_pre_filt)
         u_hat_dow_and_post_filt[index] = next(digital_estimator_dow_and_post_filt)
 
     plt.figure()
-    u_hat_dow_and_pre_filt_clipped = u_hat_dow_and_pre_filt[(L1 + L2) // OSR:]
-    u_hat_dow_and_post_filt_clipped = u_hat_dow_and_post_filt[(L1 + L2) // OSR:]
-    _, psd_dow_and_pre_filt = cbc.utilities.compute_power_spectral_density(
-        u_hat_dow_and_pre_filt_clipped, fs=1.0/(T * OSR))
-    _, psd_dow_and_post_filt = cbc.utilities.compute_power_spectral_density(
-        u_hat_dow_and_post_filt_clipped, fs=1.0/(T * OSR))
+    u_hat_dow_and_pre_filt_clipped = u_hat_dow_and_pre_filt[(L1 + L2) // OSR :]
+    u_hat_dow_and_post_filt_clipped = u_hat_dow_and_post_filt[(L1 + L2) // OSR :]
+    _, psd_dow_and_pre_filt = cbadc.utilities.compute_power_spectral_density(
+        u_hat_dow_and_pre_filt_clipped, fs=1.0 / (T * OSR)
+    )
+    _, psd_dow_and_post_filt = cbadc.utilities.compute_power_spectral_density(
+        u_hat_dow_and_post_filt_clipped, fs=1.0 / (T * OSR)
+    )
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\hat{U}(f)$ Referefence")
     plt.semilogx(f_dow, 10 * np.log10(psd_dow), label="$\hat{U}(f)$ Downsampled")
-    plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_pre_filt),
-                 label="$\hat{U}(f)$ Downsampled & Pre Filtered")
-    plt.semilogx(f_dow, 10 * np.log10(psd_dow_and_post_filt),
-                 label="$\hat{U}(f)$ Downsampled & Post Filtered")
+    plt.semilogx(
+        f_dow,
+        10 * np.log10(psd_dow_and_pre_filt),
+        label="$\hat{U}(f)$ Downsampled & Pre Filtered",
+    )
+    plt.semilogx(
+        f_dow,
+        10 * np.log10(psd_dow_and_post_filt),
+        label="$\hat{U}(f)$ Downsampled & Post Filtered",
+    )
     plt.legend()
     plt.ylim((-300, 50))
     plt.xlim((f_ref[1], f_ref[-1]))
-    plt.xlabel('$f$ [Hz]')
-    plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
-    plt.grid(which='both')
+    plt.xlabel("$f$ [Hz]")
+    plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
+    plt.grid(which="both")
     plt.show()
 
 
@@ -1112,14 +1125,14 @@ effect.
 
  .. code-block:: none
 
-      0%|          | 0/8192 [00:00<?, ?it/s]      1%|          | 44/8192 [00:00<00:21, 376.68it/s]      2%|2         | 195/8192 [00:00<00:08, 998.73it/s]      4%|4         | 350/8192 [00:00<00:06, 1237.62it/s]      6%|6         | 504/8192 [00:00<00:05, 1353.87it/s]      8%|7         | 653/8192 [00:00<00:05, 1401.06it/s]     10%|9         | 807/8192 [00:00<00:05, 1445.60it/s]     12%|#1        | 961/8192 [00:00<00:04, 1474.62it/s]     14%|#3        | 1117/8192 [00:00<00:04, 1498.88it/s]     16%|#5        | 1272/8192 [00:00<00:04, 1512.80it/s]     17%|#7        | 1428/8192 [00:01<00:04, 1525.12it/s]     19%|#9        | 1584/8192 [00:01<00:04, 1533.30it/s]     21%|##1       | 1740/8192 [00:01<00:04, 1539.17it/s]     23%|##3       | 1895/8192 [00:01<00:04, 1541.69it/s]     25%|##5       | 2050/8192 [00:01<00:03, 1542.12it/s]     27%|##6       | 2206/8192 [00:01<00:03, 1544.48it/s]     29%|##8       | 2362/8192 [00:01<00:03, 1546.29it/s]     31%|###       | 2517/8192 [00:01<00:03, 1547.03it/s]     33%|###2      | 2673/8192 [00:01<00:03, 1548.20it/s]     35%|###4      | 2828/8192 [00:01<00:03, 1417.38it/s]     36%|###6      | 2972/8192 [00:02<00:03, 1325.61it/s]     38%|###7      | 3107/8192 [00:02<00:03, 1290.38it/s]     40%|###9      | 3262/8192 [00:02<00:03, 1359.09it/s]     42%|####1     | 3417/8192 [00:02<00:03, 1410.70it/s]     44%|####3     | 3572/8192 [00:02<00:03, 1448.45it/s]     45%|####5     | 3727/8192 [00:02<00:03, 1476.22it/s]     47%|####7     | 3882/8192 [00:02<00:02, 1496.42it/s]     49%|####9     | 4037/8192 [00:02<00:02, 1511.39it/s]     51%|#####1    | 4192/8192 [00:02<00:02, 1519.90it/s]     53%|#####3    | 4347/8192 [00:02<00:02, 1528.52it/s]     55%|#####4    | 4502/8192 [00:03<00:02, 1533.51it/s]     57%|#####6    | 4657/8192 [00:03<00:02, 1538.10it/s]     59%|#####8    | 4812/8192 [00:03<00:02, 1539.23it/s]     61%|######    | 4967/8192 [00:03<00:02, 1541.06it/s]     63%|######2   | 5122/8192 [00:03<00:01, 1541.80it/s]     64%|######4   | 5277/8192 [00:03<00:01, 1543.15it/s]     66%|######6   | 5432/8192 [00:03<00:01, 1543.26it/s]     68%|######8   | 5587/8192 [00:03<00:01, 1543.36it/s]     70%|#######   | 5742/8192 [00:03<00:01, 1542.04it/s]     72%|#######1  | 5897/8192 [00:04<00:01, 1542.70it/s]     74%|#######3  | 6052/8192 [00:04<00:01, 1542.59it/s]     76%|#######5  | 6207/8192 [00:04<00:01, 1367.20it/s]     77%|#######7  | 6348/8192 [00:04<00:01, 1315.16it/s]     79%|#######9  | 6501/8192 [00:04<00:01, 1373.14it/s]     81%|########1 | 6656/8192 [00:04<00:01, 1421.43it/s]     83%|########3 | 6811/8192 [00:04<00:00, 1457.69it/s]     85%|########5 | 6966/8192 [00:04<00:00, 1482.94it/s]     87%|########6 | 7121/8192 [00:04<00:00, 1500.30it/s]     89%|########8 | 7275/8192 [00:04<00:00, 1510.01it/s]     91%|######### | 7430/8192 [00:05<00:00, 1521.02it/s]     93%|#########2| 7585/8192 [00:05<00:00, 1527.93it/s]     94%|#########4| 7740/8192 [00:05<00:00, 1533.68it/s]     96%|#########6| 7895/8192 [00:05<00:00, 1537.78it/s]     98%|#########8| 8050/8192 [00:05<00:00, 1539.78it/s]    100%|##########| 8192/8192 [00:05<00:00, 1474.27it/s]
+      0%|          | 0/8192 [00:00<?, ?it/s]      2%|1         | 156/8192 [00:00<00:05, 1557.76it/s]      4%|3         | 312/8192 [00:00<00:05, 1445.60it/s]      6%|5         | 473/8192 [00:00<00:05, 1513.89it/s]      8%|7         | 634/8192 [00:00<00:04, 1547.78it/s]     10%|9         | 790/8192 [00:00<00:04, 1493.82it/s]     12%|#1        | 951/8192 [00:00<00:04, 1529.96it/s]     14%|#3        | 1112/8192 [00:00<00:04, 1554.69it/s]     15%|#5        | 1268/8192 [00:00<00:04, 1390.25it/s]     17%|#7        | 1411/8192 [00:00<00:05, 1353.65it/s]     19%|#9        | 1560/8192 [00:01<00:04, 1392.05it/s]     21%|##        | 1715/8192 [00:01<00:04, 1435.05it/s]     23%|##2       | 1861/8192 [00:01<00:04, 1280.67it/s]     24%|##4       | 1993/8192 [00:01<00:05, 1073.56it/s]     26%|##5       | 2108/8192 [00:01<00:05, 1051.97it/s]     28%|##7       | 2267/8192 [00:01<00:04, 1185.08it/s]     30%|##9       | 2428/8192 [00:01<00:04, 1296.17it/s]     32%|###1      | 2588/8192 [00:01<00:04, 1376.95it/s]     33%|###3      | 2731/8192 [00:02<00:04, 1259.81it/s]     35%|###5      | 2894/8192 [00:02<00:03, 1356.46it/s]     37%|###7      | 3035/8192 [00:02<00:04, 1098.78it/s]     39%|###9      | 3195/8192 [00:02<00:04, 1217.39it/s]     41%|####      | 3328/8192 [00:02<00:03, 1217.64it/s]     42%|####2     | 3458/8192 [00:02<00:03, 1220.13it/s]     44%|####3     | 3586/8192 [00:02<00:03, 1198.95it/s]     46%|####5     | 3746/8192 [00:02<00:03, 1307.65it/s]     48%|####7     | 3907/8192 [00:02<00:03, 1391.62it/s]     49%|####9     | 4050/8192 [00:03<00:03, 1296.03it/s]     51%|#####1    | 4212/8192 [00:03<00:02, 1384.36it/s]     53%|#####3    | 4363/8192 [00:03<00:02, 1418.96it/s]     55%|#####5    | 4525/8192 [00:03<00:02, 1475.38it/s]     57%|#####7    | 4675/8192 [00:03<00:02, 1199.01it/s]     59%|#####8    | 4808/8192 [00:03<00:02, 1229.46it/s]     61%|######    | 4968/8192 [00:03<00:02, 1325.31it/s]     62%|######2   | 5108/8192 [00:03<00:02, 1344.16it/s]     64%|######4   | 5252/8192 [00:03<00:02, 1368.70it/s]     66%|######6   | 5414/8192 [00:04<00:01, 1439.58it/s]     68%|######8   | 5574/8192 [00:04<00:01, 1485.88it/s]     70%|#######   | 5736/8192 [00:04<00:01, 1524.95it/s]     72%|#######1  | 5891/8192 [00:04<00:01, 1422.03it/s]     74%|#######3  | 6036/8192 [00:04<00:01, 1295.18it/s]     76%|#######5  | 6188/8192 [00:04<00:01, 1327.17it/s]     77%|#######7  | 6324/8192 [00:04<00:01, 1178.88it/s]     79%|#######8  | 6447/8192 [00:04<00:01, 1183.42it/s]     81%|########  | 6602/8192 [00:05<00:01, 1279.70it/s]     82%|########2 | 6750/8192 [00:05<00:01, 1333.78it/s]     84%|########4 | 6911/8192 [00:05<00:00, 1410.60it/s]     86%|########6 | 7064/8192 [00:05<00:00, 1443.46it/s]     88%|########8 | 7226/8192 [00:05<00:00, 1492.22it/s]     90%|######### | 7388/8192 [00:05<00:00, 1528.21it/s]     92%|#########2| 7542/8192 [00:05<00:00, 1328.39it/s]     94%|#########4| 7703/8192 [00:05<00:00, 1403.51it/s]     96%|#########5| 7848/8192 [00:05<00:00, 1229.62it/s]     97%|#########7| 7980/8192 [00:06<00:00, 1250.11it/s]     99%|#########9| 8122/8192 [00:06<00:00, 1293.63it/s]    100%|##########| 8192/8192 [00:06<00:00, 1329.89it/s]
     /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
       warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 465-472
+.. GENERATED FROM PYTHON SOURCE LINES 478-485
 
 In Time Domain
 ---------------
@@ -1129,24 +1142,26 @@ the different filter realization all result in different filter lags.
 Naturally, the filter lag follows from the choice of K1, K2, and the pre or
 post filter design and is therefore a known parameter.
 
-.. GENERATED FROM PYTHON SOURCE LINES 472-490
+.. GENERATED FROM PYTHON SOURCE LINES 485-505
 
 .. code-block:: default
-   :lineno-start: 473
+   :lineno-start: 486
 
 
     t = np.arange(size)
     t_down = np.arange(size // OSR) * OSR
     plt.plot(t, u_hat_ref, label="$\hat{u}(t)$ Reference")
     plt.plot(t_down, u_hat_dow, label="$\hat{u}(t)$ Downsampled")
-    plt.plot(t_down, u_hat_dow_and_pre_filt,
-             label="$\hat{u}(t)$ Downsampled and Pre Filtered")
-    plt.plot(t_down, u_hat_dow_and_post_filt,
-             label="$\hat{u}(t)$ Downsampled and Post Filtered")
-    plt.xlabel('$t / T$')
+    plt.plot(
+        t_down, u_hat_dow_and_pre_filt, label="$\hat{u}(t)$ Downsampled and Pre Filtered"
+    )
+    plt.plot(
+        t_down, u_hat_dow_and_post_filt, label="$\hat{u}(t)$ Downsampled and Post Filtered"
+    )
+    plt.xlabel("$t / T$")
     plt.legend()
     plt.title("Estimated input signal")
-    plt.grid(which='both')
+    plt.grid(which="both")
     offset = (L1 + L2) * 4
     plt.xlim((offset, offset + 1000))
     plt.ylim((-0.6, 0.6))
@@ -1163,7 +1178,7 @@ post filter design and is therefore a known parameter.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 491-498
+.. GENERATED FROM PYTHON SOURCE LINES 506-513
 
 Compare Filter Coefficients
 ---------------------------
@@ -1173,32 +1188,38 @@ implementations. Keep in mind that the for this example the pre and post
 filter are parametrized such that the formed slightly outperforms the latter
 in terms of precision (see the PSD plot above).
 
-.. GENERATED FROM PYTHON SOURCE LINES 498-520
+.. GENERATED FROM PYTHON SOURCE LINES 513-541
 
 .. code-block:: default
-   :lineno-start: 499
+   :lineno-start: 514
 
 
-    impulse_response_dB_dow_and_pre_filt = 20 * \
-        np.log10(np.linalg.norm(
-            np.array(digital_estimator_dow_and_pre_filt.h[0, :, :]), axis=1))
+    plt.semilogy(
+        np.arange(0, L1),
+        np.linalg.norm(np.array(digital_estimator_dow.h[0, :, :]), axis=1)[L1:],
+        label="Ref",
+    )
 
-    plt.plot(np.arange(0, L1),
-             impulse_response_dB_dow[L1:],
-             label="Ref")
-
-    plt.plot(np.arange(0, L1),
-             impulse_response_dB_dow_and_pre_filt[L1:],
-             label="Pre Filtered")
-    plt.plot(np.arange(0, L1),
-             impulse_response_dB_dow_and_post_filt[L1:],
-             label="Post Filtered")
+    plt.semilogy(
+        np.arange(0, L1),
+        np.linalg.norm(np.array(digital_estimator_dow_and_pre_filt.h[0, :, :]), axis=1)[
+            L1:
+        ],
+        label="Pre Filtered",
+    )
+    plt.semilogy(
+        np.arange(0, L1),
+        np.linalg.norm(np.array(digital_estimator_dow_and_post_filt.h[0, :, :]), axis=1)[
+            L1:
+        ],
+        label="Post Filtered",
+    )
     plt.legend()
     plt.xlabel("filter tap k")
-    plt.ylabel("$|| \mathbf{h} [k]||_2$ [dB]")
+    plt.ylabel("$|| \mathbf{h} [k]||_2$")
     plt.xlim((0, 1024))
-    plt.ylim((-160, -20))
-    plt.grid(which='both')
+    plt.ylim((1e-16, 1))
+    plt.grid(which="both")
 
 
 
@@ -1214,7 +1235,7 @@ in terms of precision (see the PSD plot above).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  13.646 seconds)
+   **Total running time of the script:** ( 1 minutes  18.024 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_c_downsample.py:
