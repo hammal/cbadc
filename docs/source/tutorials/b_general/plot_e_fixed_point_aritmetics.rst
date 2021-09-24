@@ -218,8 +218,8 @@ Note the truncation in the impulse response as a result of the
     )
 
     # Instantiate digital estimator
-    K1 = 1 << 8
-    K2 = 1 << 8
+    K1 = 1 << 9
+    K2 = 1 << 9
     digital_estimator = cbadc.digital_estimator.FIRFilter(
         analog_system, digital_control, eta2, K1, K2, fixed_point=fixed_point
     )
@@ -261,7 +261,7 @@ Note the truncation in the impulse response as a result of the
 
  .. code-block:: none
 
-    Total number of filter coefficients = 934
+    Total number of filter coefficients = 1034
 
 
 
@@ -273,14 +273,14 @@ Fixed Point Arithmetic Precision
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-235
+.. GENERATED FROM PYTHON SOURCE LINES 124-176
 
 .. code-block:: default
    :lineno-start: 126
 
 
 
-    fixed_point_precision = np.arange(8, 17)
+    fixed_point_precision = np.array([8, 10, 12, 14, 16, 20, 24])
 
     control_signal_sequences = [
         cbadc.utilities.byte_stream_2_control_signal(
@@ -292,10 +292,10 @@ Fixed Point Arithmetic Precision
         for _ in fixed_point_precision
     ]
 
-    size = 1 << 14
+    size = 1 << 16
     u_hat = np.zeros(size)
 
-    fixed_points = [cbadc.utilities.FixedPoint(bits, 2.0) for bits in fixed_point_precision]
+    fixed_points = [cbadc.utilities.FixedPoint(bits, 1.0) for bits in fixed_point_precision]
 
 
     digital_estimators = [
@@ -307,7 +307,7 @@ Fixed Point Arithmetic Precision
 
     for index, bits in enumerate(fixed_point_precision):
         print(
-            f"Precision = {bits} bits, number of non-zero filter coefficients = {digital_estimators[index].number_of_filter_coefficients()}"
+            f"Precision = {bits} bits, total number of non-zero filter coefficients = {digital_estimators[index].number_of_filter_coefficients()}"
         )
 
 
@@ -325,9 +325,110 @@ Fixed Point Arithmetic Precision
             )
         plt.legend()
         plt.xlabel("filter tap $k$")
-        plt.ylabel(f"$h_[k, {m}]" + " / \text{max float}$")
+        plt.ylabel(f"$h_[k, {m}]" + " / max$")
         plt.xlim((0, K2))
+        plt.ylim((1e-7, 1e0))
         plt.grid(which="both")
+
+
+
+
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_002.png
+          :alt: plot e fixed point aritmetics
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_003.png
+          :alt: plot e fixed point aritmetics
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_004.png
+          :alt: plot e fixed point aritmetics
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_005.png
+          :alt: plot e fixed point aritmetics
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_006.png
+          :alt: plot e fixed point aritmetics
+          :class: sphx-glr-multi-img
+
+    *
+
+      .. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_007.png
+          :alt: plot e fixed point aritmetics
+          :class: sphx-glr-multi-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Precision = 8 bits, total number of non-zero filter coefficients = 50
+    Precision = 10 bits, total number of non-zero filter coefficients = 100
+    Precision = 12 bits, total number of non-zero filter coefficients = 172
+    Precision = 14 bits, total number of non-zero filter coefficients = 335
+    Precision = 16 bits, total number of non-zero filter coefficients = 538
+    Precision = 20 bits, total number of non-zero filter coefficients = 1034
+    Precision = 24 bits, total number of non-zero filter coefficients = 1675
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 177-180
+
+Resulting PSD
+---------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 180-247
+
+.. code-block:: default
+   :lineno-start: 181
+
+
+    plt.rcParams["figure.figsize"] = [12, 8]
+    plt.figure()
+    u_hats = []
+    description = []
+    for index_de, bits in enumerate(fixed_point_precision):
+        # Compute estimates for each estimator
+        for index in range(size):
+            u_hat[index] = next(digital_estimators[index_de])
+        u_hats.append(np.copy(u_hat))
+
+        # Compute power spectral density
+        f, psd = cbadc.utilities.compute_power_spectral_density(u_hat[K1:])
+        signal_index = cbadc.utilities.find_sinusoidal(psd, 50)
+        noise_index = np.ones(psd.size, dtype=bool)
+        noise_index[signal_index] = False
+        noise_index[0:2] = False
+        noise_index[size // OSR :] = False
+        res = cbadc.utilities.snr_spectrum_computation_extended(
+            psd, signal_index, noise_index, fs=1 / T
+        )
+        SNR = 10 * np.log10(res["snr"])
+        ENOB = np.round((SNR - 1.76) / 6.02, 1)
+        description.append(
+            f"ENOB={ENOB}, fixed point precision={bits} bits, #coeff={digital_estimators[index_de].number_of_filter_coefficients()})"
+        )
+        # Plot the FIR filters
+        plt.semilogx(f, 10 * np.log10(psd), label=description[-1])
 
     digital_estimators_ref = cbadc.digital_estimator.FIRFilter(
         analog_system, digital_control, eta2, K1, K2
@@ -344,61 +445,72 @@ Fixed Point Arithmetic Precision
 
     for index in range(size):
         u_hat[index] = next(digital_estimators_ref)
-    f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_hat)
+    u_hats.append(np.copy(u_hat))
+    f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_hat[K1:])
+    signal_index = cbadc.utilities.find_sinusoidal(psd_ref, 50)
+    noise_index = np.ones(psd_ref.size, dtype=bool)
+    noise_index[signal_index] = False
+    noise_index[0:2] = False
+    noise_index[size // OSR :] = False
+    res = cbadc.utilities.snr_spectrum_computation_extended(
+        psd_ref, signal_index, noise_index, fs=1 / T
+    )
+    SNR = 10 * np.log10(res["snr"])
+    ENOB = np.round((SNR - 1.76) / 6.02, 1)
+    description.append(f"Ref, ENOB={ENOB}")
+
+    plt.semilogx(f_ref, 10 * np.log10(psd_ref), label=description[-1])
+
+    plt.legend()
+    plt.xlabel("frequency [Hz]")
+    plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    plt.ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
+    plt.xlim((0.0002, 0.5))
+    _ = plt.ylim((-150, 40))
 
 
-    u_hats = []
-    fig, ax = plt.subplots(fixed_point_precision.size, 1)
-    plt.rcParams["figure.figsize"] = [6.40, 6.40 * 4]
-    for index_de, bits in enumerate(fixed_point_precision):
-        # Compute estimates for each estimator
-        for index in range(size):
-            u_hat[index] = next(digital_estimators[index_de])
-        u_hats.append(np.copy(u_hat))
-
-        # Compute power spectral density
-        f, psd = cbadc.utilities.compute_power_spectral_density(u_hat[K1:])
-        signal_index = cbadc.utilities.find_sinusoidal(psd, 50)
-        if (signal_index == psd.size).any():
-            signal_index = np.arange(10)
-        noise_index = np.ones(psd.size, dtype=bool)
-        noise_index[signal_index] = False
-        noise_index[0:2] = False
-        noise_index[size // OSR :] = False
-        res = cbadc.utilities.snr_spectrum_computation_extended(
-            psd, signal_index, noise_index, fs=fs
-        )
-        SNR = 10 * np.log10(res["snr"])
-        ENOB = np.round((SNR - 1.76) / 6.02, 1)
-        print(f"SNR {round( SNR, 2)} dB, ENOB {ENOB}, fixed point precision = {bits}\n")
-
-        # Plot the FIR filters
-        color = next(ax[index_de]._get_lines.prop_cycler)["color"]
-
-        ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-        ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-
-        ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref), label="Reference", color="k")
-
-        ax[index_de].semilogx(f, 10 * np.log10(psd), label=f"bits={bits}", color=color)
-
-        ax[index_de].set_ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
-
-        ax[index_de].legend()
-        ax[index_de].set_xlim((0.0002, 0.5))
-
-    ax[-1].set_xlabel("frequency [Hz]")
-    fig.tight_layout()
 
 
-.. rst-class:: sphx-glr-script-out
+.. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_008.png
+    :alt: plot e fixed point aritmetics
+    :class: sphx-glr-single-img
 
-.. code-block:: pytb
 
-    Traceback (most recent call last):
-      File "/drives1/PhD/cbadc/docs/code_examples/b_general/plot_e_fixed_point_aritmetics.py", line 211, in <module>
-        res = cbadc.utilities.snr_spectrum_computation_extended(
-    AttributeError: module 'cbadc.utilities' has no attribute 'snr_spectrum_computation_extended'
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 248-251
+
+Time Snap Shot
+--------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 251-265
+
+.. code-block:: default
+   :lineno-start: 252
+
+
+    # Plot snapshot in time domain
+    plt.rcParams["figure.figsize"] = [6.40, 6.40]
+    plt.figure()
+    plt.title("Estimates in time domain")
+    for index in range(len(fixed_point_precision + 1)):
+        t_fir = np.arange(-K1 + 1, size - K2 + 1,)
+        plt.plot(t_fir, u_hats[index], label=description[index])
+    plt.ylabel("$\hat{u}(t)$")
+    plt.xlim((64000, 64500))
+    plt.ylim((-0.6, 0.6))
+    plt.xlabel("$t / T$")
+    _ = plt.legend()
+
+
+
+
+.. image:: /tutorials/b_general/images/sphx_glr_plot_e_fixed_point_aritmetics_009.png
+    :alt: Estimates in time domain
+    :class: sphx-glr-single-img
+
 
 
 
@@ -406,7 +518,7 @@ Fixed Point Arithmetic Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  42.463 seconds)
+   **Total running time of the script:** ( 1 minutes  39.845 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_e_fixed_point_aritmetics.py:

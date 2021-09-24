@@ -390,6 +390,9 @@ def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
 
     """
     candidate_peak = np.argmax(np.abs(spectrum))
+    # if no peak then put at first frequencies
+    if (candidate_peak + mask_width) // 2 >= spectrum.size:
+        candidate_peak = mask_width
     return np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2)
 
 

@@ -1248,9 +1248,7 @@ class FIRFilter(DigitalEstimator):
         # For transfer functions
         self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
         # Compute filter coefficients
-        DigitalEstimator._compute_filter_coefficients(
-            self, analog_system, digital_control, eta2
-        )
+        self._compute_filter_coefficients(analog_system, digital_control, eta2)
 
         # Initialize filter.
         if self.fixed_point:
@@ -1762,7 +1760,10 @@ class FIRFilter(DigitalEstimator):
             f.write(f"#define K2 {self.K2}" + os.linesep)
             f.write(f"#define K3 {self.K3}" + os.linesep)
             # self.h.shape -> (L, K3, M)
-            f.write("double h[L][M][K3] = ")
+            if self.fixed_point:
+                f.write("int h[L][M][K3] = ")
+            else:
+                f.write("double h[L][M][K3] = ")
             f.write("{")
             for l in range(self.analog_system.L):
                 f.write("{")
