@@ -1,0 +1,61 @@
+
+
+Examples using ``cbadc.digital_estimator.FIRFilter.signal_transfer_function``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how to set up the FIR filter implementation.">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
+     :alt: Digital Estimator as FIR Filter
+
+     :ref:`sphx_glr_tutorials_b_general_plot_b_FIR_Filtering.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_tutorials_b_general_plot_b_FIR_Filtering.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to configure the digital estimator for downsampling.">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_c_downsample_thumb.png
+     :alt: Downsampling
+
+     :ref:`sphx_glr_tutorials_b_general_plot_c_downsample.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_tutorials_b_general_plot_c_downsample.py`
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we show how to use switched-capacitor digital control in combination with a co...">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_e_switched_capacitor_digital_control_thumb.png
+     :alt: Switched-Capacitor Digital Control
+
+     :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py`

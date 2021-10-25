@@ -1,0 +1,23 @@
+
+
+Examples using ``cbadc.digital_control.RCImpulseResponse``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we show how to use switched-capacitor digital control in combination with a co...">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_e_switched_capacitor_digital_control_thumb.png
+     :alt: Switched-Capacitor Digital Control
+
+     :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py`
+
+.. raw:: html
+
+    </div>
+
+.. only:: not html
+
+ * :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py`

@@ -241,16 +241,6 @@ class DigitalEstimator(Iterator[np.ndarray]):
     def filter_lag(self):
         """Return the lag of the filter.
 
-        As the filter computes the estimate as
-
-        ---------
-        |   K2  |
-        ---------
-        ^
-        |
-        u_hat[k]
-
-
         Returns
         -------
         `int`
@@ -1697,15 +1687,6 @@ class FIRFilter(DigitalEstimator):
 
     def filter_lag(self):
         """Return the lag of the filter.
-
-        As the filter computes the estimate as
-        -----------------
-        |   K1  |   K2  |
-        -----------------
-                ^
-                |
-                u_hat[k]
-
 
         Returns
         -------

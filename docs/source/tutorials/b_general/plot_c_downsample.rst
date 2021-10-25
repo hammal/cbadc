@@ -145,7 +145,8 @@ analog system and digital control.
 
     The Digital Control is parameterized as:
     T = 8e-05,
-    M = 6, and next update at
+    M = 6,
+    and next update at
     t = 8e-05
 
 
@@ -348,9 +349,10 @@ Visualize Estimator's Transfer Function
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_001.png
-    :alt: Signal and noise transfer functions
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_001.png
+   :alt: Signal and noise transfer functions
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_001.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -506,25 +508,18 @@ the PSD plot.
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_002.png
-          :alt: Estimated input signal
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_002.png
+         :alt: Estimated input signal
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_002.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_003.png
-          :alt: plot c downsample
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_003.png
+         :alt: plot c downsample
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_003.png
+         :class: sphx-glr-multi-img
 
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
-      warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
@@ -575,69 +570,11 @@ to a bandlimiting filter.
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_004.png
-    :alt: Filter Transfer Functions
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_004.png
+   :alt: Filter Transfer Functions
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_004.png
+   :class: sphx-glr-single-img
 
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    [6 3 5 2 4 1 0]
-    [3 0 4 1 5 2]
-    The analog system is parameterized as:
-    A =
-    [[ -158.38991952  2539.20594553]
-     [-2539.20594553  -158.38991952]],
-    B =
-    [[1.30646843]
-     [0.        ]],
-    CT = 
-    [[  -316.77983904 -26439.53111383]],
-    Gamma =
-    None,
-    Gamma_tildeT =
-    None, and D=[[1.30646843]]
-    The analog system is parameterized as:
-    A =
-    [[ -507.42484717  2151.20032347]
-     [-2151.20032347  -507.42484717]],
-    B =
-    [[1.30646843]
-     [0.        ]],
-    CT = 
-    [[-1014.84969433 -9539.6006361 ]],
-    Gamma =
-    None,
-    Gamma_tildeT =
-    None, and D=[[1.30646843]]
-    The analog system is parameterized as:
-    A =
-    [[ -872.67796009  1287.51180494]
-     [-1287.51180494  -872.67796009]],
-    B =
-    [[1.30646843]
-     [0.        ]],
-    CT = 
-    [[ -1745.35592017 -12669.31428504]],
-    Gamma =
-    None,
-    Gamma_tildeT =
-    None, and D=[[1.30646843]]
-    The analog system is parameterized as:
-    A =
-    [[-1049.83492627]],
-    B =
-    [[1.1430085]],
-    CT = 
-    [[1.]],
-    Gamma =
-    None,
-    Gamma_tildeT =
-    None, and D=[[0.]]
 
 
 
@@ -684,9 +621,10 @@ New Analog System
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_005.png
-    :alt: Analog System Transfer Function
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_005.png
+   :alt: Analog System Transfer Function
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_005.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -927,15 +865,17 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_006.png
-          :alt: plot c downsample
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_006.png
+         :alt: plot c downsample
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_006.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_007.png
-          :alt: plot c downsample
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_007.png
+         :alt: plot c downsample
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_007.png
+         :class: sphx-glr-multi-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -1041,9 +981,10 @@ filters.
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_008.png
-    :alt: Signal and noise transfer functions
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_008.png
+   :alt: Signal and noise transfer functions
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_008.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -1114,9 +1055,10 @@ effect.
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_009.png
-    :alt: plot c downsample
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_009.png
+   :alt: plot c downsample
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_009.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -1125,9 +1067,7 @@ effect.
 
  .. code-block:: none
 
-      0%|          | 0/8192 [00:00<?, ?it/s]      2%|1         | 156/8192 [00:00<00:05, 1557.76it/s]      4%|3         | 312/8192 [00:00<00:05, 1445.60it/s]      6%|5         | 473/8192 [00:00<00:05, 1513.89it/s]      8%|7         | 634/8192 [00:00<00:04, 1547.78it/s]     10%|9         | 790/8192 [00:00<00:04, 1493.82it/s]     12%|#1        | 951/8192 [00:00<00:04, 1529.96it/s]     14%|#3        | 1112/8192 [00:00<00:04, 1554.69it/s]     15%|#5        | 1268/8192 [00:00<00:04, 1390.25it/s]     17%|#7        | 1411/8192 [00:00<00:05, 1353.65it/s]     19%|#9        | 1560/8192 [00:01<00:04, 1392.05it/s]     21%|##        | 1715/8192 [00:01<00:04, 1435.05it/s]     23%|##2       | 1861/8192 [00:01<00:04, 1280.67it/s]     24%|##4       | 1993/8192 [00:01<00:05, 1073.56it/s]     26%|##5       | 2108/8192 [00:01<00:05, 1051.97it/s]     28%|##7       | 2267/8192 [00:01<00:04, 1185.08it/s]     30%|##9       | 2428/8192 [00:01<00:04, 1296.17it/s]     32%|###1      | 2588/8192 [00:01<00:04, 1376.95it/s]     33%|###3      | 2731/8192 [00:02<00:04, 1259.81it/s]     35%|###5      | 2894/8192 [00:02<00:03, 1356.46it/s]     37%|###7      | 3035/8192 [00:02<00:04, 1098.78it/s]     39%|###9      | 3195/8192 [00:02<00:04, 1217.39it/s]     41%|####      | 3328/8192 [00:02<00:03, 1217.64it/s]     42%|####2     | 3458/8192 [00:02<00:03, 1220.13it/s]     44%|####3     | 3586/8192 [00:02<00:03, 1198.95it/s]     46%|####5     | 3746/8192 [00:02<00:03, 1307.65it/s]     48%|####7     | 3907/8192 [00:02<00:03, 1391.62it/s]     49%|####9     | 4050/8192 [00:03<00:03, 1296.03it/s]     51%|#####1    | 4212/8192 [00:03<00:02, 1384.36it/s]     53%|#####3    | 4363/8192 [00:03<00:02, 1418.96it/s]     55%|#####5    | 4525/8192 [00:03<00:02, 1475.38it/s]     57%|#####7    | 4675/8192 [00:03<00:02, 1199.01it/s]     59%|#####8    | 4808/8192 [00:03<00:02, 1229.46it/s]     61%|######    | 4968/8192 [00:03<00:02, 1325.31it/s]     62%|######2   | 5108/8192 [00:03<00:02, 1344.16it/s]     64%|######4   | 5252/8192 [00:03<00:02, 1368.70it/s]     66%|######6   | 5414/8192 [00:04<00:01, 1439.58it/s]     68%|######8   | 5574/8192 [00:04<00:01, 1485.88it/s]     70%|#######   | 5736/8192 [00:04<00:01, 1524.95it/s]     72%|#######1  | 5891/8192 [00:04<00:01, 1422.03it/s]     74%|#######3  | 6036/8192 [00:04<00:01, 1295.18it/s]     76%|#######5  | 6188/8192 [00:04<00:01, 1327.17it/s]     77%|#######7  | 6324/8192 [00:04<00:01, 1178.88it/s]     79%|#######8  | 6447/8192 [00:04<00:01, 1183.42it/s]     81%|########  | 6602/8192 [00:05<00:01, 1279.70it/s]     82%|########2 | 6750/8192 [00:05<00:01, 1333.78it/s]     84%|########4 | 6911/8192 [00:05<00:00, 1410.60it/s]     86%|########6 | 7064/8192 [00:05<00:00, 1443.46it/s]     88%|########8 | 7226/8192 [00:05<00:00, 1492.22it/s]     90%|######### | 7388/8192 [00:05<00:00, 1528.21it/s]     92%|#########2| 7542/8192 [00:05<00:00, 1328.39it/s]     94%|#########4| 7703/8192 [00:05<00:00, 1403.51it/s]     96%|#########5| 7848/8192 [00:05<00:00, 1229.62it/s]     97%|#########7| 7980/8192 [00:06<00:00, 1250.11it/s]     99%|#########9| 8122/8192 [00:06<00:00, 1293.63it/s]    100%|##########| 8192/8192 [00:06<00:00, 1329.89it/s]
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 7680, using nperseg = 7680
-      warnings.warn('nperseg = {0:d} is greater than input length '
+      0%|          | 0/8192 [00:00<?, ?it/s]      2%|1         | 146/8192 [00:00<00:05, 1458.19it/s]      4%|3         | 295/8192 [00:00<00:05, 1474.78it/s]      5%|5         | 447/8192 [00:00<00:05, 1495.01it/s]      7%|7         | 598/8192 [00:00<00:05, 1497.05it/s]      9%|9         | 750/8192 [00:00<00:04, 1504.31it/s]     11%|#         | 901/8192 [00:00<00:04, 1498.45it/s]     13%|#2        | 1053/8192 [00:00<00:04, 1504.76it/s]     15%|#4        | 1206/8192 [00:00<00:04, 1510.16it/s]     17%|#6        | 1359/8192 [00:00<00:04, 1514.92it/s]     18%|#8        | 1512/8192 [00:01<00:04, 1517.84it/s]     20%|##        | 1664/8192 [00:01<00:04, 1465.56it/s]     22%|##2       | 1817/8192 [00:01<00:04, 1482.02it/s]     24%|##4       | 1969/8192 [00:01<00:04, 1492.60it/s]     26%|##5       | 2119/8192 [00:01<00:04, 1226.04it/s]     27%|##7       | 2250/8192 [00:01<00:04, 1210.14it/s]     29%|##9       | 2377/8192 [00:01<00:05, 1127.77it/s]     31%|###       | 2529/8192 [00:01<00:04, 1228.34it/s]     33%|###2      | 2681/8192 [00:01<00:04, 1306.31it/s]     35%|###4      | 2834/8192 [00:02<00:03, 1366.78it/s]     36%|###6      | 2975/8192 [00:02<00:04, 1245.18it/s]     38%|###8      | 3127/8192 [00:02<00:03, 1318.11it/s]     40%|####      | 3279/8192 [00:02<00:03, 1372.94it/s]     42%|####1     | 3431/8192 [00:02<00:03, 1413.14it/s]     44%|####3     | 3583/8192 [00:02<00:03, 1441.96it/s]     46%|####5     | 3734/8192 [00:02<00:03, 1459.56it/s]     47%|####7     | 3882/8192 [00:02<00:02, 1462.03it/s]     49%|####9     | 4030/8192 [00:02<00:02, 1462.27it/s]     51%|#####1    | 4182/8192 [00:02<00:02, 1476.94it/s]     53%|#####2    | 4331/8192 [00:03<00:02, 1353.76it/s]     55%|#####4    | 4478/8192 [00:03<00:02, 1385.55it/s]     57%|#####6    | 4631/8192 [00:03<00:02, 1424.67it/s]     58%|#####8    | 4784/8192 [00:03<00:02, 1452.42it/s]     60%|######    | 4936/8192 [00:03<00:02, 1470.90it/s]     62%|######2   | 5084/8192 [00:03<00:02, 1264.86it/s]     64%|######3   | 5236/8192 [00:03<00:02, 1330.48it/s]     66%|######5   | 5388/8192 [00:03<00:02, 1381.61it/s]     68%|######7   | 5542/8192 [00:03<00:01, 1423.76it/s]     70%|######9   | 5696/8192 [00:04<00:01, 1456.91it/s]     71%|#######1  | 5850/8192 [00:04<00:01, 1479.84it/s]     73%|#######3  | 6005/8192 [00:04<00:01, 1497.83it/s]     75%|#######5  | 6157/8192 [00:04<00:01, 1503.15it/s]     77%|#######7  | 6310/8192 [00:04<00:01, 1510.92it/s]     79%|#######8  | 6464/8192 [00:04<00:01, 1510.99it/s]     81%|########  | 6617/8192 [00:04<00:01, 1515.88it/s]     83%|########2 | 6769/8192 [00:04<00:00, 1513.51it/s]     85%|########4 | 6923/8192 [00:04<00:00, 1519.60it/s]     86%|########6 | 7077/8192 [00:04<00:00, 1524.61it/s]     88%|########8 | 7230/8192 [00:05<00:00, 1517.26it/s]     90%|######### | 7382/8192 [00:05<00:00, 1517.88it/s]     92%|#########1| 7536/8192 [00:05<00:00, 1524.02it/s]     94%|#########3| 7690/8192 [00:05<00:00, 1526.82it/s]     96%|#########5| 7844/8192 [00:05<00:00, 1530.13it/s]     98%|#########7| 7998/8192 [00:05<00:00, 1529.82it/s]    100%|#########9| 8152/8192 [00:05<00:00, 1532.62it/s]    100%|##########| 8192/8192 [00:05<00:00, 1436.25it/s]
 
 
 
@@ -1170,9 +1110,10 @@ post filter design and is therefore a known parameter.
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_010.png
-    :alt: Estimated input signal
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_010.png
+   :alt: Estimated input signal
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_010.png
+   :class: sphx-glr-single-img
 
 
 
@@ -1224,9 +1165,10 @@ in terms of precision (see the PSD plot above).
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_011.png
-    :alt: plot c downsample
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_c_downsample_011.png
+   :alt: plot c downsample
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_c_downsample_011.png
+   :class: sphx-glr-single-img
 
 
 
@@ -1235,7 +1177,7 @@ in terms of precision (see the PSD plot above).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  18.024 seconds)
+   **Total running time of the script:** ( 1 minutes  46.983 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_c_downsample.py:

@@ -146,7 +146,6 @@ analog system and digital control.
     The Digital Control is parameterized as:
     T = 8e-05,
     M = 6,
-    clock_jitter = False
     and next update at
     t = 8e-05
 
@@ -252,9 +251,10 @@ Note the truncation in the impulse response as a result of the
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_001.png
-    :alt: For $\eta^2 = 84.94011061240755$ [dB]
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_001.png
+   :alt: For $\eta^2 = 84.94011061240755$ [dB]
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_001.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -338,39 +338,45 @@ Impulse Response Truncation and Fixed-Point Precision
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_002.png
-          :alt: plot d fixed point aritmetics
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_002.png
+         :alt: plot d fixed point aritmetics
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_002.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_003.png
-          :alt: plot d fixed point aritmetics
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_003.png
+         :alt: plot d fixed point aritmetics
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_003.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_004.png
-          :alt: plot d fixed point aritmetics
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_004.png
+         :alt: plot d fixed point aritmetics
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_004.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_005.png
-          :alt: plot d fixed point aritmetics
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_005.png
+         :alt: plot d fixed point aritmetics
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_005.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_006.png
-          :alt: plot d fixed point aritmetics
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_006.png
+         :alt: plot d fixed point aritmetics
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_006.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_007.png
-          :alt: plot d fixed point aritmetics
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_007.png
+         :alt: plot d fixed point aritmetics
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_007.png
+         :class: sphx-glr-multi-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -503,15 +509,17 @@ Resulting Estimate Precision
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_008.png
-          :alt: plot d fixed point aritmetics
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_008.png
+         :alt: plot d fixed point aritmetics
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_008.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_009.png
-          :alt: Estimates in time domain
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_009.png
+         :alt: Estimates in time domain
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_009.png
+         :class: sphx-glr-multi-img
 
 
 
@@ -520,7 +528,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  41.766 seconds)
+   **Total running time of the script:** ( 3 minutes  40.672 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_d_fixed_point_aritmetics.py:

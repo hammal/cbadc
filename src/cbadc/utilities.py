@@ -491,6 +491,7 @@ def iterator_to_numpy_array(iterator: Iterator[bytes], size: int, L: int = 1):
     Returns
     -------
     array_like, shape=(size, L)
+
     """
     if size < 1 or L < 1:
         raise BaseException("Both size and L must be positive integers.")
@@ -513,6 +514,7 @@ def write_wave(filename: str, sample_rate: int, data: npt.ArrayLike):
         the sample rate in samples/second
     data: `array_like, shape=(number of samples, number of channels)
         the data array to be encoded as wave file
+
     """
     scipy.io.wavfile.write(filename, sample_rate, data)
 
@@ -548,6 +550,7 @@ class FixedPoint:
         -------
         `int`
             fixed point representation
+
         """
         if abs(value) > self.__max:
             raise ArithmeticError("abs(Value) exceeds max value.")
@@ -565,6 +568,7 @@ class FixedPoint:
         -------
         `float`
             the floating point representation.
+
         """
         if abs(value) > self.__int_max:
             raise ArithmeticError("abs(Value) exceeds max integer value")
@@ -584,16 +588,18 @@ class FixedPoint:
         -------
         `float`
             largest floating point representation.
+
         """
         return self.__max
 
     def min(self):
         """Smallest floating point
 
-        :Returns
+        Returns
         --------
         `float`
             smallest floating point representation.
+
         """
         return self.__min
 
@@ -604,5 +610,6 @@ class FixedPoint:
         -------
         `int`
             largest fixed point integer representation.
+
         """
         return self.__int_max

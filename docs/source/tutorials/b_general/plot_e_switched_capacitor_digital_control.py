@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 #    :align: center
 #    :alt: The RC integrator with switched-capacitor digital control.
 #
-# Which is goverened by the differetial equations
+# Which is goverened by the differential equations
 #
 # :math:`\dot{v}_{x_{\ell}}(t) = \frac{1}{C_{x_{\ell}}} \left( \frac{v_{\Gamma_{\ell}}(t) - v_{s_\ell}(t)}{R_{s}} - \frac{1}{R_{\beta_\ell}}  v_{x_{\ell - 1}}(t) \right)`
 #

@@ -170,7 +170,8 @@ digital control. For this tutorial, we will use
 
     The Digital Control is parameterized as:
     T = 8e-05,
-    M = 6, and next update at
+    M = 6,
+    and next update at
     t = 8e-05
 
 
@@ -275,32 +276,31 @@ involved differential equations as outlined in
 
  .. code-block:: none
 
-    step:0 -> s:[0 0 0 0 0 0]
-    step:1 -> s:[ True  True  True  True  True  True]
-    step:2 -> s:[False False False False False False]
-    step:3 -> s:[ True  True False False False False]
-    step:4 -> s:[ True False  True  True  True  True]
-    step:5 -> s:[ True  True  True False False False]
-    step:6 -> s:[False  True False  True  True False]
-    step:7 -> s:[ True False  True False False  True]
-    step:8 -> s:[ True  True False  True  True False]
-    step:9 -> s:[False False  True False False  True]
-    step:10 -> s:[ True  True False  True  True  True]
-    step:11 -> s:[ True  True  True  True  True False]
-    step:12 -> s:[ True  True  True False False  True]
-    step:13 -> s:[False False False  True  True False]
-    step:14 -> s:[ True  True  True False False False]
-    step:15 -> s:[ True  True False  True  True  True]
-    step:16 -> s:[ True False  True False False False]
-    step:17 -> s:[False  True False  True  True  True]
-    step:18 -> s:[ True False  True False False False]
-    step:19 -> s:[ True  True False  True  True  True]
+    step:0 -> s:[False False False False False False]
+    step:1 -> s:[ True False False False False False]
+    step:2 -> s:[ True  True  True  True  True False]
+    step:3 -> s:[False  True  True False False  True]
+    step:4 -> s:[ True False False  True False False]
+    step:5 -> s:[ True  True  True False  True  True]
+    step:6 -> s:[ True  True False False False False]
+    step:7 -> s:[False False  True  True  True  True]
+    step:8 -> s:[ True  True False False False False]
+    step:9 -> s:[ True False False  True  True  True]
+    step:10 -> s:[False  True  True False False False]
+    step:11 -> s:[ True False  True  True  True  True]
+    step:12 -> s:[ True  True False False False  True]
+    step:13 -> s:[ True  True  True  True  True False]
+    step:14 -> s:[False False  True  True  True  True]
+    step:15 -> s:[ True  True False False False False]
+    step:16 -> s:[ True  True  True  True False False]
+    step:17 -> s:[ True False False False  True  True]
+    step:18 -> s:[False  True  True  True False False]
+    step:19 -> s:[ True False  True False  True  True]
     t = 0.00168, (current simulator time)
     Ts = 8e-05,
     t_stop = 20.97152,
-    rtol = 1e-12,
-    atol = 1e-12, and
-    max_step = 0.0008
+    rtol = 1e-06,clock_jitter = False,
+    and atol = 1e-06
 
 
 
@@ -369,16 +369,16 @@ stream as:
 
  .. code-block:: none
 
-    step:20 -> s:[False False False  True  True  True], x:[ 0.54823676  0.11670772  0.06484886 -0.46198389 -0.49102059 -0.40805816]
-    step:21 -> s:[ True  True  True False False False], x:[ 0.28852725 -0.17409673 -0.44326189 -0.04946166 -0.10665263 -0.06475268]
-    step:22 -> s:[ True False False False False False], x:[0.03084446 0.4050305  0.12088599 0.35734476 0.45783109 0.51372668]
-    step:23 -> s:[ True  True  True  True  True  True], x:[-0.22485823 -0.14425853 -0.30835322 -0.17870188  0.01002193  0.13999125]
-    step:24 -> s:[False False False False  True  True], x:[ 0.51887684  0.42881669  0.24768117  0.29413072 -0.47129112 -0.48446692]
-    step:25 -> s:[ True  True  True  True False False], x:[ 0.2620199   0.12253093 -0.10960284 -0.16543741  0.0691172  -0.07384136]
-    step:26 -> s:[ True  True False False  True False], x:[ 0.00702877 -0.30986756  0.34809793  0.40279176 -0.38008514  0.33569678]
-    step:27 -> s:[ True False  True  True False  True], x:[-0.24614276  0.13067341 -0.19163271 -0.06832894  0.21496668 -0.19582836]
-    step:28 -> s:[False  True False False  True False], x:[ 0.4999634  -0.30514404  0.24888015  0.45427751 -0.19748233  0.2971895 ]
-    step:29 -> s:[ True False  True  True False  True], x:[ 0.24531795  0.38086046 -0.2266544  -0.05565045  0.41130859 -0.13881065]
+    step:20 -> s:[ True  True  True False  True  True], x:[ 0.05159004  0.27221522  0.48310161 -0.13590092  0.26999589  0.33062674]
+    step:21 -> s:[False False False  True False False], x:[-0.20564243 -0.26644966 -0.01150043  0.4921246  -0.13075008 -0.1483123 ]
+    step:22 -> s:[ True  True  True  True  True  True], x:[0.53664362 0.31645391 0.48459546 0.09698687 0.50515292 0.4530713 ]
+    step:23 -> s:[ True  True  True False False  True], x:[ 0.27841825  0.01924489  0.0723844  -0.25734544 -0.02771054  0.07824006]
+    step:24 -> s:[ True False False  True  True False], x:[ 0.02213905 -0.40478456 -0.5177235   0.14020087  0.4543744  -0.32259817]
+    step:25 -> s:[False  True False False False  True], x:[-0.2322404   0.04346129 -0.10102201 -0.52269172 -0.15098663  0.26698219]
+    step:26 -> s:[ True False  True  True  True False], x:[ 0.51273777 -0.3852722   0.29733466  0.03669569  0.21934285 -0.22756425]
+    step:27 -> s:[ True  True False False False  True], x:[ 0.257044    0.30723824 -0.21675873 -0.45674966 -0.37480072  0.24362473]
+    step:28 -> s:[ True False  True  True  True False], x:[ 0.00313634 -0.1282895   0.33279546  0.08249745  0.02127436 -0.35558453]
+    step:29 -> s:[False  True False False False  True], x:[-0.24903117  0.30965837 -0.11696502 -0.37213025 -0.54067703  0.02466827]
 
 
 
@@ -437,16 +437,16 @@ For this purpose use the
 
  .. code-block:: none
 
-    30 -> b'\x13'
-    31 -> b'\x13'
-    32 -> b'\x13'
-    33 -> b'\x13'
-    34 -> b'\x13'
-    35 -> b'\x13'
-    36 -> b'\x13'
-    37 -> b'\x13'
-    38 -> b'\x13'
-    39 -> b'\x13'
+    30 -> b'\r'
+    31 -> b'\r'
+    32 -> b'\r'
+    33 -> b'\r'
+    34 -> b'\r'
+    35 -> b'\r'
+    36 -> b'\r'
+    37 -> b'\r'
+    38 -> b'\r'
+    39 -> b'\r'
 
 
 
@@ -533,16 +533,26 @@ the control signals at multiples of :math:`T`.
 
     *
 
-      .. image:: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_001.png
-          :alt: Analog state vectors
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_001.png
+         :alt: Analog state vectors
+         :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_001.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_002.png
-          :alt: Analog state and control contribution evolution
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_002.png
+         :alt: Analog state and control contribution evolution
+         :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_002.png
+         :class: sphx-glr-multi-img
 
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Pre-computations turned off as Ts != T
 
 
 
@@ -586,9 +596,10 @@ corresponding densities (assuming i.i.d samples).
 
 
 
-.. image:: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_003.png
-    :alt: Estimated probability densities
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_003.png
+   :alt: Estimated probability densities
+   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_b_simulate_a_control_bounded_adc_003.png
+   :class: sphx-glr-single-img
 
 
 
@@ -597,7 +608,7 @@ corresponding densities (assuming i.i.d samples).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 11 minutes  33.645 seconds)
+   **Total running time of the script:** ( 2 minutes  23.623 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_b_simulate_a_control_bounded_adc.py:

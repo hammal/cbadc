@@ -146,7 +146,8 @@ example.
 
     The Digital Control is parameterized as:
     T = 8e-05,
-    M = 6, and next update at
+    M = 6,
+    and next update at
     t = 8e-05
 
 
@@ -201,9 +202,10 @@ visualize its impulse responses.
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_001.png
-    :alt: For $\eta^2 = 60.0$ [dB]
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_001.png
+   :alt: For $\eta^2 = 60.0$ [dB]
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_001.png
+   :class: sphx-glr-single-img
 
 
 
@@ -307,15 +309,17 @@ as a function of the bandwidth parameter :math:`\eta^2`.
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_002.png
-          :alt: plot b FIR Filtering
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_002.png
+         :alt: plot b FIR Filtering
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_002.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_003.png
-          :alt: Signal (dashed) and noise (solid) transfer functions
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_003.png
+         :alt: Signal (dashed) and noise (solid) transfer functions
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_003.png
+         :class: sphx-glr-multi-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -500,21 +504,24 @@ of different lengths as their decay varies.
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_004.png
-          :alt: plot b FIR Filtering
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_004.png
+         :alt: plot b FIR Filtering
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_004.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_005.png
-          :alt: plot b FIR Filtering
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_005.png
+         :alt: plot b FIR Filtering
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_005.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_006.png
-          :alt: Estimates in time domain
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_006.png
+         :alt: Estimates in time domain
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_b_FIR_Filtering_006.png
+         :class: sphx-glr-multi-img
 
 
 
@@ -523,7 +530,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  49.540 seconds)
+   **Total running time of the script:** ( 5 minutes  39.652 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_b_FIR_Filtering.py:

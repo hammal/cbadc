@@ -205,9 +205,10 @@ using the class method
 
 
 
-.. image:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_001.png
-    :alt: Transfer functions, $G_1(\omega), \dots, G_N(\omega)$
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_001.png
+   :alt: Transfer functions, $G_1(\omega), \dots, G_N(\omega)$
+   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_001.png
+   :class: sphx-glr-single-img
 
 
 
@@ -298,9 +299,10 @@ from the :math:`\ell`-th observation to the final estimate.
 
 
 
-.. image:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_002.png
-    :alt: Signal and noise transfer functions
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_002.png
+   :alt: Signal and noise transfer functions
+   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_002.png
+   :class: sphx-glr-single-img
 
 
 
@@ -354,9 +356,10 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 
 
-.. image:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_003.png
-    :alt: $|G(\omega)|$ - solid, $||\mathbf{H}(\omega)||_2$ - dashed
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_003.png
+   :alt: $|G(\omega)|$ - solid, $||\mathbf{H}(\omega)||_2$ - dashed
+   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_003.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -378,7 +381,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  21.167 seconds)
+   **Total running time of the script:** ( 0 minutes  23.754 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:

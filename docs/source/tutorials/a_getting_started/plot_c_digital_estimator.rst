@@ -146,7 +146,8 @@ analog system and digital control.
 
     The Digital Control is parameterized as:
     T = 8e-05,
-    M = 6, and next update at
+    M = 6,
+    and next update at
     t = 8e-05
 
 
@@ -488,9 +489,10 @@ analog system and digital controls as in this example so
 
 
 
-.. image:: /tutorials/a_getting_started/images/sphx_glr_plot_c_digital_estimator_001.png
-    :alt: Estimated input signal
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_c_digital_estimator_001.png
+   :alt: Estimated input signal
+   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_c_digital_estimator_001.png
+   :class: sphx-glr-single-img
 
 
 
@@ -521,9 +523,10 @@ of the estimate by plotting the power spectral density (PSD).
 
 
 
-.. image:: /tutorials/a_getting_started/images/sphx_glr_plot_c_digital_estimator_002.png
-    :alt: plot c digital estimator
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_c_digital_estimator_002.png
+   :alt: plot c digital estimator
+   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_c_digital_estimator_002.png
+   :class: sphx-glr-single-img
 
 
 
@@ -532,7 +535,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  14.780 seconds)
+   **Total running time of the script:** ( 0 minutes  16.371 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:
