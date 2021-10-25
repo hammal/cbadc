@@ -69,15 +69,15 @@ xstart = 128
 xlim = 256+1    # add 1 to get a symmetrical image
 x = np.arange(xstart, xstart+xlim)
 
-fig, ax = plt.subplots()
+fig1, ax1 = plt.subplots()
 
 # control signals stacked vertically, spaced from -M/2 to +M/2 on the y-axis
 for i in range(M):
-    ax.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre')
+    ax1.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre')
 
-ax.tight_layout()
-ax.set_axis_off()
-ax.set_facecolor('w')
+fig1.tight_layout()
+ax1.set_axis_off()
+ax1.set_facecolor('w')
 
 ##############################################################################
 # Note how the character of the prototype (Hadamard converter with Hadamard 
@@ -235,7 +235,7 @@ ax6.set_facecolor('w')
 # ------------
 # Uncomment one of the lines to export your favourite image
 
-# fig.savefig('artsy_1.png', dpi=300)    
+# fig1.savefig('artsy_1.png', dpi=300)    
 # fig2.savefig('artsy_2.png', dpi=300)    
 # fig3.savefig('artsy_3.png', dpi=300)    
 # fig4.savefig('artsy_4.png', dpi=300)    
