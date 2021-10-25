@@ -175,35 +175,14 @@ Next we highlight various features of the cbadc package
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This example shows the benefit of using the phase shifted digital control delay.">
-
-.. only:: html
-
- .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_d_delay_phase_control_thumb.png
-     :alt: Using Phase Shifted Digital Control (draft)
-
-     :ref:`sphx_glr_tutorials_b_general_plot_d_delay_phase_control.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /tutorials/b_general/plot_d_delay_phase_control
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate we can evaluate the FIR filter using fixed-point precision arit...">
 
 .. only:: html
 
- .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_e_fixed_point_aritmetics_thumb.png
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_d_fixed_point_aritmetics_thumb.png
      :alt: Fixed-Point Arithmetics
 
-     :ref:`sphx_glr_tutorials_b_general_plot_e_fixed_point_aritmetics.py`
+     :ref:`sphx_glr_tutorials_b_general_plot_d_fixed_point_aritmetics.py`
 
 .. raw:: html
 
@@ -213,7 +192,28 @@ Next we highlight various features of the cbadc package
 .. toctree::
    :hidden:
 
-   /tutorials/b_general/plot_e_fixed_point_aritmetics
+   /tutorials/b_general/plot_d_fixed_point_aritmetics
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we show how to use switched-capacitor digital control in combination with a co...">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_e_switched_capacitor_digital_control_thumb.png
+     :alt: Switched-Capacitor Digital Control
+
+     :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/b_general/plot_e_switched_capacitor_digital_control
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

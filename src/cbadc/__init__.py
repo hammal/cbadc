@@ -11,4 +11,4 @@ from . import simulator
 from . import utilities
 
 # Set version variable
-__version__ = version('cbadc')
+__version__ = version("cbadc")

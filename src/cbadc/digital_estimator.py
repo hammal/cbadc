@@ -23,14 +23,14 @@ def bruteForceCare(
     Q: np.ndarray,
     R: np.ndarray,
     tau=1e-12,
-    rtol=1e-100,
+    rtol=1e-200,
     atol=1e-300,
 ) -> np.ndarray:
     timelimit = 10 * 60
     start_time = time.time()
     try:
         V = np.array(care(A, B, Q, R), dtype=np.float128)
-    except LinAlgError:
+    except:
         V = np.eye(A.shape[0], dtype=np.float128)
     V_tmp = np.ones_like(V) * 1e300
     RInv = np.array(np.linalg.inv(R), dtype=np.float128)
@@ -57,7 +57,7 @@ def bruteForceCare(
             raise FloatingPointError
         # print(np.linalg.norm(V - V_tmp, ord="fro"))
         tau *= shrink
-    return V
+    return np.array(V, dtype=np.double)
 
 
 def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarray:
@@ -72,14 +72,14 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
     V = np.zeros_like(A)
 
     try:
-        V = scipy.linalg.solve_continuous_are(A, B, Q, R)
+        V = scipy.linalg.solve_continuous_are(A, B, Q, R, balanced=True)
     except LinAlgError:
         logger.warning(
             """Cholesky Method Failed for computing the CARE of Vf.
             Starting brute force"""
         )
         V = bruteForceCare(A, B, Q, R)
-    return V
+    return np.array(V, dtype=np.double)
 
 
 class DigitalEstimator(Iterator[np.ndarray]):
@@ -200,6 +200,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
             raise BaseException("K2 must be a non negative integer.")
         self.K2 = K2
         self.K3 = K1 + K2
+        self._filter_lag = -1
         self.analog_system = analog_system
 
         if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
@@ -236,6 +237,36 @@ class DigitalEstimator(Iterator[np.ndarray]):
         # Initialize filters
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
         self._allocate_memory_buffers()
+
+    def filter_lag(self):
+        """Return the lag of the filter.
+
+        As the filter computes the estimate as
+
+        ---------
+        |   K2  |
+        ---------
+        ^
+        |
+        u_hat[k]
+
+
+        Returns
+        -------
+        `int`
+            The filter lag.
+
+        """
+        return self._filter_lag
+
+    def warm_up(self):
+        """Warm up filter by population control signals.
+
+        Effectively removes the filter lag.
+        """
+        while self._filter_lag > 0:
+            _ = self.__next__()
+            self._filter_lag -= 1
 
     def set_iterator(self, control_signal_sequence: Iterator[np.ndarray]):
         """Set iterator of control signals
@@ -291,20 +322,22 @@ class DigitalEstimator(Iterator[np.ndarray]):
                     atol=atol,
                     rtol=rtol,
                     max_step=max_step,
+                    # method="Radau",
                 ).y[:, -1]
 
                 def _derivative_backward(t, x):
-                    return -np.dot(tempAb, x) + np.dot(
-                        Gamma, digital_control.impulse_response(m, t)
+                    return np.dot(-tempAb, x) - np.dot(
+                        Gamma, digital_control.impulse_response(m, self.Ts - t)
                     )
 
-                solBb = -scipy.integrate.solve_ivp(
+                solBb = scipy.integrate.solve_ivp(
                     _derivative_backward,
                     (0, self.Ts / 2.0),
                     np.zeros(self.analog_system.N),
                     atol=atol,
                     rtol=rtol,
                     max_step=max_step,
+                    # method="Radau",
                 ).y[:, -1]
                 for n in range(self.analog_system.N):
                     self.Bf[n, m] = solBf[n]
@@ -327,6 +360,12 @@ class DigitalEstimator(Iterator[np.ndarray]):
                         Gamma, digital_control.impulse_response(m, t)
                     )
 
+                def impulse_start(t, x):
+                    return t - self.digital_control._impulse_response[m].t0
+
+                # impulse_start.terminate = True
+                impulse_start.direction = 1.0
+
                 solBf = scipy.integrate.solve_ivp(
                     _derivative_forward_2,
                     (0, self.Ts),
@@ -334,20 +373,30 @@ class DigitalEstimator(Iterator[np.ndarray]):
                     atol=atol,
                     rtol=rtol,
                     max_step=max_step,
+                    # method="Radau",
+                    events=(impulse_start,),
                 ).y[:, -1]
 
                 def _derivative_backward_2(t, x):
-                    return -np.dot(tempAb, x) + np.dot(
-                        Gamma, digital_control.impulse_response(m, t)
+                    return np.dot(-tempAb, x) - np.dot(
+                        Gamma, digital_control.impulse_response(m, self.Ts - t)
                     )
 
-                solBb = -scipy.integrate.solve_ivp(
+                def impulse_start(t, x):
+                    return self.Ts - self.digital_control._impulse_response[m].t0 - t
+
+                # impulse_start.terminate = True
+                impulse_start.direction = -1.0
+
+                solBb = scipy.integrate.solve_ivp(
                     _derivative_backward_2,
                     (0, self.Ts),
                     np.zeros(self.analog_system.N),
                     atol=atol,
                     rtol=rtol,
                     max_step=max_step,
+                    # method="Radau",
+                    events=(impulse_start,),
                 ).y[:, -1]
                 self.Bf[:, m] = solBf
                 self.Bb[:, m] = solBb
@@ -709,6 +758,7 @@ class ParallelEstimator(DigitalEstimator):
             raise BaseException("K2 must be a non negative integer.")
         self.K2 = K2
         self.K3 = K1 + K2
+        self._filter_lag = -1
         self.analog_system = analog_system
         self.digital_control = digital_control
         if eta2 < 0:
@@ -963,14 +1013,13 @@ class IIRFilter(DigitalEstimator):
         mid_point: bool = False,
         downsample: int = 1,
     ):
-        """Initializes filter coefficients
-
-        """
+        """Initializes filter coefficients"""
         if K2 < 0:
             raise BaseException("K2 must be non negative integer.")
         self.K2 = K2
-        self._filter_lag = self.K2 - 1
+        self._filter_lag = self.K2 - 2
         self.analog_system = analog_system
+        self.digital_control = digital_control
         if eta2 < 0:
             raise BaseException("eta2 must be non negative.")
         self.eta2 = eta2
@@ -1060,37 +1109,6 @@ class IIRFilter(DigitalEstimator):
     def __str__(self):
         return f"IIR estimator is parameterized as \neta2 = {self.eta2:.2f}, {10 * np.log10(self.eta2):.0f} [dB],\nTs = {self.Ts},\nK2 = {self.K2},\nand\nnumber_of_iterations = {self.number_of_iterations}.\nResulting in the filter coefficients\nAf = \n{self.Af},\nBf = \n{self.Bf},WT = \n{self.WT},\n and h = \n{self.h}."
 
-    def filter_lag(self):
-        """Return the lag of the filter.
-
-        As the filter computes the estimate as
-
-        ---------
-        |   K2  |
-        ---------
-        ^
-        |
-        u_hat[k]
-
-
-        Returns
-        -------
-        `int`
-            The filter lag.
-
-        """
-        return self._filter_lag
-
-    def warm_up(self):
-        """Warm up filter by population control signals.
-
-        Specifically fills up internal control signal buffer with
-        K2 control signals.
-        """
-        self._filter_lag += self.K2
-        for _ in range(self.K2):
-            _ = self.__next__()
-
 
 class FIRFilter(DigitalEstimator):
     """FIR filter implementation of the digital estimator.
@@ -1111,8 +1129,7 @@ class FIRFilter(DigitalEstimator):
     :math:`\mathbf{B}_b`, :math:`\mathbf{A}_f`, and :math:`\mathbf{B}_f`
     are computed based on the analog system, the sample period :math:`T_s`, and the
     digital control's DAC waveform as described in
-    # page=67/>`_.
-    `control-bounded converters <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y
+    `control-bounded converters <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed#=ypage=67/>`_.
 
     Parameters
     ----------
@@ -1200,8 +1217,7 @@ class FIRFilter(DigitalEstimator):
         fixed_point: Union[cbadc.utilities.FixedPoint, None] = None,
         # fixed_point=None,
     ):
-        """Initializes filter coefficients
-        """
+        """Initializes filter coefficients"""
         if K1 < 0:
             raise BaseException("K1 must be non negative integer.")
         self.K1 = K1
@@ -1209,7 +1225,7 @@ class FIRFilter(DigitalEstimator):
             raise BaseException("K2 must be a positive integer.")
         self.K2 = K2
         self.K3 = K1 + K2
-        self._filter_lag = self.K2 - 1
+        self._filter_lag = self.K2 - 2
         self.analog_system = analog_system
         self.digital_control = digital_control
         if eta2 < 0.0:
@@ -1260,12 +1276,8 @@ class FIRFilter(DigitalEstimator):
                 (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.double
             )
         # Compute lookback.
-        if self.fixed_point:
-            self.h[:, self.K1 - 1, :] = self.__float_to_fixed(-np.dot(self.WT, self.Bf))
-        else:
-            self.h[:, self.K1 - 1, :] = -np.dot(self.WT, self.Bf)
-        temp1 = np.copy(self._Bf_2T)
-        for k1 in range(self.K1 - 2, -1, -1):
+        temp1 = np.copy(self.Bf)
+        for k1 in range(self.K1 - 1, -1, -1):
             if self.fixed_point:
                 self.h[:, k1, :] = self.__float_to_fixed(-np.dot(self.WT, temp1))
             else:
@@ -1293,6 +1305,11 @@ class FIRFilter(DigitalEstimator):
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
     ):
+        atol = 1e-30
+        rtol = 2.3e-14
+        steps = 1000
+        max_step = self.Ts / steps
+
         # Compute filter coefficients
         A = np.array(analog_system.A).transpose()
         B = np.array(analog_system.CT).transpose()
@@ -1320,11 +1337,6 @@ class FIRFilter(DigitalEstimator):
 
         self._Bf_2T = np.zeros_like(self.Bf)
 
-        atol = 1e-300
-        rtol = 1e-12
-        steps = 1000
-        system_jacobian = np.zeros_like(tempAf)
-        max_step = self.Ts / steps
         if self.mid_point:
             for m in range(self.analog_system.M):
 
@@ -1341,14 +1353,15 @@ class FIRFilter(DigitalEstimator):
                     rtol=rtol,
                     max_step=max_step,
                     t_eval=np.linspace(0, self.Ts, steps),
+                    # method="Radau",
                 ).y[:, -1]
 
                 def _derivative_backward(t, x):
-                    return -np.dot(tempAb, x) + np.dot(
+                    return -np.dot(tempAb, x) - np.dot(
                         self.analog_system.Gamma, digital_control.impulse_response(m, t)
                     )
 
-                solBb = -scipy.integrate.solve_ivp(
+                solBb = scipy.integrate.solve_ivp(
                     _derivative_backward,
                     (0, self.Ts / 2.0),
                     np.zeros(self.analog_system.N),
@@ -1356,6 +1369,7 @@ class FIRFilter(DigitalEstimator):
                     rtol=rtol,
                     max_step=max_step,
                     t_eval=np.linspace(0, self.Ts, steps),
+                    # method="Radau",
                 ).y[:, -1]
                 for n in range(self.analog_system.N):
                     self.Bf[n, m] = solBf[n]
@@ -1370,202 +1384,200 @@ class FIRFilter(DigitalEstimator):
                 + scipy.linalg.expm(tempAb * self.Ts / 2.0),
                 self.Bb,
             )
-            self._Bf_2T = np.dot(self.Af, self.Bf)
-        elif isinstance(
-            self.digital_control, cbadc.digital_control.SwitchedCapacitorControl
-        ):
-            for m in range(self.analog_system.M):
-                N = self.analog_system.N
-                tempStateSpaceMatrix = np.zeros((N + 1, N + 1))
+        # elif isinstance(
+        #     self.digital_control, cbadc.digital_control.SwitchedCapacitorControl
+        # ):
+        #     for m in range(self.analog_system.M):
+        #         N = self.analog_system.N
+        #         tempStateSpaceMatrix = np.zeros((N + 1, N + 1))
 
-                # Forward Coefficients
-                tempStateSpaceMatrix[:N, :N] = tempAf
-                tempStateSpaceMatrix[N, N] = self.digital_control.A[m, m]
-                tempStateSpaceMatrix[:N, N] = self.analog_system.Gamma[:, m]
+        #         # Forward Coefficients
+        #         tempStateSpaceMatrix[:N, :N] = tempAf
+        #         tempStateSpaceMatrix[N, N] = self.digital_control.A[m, m]
+        #         tempStateSpaceMatrix[:N, N] = self.analog_system.Gamma[:, m]
 
-                def _derivative_forward(t, x):
-                    return (
-                        np.dot(tempStateSpaceMatrix, x).flatten()
-                        # + np.random.randn(N + 1) * 1e-3
-                    )
+        #         def _derivative_forward(t, x):
+        #             return (
+        #                 np.dot(tempStateSpaceMatrix, x).flatten()
+        #                 # + np.random.randn(N + 1) * 1e-3
+        #             )
 
-                # print(
-                #     f"m={m}, T1={self.digital_control.T1[m]}, T2={self.digital_control.T2[m]}"
-                # )
+        #         # print(
+        #         #     f"m={m}, T1={self.digital_control.T1[m]}, T2={self.digital_control.T2[m]}"
+        #         # )
 
-                initial_state = np.zeros(N + 1)
-                initial_state[N] = self.digital_control.VCap
-                # First phase (discarging capacitor)
-                if self.digital_control.T2[m] > self.digital_control.T:
-                    T2LT = True
-                    t_eval1 = np.array(
-                        [
-                            self.digital_control.T - self.digital_control.T1[m],
-                            self.digital_control.T2[m] - self.digital_control.T1[m],
-                        ]
-                    )
-                    tspan1 = (0, t_eval1[-1])
-                    tspace1 = (
-                        min(
-                            (
-                                (
-                                    self.digital_control.T2[m]
-                                    - self.digital_control.T1[m]
-                                ),
-                                (self.digital_control.T - self.digital_control.T1[m]),
-                            )
-                        )
-                        / steps
-                    )
-                    t_eval2 = np.array(
-                        [0, 2 * self.digital_control.T - self.digital_control.T2[m]]
-                    )
-                    tspan2 = (0, t_eval2[-1])
-                    tspace2 = (
-                        2 * self.digital_control.T - self.digital_control.T2[m]
-                    ) / steps
-                else:
-                    T2LT = False
-                    t_eval1 = np.array(
-                        [0, self.digital_control.T2[m] - self.digital_control.T1[m]]
-                    )
-                    tspan1 = (0, t_eval1[-1])
-                    tspace1 = (
-                        self.digital_control.T2[m] - self.digital_control.T1[m]
-                    ) / steps
-                    t_eval2 = np.array(
-                        [
-                            self.digital_control.T - self.digital_control.T2[m],
-                            2 * self.digital_control.T - self.digital_control.T2[m],
-                        ]
-                    )
-                    tspan2 = (0, t_eval2[-1])
-                    if self.digital_control.T == self.digital_control.T2[m]:
-                        tspace2 = (
-                            2 * self.digital_control.T - self.digital_control.T2[m]
-                        ) / steps
-                    else:
-                        tspace2 = (
-                            self.digital_control.T - self.digital_control.T2[m]
-                        ) / steps
+        #         initial_state = np.zeros(N + 1)
+        #         initial_state[N] = self.digital_control.VCap
+        #         # First phase (discarging capacitor)
+        #         if self.digital_control.T2[m] > self.digital_control.T:
+        #             T2LT = True
+        #             t_eval1 = np.array(
+        #                 [
+        #                     self.digital_control.T - self.digital_control.T1[m],
+        #                     self.digital_control.T2[m] - self.digital_control.T1[m],
+        #                 ]
+        #             )
+        #             tspan1 = (0, t_eval1[-1])
+        #             tspace1 = (
+        #                 min(
+        #                     (
+        #                         (
+        #                             self.digital_control.T2[m]
+        #                             - self.digital_control.T1[m]
+        #                         ),
+        #                         (self.digital_control.T - self.digital_control.T1[m]),
+        #                     )
+        #                 )
+        #                 / steps
+        #             )
+        #             t_eval2 = np.array(
+        #                 [0, 2 * self.digital_control.T - self.digital_control.T2[m]]
+        #             )
+        #             tspan2 = (0, t_eval2[-1])
+        #             tspace2 = (
+        #                 2 * self.digital_control.T - self.digital_control.T2[m]
+        #             ) / steps
+        #         else:
+        #             T2LT = False
+        #             t_eval1 = np.array(
+        #                 [0, self.digital_control.T2[m] - self.digital_control.T1[m]]
+        #             )
+        #             tspan1 = (0, t_eval1[-1])
+        #             tspace1 = (
+        #                 self.digital_control.T2[m] - self.digital_control.T1[m]
+        #             ) / steps
+        #             t_eval2 = np.array(
+        #                 [
+        #                     self.digital_control.T - self.digital_control.T2[m],
+        #                     2 * self.digital_control.T - self.digital_control.T2[m],
+        #                 ]
+        #             )
+        #             tspan2 = (0, t_eval2[-1])
+        #             if self.digital_control.T == self.digital_control.T2[m]:
+        #                 tspace2 = (
+        #                     2 * self.digital_control.T - self.digital_control.T2[m]
+        #                 ) / steps
+        #             else:
+        #                 tspace2 = (
+        #                     self.digital_control.T - self.digital_control.T2[m]
+        #                 ) / steps
 
-                # print(f"T2 > T = {T2LT}")
+        #         # print(f"T2 > T = {T2LT}")
 
-                odeDOP853 = scipy.integrate.DOP853(
-                    _derivative_forward,
-                    0,
-                    initial_state,
-                    t_bound=tspan1[1],
-                    first_step=tspace1,
-                    max_step=tspace1,
-                    rtol=rtol,
-                    atol=atol,
-                    vectorized=False,
-                )
+        #         odeDOP853 = scipy.integrate.DOP853(
+        #             _derivative_forward,
+        #             0,
+        #             initial_state,
+        #             t_bound=tspan1[1],
+        #             first_step=tspace1,
+        #             max_step=tspace1,
+        #             rtol=rtol,
+        #             atol=atol,
+        #             vectorized=False,
+        #         )
 
-                sol1 = []
-                for t in t_eval1:
-                    while odeDOP853.t < t:
-                        odeDOP853.step()
-                    sol1.append(odeDOP853.y)
+        #         sol1 = []
+        #         for t in t_eval1:
+        #             while odeDOP853.t < t:
+        #                 odeDOP853.step()
+        #             sol1.append(odeDOP853.y)
 
-                empty_cap_at_T2 = sol1[-1][N]
-                initial_state = sol1[-1][:]
-                initial_state[N] = 0
+        #         empty_cap_at_T2 = sol1[-1][N]
+        #         initial_state = sol1[-1][:]
+        #         initial_state[N] = 0
 
-                odeDOP853 = scipy.integrate.DOP853(
-                    _derivative_forward,
-                    0,
-                    initial_state,
-                    t_bound=tspan2[1],
-                    first_step=tspace2,
-                    max_step=tspace2,
-                    rtol=rtol,
-                    atol=atol,
-                    vectorized=False,
-                )
+        #         odeDOP853 = scipy.integrate.DOP853(
+        #             _derivative_forward,
+        #             0,
+        #             initial_state,
+        #             t_bound=tspan2[1],
+        #             first_step=tspace2,
+        #             max_step=tspace2,
+        #             rtol=rtol,
+        #             atol=atol,
+        #             vectorized=False,
+        #         )
 
-                sol2 = []
-                for t in t_eval2:
-                    while odeDOP853.t < t:
-                        odeDOP853.step()
-                    sol2.append(odeDOP853.y)
+        #         sol2 = []
+        #         for t in t_eval2:
+        #             while odeDOP853.t < t:
+        #                 odeDOP853.step()
+        #             sol2.append(odeDOP853.y)
 
-                # T2 > T
-                if T2LT:
-                    self.Bf[:, m] = sol1[0][:N]
-                    self._Bf_2T[:, m] = sol2[1][:N]
-                else:
-                    self.Bf[:, m] = sol2[0][:N]
-                    self._Bf_2T[:, m] = sol2[1][:N]
+        #         # T2 > T
+        #         if T2LT:
+        #             self.Bf[:, m] = sol1[0][:N]
+        #             self._Bf_2T[:, m] = sol2[1][:N]
+        #         else:
+        #             self.Bf[:, m] = sol2[0][:N]
+        #             self._Bf_2T[:, m] = sol2[1][:N]
 
-                # Backward Coefficients
-                tempStateSpaceMatrix[:N, :N] = -tempAb
-                tempStateSpaceMatrix[N, N] = -self.digital_control.A[m, m]
-                tempStateSpaceMatrix[:N, N] = -self.analog_system.Gamma[:, m]
+        #         # Backward Coefficients
+        #         tempStateSpaceMatrix[:N, :N] = -tempAb
+        #         tempStateSpaceMatrix[N, N] = -self.digital_control.A[m, m]
+        #         tempStateSpaceMatrix[:N, N] = -self.analog_system.Gamma[:, m]
 
-                def _derivative_backward(t, x):
-                    return (
-                        np.dot(tempStateSpaceMatrix, x).flatten()
-                        # + np.random.randn(N + 1) * 1e-3
-                    )
+        #         def _derivative_backward(t, x):
+        #             return (
+        #                 np.dot(tempStateSpaceMatrix, x).flatten()
+        #                 # + np.random.randn(N + 1) * 1e-3
+        #             )
 
-                # First Phase
-                initial_state = np.zeros(N + 1)
-                initial_state[N] = empty_cap_at_T2
-                # print(
-                #     f"initial_state = {initial_state}, empty_cap_at_T2 = {empty_cap_at_T2}"
-                # )
-                t_eval1 = np.array(
-                    [0, self.digital_control.T2[m] - self.digital_control.T1[m]]
-                )
-                max_step = t_eval1[1] / steps
+        #         # First Phase
+        #         initial_state = np.zeros(N + 1)
+        #         initial_state[N] = empty_cap_at_T2
+        #         # print(
+        #         #     f"initial_state = {initial_state}, empty_cap_at_T2 = {empty_cap_at_T2}"
+        #         # )
+        #         t_eval1 = np.array(
+        #             [0, self.digital_control.T2[m] - self.digital_control.T1[m]]
+        #         )
+        #         max_step = t_eval1[1] / steps
 
-                odeDOP853 = scipy.integrate.DOP853(
-                    _derivative_backward,
-                    0,
-                    initial_state,
-                    t_bound=t_eval1[1],
-                    first_step=max_step,
-                    max_step=max_step,
-                    rtol=rtol,
-                    atol=atol,
-                    vectorized=False,
-                )
+        #         odeDOP853 = scipy.integrate.DOP853(
+        #             _derivative_backward,
+        #             0,
+        #             initial_state,
+        #             t_bound=t_eval1[1],
+        #             first_step=max_step,
+        #             max_step=max_step,
+        #             rtol=rtol,
+        #             atol=atol,
+        #             vectorized=False,
+        #         )
 
-                sol1 = []
-                for t in t_eval1:
-                    while odeDOP853.t < t:
-                        odeDOP853.step()
-                    sol1.append(odeDOP853.y)
+        #         sol1 = []
+        #         for t in t_eval1:
+        #             while odeDOP853.t < t:
+        #                 odeDOP853.step()
+        #             sol1.append(odeDOP853.y)
 
-                if self.digital_control.T1[m] > 0:
-                    initial_state = sol1[1][:]
-                    initial_state[N] = 0.0
-                    t_eval2 = np.array([0, self.digital_control.T1[m]])
-                    max_step = t_eval2[1] / steps
+        #         if self.digital_control.T1[m] > 0:
+        #             initial_state = sol1[1][:]
+        #             initial_state[N] = 0.0
+        #             t_eval2 = np.array([0, self.digital_control.T1[m]])
+        #             max_step = t_eval2[1] / steps
 
-                    odeDOP853 = scipy.integrate.DOP853(
-                        _derivative_backward,
-                        0,
-                        initial_state,
-                        t_bound=t_eval2[1],
-                        first_step=max_step,
-                        max_step=max_step,
-                        rtol=rtol,
-                        atol=atol,
-                        vectorized=False,
-                    )
+        #             odeDOP853 = scipy.integrate.DOP853(
+        #                 _derivative_backward,
+        #                 0,
+        #                 initial_state,
+        #                 t_bound=t_eval2[1],
+        #                 first_step=max_step,
+        #                 max_step=max_step,
+        #                 rtol=rtol,
+        #                 atol=atol,
+        #                 vectorized=False,
+        #             )
 
-                    sol2 = []
-                    for t in t_eval2:
-                        while odeDOP853.t < t:
-                            odeDOP853.step()
-                        sol2.append(odeDOP853.y)
-                    self.Bb[:, m] = sol2[1][:N]
-                else:
-                    self.Bb[:, m] = sol1[1][:N]
-
+        #             sol2 = []
+        #             for t in t_eval2:
+        #                 while odeDOP853.t < t:
+        #                     odeDOP853.step()
+        #                 sol2.append(odeDOP853.y)
+        #             self.Bb[:, m] = sol2[1][:N]
+        #         else:
+        #             self.Bb[:, m] = sol1[1][:N]
         else:
             for m in range(self.analog_system.M):
 
@@ -1574,14 +1586,22 @@ class FIRFilter(DigitalEstimator):
                         self.analog_system.Gamma, digital_control.impulse_response(m, t)
                     )
 
+                def impulse_start(t, x):
+                    return t - self.digital_control._impulse_response[m].t0
+
+                impulse_start.direction = 1.0
+
                 solBf = scipy.integrate.solve_ivp(
                     _derivative_forward_2,
                     (0, self.Ts),
                     np.zeros(self.analog_system.N),
                     atol=atol,
                     rtol=rtol,
+                    method="Radau",
+                    vectorized=False,
+                    jac=tempAf,
                     max_step=max_step,
-                    t_eval=np.linspace(0, self.Ts, steps),
+                    events=(impulse_start,),
                 ).y[:, -1]
 
                 def _derivative_backward_2(t, x):
@@ -1590,20 +1610,27 @@ class FIRFilter(DigitalEstimator):
                         digital_control.impulse_response(m, self.Ts - t),
                     )
 
+                def impulse_start(t, x):
+                    return self.Ts - self.digital_control._impulse_response[m].t0 - t
+
+                # impulse_start.terminate = True
+                impulse_start.direction = -1.0
+
                 solBb = scipy.integrate.solve_ivp(
                     _derivative_backward_2,
                     (0, self.Ts),
                     np.zeros(self.analog_system.N),
                     atol=atol,
                     rtol=rtol,
+                    method="Radau",
+                    vectorized=False,
+                    jac=-tempAb,
                     max_step=max_step,
-                    t_eval=np.linspace(0, self.Ts, steps),
+                    events=(impulse_start,),
                 ).y[:, -1]
 
                 self.Bf[:, m] = solBf
                 self.Bb[:, m] = solBb
-            self._Bf_2T = np.dot(self.Af, self.Bf)
-        # self.WT = solve(Vf + Vb, analog_system.B).transpose()
         W, _, _, _ = np.linalg.lstsq(
             np.array(Vf + Vb, dtype=np.double), analog_system.B, rcond=-1
         )
@@ -1687,16 +1714,6 @@ class FIRFilter(DigitalEstimator):
 
         """
         return self._filter_lag
-
-    def warm_up(self):
-        """Warm up filter by population control signals.
-
-        Specifically fills up internal control signal buffer with
-        K1 control signals.
-        """
-        self._filter_lag += self.K1
-        for _ in range(self.K1):
-            _ = self.__next__()
 
     def fir_filter_transfer_function(self, Ts: float = 1.0):
         """Compute the FFT of the system impulse response (FIR filter coefficients).
@@ -1941,10 +1958,18 @@ class NUVEstimator:
         # )
         self._xi_tilde = np.zeros((self.K3 + 1, self.analog_system.N), dtype=np.double)
         self._sigma_squared_1 = np.ones(
-            (self.K3, self.analog_system.N_tilde,), dtype=np.double
+            (
+                self.K3,
+                self.analog_system.N_tilde,
+            ),
+            dtype=np.double,
         )
         self._sigma_squared_2 = np.ones(
-            (self.K3, self.analog_system.N_tilde,), dtype=np.double
+            (
+                self.K3,
+                self.analog_system.N_tilde,
+            ),
+            dtype=np.double,
         )
         self._posterior_observation_mean = np.zeros(
             (self.K3, self.analog_system.N_tilde), dtype=np.double
@@ -2031,7 +2056,7 @@ class NUVEstimator:
         # Solve IVPs
         self.Bf: np.ndarray = np.zeros((self.analog_system.N, self.analog_system.M))
         atol = 1e-200
-        rtol = 1e-10
+        rtol = 1e-12
         max_step = self.Ts / 1000.0
 
         for m in range(self.analog_system.M):
@@ -2048,6 +2073,7 @@ class NUVEstimator:
                 atol=atol,
                 rtol=rtol,
                 max_step=max_step,
+                method="Radau",
             ).y[:, -1]
             self.Bf[:, m] = solBf
 
@@ -2070,6 +2096,7 @@ class NUVEstimator:
                 atol=atol,
                 rtol=rtol,
                 max_step=max_step,
+                method="Radau",
             )
             .y[:, -1]
             .reshape((self.analog_system.N, self.analog_system.N)),
@@ -2137,17 +2164,20 @@ class NUVEstimator:
             )
 
             if k < temp_K3:
-                self._forward_mean[k + 1, :] = np.dot(
-                    self.Af,
-                    np.dot(self._F[k, :, :], self._forward_mean[k, :])
-                    + np.dot(
-                        self._forward_CoVariance[k, :, :],
-                        np.dot(
-                            self.analog_system.CT.transpose(),
-                            np.dot(self._G[k, :, :], self._y_mean[k, :]),
+                self._forward_mean[k + 1, :] = (
+                    np.dot(
+                        self.Af,
+                        np.dot(self._F[k, :, :], self._forward_mean[k, :])
+                        + np.dot(
+                            self._forward_CoVariance[k, :, :],
+                            np.dot(
+                                self.analog_system.CT.transpose(),
+                                np.dot(self._G[k, :, :], self._y_mean[k, :]),
+                            ),
                         ),
-                    ),
-                ) + np.dot(self.Bf, self._control_signal[k, :])
+                    )
+                    + np.dot(self.Bf, self._control_signal[k, :])
+                )
 
                 self._forward_CoVariance[k + 1, :, :] = (
                     np.dot(

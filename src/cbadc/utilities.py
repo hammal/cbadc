@@ -276,6 +276,7 @@ def compute_power_spectral_density(
     ((array_like, shape=(K,)), (array_like, shape=(L, K)))
         frequencies [Hz] and PSD [:math:`V^2/\mathrm{Hz}`] of sequence.
     """
+    nperseg = min(nperseg, sequence.size)
     freq, spectrum = welch(
         sequence,
         # window='hanning',
@@ -480,7 +481,7 @@ def iterator_to_numpy_array(iterator: Iterator[bytes], size: int, L: int = 1):
 
     Parameters
     ----------
-    iterator: 
+    iterator:
         a iterator with data points to fill up numpy array.
     size: `int`
         length of numpy array.
@@ -542,7 +543,7 @@ class FixedPoint:
         ----------
         value: `float`
             number to be converted.
-        
+
         Returns
         -------
         `int`
@@ -559,7 +560,7 @@ class FixedPoint:
         ----------
         value: `int`
             number to be converted.
-        
+
         Returns
         -------
         `float`

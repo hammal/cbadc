@@ -25,8 +25,10 @@ def test_brute_force_care():
     Vf = cbadc.digital_estimator.care(A, B, Q, R)
     Vb = cbadc.digital_estimator.care(-A, B, Q, R)
 
-    Vf2 = cbadc.digital_estimator.bruteForceCare(A, B, Q, R)
-    Vb2 = cbadc.digital_estimator.bruteForceCare(-A, B, Q, R)
+    Vf2 = cbadc.digital_estimator.bruteForceCare(A, B, Q, R, tau=1e-12)
+    Vb2 = cbadc.digital_estimator.bruteForceCare(-A, B, Q, R, tau=1e-12)
 
-    assert np.allclose(Vf, Vf2)
-    assert np.allclose(Vb, Vb2)
+    print(Vf, Vf2)
+    np.testing.assert_allclose(Vf, Vf2)
+    print(Vb, Vb2)
+    np.testing.assert_allclose(Vb, Vb2)
