@@ -170,7 +170,7 @@ ax4.set_prop_cycle(custom_cycler)
 for i in range(M):
     ax4.fill_between(x, offset[i], ctrl_sig[i]+offset[i], step='pre')
 
-ax4.text(xstart+xlim/4, 0, 'cbadc', color='w', fontsize=140, fontfamily='fantasy', 
+ax4.text(xstart+xlim/4, M/2, 'cbadc', color='w', fontsize=140, fontfamily='fantasy', 
          alpha=0.85, ha='center', va='center')
     
 input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1 + M/2
