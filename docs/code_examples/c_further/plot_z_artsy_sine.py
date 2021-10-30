@@ -19,12 +19,13 @@ from cycler import cycler
 
 
 ###############################################################################
-# --------------------------
-# Generate Control Bitstream
-# --------------------------
+# -------------
+# Generate Data
+# -------------
 #
-# For the examples we use the Hadamard converter PCB as a model. We stimulate the 
-# system with a sinusoidal input and capture the generated bitstream.
+# First, we need to generate some data to plot it later. For these examples we 
+# use the Hadamard converter PCB as a model. We stimulate the system with a 
+# sinusoidal input and capture the generated bitstream.
 #
 
 pcb = hadamard.HadamardPCB('B')
@@ -57,7 +58,7 @@ for index, s in enumerate(simulator):
 
 ##############################################################################
 # -------------------
-# Plot: Barcode Style
+# Barcode Style
 # -------------------
 # We want to display the individual control bit signals in a barcode manner. 
 # We achieve this by filling the area between the rectangular control signals 
@@ -86,7 +87,7 @@ ax1.set_facecolor('w')
 
 ##############################################################################
 # -------------------
-# Plot: Choose Colors
+# Choose Colors
 # -------------------
 # We can set the individual colors of the bit signals by using a color cycler. 
 # Also, we add the input signal on top.
@@ -112,7 +113,7 @@ ax2.set_facecolor('w')
 
 ##############################################################################
 # ---------------------
-# Plot: Color Gradients
+# Color Gradients
 # ---------------------
 # By specifying colors in the HSL space we can control them more intuitively. 
 # This also allows to create neat gradients.
