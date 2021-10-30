@@ -69,13 +69,16 @@ plt.rcParams['figure.figsize'] = [16, 10]    # modify default size of plot
 # start and length of the displayed snippet
 xstart = 128
 xlim = 256+1    # add 1 to get a symmetrical image
+
 x = np.arange(xstart, xstart+xlim)
+ctrl_sig = np.transpose(ctrl_stream[xstart:xstart+xlim,:])
+# from top to bottom: 0th to 7th bit
+offset = np.reshape(np.repeat(np.arange(M)[::-1], xlim), (M,xlim)) 
 
 fig1, ax1 = plt.subplots()
 
-# control signals stacked vertically, spaced from -M/2 to +M/2 on the y-axis
 for i in range(M):
-    ax1.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre')
+    ax1.fill_between(x, offset[i], ctrl_sig[i]+offset[i], step='pre')
 
 fig1.tight_layout()
 ax1.set_axis_off()
@@ -96,15 +99,14 @@ ax1.set_facecolor('w')
 custom_cycler = (cycler(color=['k', 'c', 'm', 'y']))
 
 fig2, ax2 = plt.subplots()
-ax2.set_prop_cycle(custom_cycler)  # remove this line to get the standard matplotlib color sequence
+ax2.set_prop_cycle(custom_cycler)  
+# remove the previous line to get the standard matplotlib color sequence
 
-# control signals stacked vertically, spaced from -M/2 to +M/2 on the y-axis
 for i in range(M):
-    ax2.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre', 
-                    alpha=0.5)
+    ax2.fill_between(x, offset[i], ctrl_sig[i]+offset[i], step='pre', alpha=0.5)
 
 # plot input signal        (adjust amplitude to be slightly smaller that barcode stack)
-input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1 
+input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1 + M/2
 ax2.plot(x, input_signal, 'k', linewidth=3)
 
 fig2.tight_layout()
@@ -129,17 +131,16 @@ hue = [hue_upper]*4 + [hue_lower]*4
 sat = np.concatenate((np.linspace(max_sat, min_sat, 4), np.linspace(min_sat, max_sat, 4)))
 lum = np.concatenate((np.linspace(min_lum, max_lum, 4), np.linspace(max_lum, min_lum, 4)))
 custom_cycler = (cycler(color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)]))
-# using a color cycler instead 
 
 fig3, ax3 = plt.subplots(figsize=(40/2.54, 24/2.54))
-ax3.set_prop_cycle(custom_cycler)  # remove this line to get the standard matplotlib color sequence
+ax3.set_prop_cycle(custom_cycler)  
+# remove the previous line to get the standard matplotlib color sequence
 
-# control signals stacked vertically, spaced from -M/2 to +M/2 on the y-axis
 for i in range(M):
-    ax3.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre')
+    ax3.fill_between(x, offset[i], ctrl_sig[i]+offset[i], step='pre')
 
-# plot input signal
-input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1
+# plot input signal        (adjust amplitude to be slightly smaller that barcode stack)
+input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1 + M/2
 ax3.plot(x, input_signal, 'k', linewidth=3, solid_capstyle='round')
 
 fig3.tight_layout()
@@ -167,11 +168,12 @@ fig4, ax4 = plt.subplots(figsize=(40/2.54, 24/2.54))
 ax4.set_prop_cycle(custom_cycler) 
 
 for i in range(M):
-    ax4.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre')
+    ax4.fill_between(x, offset[i], ctrl_sig[i]+offset[i], step='pre')
 
-ax4.text(xstart+xlim/4, 0, 'cbadc', color='w', fontsize=140, fontfamily='fantasy', alpha=0.85, ha='center', va='center')
+ax4.text(xstart+xlim/4, 0, 'cbadc', color='w', fontsize=140, fontfamily='fantasy', 
+         alpha=0.85, ha='center', va='center')
     
-input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1
+input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1 + M/2
 ax4.plot(x, input_signal, 'k', linewidth=3, solid_capstyle='round')
 
 fig4.tight_layout()
@@ -196,9 +198,9 @@ fig5, ax5 = plt.subplots(figsize=(40/2.54, 24/2.54))
 ax5.set_prop_cycle(custom_cycler)  
 
 for i in range(M):
-    ax5.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre')
+    ax5.fill_between(x, offset[i], ctrl_sig[i]+offset[i], step='pre')
 
-input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1
+input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1 + M/2
 ax5.plot(x, input_signal, 'k', linewidth=2, solid_capstyle='round')
 
 fig5.tight_layout()
@@ -222,9 +224,9 @@ fig6, ax6 = plt.subplots(figsize=(40/2.54, 24/2.54))
 ax6.set_prop_cycle(custom_cycler) 
 
 for i in range(M):
-    ax6.fill_between(x, M/2-1-i, ctrl_stream[xstart:xstart+xlim,i]+(M/2-1-i), step='pre')
+    ax6.fill_between(x, offset[i], ctrl_sig[i]+offset[i], step='pre')
 
-input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1
+input_signal = analog_signal.evaluate(x*T) / analog_signal.amplitude * M/2.1 + M/2
 ax6.plot(x, input_signal, 'k', linewidth=4, solid_capstyle='round')
 
 fig6.tight_layout()
@@ -235,7 +237,9 @@ ax6.set_facecolor('w')
 # ------------
 # Export Image
 # ------------
-# Uncomment one of the lines to export your favourite image
+# After playing around with the plots, uncomment  one of the lines to export 
+# your favourite image
+#
 
 # fig1.savefig('artsy_1.png', dpi=300)    
 # fig2.savefig('artsy_2.png', dpi=300)    
