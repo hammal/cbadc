@@ -69,7 +69,7 @@ print(digital_control)
 
 # Set the peak amplitude.
 amplitude = 0.5
-# Choose the sinusodial frequency via an oversampling ratio (OSR).
+# Choose the sinusoidal frequency via an oversampling ratio (OSR).
 OSR = 1 << 9
 frequency = 1.0 / (T * OSR)
 
@@ -192,7 +192,7 @@ def print_next_10_bytes(stream):
         yield byte
 
 
-cbadc.utilities.write_byte_stream_to_file("sinusodial_simulation.adcs",
+cbadc.utilities.write_byte_stream_to_file("sinusoidal_simulation.adcs",
                           print_next_10_bytes(byte_stream))
 
 ###############################################################################

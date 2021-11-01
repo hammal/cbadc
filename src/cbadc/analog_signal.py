@@ -90,12 +90,12 @@ class ConstantSignal(AnalogSignal):
 
 
 class Sinusodial(AnalogSignal):
-    """An analog continuous-time sinusodial signal.
+    """An analog continuous-time sinusoidal signal.
 
     Parameters
     ----------
     amplitude : `float`
-        The amplitude of the sinusodial.
+        The amplitude of the sinusoidal.
     frequency : `float`
         Frequency of the oscillation in [Hz].
     phase : `float`, optional
@@ -167,7 +167,7 @@ class Ramp(AnalogSignal):
     Parameters
     ----------
     amplitude : `float`
-        The amplitude of the sinusodial.
+        The amplitude of the sinusoidal.
     period : `float`
         one over the period length of the ramp, specified in [Hz].
     phase : `float`, optional

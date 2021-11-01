@@ -34,7 +34,7 @@ T = pcb.T
 
 # Set the peak amplitude.
 amplitude = 2.5    # 2.5 V is the theoretical limit for the hardware prototype
-# Choose the sinusodial frequency via an oversampling ratio (OSR).
+# Choose the sinusoidal frequency via an oversampling ratio (OSR).
 OSR = 1 << 8
 frequency = 1.0 / (T * OSR)
 # Instantiate the analog signal

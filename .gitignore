@@ -8,7 +8,7 @@ docs/build
 *.DS_Store
 .tox
 ._profile_simulator_stats.txt
-docs/code_examples/a_getting_started/sinusodial_simulation.adcs
+docs/code_examples/a_getting_started/sinusoidal_simulation.adcs
 docs/._make.bat
 *.svg
 jupyter

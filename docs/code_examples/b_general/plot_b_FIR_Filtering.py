@@ -207,7 +207,7 @@ eta2 = 1e6
 control_signal_sequences = [
     cbadc.utilities.byte_stream_2_control_signal(
         cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusodial_simulation.adcs", M
+            "../a_getting_started/sinusoidal_simulation.adcs", M
         ),
         M,
     )
@@ -261,7 +261,7 @@ digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
 digital_estimators_ref(
     cbadc.utilities.byte_stream_2_control_signal(
         cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusodial_simulation.adcs", M
+            "../a_getting_started/sinusoidal_simulation.adcs", M
         ),
         M,
     )

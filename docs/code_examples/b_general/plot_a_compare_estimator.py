@@ -44,7 +44,7 @@ print(analog_system, "\n")
 
 # Set the peak amplitude.
 amplitude = 1.0
-# Choose the sinusodial frequency via an oversampling ratio (OSR).
+# Choose the sinusoidal frequency via an oversampling ratio (OSR).
 frequency = 1.0 / (T * OSR * (1 << 0))
 
 # We also specify a phase an offset these are hovewer optional.

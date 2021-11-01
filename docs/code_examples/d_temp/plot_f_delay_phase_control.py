@@ -80,7 +80,7 @@ digital_control_ref = cbadc.digital_control.DigitalControl(
 
 # Set the peak amplitude.
 amplitude = 0.5
-# Choose the sinusodial frequency via an oversampling ratio (OSR).
+# Choose the sinusoidal frequency via an oversampling ratio (OSR).
 OSR = 1 << 5
 frequency = 1.0 / (T * (OSR << 3))
 

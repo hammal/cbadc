@@ -153,14 +153,14 @@ for i in digital_estimator:
 #
 # Next, we will load an actual control signal to demonstrate the digital
 # estimator's capabilities. To this end, we will use the
-# `sinusodial_simulation.adcs` file that was produced in
+# `sinusoidal_simulation.adcs` file that was produced in
 # :doc:`./plot_b_simulate_a_control_bounded_adc`.
 #
 # The control signal file is encoded as raw binary data so to unpack it
 # correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-byte_stream = cbadc.utilities.read_byte_stream_from_file('sinusodial_simulation.adcs', M)
+byte_stream = cbadc.utilities.read_byte_stream_from_file('sinusoidal_simulation.adcs', M)
 control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 ###############################################################################
