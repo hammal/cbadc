@@ -2,5 +2,5 @@
 General Examples
 ----------------
 
-Next we highlight various features of the cbadc package 
+Next we highlight various features of the cbadc package. 
   
