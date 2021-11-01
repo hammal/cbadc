@@ -40,7 +40,7 @@ print(analog_system, "\n")
 # -------------
 #
 # We will also need an analog signal for conversion.
-# In this tutorial we will use a Sinusodial signal.
+# In this tutorial we will use a Sinusoidal signal.
 
 # Set the peak amplitude.
 amplitude = 1.0
@@ -52,7 +52,7 @@ phase = 0.0
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
 
 print(analog_signal)
 

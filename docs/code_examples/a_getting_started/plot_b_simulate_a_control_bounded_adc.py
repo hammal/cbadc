@@ -64,7 +64,7 @@ print(digital_control)
 #
 # The final and third component of the simulation is an analog signal.
 # For this tutorial, we will choose a
-# :py:class:`cbadc.analog_signal.Sinusodial`. Again, this is one of several
+# :py:class:`cbadc.analog_signal.Sinusoidal`. Again, this is one of several
 # possible choices.
 
 # Set the peak amplitude.
@@ -78,7 +78,7 @@ phase = np.pi / 3
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
 # print to ensure correct parametrization.
 print(analog_signal)
 

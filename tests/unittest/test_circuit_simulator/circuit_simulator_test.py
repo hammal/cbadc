@@ -80,7 +80,7 @@ def test_pre_and_non_pre_computations():
     print(analog_system_sc)
 
     amplitude = 0.1
-    analog_signal = cbadc.analog_signal.Sinusodial(amplitude, 1 / T / 32)
+    analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, 1 / T / 32)
 
     Ts = T
     size = 1 << 5
@@ -166,7 +166,7 @@ def test_variable_sampling_rate():
     print(analog_system_sc)
 
     amplitude = 0.1
-    analog_signal = cbadc.analog_signal.Sinusodial(amplitude, 1 / T / 32)
+    analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, 1 / T / 32)
 
     Downsampling = 1 << 3
     Ts = T / Downsampling
@@ -251,7 +251,7 @@ def test_simulator_verify_with_estimator():
     print(analog_system_sc)
 
     amplitude = 1.0
-    analog_signal = cbadc.analog_signal.Sinusodial(amplitude, 1 / T / 64)
+    analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, 1 / T / 64)
 
     size = 1 << 14
 

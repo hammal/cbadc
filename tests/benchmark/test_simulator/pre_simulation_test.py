@@ -1,7 +1,7 @@
 import numpy as np
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
-from cbadc.analog_signal import Sinusodial
+from cbadc.analog_signal import Sinusoidal
 from cbadc.simulator import StateSpaceSimulator
 
 beta = 6250.0
@@ -23,7 +23,7 @@ K2 = 1 << 8
 size = K2 << 2
 analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
 digitalControl = DigitalControl(Ts, N)
-analogSignals = [Sinusodial(0.5, 1)]
+analogSignals = [Sinusoidal(0.5, 1)]
 
 
 def test_pre_simulation_algorithm(benchmark):

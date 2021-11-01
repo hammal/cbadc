@@ -11,7 +11,7 @@ The plots are rendered using matplotlib.
 
 from cbadc.datasets import hadamard
 from cbadc.simulator import StateSpaceSimulator
-from cbadc.analog_signal import Sinusodial
+from cbadc.analog_signal import Sinusoidal
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import hsv_to_rgb
@@ -38,7 +38,7 @@ amplitude = 2.5    # 2.5 V is the theoretical limit for the hardware prototype
 OSR = 1 << 8
 frequency = 1.0 / (T * OSR)
 # Instantiate the analog signal
-analog_signal = Sinusodial(amplitude, frequency)
+analog_signal = Sinusoidal(amplitude, frequency)
 # print to ensure correct parametrization.
 print(analog_signal)
 

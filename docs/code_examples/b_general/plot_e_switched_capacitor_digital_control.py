@@ -102,7 +102,7 @@ print(analog_system_sc)
 #
 OSR = 32
 amplitude = 1.0
-analog_signal = cbadc.analog_signal.Sinusodial(amplitude, 1 / T / (OSR << 4))
+analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, 1 / T / (OSR << 4))
 Ts = T / 100.0
 size = 1 << 12
 

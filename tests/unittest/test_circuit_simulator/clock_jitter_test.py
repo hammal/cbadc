@@ -35,7 +35,7 @@ def test_simulator_verify_with_estimator():
     print(analog_system_sc)
 
     amplitude = 1e-2
-    analog_signal = cbadc.analog_signal.Sinusodial(amplitude, 1 / T / 64)
+    analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, 1 / T / 64)
 
     size = 1 << 10
 

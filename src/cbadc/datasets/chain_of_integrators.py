@@ -87,7 +87,7 @@ class ChainOfIntegrators:
         size: `int`
             the maximum length of the simulation (1G control signal samples)
         """
-        input_signal = cbadc.analog_signal.Sinusodial(
+        input_signal = cbadc.analog_signal.Sinusoidal(
             amplitude, frequency, phase, offset)
         simulator = cbadc.simulator.StateSpaceSimulator(
             self.analog_system, self.digital_control, [input_signal])

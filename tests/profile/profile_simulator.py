@@ -2,7 +2,7 @@
 import cProfile
 from cbadc.analog_system import ChainOfIntegrators
 from cbadc.digital_control import DigitalControl
-from cbadc.analog_signal import Sinusodial
+from cbadc.analog_signal import Sinusoidal
 from cbadc.simulator import StateSpaceSimulator
 from cbadc.utilities import write_byte_stream_to_file
 from cbadc.utilities import control_signal_2_byte_stream
@@ -48,7 +48,7 @@ def main():
     digital_control = DigitalControl(T, M)
 
     # Instantiate the analog signal
-    analog_signal = Sinusodial(amplitude, frequency, phase, offset)
+    analog_signal = Sinusoidal(amplitude, frequency, phase, offset)
 
     # Instantiate the simulator.
     simulator = StateSpaceSimulator(analog_system, digital_control, [

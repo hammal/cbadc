@@ -53,7 +53,7 @@ class ConstantSignal(AnalogSignal):
 
     See also
     ---------
-    :py:class:`cbadc.analog_signal.Sinusodial`
+    :py:class:`cbadc.analog_signal.Sinusoidal`
     :py:class:`cbadc.simulator.StateSpaceSimulator`
 
     Examples
@@ -89,7 +89,7 @@ class ConstantSignal(AnalogSignal):
         return f"ConstantSignal has an offset = {self.offset}."
 
 
-class Sinusodial(AnalogSignal):
+class Sinusoidal(AnalogSignal):
     """An analog continuous-time sinusoidal signal.
 
     Parameters
@@ -122,9 +122,9 @@ class Sinusodial(AnalogSignal):
 
     Example
     -------
-    >>> from cbadc.analog_signal import Sinusodial
+    >>> from cbadc.analog_signal import Sinusoidal
     >>> import numpy as np
-    >>> u = Sinusodial(1, 123, np.pi/2, 0)
+    >>> u = Sinusoidal(1, 123, np.pi/2, 0)
     >>> print(u.evaluate(0))
     1.0
 
@@ -139,7 +139,7 @@ class Sinusodial(AnalogSignal):
         self.offset: float = offset
 
     def __str__(self):
-        return f"""Sinusodial parameterized as: \namplitude = {self.amplitude}, \n
+        return f"""Sinusoidal parameterized as: \namplitude = {self.amplitude}, \n
         frequency = {self.frequency}, \nphase = {self.phase},
         and\noffset = {self.offset}"""
 
@@ -197,7 +197,7 @@ class Ramp(AnalogSignal):
         self.offset: float = offset - self.amplitude / 2.0
 
     def __str__(self):
-        return f"""Sinusodial parameterized as: \namplitude = {self.amplitude}, \n
+        return f"""Sinusoidal parameterized as: \namplitude = {self.amplitude}, \n
         frequency = {self.frequency}, \nphase = {self.phase},
         and\noffset = {self.offset}"""
 
