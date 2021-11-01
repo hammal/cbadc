@@ -284,7 +284,7 @@ class MultiPhaseDigitalControl(DigitalControl):
         self._phi_1 = phi_1
         self._t_next = t0
         self._t_next_phase = self._t_next + self._phi_1
-        self._t_last_update = t0 + self._phi_1
+        self._t_last_update = t0 * np.ones(M)
         DigitalControl.__init__(self, T, M, t0=t0)
         if (phi_1 < 0).any() or (phi_1 > T).any():
             raise BaseException(f"Invalid phi_1 ={phi_1}")
@@ -333,6 +333,7 @@ class MultiPhaseDigitalControl(DigitalControl):
                     self._s[m] = s_tilde[m] >= 0
                     self._t_next_phase[m] += self.T
                     self._t_next = self._next_update()
+                    self._t_last_update[m] = t
                     # DAC
                     self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
                     # print(f"m = {m}, t = {t}, s = {self._dac_values}")

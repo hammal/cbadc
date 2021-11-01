@@ -147,6 +147,11 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         #     with this simulator. Instead use
         #     cbadc.simulator.SwitchedCapacitorStateSpaceSimulator."""
         #     )
+        if isinstance(digital_control, cbadc.digital_control.MultiPhaseDigitalControl):
+            pre_compute_control_interactions = False
+            logger.warning(
+                "Pre-computations turned off as digital control is MultiPhaseDigitalControl"
+            )
         self.digital_control = digital_control
         self.input_signals = input_signal
         self.t: float = t_init
@@ -420,8 +425,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         def control_update(t, x):
             return t - self.digital_control._t_next
 
-        control_update.terminate = True
-        control_update.direction = 1.0
+        control_update.terminal = True
+        # control_update.direction = 1.0
         t0_impulse_response = [
             lambda t, x: t
             - self.digital_control._t_last_update[m]
@@ -451,6 +456,9 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             t = res.t[-1]
             y_new = res.y[:, -1]
             if res.status == 1 or t == t_span[1]:
+                # print(
+                #     f"Control update at t={t}, t/Ts = {t/self.Ts}, t_events={res.t_events[0]}, res.status={res.status}"
+                # )
                 self.digital_control.control_update(
                     t, np.dot(self.analog_system.Gamma_tildeT, y_new)
                 )

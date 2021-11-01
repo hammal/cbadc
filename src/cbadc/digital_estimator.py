@@ -241,10 +241,23 @@ class DigitalEstimator(Iterator[np.ndarray]):
     def filter_lag(self):
         """Return the lag of the filter.
 
-        Returns
-        -------
-        `int`
-            The filter lag.
+        <<<<<<< HEAD
+        =======
+                As the filter computes the estimate as
+
+                ---------
+                |   K2  |
+                ---------
+                ^
+                |
+                u_hat[k]
+
+
+        >>>>>>> origin/master
+                Returns
+                -------
+                `int`
+                    The filter lag.
 
         """
         return self._filter_lag
@@ -1295,8 +1308,8 @@ class FIRFilter(DigitalEstimator):
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
     ):
-        atol = 1e-30
-        rtol = 2.3e-14
+        atol = 1e-15
+        rtol = 2.3e-13
         steps = 1000
         max_step = self.Ts / steps
 
@@ -1579,20 +1592,26 @@ class FIRFilter(DigitalEstimator):
                 def impulse_start(t, x):
                     return t - self.digital_control._impulse_response[m].t0
 
-                impulse_start.direction = 1.0
+                # impulse_start.direction = -1.0
 
-                solBf = scipy.integrate.solve_ivp(
+                solver = scipy.integrate.solve_ivp(
                     _derivative_forward_2,
-                    (0, self.Ts),
+                    (self.digital_control._impulse_response[m].t0, self.Ts),
                     np.zeros(self.analog_system.N),
                     atol=atol,
                     rtol=rtol,
-                    method="Radau",
+                    method="RK45",
+                    # method="Radau",
+                    # method="BDF",
                     vectorized=False,
-                    jac=tempAf,
+                    # jac=tempAf,
                     max_step=max_step,
-                    events=(impulse_start,),
-                ).y[:, -1]
+                    # min_step=max_step,
+                    # events=(impulse_start,),
+                )
+                solBf = solver.y[:, -1]
+                # print("Bf m=", m)
+                # print(solver)
 
                 def _derivative_backward_2(t, x):
                     return np.dot(-tempAb, x) - np.dot(
@@ -1604,20 +1623,26 @@ class FIRFilter(DigitalEstimator):
                     return self.Ts - self.digital_control._impulse_response[m].t0 - t
 
                 # impulse_start.terminate = True
-                impulse_start.direction = -1.0
+                # impulse_start.direction = -1.0
 
-                solBb = scipy.integrate.solve_ivp(
+                solver = scipy.integrate.solve_ivp(
                     _derivative_backward_2,
                     (0, self.Ts),
                     np.zeros(self.analog_system.N),
                     atol=atol,
                     rtol=rtol,
-                    method="Radau",
+                    method="RK45",
+                    # method="Radau",
+                    # method="BDF",
                     vectorized=False,
-                    jac=-tempAb,
+                    # jac=-tempAb,
                     max_step=max_step,
+                    # min_step=max_step,
                     events=(impulse_start,),
-                ).y[:, -1]
+                )
+                solBb = solver.y[:, -1]
+                # print("Bb m=", m)
+                # print(solver)
 
                 self.Bf[:, m] = solBf
                 self.Bb[:, m] = solBb
