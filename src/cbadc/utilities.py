@@ -15,6 +15,9 @@ import pickle
 import scipy.io.wavfile
 import numpy.typing as npt
 import scipy.signal
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def number_of_bytes_selector(M: int):
@@ -43,7 +46,8 @@ def number_of_bytes_selector(M: int):
         return {"number_of_bytes": 4, "format_marker": "i", "c_type_name": "int"}
     if M < 129:
         return {"number_of_bytes": 8, "format_marker": "q", "c_type_name": "long long"}
-    raise BaseException(f"M={M} is larger than 128 which is the largest allowed size")
+    raise BaseException(
+        f"M={M} is larger than 128 which is the largest allowed size")
 
 
 def control_signal_2_byte_stream(
@@ -276,6 +280,7 @@ def compute_power_spectral_density(
     ((array_like, shape=(K,)), (array_like, shape=(L, K)))
         frequencies [Hz] and PSD [:math:`V^2/\mathrm{Hz}`] of sequence.
     """
+    logger.debug("Computing power spectral density.")
     nperseg = min(nperseg, sequence.size)
     freq, spectrum = welch(
         sequence,
@@ -456,6 +461,7 @@ def pickle_dump(object_to_be_pickled, filename: str):
     filename: `str`
         the path for it to be stored.
     """
+    logger.info(f"Dumping object to file {filename}.")
     with open(filename, "wb") as f:
         pickle.dump(object_to_be_pickled, f, protocol=-1)
 
@@ -472,6 +478,7 @@ def pickle_load(filename: str):
     filename: `str`
         the filename of the pickled file.
     """
+    logger.info(f"Loading object from file {filename}.")
     with open(filename, "rb") as f:
         return pickle.load(f)
 
@@ -516,6 +523,7 @@ def write_wave(filename: str, sample_rate: int, data: npt.ArrayLike):
         the data array to be encoded as wave file
 
     """
+    logger.info(f"Writing data array to wave file: {filename}.")
     scipy.io.wavfile.write(filename, sample_rate, data)
 
 

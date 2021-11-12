@@ -3,6 +3,9 @@
 this module contains tools for calibrating the digital estimator.
 """
 from cbadc.digital_estimator import DigitalEstimator
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Calibrator:
@@ -18,4 +21,3 @@ class InputReference:
 
     def __init__(self, ):
         a = DigitalEstimator
-

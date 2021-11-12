@@ -27,7 +27,6 @@ the analog system and digital estimator.
 .. GENERATED FROM PYTHON SOURCE LINES 8-12
 
 .. code-block:: default
-   :lineno-start: 8
 
     import matplotlib.pyplot as plt
     import numpy as np
@@ -77,15 +76,14 @@ derives from the main analog system class
 .. GENERATED FROM PYTHON SOURCE LINES 44-62
 
 .. code-block:: default
-   :lineno-start: 45
 
 
     # We fix the number of analog states.
     N = 6
     # Set the amplification factor.
-    beta = 6250.
-    rho = - 0.02
-    kappa = - 1.0
+    beta = 6250.0
+    rho = -0.02
+    kappa = -1.0
     # In this example, each nodes amplification and local feedback will be set
     # identically.
     betaVec = beta * np.ones(N)
@@ -164,10 +162,9 @@ Next, we plot the transfer function of the analog system
 using the class method
 :func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 72-105
+.. GENERATED FROM PYTHON SOURCE LINES 72-103
 
 .. code-block:: default
-   :lineno-start: 73
 
 
     # Logspace frequencies
@@ -181,21 +178,19 @@ using the class method
     # For each output 1,...,N compute the corresponding tranfer function seen
     # from the input.
     for n in range(N):
-        plt.semilogx(
-            frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
+        plt.semilogx(frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
 
     # Add the norm ||G(omega)||_2
     plt.semilogx(
         frequencies,
-        20 * np.log10(np.linalg.norm(
-            transfer_function[:, 0, :],
-            axis=0)),
-        '--',
-        label="$ ||\mathbf{G}(\omega)||_2 $")
+        20 * np.log10(np.linalg.norm(transfer_function[:, 0, :], axis=0)),
+        "--",
+        label="$ ||\mathbf{G}(\omega)||_2 $",
+    )
 
     # Add labels and legends to figure
     plt.legend()
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.title("Transfer functions, $G_1(\omega), \dots, G_N(\omega)$")
     plt.xlabel("$\omega / (4 \pi \\beta ) $")
     plt.ylabel("dB")
@@ -214,7 +209,7 @@ using the class method
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 106-137
+.. GENERATED FROM PYTHON SOURCE LINES 104-135
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
@@ -248,27 +243,31 @@ results in a row vector
 where :math:`\text{NTF}_\ell(\omega)` refers to the noise transfer function
 from the :math:`\ell`-th observation to the final estimate.
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-180
+.. GENERATED FROM PYTHON SOURCE LINES 135-187
 
 .. code-block:: default
-   :lineno-start: 138
 
 
     # Define dummy control and control sequence (not used when computing transfer
     # functions). However necessary to instantiate the digital estimator
 
-    T = 1/(2 * beta)
+    T = 1 / (2 * beta)
     digital_control = cbadc.digital_control.DigitalControl(T, N)
 
 
     # Compute eta2 for a given bandwidth.
-    omega_3dB = (4 * np.pi * beta) / 100.
-    eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
-        np.array([omega_3dB])).flatten()) ** 2
+    omega_3dB = (4 * np.pi * beta) / 100.0
+    eta2 = (
+        np.linalg.norm(
+            analog_system.transfer_function_matrix(np.array([omega_3dB])).flatten()
+        )
+        ** 2
+    )
 
     # Instantiate estimator.
     digital_estimator = cbadc.digital_estimator.DigitalEstimator(
-        analog_system, digital_control, eta2, K1=1)
+        analog_system, digital_control, eta2, K1=1
+    )
 
     # Compute NTF
     ntf = digital_estimator.noise_transfer_function(omega)
@@ -281,15 +280,19 @@ from the :math:`\ell`-th observation to the final estimate.
 
     # Plot
     plt.figure()
-    plt.semilogx(frequencies, stf_dB, label='$STF(\omega)$')
+    plt.semilogx(frequencies, stf_dB, label="$STF(\omega)$")
     for n in range(N):
         plt.semilogx(frequencies, ntf_dB[0, n, :], label=f"$|NTF_{n+1}(\omega)|$")
-    plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-        ntf[0, :, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $")
+    plt.semilogx(
+        frequencies,
+        20 * np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+        "--",
+        label="$ || NTF(\omega) ||_2 $",
+    )
 
     # Add labels and legends to figure
     plt.legend()
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.title("Signal and noise transfer functions")
     plt.xlabel("$\omega / (4 \pi \\beta ) $")
     plt.ylabel("dB")
@@ -308,17 +311,16 @@ from the :math:`\ell`-th observation to the final estimate.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 181-185
+.. GENERATED FROM PYTHON SOURCE LINES 188-192
 
 Setting the Bandwidth of the Estimation Filter
 ----------------------------------------------
 
 Finally, we will investigate the effect of eta2 on the STF and NTF.
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-218
+.. GENERATED FROM PYTHON SOURCE LINES 192-233
 
 .. code-block:: default
-   :lineno-start: 186
 
 
     # create a vector of etas to be evaluated,
@@ -328,7 +330,8 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
     for eta2 in eta2_vec:
         # Instantiate an estimator for each eta.
         digital_estimator = cbadc.digital_estimator.DigitalEstimator(
-            analog_system, digital_control, eta2, K1=1)
+            analog_system, digital_control, eta2, K1=1
+        )
         # Compute stf and ntf
         ntf = digital_estimator.noise_transfer_function(omega)
         ntf_dB = 20 * np.log10(np.abs(ntf))
@@ -336,16 +339,23 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
         stf_dB = 20 * np.log10(np.abs(stf.flatten()))
 
         # Plot
-        color = next(plt.gca()._get_lines.prop_cycler)['color']
-        plt.semilogx(frequencies, 20 *
-                     np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
-                     '--', color=color)
-        plt.semilogx(frequencies, stf_dB,
-                     label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$", color=color)
+        color = next(plt.gca()._get_lines.prop_cycler)["color"]
+        plt.semilogx(
+            frequencies,
+            20 * np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+            "--",
+            color=color,
+        )
+        plt.semilogx(
+            frequencies,
+            stf_dB,
+            label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$",
+            color=color,
+        )
 
     # Add labels and legends to figure
-    plt.legend(loc='lower left')
-    plt.grid(which='both')
+    plt.legend(loc="lower left")
+    plt.grid(which="both")
     plt.title("$|G(\omega)|$ - solid, $||\mathbf{H}(\omega)||_2$ - dashed")
     plt.xlabel("$\omega / (4 \pi \\beta ) $")
     plt.ylabel("dB")
@@ -368,11 +378,11 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:196: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
@@ -381,7 +391,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  23.754 seconds)
+   **Total running time of the script:** ( 0 minutes  24.439 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:

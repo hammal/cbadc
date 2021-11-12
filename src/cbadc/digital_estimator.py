@@ -47,7 +47,8 @@ def bruteForceCare(
                 + np.dot(V.transpose(), A)
                 + Q
                 - np.dot(
-                    V, np.dot(B, np.dot(RInv, np.dot(B.transpose(), V.transpose())))
+                    V, np.dot(B, np.dot(RInv, np.dot(
+                        B.transpose(), V.transpose())))
                 )
             )
             V = 0.5 * (V + V.transpose())
@@ -241,23 +242,19 @@ class DigitalEstimator(Iterator[np.ndarray]):
     def filter_lag(self):
         """Return the lag of the filter.
 
-        <<<<<<< HEAD
-        =======
-                As the filter computes the estimate as
+            As the filter computes the estimate as
 
-                ---------
-                |   K2  |
-                ---------
-                ^
-                |
-                u_hat[k]
+            ---------
+            |   K2  |
+            ---------
+            ^
+            |
+            u_hat[k]
 
-
-        >>>>>>> origin/master
-                Returns
-                -------
-                `int`
-                    The filter lag.
+            Returns
+            -------
+            `int`
+                The filter lag.
 
         """
         return self._filter_lag
@@ -267,6 +264,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
         Effectively removes the filter lag.
         """
+        logger.debug("Warming up estimator.")
         while self._filter_lag > 0:
             _ = self.__next__()
             self._filter_lag -= 1
@@ -287,10 +285,12 @@ class DigitalEstimator(Iterator[np.ndarray]):
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
     ):
+        logger.info("Computing filter coefficients.")
         # Compute filter coefficients
         A = np.array(analog_system.A).transpose()
         B = np.array(analog_system.CT).transpose()
-        Q = np.dot(np.array(analog_system.B), np.array(analog_system.B).transpose())
+        Q = np.dot(np.array(analog_system.B),
+                   np.array(analog_system.B).transpose())
         R = eta2 * np.eye(analog_system.N_tilde)
         # Solve care
         Vf = care(A, B, Q, R)
@@ -304,8 +304,10 @@ class DigitalEstimator(Iterator[np.ndarray]):
         self.Ab: np.ndarray = np.asarray(scipy.linalg.expm(-tempAb * self.Ts))
         Gamma = np.array(analog_system.Gamma)
         # Solve IVPs
-        self.Bf: np.ndarray = np.zeros((self.analog_system.N, self.analog_system.M))
-        self.Bb: np.ndarray = np.zeros((self.analog_system.N, self.analog_system.M))
+        self.Bf: np.ndarray = np.zeros(
+            (self.analog_system.N, self.analog_system.M))
+        self.Bb: np.ndarray = np.zeros(
+            (self.analog_system.N, self.analog_system.M))
 
         atol = 1e-200
         rtol = 1e-10
@@ -409,12 +411,16 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M), dtype=np.int8)
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._control_signal = np.zeros(
+            (self.K3, self.analog_system.M), dtype=np.int8)
+        self._estimate = np.zeros(
+            (self.K1, self.analog_system.L), dtype=np.double)
         self._control_signal_in_buffer = 0
-        self._mean = np.zeros((self.K1 + 1, self.analog_system.N), dtype=np.double)
+        self._mean = np.zeros(
+            (self.K1 + 1, self.analog_system.N), dtype=np.double)
 
     def _compute_batch(self):
+        logger.info("Computing batch.")
         temp_forward_mean = np.zeros(self.analog_system.N, dtype=np.double)
         # check if ready to compute buffer
         if self._control_signal_in_buffer < self.K3:
@@ -483,7 +489,8 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
         # Check if there are estimates in the estimate buffer
         if self._estimate_pointer < self.K1:
-            temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
+            temp = np.array(
+                self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
             return temp
         # Check if stop iteration has been raised in previous batch
@@ -502,7 +509,8 @@ class DigitalEstimator(Iterator[np.ndarray]):
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
+                control_signal_sample = np.zeros(
+                    (self.analog_system.M), dtype=np.int8)
             full = self._input(control_signal_sample)
 
         # Compute new batch of K1 estimates
@@ -611,7 +619,8 @@ class DigitalEstimator(Iterator[np.ndarray]):
         `array_like`, shape=(L, M, K)
             return STF evaluated at K different angular frequencies.
         """
-        result = np.zeros((self.analog_system.L, self.analog_system.M, omega.size))
+        result = np.zeros(
+            (self.analog_system.L, self.analog_system.M, omega.size))
         for index, o in enumerate(omega):
             G = self.analog_system.transfer_function_matrix(np.array([o])).reshape(
                 (self.analog_system.N_tilde, self.analog_system.L)
@@ -811,32 +820,39 @@ class ParallelEstimator(DigitalEstimator):
         self.backward_a = np.array(temp, dtype=np.complex128)
         Q_b_inv = np.linalg.pinv(Q_b, rcond=1e-20)
 
-        self.forward_b = np.array(np.dot(Q_f_inv, self.Bf), dtype=np.complex128)
-        self.backward_b = np.array(np.dot(Q_b_inv, self.Bb), dtype=np.complex128)
+        self.forward_b = np.array(
+            np.dot(Q_f_inv, self.Bf), dtype=np.complex128)
+        self.backward_b = np.array(
+            np.dot(Q_b_inv, self.Bb), dtype=np.complex128)
 
         self.forward_w = -np.array(np.dot(self.WT, Q_f), dtype=np.complex128)
         self.backward_w = np.array(np.dot(self.WT, Q_b), dtype=np.complex128)
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M), dtype=np.int8)
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._control_signal = np.zeros(
+            (self.K3, self.analog_system.M), dtype=np.int8)
+        self._estimate = np.zeros(
+            (self.K1, self.analog_system.L), dtype=np.double)
         self._control_signal_in_buffer = 0
         self._mean = np.zeros((self.analog_system.N), dtype=np.complex128)
 
     def _compute_batch(self):
+        logger.info("Computing Batch")
         mean: np.complex128 = np.complex128(0)
         # check if ready to compute buffer
         if self._control_signal_in_buffer < self.K3:
             raise BaseException("Control signal buffer not full")
 
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._estimate = np.zeros(
+            (self.K1, self.analog_system.L), dtype=np.double)
 
         for n in range(self.analog_system.N):
             mean = self._mean[n]
             for k1 in range(self.K1):
                 for l in range(self.analog_system.L):
-                    self._estimate[k1, l] += np.real(self.forward_w[l, n] * mean)
+                    self._estimate[k1,
+                                   l] += np.real(self.forward_w[l, n] * mean)
                 mean = self.forward_a[n] * mean
                 for m in range(self.analog_system.M):
                     if self._control_signal[k1, m]:
@@ -854,7 +870,8 @@ class ParallelEstimator(DigitalEstimator):
                         mean -= self.backward_b[n, m]
                 if k3 < self.K1:
                     for l in range(self.analog_system.L):
-                        self._estimate[k3, l] += np.real(self.backward_w[l, n] * mean)
+                        self._estimate[k3,
+                                       l] += np.real(self.backward_w[l, n] * mean)
         self._control_signal = np.roll(self._control_signal, -self.K1, axis=0)
         self._control_signal_in_buffer -= self.K1
 
@@ -884,12 +901,13 @@ class ParallelEstimator(DigitalEstimator):
 
         # Check if there are estimates in the estimate buffer
         if self._estimate_pointer < self.K1:
-            temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
+            temp = np.array(
+                self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
             return temp
         # Check if stop iteration has been raised in previous batch
         if self._stop_iteration:
-            logger.warning("StopIteration received by estimator.")
+            logger.info("StopIteration received by estimator.")
             raise StopIteration
         # Otherwise start receiving control signals
         full = False
@@ -903,7 +921,8 @@ class ParallelEstimator(DigitalEstimator):
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
+                control_signal_sample = np.zeros(
+                    (self.analog_system.M), dtype=np.int8)
             full = self._input(control_signal_sample)
 
         # Compute new batch of K1 estimates
@@ -1074,7 +1093,8 @@ class IIRFilter(DigitalEstimator):
             raise StopIteration
 
         # Rotate control_signal vector
-        self._control_signal_valued = np.roll(self._control_signal_valued, -1, axis=0)
+        self._control_signal_valued = np.roll(
+            self._control_signal_valued, -1, axis=0)
 
         # insert new control signal
         try:
@@ -1083,7 +1103,8 @@ class IIRFilter(DigitalEstimator):
             logger.warning("Estimator received Stop Iteration")
             raise StopIteration
 
-        self._control_signal_valued[-1, :] = np.asarray(2 * temp - 1, dtype=np.int8)
+        self._control_signal_valued[-1,
+                                    :] = np.asarray(2 * temp - 1, dtype=np.int8)
 
         # self._control_signal_valued.shape -> (K2, M)
         # self.h.shape -> (L, K2, M)
@@ -1093,7 +1114,8 @@ class IIRFilter(DigitalEstimator):
         )
         if ((self._iteration - 1) % self.downsample) == 0:
             return (
-                np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1)))
+                np.tensordot(self.h, self._control_signal_valued,
+                             axes=((1, 2), (0, 1)))
                 + result
             )
             # return np.einsum('ijk,jk', self.h, self._control_signal_valued) + result
@@ -1259,8 +1281,10 @@ class FIRFilter(DigitalEstimator):
         if fixed_point is not None:
             self.fixed_point = True
             self.__fixed_point = fixed_point
-            self.__fixed_to_float = np.vectorize(self.__fixed_point.fixed_to_float)
-            self.__float_to_fixed = np.vectorize(self.__fixed_point.float_to_fixed)
+            self.__fixed_to_float = np.vectorize(
+                self.__fixed_point.fixed_to_float)
+            self.__float_to_fixed = np.vectorize(
+                self.__fixed_point.float_to_fixed)
         else:
             self.fixed_point = False
 
@@ -1272,17 +1296,20 @@ class FIRFilter(DigitalEstimator):
         # Initialize filter.
         if self.fixed_point:
             self.h = np.zeros(
-                (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.int64
+                (self.analog_system.L, self.K3,
+                 self.analog_system.M), dtype=np.int64
             )
         else:
             self.h = np.zeros(
-                (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.double
+                (self.analog_system.L, self.K3,
+                 self.analog_system.M), dtype=np.double
             )
         # Compute lookback.
         temp1 = np.copy(self.Bf)
         for k1 in range(self.K1 - 1, -1, -1):
             if self.fixed_point:
-                self.h[:, k1, :] = self.__float_to_fixed(-np.dot(self.WT, temp1))
+                self.h[:, k1,
+                       :] = self.__float_to_fixed(-np.dot(self.WT, temp1))
             else:
                 self.h[:, k1, :] = -np.dot(self.WT, temp1)
             temp1 = np.dot(self.Af, temp1)
@@ -1291,7 +1318,8 @@ class FIRFilter(DigitalEstimator):
         temp2 = np.copy(self.Bb)
         for k2 in range(self.K1, self.K3):
             if self.fixed_point:
-                self.h[:, k2, :] = self.__float_to_fixed(np.dot(self.WT, temp2))
+                self.h[:, k2, :] = self.__float_to_fixed(
+                    np.dot(self.WT, temp2))
             else:
                 self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
@@ -1308,6 +1336,7 @@ class FIRFilter(DigitalEstimator):
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
     ):
+        logger.info("Computing filter coefficients.")
         atol = 1e-15
         rtol = 2.3e-13
         steps = 1000
@@ -1316,7 +1345,8 @@ class FIRFilter(DigitalEstimator):
         # Compute filter coefficients
         A = np.array(analog_system.A).transpose()
         B = np.array(analog_system.CT).transpose()
-        Q = np.dot(np.array(analog_system.B), np.array(analog_system.B).transpose())
+        Q = np.dot(np.array(analog_system.B),
+                   np.array(analog_system.B).transpose())
         R = eta2 * np.eye(analog_system.N_tilde)
         # Solve care
         Vf = care(A, B, Q, R)
@@ -1335,8 +1365,10 @@ class FIRFilter(DigitalEstimator):
         self.Af: np.ndarray = np.asarray(scipy.linalg.expm(tempAf * self.Ts))
         self.Ab: np.ndarray = np.asarray(scipy.linalg.expm(-tempAb * self.Ts))
         # Solve IVPs
-        self.Bf: np.ndarray = np.zeros((self.analog_system.N, self.analog_system.M))
-        self.Bb: np.ndarray = np.zeros((self.analog_system.N, self.analog_system.M))
+        self.Bf: np.ndarray = np.zeros(
+            (self.analog_system.N, self.analog_system.M))
+        self.Bb: np.ndarray = np.zeros(
+            (self.analog_system.N, self.analog_system.M))
 
         self._Bf_2T = np.zeros_like(self.Bf)
 
@@ -1345,7 +1377,8 @@ class FIRFilter(DigitalEstimator):
 
                 def _derivative_forward(t, x):
                     return np.dot(tempAf, x) + np.dot(
-                        self.analog_system.Gamma, digital_control.impulse_response(m, t)
+                        self.analog_system.Gamma, digital_control.impulse_response(
+                            m, t)
                     )
 
                 solBf = scipy.integrate.solve_ivp(
@@ -1361,7 +1394,8 @@ class FIRFilter(DigitalEstimator):
 
                 def _derivative_backward(t, x):
                     return -np.dot(tempAb, x) - np.dot(
-                        self.analog_system.Gamma, digital_control.impulse_response(m, t)
+                        self.analog_system.Gamma, digital_control.impulse_response(
+                            m, t)
                     )
 
                 solBb = scipy.integrate.solve_ivp(
@@ -1586,7 +1620,8 @@ class FIRFilter(DigitalEstimator):
 
                 def _derivative_forward_2(t, x):
                     return np.dot(tempAf, x) + np.dot(
-                        self.analog_system.Gamma, digital_control.impulse_response(m, t)
+                        self.analog_system.Gamma, digital_control.impulse_response(
+                            m, t)
                     )
 
                 def impulse_start(t, x):
@@ -1669,19 +1704,21 @@ class FIRFilter(DigitalEstimator):
         # insert new control signal
         try:
             for index in range(self.downsample):
-                self._temp_controls[index, :] = 2 * self.control_signal.__next__() - 1
+                self._temp_controls[index, :] = 2 * \
+                    self.control_signal.__next__() - 1
         except RuntimeError:
             logger.warning("Estimator received Stop Iteration")
             raise StopIteration
 
         self._control_signal_valued[
-            self.K3 - self.downsample :, :
+            self.K3 - self.downsample:, :
         ] = self._temp_controls
 
         # self._control_signal_valued.shape -> (K3, M)
         # self.h.shape -> (L, K3, M)
         res = (
-            np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1)))
+            np.tensordot(self.h, self._control_signal_valued,
+                         axes=((1, 2), (0, 1)))
             + self.offset
         )
         if self.fixed_point:
@@ -1757,7 +1794,7 @@ class FIRFilter(DigitalEstimator):
                     mid_point = temp.size // 2
                     half_length = self.K3 // 2
                     self.h[l, :, m] = temp[
-                        (mid_point - half_length) : (mid_point + half_length)
+                        (mid_point - half_length): (mid_point + half_length)
                     ]
 
     def write_C_header(self, filename: str):
@@ -1935,10 +1972,13 @@ class NUVEstimator:
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M), dtype=np.int8)
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._control_signal = np.zeros(
+            (self.K3, self.analog_system.M), dtype=np.int8)
+        self._estimate = np.zeros(
+            (self.K1, self.analog_system.L), dtype=np.double)
         self._control_signal_in_buffer = 0
-        self._forward_mean = np.zeros((self.K3, self.analog_system.N), dtype=np.double)
+        self._forward_mean = np.zeros(
+            (self.K3, self.analog_system.N), dtype=np.double)
         self._forward_CoVariance = np.zeros(
             (self.K3, self.analog_system.N, self.analog_system.N), dtype=np.double
         )
@@ -1962,7 +2002,8 @@ class NUVEstimator:
         #     ),
         #     dtype=np.double
         # )
-        self._xi_tilde = np.zeros((self.K3 + 1, self.analog_system.N), dtype=np.double)
+        self._xi_tilde = np.zeros(
+            (self.K3 + 1, self.analog_system.N), dtype=np.double)
         self._sigma_squared_1 = np.ones(
             (
                 self.K3,
@@ -2004,7 +2045,8 @@ class NUVEstimator:
 
         # Check if there are estimates in the estimate buffer
         if self._estimate_pointer < self.K1:
-            temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
+            temp = np.array(
+                self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
             return temp
 
@@ -2024,7 +2066,8 @@ class NUVEstimator:
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
+                control_signal_sample = np.zeros(
+                    (self.analog_system.M), dtype=np.int8)
             for _ in range(self._oversample):
                 full = self._input(control_signal_sample)
 
@@ -2056,11 +2099,14 @@ class NUVEstimator:
         analog_system: cbadc.analog_system.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
     ):
+        logger.info("Compute filter coefficients.")
         # Compute filter coefficients
-        self.Af: np.ndarray = np.asarray(scipy.linalg.expm(analog_system.A * self.Ts))
+        self.Af: np.ndarray = np.asarray(
+            scipy.linalg.expm(analog_system.A * self.Ts))
         Gamma = np.array(analog_system.Gamma)
         # Solve IVPs
-        self.Bf: np.ndarray = np.zeros((self.analog_system.N, self.analog_system.M))
+        self.Bf: np.ndarray = np.zeros(
+            (self.analog_system.N, self.analog_system.M))
         atol = 1e-200
         rtol = 1e-12
         max_step = self.Ts / 1000.0
@@ -2083,7 +2129,8 @@ class NUVEstimator:
             ).y[:, -1]
             self.Bf[:, m] = solBf
 
-        BBT = np.dot(analog_system.B, np.dot(self.covU, analog_system.B.transpose()))
+        BBT = np.dot(analog_system.B, np.dot(
+            self.covU, analog_system.B.transpose()))
 
         def _derivative_input(t, x):
             t_minus_tau = self.Ts - t
@@ -2109,6 +2156,7 @@ class NUVEstimator:
         )
 
     def _compute_batch(self):
+        logger.info("Computing batch.")
         # check if ready to compute buffer
         if self._control_signal_in_buffer < self.K3:
             raise BaseException("Control signal buffer not full")
@@ -2129,7 +2177,8 @@ class NUVEstimator:
         #     self._forward_CoVariance[self.K1 - 1, :, :],
         #     self._xi_tilde[self.K1 - 1, :]
         # )
-        self._forward_CoVariance[0, :, :] = self._forward_CoVariance[self.K1 - 1, :, :]
+        self._forward_CoVariance[0, :,
+                                 :] = self._forward_CoVariance[self.K1 - 1, :, :]
 
         # Compute posterior covariance
         # self._forward_CoVariance[0, :, :] = self._forward_CoVariance[self.K1 - 1, :, :] - np.dot(
@@ -2189,7 +2238,8 @@ class NUVEstimator:
                     np.dot(
                         self.Af,
                         np.dot(
-                            np.dot(self._F[k, :, :], self._forward_CoVariance[k, :, :]),
+                            np.dot(self._F[k, :, :],
+                                   self._forward_CoVariance[k, :, :]),
                             self.Af.transpose(),
                         ),
                     )
@@ -2200,7 +2250,8 @@ class NUVEstimator:
         for k in range(self.K3 - 1, -1, -1):
 
             if k < temp_K3:
-                xi_tilde_z = np.dot(self.Af.transpose(), self._xi_tilde[k + 1, :])
+                xi_tilde_z = np.dot(self.Af.transpose(),
+                                    self._xi_tilde[k + 1, :])
                 # W_tilde_z = np.dot(
                 #     self.Af.transpose(),
                 #     np.dot(
@@ -2229,14 +2280,16 @@ class NUVEstimator:
             # )
 
             temp = (
-                np.dot(self.analog_system.CT.transpose(), self._forward_mean[k, :])
+                np.dot(self.analog_system.CT.transpose(),
+                       self._forward_mean[k, :])
                 - self._y_mean[k, :]
             )
 
             self._xi_tilde[k, :] = np.dot(
                 self._F[k, :, :].transpose(), xi_tilde_z
             ) + np.dot(
-                self.analog_system.CT.transpose(), np.dot(self._G[k, :, :], temp)
+                self.analog_system.CT.transpose(), np.dot(
+                    self._G[k, :, :], temp)
             )
             # if (k < 5):
             #     print(k,  self._xi_tilde[k, :])
@@ -2271,12 +2324,14 @@ class NUVEstimator:
             min_sigma_squared = 1e-100
             for ell in range(self.analog_system.N_tilde):
                 self._sigma_squared_1[k, ell] = max(
-                    np.abs(self._posterior_observation_mean[k, ell] - self.bound_y)
+                    np.abs(
+                        self._posterior_observation_mean[k, ell] - self.bound_y)
                     / self.gamma,
                     min_sigma_squared,
                 )
                 self._sigma_squared_2[k, ell] = max(
-                    np.abs(self._posterior_observation_mean[k, ell] + self.bound_y)
+                    np.abs(
+                        self._posterior_observation_mean[k, ell] + self.bound_y)
                     / self.gamma,
                     min_sigma_squared,
                 )

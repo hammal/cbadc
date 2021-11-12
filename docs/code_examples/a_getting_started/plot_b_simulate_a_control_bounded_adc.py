@@ -26,9 +26,9 @@ import numpy as np
 # We fix the number of analog states.
 N = 6
 # Set the amplification factor.
-beta = 6250.
-rho = - 1e-2
-kappa = - 1.0
+beta = 6250.0
+rho = -1e-2
+kappa = -1.0
 # In this example, each nodes amplification and local feedback will be set
 # identically.
 betaVec = beta * np.ones(N)
@@ -36,7 +36,8 @@ rhoVec = betaVec * rho
 kappaVec = kappa * beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
-analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+analog_system = cbadc.analog_system.ChainOfIntegrators(
+    betaVec, rhoVec, kappaVec)
 # print the analog system such that we can very it being correctly initalized.
 print(analog_system)
 
@@ -49,7 +50,7 @@ print(analog_system)
 # :py:class:`cbadc.digital_control.DigitalControl`.
 
 # Set the time period which determines how often the digital control updates.
-T = 1.0/(2 * beta)
+T = 1.0 / (2 * beta)
 # Set the number of digital controls to be same as analog states.
 M = N
 # Initialize the digital control.
@@ -78,7 +79,8 @@ phase = np.pi / 3
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusodial(
+    amplitude, frequency, phase, offset)
 # print to ensure correct parametrization.
 print(analog_signal)
 
@@ -93,18 +95,20 @@ print(analog_signal)
 #
 
 # Simulate for 2^18 control cycles.
-end_time = T * (1 << 18)
+size = 1 << 18
+end_time = T * size
 
 # Instantiate the simulator.
-simulator = cbadc.simulator.StateSpaceSimulator(analog_system, digital_control, [
-                                analog_signal], t_stop=end_time)
+simulator = cbadc.simulator.StateSpaceSimulator(
+    analog_system, digital_control, [analog_signal], t_stop=end_time
+)
 # Depending on your analog system the step above might take some time to
 # compute as it involves precomputing solutions to initial value problems.
 
 # Let's print the first 20 control decisions.
 index = 0
-for s in simulator:
-    if (index > 19):
+for s in cbadc.utilities.show_status(simulator):
+    if index > 19:
         break
     print(f"step:{index} -> s:{np.array(s)}")
     index += 1
@@ -151,8 +155,8 @@ print(simulator)
 # ten control cycles.
 
 ext_simulator = cbadc.simulator.extended_simulation_result(simulator)
-for res in ext_simulator:
-    if (index > 29):
+for res in cbadc.utilities.show_status(ext_simulator):
+    if index > 29:
         break
     print(
         f"step:{index} -> s:{res['control_signal']}, x:{res['analog_state']}")
@@ -176,8 +180,9 @@ for res in ext_simulator:
 
 
 # Instantiate a new simulator and control.
-simulator = cbadc.simulator.StateSpaceSimulator(analog_system, digital_control, [
-                                analog_signal], t_stop=end_time)
+simulator = cbadc.simulator.StateSpaceSimulator(
+    analog_system, digital_control, [analog_signal], t_stop=end_time
+)
 
 # Construct byte stream.
 byte_stream = cbadc.utilities.control_signal_2_byte_stream(simulator, M)
@@ -185,15 +190,16 @@ byte_stream = cbadc.utilities.control_signal_2_byte_stream(simulator, M)
 
 def print_next_10_bytes(stream):
     global index
-    for byte in stream:
-        if (index < 40):
+    for byte in cbadc.utilities.show_status(stream, size):
+        if index < 40:
             print(f"{index} -> {byte}")
             index += 1
         yield byte
 
 
-cbadc.utilities.write_byte_stream_to_file("sinusodial_simulation.adcs",
-                          print_next_10_bytes(byte_stream))
+cbadc.utilities.write_byte_stream_to_file(
+    "sinusodial_simulation.dat", print_next_10_bytes(byte_stream)
+)
 
 ###############################################################################
 # Evaluating the Analog State Vector in Between Control Signal Samples
@@ -209,18 +215,18 @@ cbadc.utilities.write_byte_stream_to_file("sinusodial_simulation.adcs",
 #
 
 # Set sampling time three orders of magnitude smaller than the control period
-Ts = T / 1000.0
+Ts = T / 100.0
 
-# Simulate for 10000 control cycles.
+# Simulate for 15000 control cycles.
 size = 15000
-end_time = size * Ts
 
 # Initialize a new digital control.
 new_digital_control = cbadc.digital_control.DigitalControl(T, M)
 
 # Instantiate a new simulator with a sampling time.
-simulator = cbadc.simulator.StateSpaceSimulator(analog_system, new_digital_control, [
-                                analog_signal], t_stop=end_time, Ts=Ts)
+simulator = cbadc.simulator.StateSpaceSimulator(
+    analog_system, new_digital_control, [analog_signal], Ts=Ts
+)
 
 # Create data containers to hold the resulting data.
 time_vector = np.arange(size) * Ts / T
@@ -228,30 +234,32 @@ states = np.zeros((N, size))
 control_signals = np.zeros((M, size), dtype=np.int8)
 
 # Iterate through and store states and control_signals.
-for index, res in enumerate(cbadc.simulator.extended_simulation_result(simulator)):
-    states[:, index] = res['analog_state']
-    control_signals[:, index] = res['control_signal']
+simulator = cbadc.simulator.extended_simulation_result(simulator)
+for index in cbadc.utilities.show_status(range(size)):
+    res = next(simulator)
+    states[:, index] = res["analog_state"]
+    control_signals[:, index] = res["control_signal"]
 
 # Plot all analog state evolutions.
 plt.figure()
 plt.title("Analog state vectors")
 for index in range(N):
     plt.plot(time_vector, states[index, :], label=f"$x_{index + 1}(t)$")
-plt.grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
-plt.xlabel('$t/T$')
+plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.xlabel("$t/T$")
 plt.xlim((0, 10))
 plt.legend()
 
 # reset figure size and plot individual results.
-plt.rcParams['figure.figsize'] = [6.40, 6.40 * 2]
+plt.rcParams["figure.figsize"] = [6.40, 6.40 * 2]
 fig, ax = plt.subplots(N, 2)
 for index in range(N):
-    color = next(ax[0, 0]._get_lines.prop_cycler)['color']
-    ax[index, 0].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
-    ax[index, 1].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
+    color = next(ax[0, 0]._get_lines.prop_cycler)["color"]
+    ax[index, 0].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index, 1].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
     ax[index, 0].plot(time_vector, states[index, :], color=color)
     ax[index, 1].plot(time_vector, control_signals[index, :],
-                      '--', color=color)
+                      "--", color=color)
     ax[index, 0].set_ylabel(f"$x_{index + 1}(t)$")
     ax[index, 1].set_ylabel(f"$s_{index + 1}(t)$")
     ax[index, 0].set_xlim((0, 15))
@@ -279,10 +287,10 @@ L_infty_norm = np.linalg.norm(states, ord=np.inf, axis=0)
 
 # Estimate and plot densities using matplotlib tools.
 bins = 150
-plt.rcParams['figure.figsize'] = [6.40, 4.80]
+plt.rcParams["figure.figsize"] = [6.40, 4.80]
 fig, ax = plt.subplots(2, sharex=True)
-ax[0].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
-ax[1].grid(b=True, which='major', color='gray', alpha=0.6, lw=1.5)
+ax[0].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+ax[1].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
 ax[0].hist(L_2_norm, bins=bins, density=True)
 ax[1].hist(L_infty_norm, bins=bins, density=True, color="orange")
 plt.suptitle("Estimated probability densities")

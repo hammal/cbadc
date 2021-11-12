@@ -27,7 +27,6 @@ and compare their performance.
 .. GENERATED FROM PYTHON SOURCE LINES 8-13
 
 .. code-block:: default
-   :lineno-start: 8
 
     import timeit
     import matplotlib.pyplot as plt
@@ -52,7 +51,6 @@ this tutorial.
 .. GENERATED FROM PYTHON SOURCE LINES 19-38
 
 .. code-block:: default
-   :lineno-start: 20
 
 
     # Determine system parameters
@@ -146,7 +144,6 @@ In this tutorial we will use a Sinusodial signal.
 .. GENERATED FROM PYTHON SOURCE LINES 44-60
 
 .. code-block:: default
-   :lineno-start: 45
 
 
     # Set the peak amplitude.
@@ -196,7 +193,6 @@ Therefore, we will next instantiate several digital controls and simulators.
 .. GENERATED FROM PYTHON SOURCE LINES 66-110
 
 .. code-block:: default
-   :lineno-start: 67
 
 
     # Set simulation precision parameters
@@ -282,7 +278,6 @@ number of independent digital controls.
 .. GENERATED FROM PYTHON SOURCE LINES 120-142
 
 .. code-block:: default
-   :lineno-start: 121
 
 
     # Set the bandwidth of the estimator
@@ -402,7 +397,6 @@ Visualize Estimator's Transfer Function (Same for Both)
 .. GENERATED FROM PYTHON SOURCE LINES 146-185
 
 .. code-block:: default
-   :lineno-start: 147
 
 
     # Logspace frequencies
@@ -469,7 +463,6 @@ lookback sizes L1 and L2 are set sufficiently large.
 .. GENERATED FROM PYTHON SOURCE LINES 194-229
 
 .. code-block:: default
-   :lineno-start: 195
 
 
     # Determine lookback
@@ -560,7 +553,6 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 .. GENERATED FROM PYTHON SOURCE LINES 236-248
 
 .. code-block:: default
-   :lineno-start: 237
 
 
     # Determine lookahead
@@ -652,7 +644,6 @@ parallelized into independent filter operations.
 .. GENERATED FROM PYTHON SOURCE LINES 257-268
 
 .. code-block:: default
-   :lineno-start: 258
 
 
     # Instantiate the digital estimator (this is where the filter coefficients are
@@ -769,7 +760,6 @@ potentially continue until the default stop criteria of 2^63 iterations.
 .. GENERATED FROM PYTHON SOURCE LINES 276-289
 
 .. code-block:: default
-   :lineno-start: 277
 
 
     # Set simulation length
@@ -802,7 +792,6 @@ in both time and frequency domain.
 .. GENERATED FROM PYTHON SOURCE LINES 295-405
 
 .. code-block:: default
-   :lineno-start: 296
 
 
     t = np.arange(size)
@@ -963,7 +952,7 @@ in both time and frequency domain.
  .. code-block:: none
 
     Average Batch Error: 3.408294788962185e-05
-    Average FIR Error: 3.5213746206488944e-05
+    Average FIR Error: 3.521374620648935e-05
     Average IIR Error: 3.521374620648989e-05
     Average Parallel Error: 3.408294784028472e-05
 
@@ -980,7 +969,6 @@ Compare the execution time of each estimator
 .. GENERATED FROM PYTHON SOURCE LINES 410-479
 
 .. code-block:: default
-   :lineno-start: 412
 
 
 
@@ -1062,16 +1050,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    5.895666454991442 sec 
+    5.251790925000023 sec 
 
     FIR Estimator:
-    75.17701100799604 sec 
+    63.97870245099875 sec 
 
     IIR Estimator:
-    45.61785050899198 sec 
+    50.273254034000274 sec 
 
     Parallel Estimator:
-    9.605882525007473 sec 
+    9.251342470000964 sec 
 
 
 
@@ -1080,7 +1068,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 20 minutes  49.072 seconds)
+   **Total running time of the script:** ( 20 minutes  37.774 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_a_compare_estimator.py:

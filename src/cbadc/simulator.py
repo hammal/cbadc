@@ -19,6 +19,7 @@ import math
 from typing import Iterator, Generator, List, Dict, Union
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class StateSpaceSimulator(Iterator[np.ndarray]):
@@ -164,8 +165,9 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                 )
             # print(self.digital_control.T % self.Ts)
             if self.Ts != self.digital_control.T:
+                if pre_compute_control_interactions:
+                    logger.warning("Pre-computations turned off as Ts != T")
                 pre_compute_control_interactions = False
-                logger.warning("Pre-computations turned off as Ts != T")
         else:
             self.Ts = self.digital_control.T
         if self.Ts > self.digital_control.T:
@@ -173,8 +175,9 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                 f"Simulating with a sample period {self.Ts} that exceeds the control period of the digital control {self.digital_control.T}"
             )
         if initial_state_vector is not None:
-            self._state_vector = np.array(initial_state_vector, dtype=np.float64)
-            print("initial state vector: ", self._state_vector)
+            self._state_vector = np.array(
+                initial_state_vector, dtype=np.float64)
+            logger.debug(f"initial state vector: {self._state_vector}")
             if (
                 self._state_vector.size != self.analog_system.N
                 or len(self._state_vector.shape) > 1
@@ -183,8 +186,10 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                     "initial_state_vector not single dimension of length N"
                 )
         else:
-            self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
-        self._temp_state_vector = np.zeros(self.analog_system.N, dtype=np.double)
+            self._state_vector = np.zeros(
+                self.analog_system.N, dtype=np.double)
+        self._temp_state_vector = np.zeros(
+            self.analog_system.N, dtype=np.double)
         self._control_observation = np.zeros(
             self.analog_system.M_tilde, dtype=np.double
         )
@@ -197,8 +202,10 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         self._clock_jitter = clock_jitter
         if clock_jitter is not None:
             self.clock_jitter = True
+            if pre_compute_control_interactions:
+                logger.warning(
+                    "Pre-computations turned off as clock_jitter is simulated")
             pre_compute_control_interactions = False
-            logger.warning("Pre-computations turned off as clock_jitter is simulated")
         if pre_compute_control_interactions:
             self._pre_computations()
         self._pre_compute_control_interactions = pre_compute_control_interactions
@@ -256,9 +263,12 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         if t_end >= self.t_stop:
             raise StopIteration
         if self._pre_compute_control_interactions:
+            # Use precomputed control contributions.
             self._state_vector = self._ordinary_differential_solution(t_span)
         else:
-            self._state_vector = self._full_ordinary_differential_solution(t_span)
+            # Solve full diff equation.
+            self._state_vector = self._full_ordinary_differential_solution(
+                t_span)
         self.t = t_end
         return self.digital_control.control_signal()
 
@@ -281,7 +291,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         the control contributions. Furthermore, :math:`\mathbf{d}(\tau)` is the DAC waveform
         (or impulse response) of the digital control.
         """
-
+        logger.info("Executing precomputations.")
         # expm(A T_s)
         self._pre_computed_state_transition_matrix = (
             self._analog_system_matrix_exponential(self.Ts)
@@ -306,8 +316,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             impulse_start.direction = 1.0
 
             tspan = np.array([0, self.Ts])
-            atol = 1e-30
-            rtol = 1e-12
+            atol = 1e-12
+            rtol = 1e-6
 
             sol = scipy.integrate.solve_ivp(
                 derivative,
@@ -364,7 +374,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             res = np.dot(self.analog_system.A, x)
             for _l in range(self.analog_system.L):
                 res += np.dot(
-                    self.analog_system.B[:, _l], self.input_signals[_l].evaluate(t)
+                    self.analog_system.B[:,
+                                         _l], self.input_signals[_l].evaluate(t)
                 )
             return res.flatten()
 
@@ -376,6 +387,9 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             rtol=self.rtol,
             method="RK45",
         )
+
+        if sol.status == -1:
+            raise BaseException(f"IVP solver failed, See:\n\n{sol}")
 
         self._temp_state_vector = sol.y[:, -1]
 
@@ -390,7 +404,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
 
         # Update controls for next period if necessary
         self.digital_control.control_update(
-            t_span[1], np.dot(self.analog_system.Gamma_tildeT, self._temp_state_vector)
+            t_span[1], np.dot(self.analog_system.Gamma_tildeT,
+                              self._temp_state_vector)
         )
 
         return self._temp_state_vector
@@ -418,7 +433,8 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
 
             control_vector = self.digital_control.control_contribution(t)
 
-            delta = self.analog_system.derivative(y, t, input_vector, control_vector)
+            delta = self.analog_system.derivative(
+                y, t, input_vector, control_vector)
             return delta
 
         # terminate in case of control update
@@ -426,39 +442,43 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             return t - self.digital_control._t_next
 
         control_update.terminal = True
-        # control_update.direction = 1.0
+        control_update.direction = 1.0
         t0_impulse_response = [
             lambda t, x: t
             - self.digital_control._t_last_update[m]
             - self.digital_control._impulse_response[m].t0
             for m in range(self.digital_control.M)
         ]
+        for i_resp in t0_impulse_response:
+            i_resp.direction = 1.0
 
         # Default Case
         t = t_span[0]
         y_new = self._state_vector[:]
-        while t < t_span[1]:
+        while not np.allclose(t, t_span[1]):
             res = scipy.integrate.solve_ivp(
                 f,
                 (t, t_span[1]),
                 y_new,
                 atol=self.atol,
                 rtol=self.rtol,
-                method="Radau",
-                jac=self.analog_system.A,
+                # method="Radau",
+                # jac=self.analog_system.A,
                 # method="DOP853",
                 events=(
                     control_update,
                     *t0_impulse_response,
                 ),
             )
+            if res.status == -1:
+                raise BaseException(f"IVP solver failed, See:\n\n{res}")
             # In case of control update event
             t = res.t[-1]
             y_new = res.y[:, -1]
             if res.status == 1 or t == t_span[1]:
-                # print(
-                #     f"Control update at t={t}, t/Ts = {t/self.Ts}, t_events={res.t_events[0]}, res.status={res.status}"
-                # )
+                logger.debug(
+                    f"Control update at t={t}, t/Ts = {t/self.Ts}, t_span[1] = {t_span[1]}, t_events={res.t_events[0]}, res.status={res.status}"
+                )
                 self.digital_control.control_update(
                     t, np.dot(self.analog_system.Gamma_tildeT, y_new)
                 )

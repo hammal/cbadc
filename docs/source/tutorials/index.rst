@@ -106,7 +106,7 @@ Next follows three basic examples demonstrating how to
 General Examples
 ----------------
 
-Next we highlight various features of the cbadc package 
+Next we highlight various features of the cbadc package. 
   
 
 
@@ -214,6 +214,42 @@ Next we highlight various features of the cbadc package
    :hidden:
 
    /tutorials/b_general/plot_e_switched_capacitor_digital_control
+.. raw:: html
+
+    <div class="sphx-glr-clear"></div>
+
+
+
+.. _sphx_glr_tutorials_c_further:
+
+----------------
+Further Examples
+----------------
+
+These are further examples showcasing the cbadc package.
+  
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This notebook shows examples of artsy plots made from data generated with the  control-bounded ...">
+
+.. only:: html
+
+ .. figure:: /tutorials/c_further/images/thumb/sphx_glr_plot_z_artsy_sine_thumb.png
+     :alt: Creating Artsy Plots
+
+     :ref:`sphx_glr_tutorials_c_further_plot_z_artsy_sine.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/c_further/plot_z_artsy_sine
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

@@ -45,7 +45,8 @@ def test_large_integrator():
     CT[-1] = 1.0
     Gamma_tildeT = np.eye(N)
     Gamma = Gamma_tildeT * (-beta)
-    analogSystem = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analogSystem = cbadc.analog_system.AnalogSystem(
+        A, B, CT, Gamma, Gamma_tildeT)
     analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
     digitalControl = cbadc.digital_control.DigitalControl(Ts, M)
     statespacesimulator = cbadc.simulator.StateSpaceSimulator(
@@ -74,7 +75,8 @@ def test_pre_and_non_pre_computations():
     Gamma = -beta * np.eye(M)
     Gamma_tildeT = np.eye(M)
 
-    analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_system_sc = cbadc.analog_system.AnalogSystem(
+        A, B, CT, Gamma, Gamma_tildeT)
 
     print(digital_control_sc)
     print(analog_system_sc)
@@ -135,90 +137,90 @@ def test_pre_and_non_pre_computations():
         )
 
 
-def test_variable_sampling_rate():
-    N = 4
-    M = N
+# def test_variable_sampling_rate():
+#     N = 4
+#     M = N
 
-    C_x = 1e-9
-    C_Gamma = C_x / 2
-    R_s = 100.0
-    R_beta = 16e4
+#     C_x = 1e-9
+#     C_Gamma = C_x / 2
+#     R_s = 100.0
+#     R_beta = 16e4
 
-    beta = 1 / (R_beta * C_x)
-    T = 1 / (2 * beta)
+#     beta = 1 / (R_beta * C_x)
+#     T = 1 / (2 * beta)
 
-    A = beta * np.eye(N, k=-1)
-    B = np.zeros(N)
-    B[0] = beta
-    CT = np.eye(N)
-    impulse_response = cbadc.digital_control.RCImpulseResponse(R_s * C_Gamma)
-    digital_control_sc = cbadc.digital_control.DigitalControl(
-        T, M, impulse_response=impulse_response
-    )
+#     A = beta * np.eye(N, k=-1)
+#     B = np.zeros(N)
+#     B[0] = beta
+#     CT = np.eye(N)
+#     impulse_response = cbadc.digital_control.RCImpulseResponse(R_s * C_Gamma)
+#     digital_control_sc = cbadc.digital_control.DigitalControl(
+#         T, M, impulse_response=impulse_response
+#     )
 
-    # Gamma = -beta * np.eye(M)
-    Gamma = -1 / (R_s * C_x) * np.eye(M)
-    Gamma_tildeT = np.eye(M)
+#     # Gamma = -beta * np.eye(M)
+#     Gamma = -1 / (R_s * C_x) * np.eye(M)
+#     Gamma_tildeT = np.eye(M)
 
-    analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+#     analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
-    print(digital_control_sc)
-    print(analog_system_sc)
+#     print(digital_control_sc)
+#     print(analog_system_sc)
 
-    amplitude = 0.1
-    analog_signal = cbadc.analog_signal.Sinusodial(amplitude, 1 / T / 32)
+#     amplitude = 0.1
+#     analog_signal = cbadc.analog_signal.Sinusodial(amplitude, 1 / T / 32)
 
-    Downsampling = 1 << 3
-    Ts = T / Downsampling
-    size = 1 << 5
+#     Downsampling = 1 << 3
+#     Ts = T / Downsampling
+#     size = 1 << 5
 
-    simulator_sc = cbadc.simulator.extended_simulation_result(
-        cbadc.simulator.StateSpaceSimulator(
-            analog_system_sc, digital_control_sc, [analog_signal], Ts=Ts
-        )
-    )
+#     simulator_sc = cbadc.simulator.extended_simulation_result(
+#         cbadc.simulator.StateSpaceSimulator(
+#             analog_system_sc, digital_control_sc, [analog_signal], Ts=Ts
+#         )
+#     )
 
-    digital_control_ref = cbadc.digital_control.DigitalControl(
-        T, M, impulse_response=impulse_response
-    )
-    simulator_ref = cbadc.simulator.extended_simulation_result(
-        cbadc.simulator.StateSpaceSimulator(
-            analog_system_sc,
-            digital_control_ref,
-            [analog_signal],
-            Ts=T,
-            pre_compute_control_interactions=False,
-        )
-    )
+#     digital_control_ref = cbadc.digital_control.DigitalControl(
+#         T, M, impulse_response=impulse_response
+#     )
+#     simulator_ref = cbadc.simulator.extended_simulation_result(
+#         cbadc.simulator.StateSpaceSimulator(
+#             analog_system_sc,
+#             digital_control_ref,
+#             [analog_signal],
+#             Ts=T,
+#             pre_compute_control_interactions=False,
+#         )
+#     )
 
-    # Simulations
-    sim_state = np.zeros(N)
-    for time_step in cbadc.utilities.show_status(range(size)):
-        for _ in range(Downsampling):
-            sim_state = next(simulator_sc)
-            print(
-                sim_state["t"],
-                sim_state["analog_state"],
-            )
-        sim_state_ref = next(simulator_ref)
-        print(
-            "\n",
-            time_step,
-            sim_state["t"],
-            sim_state_ref["t"],
-            sim_state["analog_state"],
-            sim_state_ref["analog_state"],
-            sim_state["analog_state"] - sim_state_ref["analog_state"],
-            sim_state["control_signal"],
-            sim_state_ref["control_signal"],
-            "\n\n",
-        )
-        # np.testing.assert_allclose(
-        #     sim_state["analog_state"], sim_state_ref["analog_state"], rtol=1e-0
-        # )
-        # np.testing.assert_allclose(
-        #     sim_state["control_signal"], sim_state_ref["control_signal"]
-        # )
+#     # Simulations
+#     sim_state = np.zeros(N)
+#     for time_step in cbadc.utilities.show_status(range(size)):
+#         for _ in range(Downsampling):
+#             sim_state = next(simulator_sc)
+#             print(
+#                 sim_state["t"],
+#                 sim_state["analog_state"],
+#             )
+#         sim_state_ref = next(simulator_ref)
+#         print(
+#             "\n",
+#             time_step,
+#             sim_state["t"],
+#             sim_state_ref["t"],
+#             sim_state["analog_state"],
+#             sim_state_ref["analog_state"],
+#             sim_state["analog_state"] - sim_state_ref["analog_state"],
+#             sim_state["control_signal"],
+#             sim_state_ref["control_signal"],
+#             "\n\n",
+#         )
+#         # np.testing.assert_allclose(
+#         #     sim_state["analog_state"], sim_state_ref["analog_state"], rtol=1e-0
+#         # )
+#         # np.testing.assert_allclose(
+#         #     sim_state["control_signal"], sim_state_ref["control_signal"]
+#         # )
 
 
 def test_simulator_verify_with_estimator():
@@ -245,7 +247,8 @@ def test_simulator_verify_with_estimator():
     Gamma = -1 / (R_s * C_x) * np.eye(M)
     Gamma_tildeT = np.eye(M)
 
-    analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_system_sc = cbadc.analog_system.AnalogSystem(
+        A, B, CT, Gamma, Gamma_tildeT)
 
     print(digital_control_sc)
     print(analog_system_sc)

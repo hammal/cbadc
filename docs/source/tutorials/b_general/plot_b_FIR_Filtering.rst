@@ -30,7 +30,6 @@ We demonstrate how to set up the FIR filter implementation.
 .. GENERATED FROM PYTHON SOURCE LINES 11-15
 
 .. code-block:: default
-   :lineno-start: 11
 
     import matplotlib.pyplot as plt
     import numpy as np
@@ -56,7 +55,6 @@ example.
 .. GENERATED FROM PYTHON SOURCE LINES 23-57
 
 .. code-block:: default
-   :lineno-start: 24
 
 
     N = 6
@@ -163,10 +161,9 @@ Next we instantiate a :py:class:`cbadc.digital_estimator.FIRFilter` and
 visualize its impulse responses.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 65-96
+.. GENERATED FROM PYTHON SOURCE LINES 65-98
 
 .. code-block:: default
-   :lineno-start: 66
 
 
     # Choose an arbitrary eta2
@@ -186,8 +183,10 @@ visualize its impulse responses.
     h_index = np.arange(-K1, K2)
     fig, ax = plt.subplots(2)
     for index in range(N):
-        ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
-        ax[1].semilogy(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+        ax[0].plot(h_index, impulse_response[:, index],
+                   label=f"$h_{index + 1}[k]$")
+        ax[1].semilogy(h_index, impulse_response[:, index],
+                       label=f"$h_{index + 1}[k]$")
     ax[0].legend()
     fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     ax[1].set_xlabel("filter tap k")
@@ -211,7 +210,7 @@ visualize its impulse responses.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 97-116
+.. GENERATED FROM PYTHON SOURCE LINES 99-118
 
 -----------------------------------
 Impulse Response and :math:`\eta^2`
@@ -233,10 +232,9 @@ and does not necessarily generalize.
 We additionally plot the corresponding digital estimator transfer functions
 as a function of the bandwidth parameter :math:`\eta^2`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 116-179
+.. GENERATED FROM PYTHON SOURCE LINES 118-181
 
 .. code-block:: default
-   :lineno-start: 117
 
 
     Eta2 = np.logspace(0, 7, 8)
@@ -328,23 +326,23 @@ as a function of the bandwidth parameter :math:`\eta^2`.
 
  .. code-block:: none
 
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:154: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:154: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:154: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:154: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:154: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:154: RuntimeWarning: divide by zero encountered in log10
+    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
       ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 180-202
+.. GENERATED FROM PYTHON SOURCE LINES 182-204
 
 Filter length
 -------------
@@ -369,10 +367,9 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 202-324
+.. GENERATED FROM PYTHON SOURCE LINES 204-327
 
 .. code-block:: default
-   :lineno-start: 203
 
 
     filter_lengths = [10, 20, 40, 80, 120, 160, 180, 200, 220]
@@ -382,7 +379,7 @@ of different lengths as their decay varies.
     control_signal_sequences = [
         cbadc.utilities.byte_stream_2_control_signal(
             cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusodial_simulation.adcs", M
+                "../a_getting_started/sinusodial_simulation.dat", M
             ),
             M,
         )
@@ -414,7 +411,7 @@ of different lengths as their decay varies.
         plt.semilogy(
             np.arange(0, filter_lengths[-1]),
             np.abs(np.array(digital_estimators[-1].h[0, :, :]))[
-                filter_lengths[-1] :, index
+                filter_lengths[-1]:, index
             ],
             label=f"$h_{index + 1}[k]$",
         )
@@ -436,7 +433,7 @@ of different lengths as their decay varies.
     digital_estimators_ref(
         cbadc.utilities.byte_stream_2_control_signal(
             cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusodial_simulation.adcs", M
+                "../a_getting_started/sinusodial_simulation.dat", M
             ),
             M,
         )
@@ -457,7 +454,7 @@ of different lengths as their decay varies.
 
         # Compute power spectral density
         f, psd = cbadc.utilities.compute_power_spectral_density(
-            u_hat[filter_lengths[index_de] :]
+            u_hat[filter_lengths[index_de]:]
         )
 
         # Plot the FIR filters
@@ -466,7 +463,8 @@ of different lengths as their decay varies.
         ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
         ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
 
-        ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref), label="Reference", color="k")
+        ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
+                              label="Reference", color="k")
 
         ax[index_de].semilogx(
             f, 10 * np.log10(psd), label=f"K1=K2={filter_lengths[index_de]}", color=color
@@ -530,7 +528,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 5 minutes  39.652 seconds)
+   **Total running time of the script:** ( 1 minutes  48.879 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_b_FIR_Filtering.py:
