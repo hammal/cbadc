@@ -389,7 +389,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         )
 
         if sol.status == -1:
-            raise BaseException(f"IVP solver failed, See:\n\n{sol}")
+            logger.critical(f"IVP solver failed, See:\n\n{sol}")
 
         self._temp_state_vector = sol.y[:, -1]
 
@@ -471,7 +471,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
                 ),
             )
             if res.status == -1:
-                raise BaseException(f"IVP solver failed, See:\n\n{res}")
+                logger.critical(f"IVP solver failed, See:\n\n{res}")
             # In case of control update event
             t = res.t[-1]
             y_new = res.y[:, -1]
