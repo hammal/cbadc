@@ -16,9 +16,12 @@ import sys
 import warnings
 
 
-warnings.filterwarnings("ignore", category=UserWarning,
-                        message='Matplotlib is currently using agg, which is a'
-                                ' non-GUI backend, so cannot show the figure.')
+warnings.filterwarnings(
+    "ignore",
+    category=UserWarning,
+    message="Matplotlib is currently using agg, which is a"
+    " non-GUI backend, so cannot show the figure.",
+)
 print(f"from path: {os.path.abspath('.')}")
 print(f"system path: {sys.path}")
 # sys.path.insert(-1, os.path.abspath("../../src"))
@@ -48,7 +51,8 @@ extensions = [
     "nbsphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
-    "sphinx_gallery.gen_gallery"]
+    "sphinx_gallery.gen_gallery",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -73,32 +77,35 @@ html_theme = "sphinx_rtd_theme"
 # html_static_path = ["_static"]
 
 # intershpinx
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None)}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+}
 
 
 # Sphinx-gallery
 sphinx_gallery_conf = {
     # path to your example scripts
-    'examples_dirs': ['../code_examples', '../datasets'],
+    "examples_dirs": ["../code_examples", "../datasets"],
     # path to where to save gallery generated output
-    'gallery_dirs': ['tutorials', 'datasets'],
-
-    'compress_images': ('images', 'thumbnails', '-o7'),
+    "gallery_dirs": ["tutorials", "datasets"],
+    "compress_images": ("images", "thumbnails", "-o7"),
     # directory where function/class granular galleries are stored
-    'backreferences_dir': 'backreferences',
+    "backreferences_dir": "backreferences",
     # Modules for which function/class level galleries are created. In
     # this case sphinx_gallery and numpy in a tuple of strings.
-    'doc_module': ('cbadc.analog_system',
-                   'cbadc.analog_signal',
-                   'cbadc.digital_control',
-                   'cbadc.digital_estimator',
-                   'cbadc.simulator',
-                   'cbadc.utilities',
-                   'cbadc.datasets'),
-    'line_numbers': True,
-    'remove_config_comments': True,
-    'within_subsection_order': FileNameSortKey,
+    "doc_module": (
+        "cbadc.analog_system",
+        "cbadc.analog_signal",
+        "cbadc.digital_control",
+        "cbadc.digital_estimator",
+        "cbadc.simulator",
+        "cbadc.utilities",
+        "cbadc.datasets",
+    ),
+    "line_numbers": False,
+    "remove_config_comments": True,
+    "within_subsection_order": FileNameSortKey,
 }
 
 # generate autosummary even if no references

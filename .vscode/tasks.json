@@ -8,7 +8,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "command": "cd docs; /usr/bin/zsh -c '/home/hammal/anaconda3/bin/conda activate py38; make html'",
+      "command": "zsh -c 'cd docs && conda activate py38 && make html'",
       "presentation": {
         "reveal": "always",
         "focus": true

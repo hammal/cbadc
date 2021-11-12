@@ -58,8 +58,8 @@ def main():
 
     # Construct byte stream.
     byte_stream = control_signal_2_byte_stream(simulator, M)
-    write_byte_stream_to_file("./temp.adcs", byte_stream)
-    os.remove("./temp.adcs")
+    write_byte_stream_to_file("./temp.dat", byte_stream)
+    os.remove("./temp.dat")
 
 
 if __name__ == '__main__':

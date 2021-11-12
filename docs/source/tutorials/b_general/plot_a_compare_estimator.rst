@@ -27,7 +27,6 @@ and compare their performance.
 .. GENERATED FROM PYTHON SOURCE LINES 8-13
 
 .. code-block:: default
-   :lineno-start: 8
 
     import timeit
     import matplotlib.pyplot as plt
@@ -52,7 +51,6 @@ this tutorial.
 .. GENERATED FROM PYTHON SOURCE LINES 19-38
 
 .. code-block:: default
-   :lineno-start: 20
 
 
     # Determine system parameters
@@ -67,7 +65,7 @@ this tutorial.
 
     # Instantiate analog system.
     beta_vec = beta * np.ones(N)
-    rho_vec = - omega_3dB ** 2 / beta * np.ones(N)
+    rho_vec = -(omega_3dB ** 2) / beta * np.ones(N)
     Gamma = np.diag(-beta_vec)
     analog_system = cbadc.analog_system.LeapFrog(beta_vec, rho_vec, Gamma)
 
@@ -146,7 +144,6 @@ In this tutorial we will use a Sinusodial signal.
 .. GENERATED FROM PYTHON SOURCE LINES 44-60
 
 .. code-block:: default
-   :lineno-start: 45
 
 
     # Set the peak amplitude.
@@ -193,16 +190,14 @@ Simulating
 Each estimator will require an independent stream of control signals.
 Therefore, we will next instantiate several digital controls and simulators.
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-115
+.. GENERATED FROM PYTHON SOURCE LINES 66-110
 
 .. code-block:: default
-   :lineno-start: 67
 
 
     # Set simulation precision parameters
     atol = 1e-6
     rtol = 1e-12
-    max_step = T / 10.
 
     # Instantiate digital controls. We will need four of them as we will compare
     # four different estimators.
@@ -219,7 +214,6 @@ Therefore, we will next instantiate several digital controls and simulators.
         [analog_signal],
         atol=atol,
         rtol=rtol,
-        max_step=max_step
     )
     simulator2 = cbadc.simulator.StateSpaceSimulator(
         analog_system,
@@ -227,7 +221,6 @@ Therefore, we will next instantiate several digital controls and simulators.
         [analog_signal],
         atol=atol,
         rtol=rtol,
-        max_step=max_step
     )
     simulator3 = cbadc.simulator.StateSpaceSimulator(
         analog_system,
@@ -235,7 +228,6 @@ Therefore, we will next instantiate several digital controls and simulators.
         [analog_signal],
         atol=atol,
         rtol=rtol,
-        max_step=max_step
     )
     simulator4 = cbadc.simulator.StateSpaceSimulator(
         analog_system,
@@ -243,7 +235,6 @@ Therefore, we will next instantiate several digital controls and simulators.
         [analog_signal],
         atol=atol,
         rtol=rtol,
-        max_step=max_step
     )
     print(simulator1)
 
@@ -259,20 +250,20 @@ Therefore, we will next instantiate several digital controls and simulators.
 
     The Digital Control is parameterized as:
     T = 8e-05,
-    M = 6, and next update at
+    M = 6,
+    and next update at
     t = 8e-05
     t = 0.0, (current simulator time)
     Ts = 8e-05,
     t_stop = inf,
-    rtol = 1e-12,
-    atol = 1e-06, and
-    max_step = 8.000000000000001e-06
+    rtol = 1e-12,clock_jitter = False,
+    and atol = 1e-06
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 116-125
+.. GENERATED FROM PYTHON SOURCE LINES 111-120
 
 Default, Quadratic Complexity, Estimator
 ----------------------------------------
@@ -284,16 +275,16 @@ computed. Therefore, this procedure could be computationally intense for a
 analog system with a large analog state order or equivalently for large
 number of independent digital controls.
 
-.. GENERATED FROM PYTHON SOURCE LINES 125-145
+.. GENERATED FROM PYTHON SOURCE LINES 120-142
 
 .. code-block:: default
-   :lineno-start: 126
 
 
     # Set the bandwidth of the estimator
     G_at_omega = np.linalg.norm(
-        analog_system.transfer_function_matrix(np.array([omega_3dB])))
-    eta2 = G_at_omega**2
+        analog_system.transfer_function_matrix(np.array([omega_3dB]))
+    )
+    eta2 = G_at_omega ** 2
     print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
     # Set the batch size
@@ -303,7 +294,8 @@ number of independent digital controls.
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
     digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
-        analog_system, digital_control1, eta2, K1, K2)
+        analog_system, digital_control1, eta2, K1, K2
+    )
     digital_estimator_batch(simulator1)
 
     print(digital_estimator_batch, "\n")
@@ -396,16 +388,15 @@ number of independent digital controls.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 146-149
+.. GENERATED FROM PYTHON SOURCE LINES 143-146
 
 Visualize Estimator's Transfer Function (Same for Both)
 -------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 149-183
+.. GENERATED FROM PYTHON SOURCE LINES 146-185
 
 .. code-block:: default
-   :lineno-start: 150
 
 
     # Logspace frequencies
@@ -422,19 +413,24 @@ Visualize Estimator's Transfer Function (Same for Both)
 
     # Signal attenuation at the input signal frequency
     stf_at_omega = digital_estimator_batch.signal_transfer_function(
-        np.array([2 * np.pi * frequency]))[0]
+        np.array([2 * np.pi * frequency])
+    )[0]
 
     # Plot
     plt.figure()
-    plt.semilogx(frequencies, stf_dB, label='$STF(\omega)$')
+    plt.semilogx(frequencies, stf_dB, label="$STF(\omega)$")
     for n in range(N):
         plt.semilogx(frequencies, ntf_dB[0, n, :], label=f"$|NTF_{n+1}(\omega)|$")
-    plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-        ntf[0, :, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $")
+    plt.semilogx(
+        frequencies,
+        20 * np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+        "--",
+        label="$ || NTF(\omega) ||_2 $",
+    )
 
     # Add labels and legends to figure
     plt.legend()
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.title("Signal and noise transfer functions")
     plt.xlabel("$\omega / (4 \pi \\beta ) $")
     plt.ylabel("dB")
@@ -444,15 +440,16 @@ Visualize Estimator's Transfer Function (Same for Both)
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_001.png
-    :alt: Signal and noise transfer functions
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_001.png
+   :alt: Signal and noise transfer functions
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_001.png
+   :class: sphx-glr-single-img
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 184-192
+.. GENERATED FROM PYTHON SOURCE LINES 186-194
 
 FIR Filter Estimator
 --------------------
@@ -463,10 +460,9 @@ we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
 filter coefficients. This is an aid to determine if the lookahead and
 lookback sizes L1 and L2 are set sufficiently large.
 
-.. GENERATED FROM PYTHON SOURCE LINES 192-228
+.. GENERATED FROM PYTHON SOURCE LINES 194-229
 
 .. code-block:: default
-   :lineno-start: 193
 
 
     # Determine lookback
@@ -474,7 +470,8 @@ lookback sizes L1 and L2 are set sufficiently large.
     # Determine lookahead
     L2 = K2
     digital_estimator_fir = cbadc.digital_estimator.FIRFilter(
-        analog_system, digital_control2, eta2, L1, L2)
+        analog_system, digital_control2, eta2, L1, L2
+    )
 
     print(digital_estimator_fir, "\n")
 
@@ -488,28 +485,27 @@ lookback sizes L1 and L2 are set sufficiently large.
 
     fig, ax = plt.subplots(2)
     for index in range(N):
-        ax[0].plot(h_index, impulse_response[:, index],
-                   label=f"$h_{index + 1}[k]$")
-        ax[1].plot(h_index, impulse_response_dB[:, index],
-                   label=f"$h_{index + 1}[k]$")
+        ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+        ax[1].plot(h_index, impulse_response_dB[:, index], label=f"$h_{index + 1}[k]$")
     ax[0].legend()
     fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     ax[1].set_xlabel("filter taps k")
     ax[0].set_ylabel("$| h_\ell [k]|^2_2$")
     ax[1].set_ylabel("$| h_\ell [k]|^2_2$ [dB]")
     ax[0].set_xlim((-50, 50))
-    ax[0].grid(which='both')
+    ax[0].grid(which="both")
     ax[1].set_xlim((-50, 500))
     ax[1].set_ylim((-200, 0))
-    ax[1].grid(which='both')
+    ax[1].grid(which="both")
 
 
 
 
 
-.. image:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_002.png
-    :alt: For $\eta^2 = 121.00167467044352$ [dB]
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_002.png
+   :alt: For $\eta^2 = 121.00167467044352$ [dB]
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_002.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -545,7 +541,7 @@ lookback sizes L1 and L2 are set sufficiently large.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 229-235
+.. GENERATED FROM PYTHON SOURCE LINES 230-236
 
 IIR Filter Estimator
 --------------------
@@ -554,17 +550,17 @@ The IIR filter is closely related to the FIR filter with the exception
 of an moving average computation.
 See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
-.. GENERATED FROM PYTHON SOURCE LINES 235-246
+.. GENERATED FROM PYTHON SOURCE LINES 236-248
 
 .. code-block:: default
-   :lineno-start: 236
 
 
     # Determine lookahead
     L2 = K2
 
     digital_estimator_iir = cbadc.digital_estimator.IIRFilter(
-        analog_system, digital_control3, eta2, L2)
+        analog_system, digital_control3, eta2, L2
+    )
 
     print(digital_estimator_iir, "\n")
 
@@ -634,7 +630,7 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 247-255
+.. GENERATED FROM PYTHON SOURCE LINES 249-257
 
 Parallel Estimator
 ------------------------------
@@ -645,16 +641,16 @@ resembles the default estimator but diagonalizes the filter coefficients
 resulting in a more computationally more efficient filter that can be
 parallelized into independent filter operations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 255-265
+.. GENERATED FROM PYTHON SOURCE LINES 257-268
 
 .. code-block:: default
-   :lineno-start: 256
 
 
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
     digital_estimator_parallel = cbadc.digital_estimator.ParallelEstimator(
-        analog_system, digital_control4, eta2, K1, K2)
+        analog_system, digital_control4, eta2, K1, K2
+    )
 
     digital_estimator_parallel(simulator4)
     print(digital_estimator_parallel, "\n")
@@ -751,7 +747,7 @@ parallelized into independent filter operations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 266-273
+.. GENERATED FROM PYTHON SOURCE LINES 269-276
 
 Estimating (Filtering)
 ----------------------
@@ -761,10 +757,9 @@ estimators. Note that since no stop criteria is set for either the analog
 signal, the simulator, or the digital estimator this iteration could
 potentially continue until the default stop criteria of 2^63 iterations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 273-286
+.. GENERATED FROM PYTHON SOURCE LINES 276-289
 
 .. code-block:: default
-   :lineno-start: 274
 
 
     # Set simulation length
@@ -786,7 +781,7 @@ potentially continue until the default stop criteria of 2^63 iterations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 287-292
+.. GENERATED FROM PYTHON SOURCE LINES 290-295
 
 Visualizing Results
 -------------------
@@ -794,10 +789,9 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 292-399
+.. GENERATED FROM PYTHON SOURCE LINES 295-405
 
 .. code-block:: default
-   :lineno-start: 293
 
 
     t = np.arange(size)
@@ -812,10 +806,10 @@ in both time and frequency domain.
     plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
     plt.plot(t, u_hat_parallel, label="$\hat{u}(t)$ Parallel")
     plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
-    plt.xlabel('$t / T$')
+    plt.xlabel("$t / T$")
     plt.legend()
     plt.title("Estimated input signal")
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.xlim((-100, 500))
     plt.tight_layout()
 
@@ -825,10 +819,10 @@ in both time and frequency domain.
     plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
     plt.plot(t, u_hat_parallel, label="$\hat{u}(t)$ Parallel")
     plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
-    plt.xlabel('$t / T$')
+    plt.xlabel("$t / T$")
     plt.legend()
     plt.title("Estimated input signal")
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.xlim((t_fir[-1] - 50, t_fir[-1]))
     plt.tight_layout()
 
@@ -838,33 +832,39 @@ in both time and frequency domain.
     plt.plot(t_iir, u_hat_iir, label="$\hat{u}(t)$ IIR")
     plt.plot(t, u_hat_parallel, label="$\hat{u}(t)$ Parallel")
     plt.plot(t, stf_at_omega * u, label="$\mathrm{STF}(2 \pi f_u) * u(t)$")
-    plt.xlabel('$t / T$')
+    plt.xlabel("$t / T$")
     plt.legend()
     plt.title("Estimated input signal")
-    plt.grid(which='both')
+    plt.grid(which="both")
     # plt.xlim((t_fir[0], t[-1]))
     plt.xlim(((1 << 14) - 100, (1 << 14) + 100))
     plt.tight_layout()
 
     batch_error = stf_at_omega * u - u_hat_batch
-    fir_error = stf_at_omega * u[:(u.size - L1 + 1)] - u_hat_fir[(L1 - 1):]
-    iir_error = stf_at_omega * u[:(u.size - L1 + 1)] - u_hat_iir[(L1 - 1):]
+    fir_error = stf_at_omega * u[: (u.size - L1 + 1)] - u_hat_fir[(L1 - 1) :]
+    iir_error = stf_at_omega * u[: (u.size - L1 + 1)] - u_hat_iir[(L1 - 1) :]
     parallel_error = stf_at_omega * u - u_hat_parallel
     plt.figure()
-    plt.plot(t, batch_error,
-             label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Batch")
-    plt.plot(t[:(u.size - L1 + 1)], fir_error,
-             label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ FIR")
-    plt.plot(t[:(u.size - L1 + 1)], iir_error,
-             label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ IIR")
-    plt.plot(t, parallel_error,
-             label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Parallel")
-    plt.xlabel('$t / T$')
+    plt.plot(t, batch_error, label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Batch")
+    plt.plot(
+        t[: (u.size - L1 + 1)],
+        fir_error,
+        label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ FIR",
+    )
+    plt.plot(
+        t[: (u.size - L1 + 1)],
+        iir_error,
+        label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ IIR",
+    )
+    plt.plot(
+        t, parallel_error, label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Parallel"
+    )
+    plt.xlabel("$t / T$")
     plt.xlim(((1 << 14) - 100, (1 << 14) + 100))
     plt.ylim((-0.00001, 0.00001))
     plt.legend()
     plt.title("Estimation error")
-    plt.grid(which='both')
+    plt.grid(which="both")
     plt.tight_layout()
 
 
@@ -873,36 +873,33 @@ in both time and frequency domain.
     print(f"Average IIR Error: {np.linalg.norm(iir_error) / iir_error.size}")
     print(
         f"""Average Parallel Error: { np.linalg.norm(parallel_error)/
-        parallel_error.size}""")
+        parallel_error.size}"""
+    )
 
     plt.figure()
-    u_hat_batch_clipped = u_hat_batch[(K1 + K2):-K2]
-    u_hat_fir_clipped = u_hat_fir[(L1 + L2):]
-    u_hat_iir_clipped = u_hat_iir[(K1 + K2):-K2]
-    u_hat_parallel_clipped = u_hat_parallel[(K1 + K2):-K2]
+    u_hat_batch_clipped = u_hat_batch[(K1 + K2) : -K2]
+    u_hat_fir_clipped = u_hat_fir[(L1 + L2) :]
+    u_hat_iir_clipped = u_hat_iir[(K1 + K2) : -K2]
+    u_hat_parallel_clipped = u_hat_parallel[(K1 + K2) : -K2]
     u_clipped = stf_at_omega * u
-    f_batch, psd_batch = cbadc.utilities.compute_power_spectral_density(
-        u_hat_batch_clipped)
-    f_fir, psd_fir = cbadc.utilities.compute_power_spectral_density(
-        u_hat_fir_clipped)
-    f_iir, psd_iir = cbadc.utilities.compute_power_spectral_density(
-        u_hat_iir_clipped)
+    f_batch, psd_batch = cbadc.utilities.compute_power_spectral_density(u_hat_batch_clipped)
+    f_fir, psd_fir = cbadc.utilities.compute_power_spectral_density(u_hat_fir_clipped)
+    f_iir, psd_iir = cbadc.utilities.compute_power_spectral_density(u_hat_iir_clipped)
     f_parallel, psd_parallel = cbadc.utilities.compute_power_spectral_density(
-        u_hat_parallel_clipped)
+        u_hat_parallel_clipped
+    )
     f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_clipped)
-    plt.semilogx(f_ref, 10 * np.log10(psd_ref),
-                 label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
+    plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
     plt.semilogx(f_batch, 10 * np.log10(psd_batch), label="$\hat{U}(f)$ Batch")
     plt.semilogx(f_fir, 10 * np.log10(psd_fir), label="$\hat{U}(f)$ FIR")
     plt.semilogx(f_iir, 10 * np.log10(psd_iir), label="$\hat{U}(f)$ IIR")
-    plt.semilogx(f_parallel, 10 * np.log10(psd_parallel),
-                 label="$\hat{U}(f)$ Parallel")
+    plt.semilogx(f_parallel, 10 * np.log10(psd_parallel), label="$\hat{U}(f)$ Parallel")
     plt.legend()
     plt.ylim((-200, 50))
     plt.xlim((f_fir[1], f_fir[-1]))
-    plt.xlabel('frequency [Hz]')
-    plt.ylabel('$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$')
-    plt.grid(which='both')
+    plt.xlabel("frequency [Hz]")
+    plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
+    plt.grid(which="both")
     plt.show()
 
 
@@ -914,33 +911,38 @@ in both time and frequency domain.
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_003.png
-          :alt: Estimated input signal
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_003.png
+         :alt: Estimated input signal
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_003.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_004.png
-          :alt: Estimated input signal
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_004.png
+         :alt: Estimated input signal
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_004.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_005.png
-          :alt: Estimated input signal
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_005.png
+         :alt: Estimated input signal
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_005.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_006.png
-          :alt: Estimation error
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_006.png
+         :alt: Estimation error
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_006.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_007.png
-          :alt: plot a compare estimator
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_007.png
+         :alt: plot a compare estimator
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_007.png
+         :class: sphx-glr-multi-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -949,25 +951,24 @@ in both time and frequency domain.
 
  .. code-block:: none
 
-    Average Batch Error: 4.083356807183407e-06
-    Average FIR Error: 4.355562871483952e-06
-    Average IIR Error: 4.355562871483949e-06
-    Average Parallel Error: 4.083356808847717e-06
+    Average Batch Error: 3.408294788962185e-05
+    Average FIR Error: 3.521374620648935e-05
+    Average IIR Error: 3.521374620648989e-05
+    Average Parallel Error: 3.408294784028472e-05
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 400-404
+.. GENERATED FROM PYTHON SOURCE LINES 406-410
 
 Compute Time
 ------------
 
 Compare the execution time of each estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 404-464
+.. GENERATED FROM PYTHON SOURCE LINES 410-479
 
 .. code-block:: default
-   :lineno-start: 406
 
 
 
@@ -982,28 +983,17 @@ Compare the execution time of each estimator
 
 
     digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
-        analog_system,
-        digital_control1,
-        eta2,
-        K1,
-        K2)
+        analog_system, digital_control1, eta2, K1, K2
+    )
     digital_estimator_fir = cbadc.digital_estimator.FIRFilter(
-        analog_system,
-        digital_control2,
-        eta2,
-        L1,
-        L2)
+        analog_system, digital_control2, eta2, L1, L2
+    )
     digital_estimator_parallel = cbadc.digital_estimator.ParallelEstimator(
-        analog_system,
-        digital_control4,
-        eta2,
-        K1,
-        K2)
+        analog_system, digital_control4, eta2, K1, K2
+    )
     digital_estimator_iir = cbadc.digital_estimator.IIRFilter(
-        analog_system,
-        digital_control3,
-        eta2,
-        L2)
+        analog_system, digital_control3, eta2, L2
+    )
 
     digital_estimator_batch(dummy_input_control_signal())
     digital_estimator_fir(dummy_input_control_signal())
@@ -1014,20 +1004,40 @@ Compare the execution time of each estimator
     repetitions = 10
 
     print("Digital Estimator:")
-    print(timeit.timeit(lambda: iterate_number_of_times(
-        digital_estimator_batch, length), number=repetitions), 'sec \n')
+    print(
+        timeit.timeit(
+            lambda: iterate_number_of_times(digital_estimator_batch, length),
+            number=repetitions,
+        ),
+        "sec \n",
+    )
 
     print("FIR Estimator:")
-    print(timeit.timeit(lambda: iterate_number_of_times(
-        digital_estimator_fir, length), number=repetitions), 'sec \n')
+    print(
+        timeit.timeit(
+            lambda: iterate_number_of_times(digital_estimator_fir, length),
+            number=repetitions,
+        ),
+        "sec \n",
+    )
 
     print("IIR Estimator:")
-    print(timeit.timeit(lambda: iterate_number_of_times(
-        digital_estimator_iir, length), number=repetitions), 'sec \n')
+    print(
+        timeit.timeit(
+            lambda: iterate_number_of_times(digital_estimator_iir, length),
+            number=repetitions,
+        ),
+        "sec \n",
+    )
 
     print("Parallel Estimator:")
-    print(timeit.timeit(lambda: iterate_number_of_times(
-        digital_estimator_parallel, length), number=repetitions), 'sec \n')
+    print(
+        timeit.timeit(
+            lambda: iterate_number_of_times(digital_estimator_parallel, length),
+            number=repetitions,
+        ),
+        "sec \n",
+    )
 
 
 
@@ -1040,16 +1050,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    5.073600958974566 sec 
+    5.251790925000023 sec 
 
     FIR Estimator:
-    53.24715116398875 sec 
+    63.97870245099875 sec 
 
     IIR Estimator:
-    30.63456824599416 sec 
+    50.273254034000274 sec 
 
     Parallel Estimator:
-    9.186485144979088 sec 
+    9.251342470000964 sec 
 
 
 
@@ -1058,7 +1068,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 40 minutes  57.082 seconds)
+   **Total running time of the script:** ( 20 minutes  37.774 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_a_compare_estimator.py:
