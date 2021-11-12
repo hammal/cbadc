@@ -26,7 +26,7 @@ def test_write_C_header(chain_of_integrators):
     filter = cbadc.digital_estimator.FIRFilter(
         chain_of_integrators["system"], digital_control, eta2, K1, K2
     )
-    filter.write_C_header("unittest")
+    filter.write_C_header("FIR_filter_C_header")
 
 
 def test_fixed_point():
@@ -72,3 +72,21 @@ def test_fixed_point():
         est_fixed = next(estimator_fixed_point)
         np.testing.assert_allclose(est_floating, est_fixed, rtol=1e-5)
 
+
+def test_write_C_header_with_fixed_point(chain_of_integrators):
+    eta2 = 1.0
+    K1 = 4
+    K2 = 3
+    fixed_point = cbadc.utilities.FixedPoint(8, 1.0)
+    digital_control = cbadc.digital_control.DigitalControl(
+        1.0 / (2 * chain_of_integrators["beta"]), 5
+    )
+    filter = cbadc.digital_estimator.FIRFilter(
+        chain_of_integrators["system"],
+        digital_control,
+        eta2,
+        K1,
+        K2,
+        fixed_point=fixed_point,
+    )
+    filter.write_C_header("FIR_filter_C_header_with_fixed_point")

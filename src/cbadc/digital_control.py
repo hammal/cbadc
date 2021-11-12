@@ -88,8 +88,11 @@ class DigitalControl:
         clock period at which the digital control updates.
     M : `int`
         number of controls.
-    t0 : `float`: optional
+    t0 : `float`, `optional`
         determines initial time, defaults to 0.
+    t_tolerance: `float`, `optional`
+        determines with which time tolerance the digital control
+        updated, defaults to 1e-12.
     impulse_response : (float) -> array_like, optional
         the digital control's impulse response
 
@@ -128,6 +131,7 @@ class DigitalControl:
         T: float,
         M: int,
         t0: float = 0.0,
+        t_tolerance=1e-12,
         impulse_response=StepResponse(),
     ):
         self.T = T
@@ -135,6 +139,7 @@ class DigitalControl:
         self.M_tilde = M
         self._t_next = t0
         self._t_last_update = self._t_next * np.ones(self.M)
+        self._t_tolerance = t_tolerance
         self._s = np.zeros(self.M, dtype=np.int8)
         self._s[:] = False
         self._impulse_response = [impulse_response for _ in range(self.M)]
@@ -157,7 +162,7 @@ class DigitalControl:
             state vector evaluated at time t
         """
         # Check if time t has passed the next control update
-        if t >= self._t_next:
+        if np.allclose(t, self._t_next, atol=self._t_tolerance):
             # if so update the control signal state
             # print(f"digital_control set for {t} and {s_tilde}")
             self._s = s_tilde >= 0
@@ -207,7 +212,8 @@ class DigitalControl:
         # Check if time t has passed the next control update
         impulse_response = np.zeros(self.M)
         for m in range(self.M):
-            impulse_response[m] = self._impulse_response[m](t - self._t_last_update[m])
+            impulse_response[m] = self._impulse_response[m](
+                t - self._t_last_update[m])
         return self._dac_values * impulse_response
 
     def impulse_response(self, m: int, t: float) -> np.ndarray:
@@ -254,6 +260,9 @@ class MultiPhaseDigitalControl(DigitalControl):
     T1 : `array_like`, shape=(M,)
         time at which the digital control empties the capacitor into the
         system.
+    t_tolerance: `float`, `optional`
+        determines with which time tolerance the digital control
+        updated, defaults to 1e-12.
     t0 : `float`: optional
         determines initial time, defaults to 0.
 
@@ -278,13 +287,15 @@ class MultiPhaseDigitalControl(DigitalControl):
         T: float,
         phi_1: np.ndarray,
         t0: float = 0,
+        t_tolerance=1e-12,
         impulse_response=None,
     ):
         M = phi_1.size
         self._phi_1 = phi_1
         self._t_next = t0
         self._t_next_phase = self._t_next + self._phi_1
-        self._t_last_update = t0 + self._phi_1
+        self._t_last_update = t0 * np.ones(M)
+        self._t_tolerance = t_tolerance
         DigitalControl.__init__(self, T, M, t0=t0)
         if (phi_1 < 0).any() or (phi_1 > T).any():
             raise BaseException(f"Invalid phi_1 ={phi_1}")
@@ -333,8 +344,10 @@ class MultiPhaseDigitalControl(DigitalControl):
                     self._s[m] = s_tilde[m] >= 0
                     self._t_next_phase[m] += self.T
                     self._t_next = self._next_update()
+                    self._t_last_update[m] = t
                     # DAC
-                    self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
+                    self._dac_values = np.asarray(
+                        2 * self._s - 1, dtype=np.double)
                     # print(f"m = {m}, t = {t}, s = {self._dac_values}")
 
     def impulse_response(self, m: int, t: float) -> np.ndarray:
@@ -411,7 +424,8 @@ def overcomplete_set(Gamma: np.ndarray, M: int):
         T[dim, :] /= np.linalg.norm(T[dim, :], ord=2)
     number_of_candidates_per_new_vector = 100
     while T.shape[0] < M:
-        candidate_set = np.random.randn(T.shape[1], number_of_candidates_per_new_vector)
+        candidate_set = np.random.randn(
+            T.shape[1], number_of_candidates_per_new_vector)
         candidate_set /= np.linalg.norm(candidate_set, ord=2, axis=0)
 
         cost = np.zeros(number_of_candidates_per_new_vector)
@@ -422,12 +436,14 @@ def overcomplete_set(Gamma: np.ndarray, M: int):
             )
 
         for index in range(number_of_candidates_per_new_vector):
-            sol = scipy.optimize.minimize(cost_function, candidate_set[:, index])
+            sol = scipy.optimize.minimize(
+                cost_function, candidate_set[:, index])
             cost[index] = sol.fun
             candidate_set[:, index] = sol.x / np.linalg.norm(sol.x, ord=2)
 
         T = np.vstack(
-            (T, candidate_set[:, best_candidate_index].reshape((1, T.shape[1])))
+            (T, candidate_set[:, best_candidate_index].reshape(
+                (1, T.shape[1])))
         )
     return T.transpose()
 
@@ -476,7 +492,8 @@ def unit_element_set(N: int, M: int, candidates=[-1, 1, 0]):
     # ]
     # print(candidate_set)
     if candidate_set.shape[0] < M:
-        raise BaseException("Not enough unique combinations; M is set to large.")
+        raise BaseException(
+            "Not enough unique combinations; M is set to large.")
     set = candidate_set[0, :].reshape((N, 1))
     candidate_set = np.delete(candidate_set, 0, 0)
 

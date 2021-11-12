@@ -45,9 +45,9 @@ import cbadc
 # We fix the number of analog states.
 N = 6
 # Set the amplification factor.
-beta = 6250.
-rho = - 0.02
-kappa = - 1.0
+beta = 6250.0
+rho = -0.02
+kappa = -1.0
 # In this example, each nodes amplification and local feedback will be set
 # identically.
 betaVec = beta * np.ones(N)
@@ -81,21 +81,19 @@ transfer_function_dB = 20 * np.log10(np.abs(transfer_function))
 # For each output 1,...,N compute the corresponding tranfer function seen
 # from the input.
 for n in range(N):
-    plt.semilogx(
-        frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
+    plt.semilogx(frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
 
 # Add the norm ||G(omega)||_2
 plt.semilogx(
     frequencies,
-    20 * np.log10(np.linalg.norm(
-        transfer_function[:, 0, :],
-        axis=0)),
-    '--',
-    label="$ ||\mathbf{G}(\omega)||_2 $")
+    20 * np.log10(np.linalg.norm(transfer_function[:, 0, :], axis=0)),
+    "--",
+    label="$ ||\mathbf{G}(\omega)||_2 $",
+)
 
 # Add labels and legends to figure
 plt.legend()
-plt.grid(which='both')
+plt.grid(which="both")
 plt.title("Transfer functions, $G_1(\omega), \dots, G_N(\omega)$")
 plt.xlabel("$\omega / (4 \pi \\beta ) $")
 plt.ylabel("dB")
@@ -138,18 +136,23 @@ plt.gcf().tight_layout()
 # Define dummy control and control sequence (not used when computing transfer
 # functions). However necessary to instantiate the digital estimator
 
-T = 1/(2 * beta)
+T = 1 / (2 * beta)
 digital_control = cbadc.digital_control.DigitalControl(T, N)
 
 
 # Compute eta2 for a given bandwidth.
-omega_3dB = (4 * np.pi * beta) / 100.
-eta2 = np.linalg.norm(analog_system.transfer_function_matrix(
-    np.array([omega_3dB])).flatten()) ** 2
+omega_3dB = (4 * np.pi * beta) / 100.0
+eta2 = (
+    np.linalg.norm(
+        analog_system.transfer_function_matrix(np.array([omega_3dB])).flatten()
+    )
+    ** 2
+)
 
 # Instantiate estimator.
 digital_estimator = cbadc.digital_estimator.DigitalEstimator(
-    analog_system, digital_control, eta2, K1=1)
+    analog_system, digital_control, eta2, K1=1
+)
 
 # Compute NTF
 ntf = digital_estimator.noise_transfer_function(omega)
@@ -162,15 +165,19 @@ stf_dB = 20 * np.log10(np.abs(stf.flatten()))
 
 # Plot
 plt.figure()
-plt.semilogx(frequencies, stf_dB, label='$STF(\omega)$')
+plt.semilogx(frequencies, stf_dB, label="$STF(\omega)$")
 for n in range(N):
     plt.semilogx(frequencies, ntf_dB[0, n, :], label=f"$|NTF_{n+1}(\omega)|$")
-plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-    ntf[0, :, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $")
+plt.semilogx(
+    frequencies,
+    20 * np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+    "--",
+    label="$ || NTF(\omega) ||_2 $",
+)
 
 # Add labels and legends to figure
 plt.legend()
-plt.grid(which='both')
+plt.grid(which="both")
 plt.title("Signal and noise transfer functions")
 plt.xlabel("$\omega / (4 \pi \\beta ) $")
 plt.ylabel("dB")
@@ -190,7 +197,8 @@ plt.figure()
 for eta2 in eta2_vec:
     # Instantiate an estimator for each eta.
     digital_estimator = cbadc.digital_estimator.DigitalEstimator(
-        analog_system, digital_control, eta2, K1=1)
+        analog_system, digital_control, eta2, K1=1
+    )
     # Compute stf and ntf
     ntf = digital_estimator.noise_transfer_function(omega)
     ntf_dB = 20 * np.log10(np.abs(ntf))
@@ -198,16 +206,23 @@ for eta2 in eta2_vec:
     stf_dB = 20 * np.log10(np.abs(stf.flatten()))
 
     # Plot
-    color = next(plt.gca()._get_lines.prop_cycler)['color']
-    plt.semilogx(frequencies, 20 *
-                 np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
-                 '--', color=color)
-    plt.semilogx(frequencies, stf_dB,
-                 label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$", color=color)
+    color = next(plt.gca()._get_lines.prop_cycler)["color"]
+    plt.semilogx(
+        frequencies,
+        20 * np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+        "--",
+        color=color,
+    )
+    plt.semilogx(
+        frequencies,
+        stf_dB,
+        label=f"$\eta^2={10 * np.log10(eta2):0.0f} dB$",
+        color=color,
+    )
 
 # Add labels and legends to figure
-plt.legend(loc='lower left')
-plt.grid(which='both')
+plt.legend(loc="lower left")
+plt.grid(which="both")
 plt.title("$|G(\omega)|$ - solid, $||\mathbf{H}(\omega)||_2$ - dashed")
 plt.xlabel("$\omega / (4 \pi \\beta ) $")
 plt.ylabel("dB")

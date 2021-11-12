@@ -8,9 +8,11 @@ docs/build
 *.DS_Store
 .tox
 ._profile_simulator_stats.txt
-docs/code_examples/a_getting_started/sinusoidal_simulation.adcs
+docs/code_examples/a_getting_started/sinusodial_simulation.dat
 docs/._make.bat
-*.svg
 jupyter
 *.pyc
 unittest.h
+benchmark_*.svg
+docs/source/backreferences
+docs/source/api/autosummary

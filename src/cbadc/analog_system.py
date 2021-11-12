@@ -9,7 +9,10 @@ to quickly initialize analog systems of particular structures.
 import numpy as np
 import numpy.typing as npt
 import scipy.signal
+import logging
 from typing import Tuple, List, Union
+
+logger = logging.getLogger(__name__)
 
 
 class AnalogSystem:
@@ -284,7 +287,8 @@ class AnalogSystem:
 
     def _atf(self, _omega: float) -> np.ndarray:
         tf = np.dot(
-            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
+            np.linalg.pinv(complex(0, _omega) *
+                           np.eye(self.N) - self.A, rcond=1e-300),
             self.B,
         )
         return tf
@@ -502,9 +506,11 @@ class ChainOfIntegrators(AnalogSystem):
     def __init__(self, beta: np.ndarray, rho: np.ndarray, kappa: np.ndarray):
         """Create an chain-of-integrators analog system."""
         if beta.shape[0] != beta.size:
-            InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "beta must be a one dimensional vector")
         if rho.shape[0] != rho.size:
-            InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "rho must be a one dimensional vector")
         if kappa.shape[0] != rho.size:
             InvalidAnalogSystemError(
                 self,
@@ -644,11 +650,14 @@ class LeapFrog(AnalogSystem):
     def __init__(self, beta: np.ndarray, rho: np.ndarray, kappa: np.ndarray):
         """Create an leap-frog analog system."""
         if beta.shape[0] != beta.size:
-            InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "beta must be a one dimensional vector")
         if rho.shape[0] != rho.size:
-            InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "rho must be a one dimensional vector")
         if kappa.shape[0] != kappa.size:
-            InvalidAnalogSystemError(self, "kappa must be a one dimensional vector")
+            InvalidAnalogSystemError(
+                self, "kappa must be a one dimensional vector")
         if beta.size != rho.size and rho.size != kappa.size:
             InvalidAnalogSystemError(
                 self, "beta, rho, kappa vector must be of same size"
@@ -1228,7 +1237,8 @@ def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.nd
         B = np.array([[0.0], [1.0]])
         CT = np.array([[(b_2 - b_0 * a_2), (b_1 - b_0 * a_1)]])
         D = np.array([[b_0]])
-        biquadratic_analog_systems.append(AnalogSystem(A, B, CT, None, None, D))
+        biquadratic_analog_systems.append(
+            AnalogSystem(A, B, CT, None, None, D))
     chained_system = chain(biquadratic_analog_systems)
     return chained_system.A, chained_system.B, chained_system.CT, chained_system.D
 
@@ -1317,8 +1327,10 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     :py:class:`cbadc.analog_system.AnalogSystem`
         a new analog system
     """
-    N: int = np.sum(np.array([analog_system.N for analog_system in analog_systems]))
-    M: int = np.sum(np.array([analog_system.M for analog_system in analog_systems]))
+    N: int = np.sum(
+        np.array([analog_system.N for analog_system in analog_systems]))
+    M: int = np.sum(
+        np.array([analog_system.M for analog_system in analog_systems]))
     M_tilde: int = np.sum(
         np.array([analog_system.M_tilde for analog_system in analog_systems])
     )
@@ -1396,12 +1408,15 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     :py:class:`cbadc.analog_system.AnalogSystem`
         a new analog system
     """
-    N: int = np.sum(np.array([analog_system.N for analog_system in analog_systems]))
-    M: int = np.sum(np.array([analog_system.M for analog_system in analog_systems]))
+    N: int = np.sum(
+        np.array([analog_system.N for analog_system in analog_systems]))
+    M: int = np.sum(
+        np.array([analog_system.M for analog_system in analog_systems]))
     M_tilde: int = np.sum(
         np.array([analog_system.M_tilde for analog_system in analog_systems])
     )
-    L: int = np.sum(np.array([analog_system.L for analog_system in analog_systems]))
+    L: int = np.sum(
+        np.array([analog_system.L for analog_system in analog_systems]))
     N_tilde: int = np.sum(
         np.array([analog_system.N_tilde for analog_system in analog_systems])
     )
@@ -1475,7 +1490,8 @@ def zpk2abcd(z, p, k):
     if len(z) > 0:
         z = _sort_by_complex_descending(z)
 
-    k_per_state = np.float64(np.power(np.float64(np.abs(k)), 1.0 / np.float64(len(p))))
+    k_per_state = np.float64(
+        np.power(np.float64(np.abs(k)), 1.0 / np.float64(len(p))))
 
     index = 0
     systems = []
@@ -1496,7 +1512,8 @@ def zpk2abcd(z, p, k):
                 A = np.array([[a1, b1], [b2, a2]])
             else:
                 if np.imag(pole_1) != 0 or np.imag(pole_2) != 0:
-                    raise BaseException("Can't have non-conjugate complex poles")
+                    raise BaseException(
+                        "Can't have non-conjugate complex poles")
                 A = np.array([[np.real(pole_1), 0], [1.0, np.real(pole_2)]])
 
             if index < len(z):
@@ -1507,11 +1524,13 @@ def zpk2abcd(z, p, k):
                     y = np.array(
                         [
                             [zero_1 + zero_2 - A[0, 0] - A[1, 1]],
-                            [zero_1 * zero_2 - A[0, 0] * A[1, 1] + A[0, 1] * A[1, 0]],
+                            [zero_1 * zero_2 - A[0, 0] *
+                                A[1, 1] + A[0, 1] * A[1, 0]],
                         ]
                     )
                     if not np.allclose(np.imag(y), np.zeros(2)):
-                        raise BaseException("Can't have non-conjugate complex zeros")
+                        raise BaseException(
+                            "Can't have non-conjugate complex zeros")
                     M = np.array([[-1.0, 0], [-A[1, 1], A[1, 0]]])
                     sol = np.linalg.solve(M, np.real(y))
                     D = k_per_state ** 2 * np.array([[1.0]])
@@ -1519,7 +1538,8 @@ def zpk2abcd(z, p, k):
                 else:
                     # Single zero
                     if np.imag(zero_1) != 0:
-                        raise BaseException("Can't have non-conjugate complex zero")
+                        raise BaseException(
+                            "Can't have non-conjugate complex zero")
                     c1 = 1.0
                     c2 = (A[1, 1] - np.real(zero_1)) / A[1, 0]
                     CT = np.array([[c1, c2]])
@@ -1542,7 +1562,8 @@ def zpk2abcd(z, p, k):
             if index < len(z):
                 zero = z[index]
                 if np.imag(zero) != 0:
-                    raise BaseException("Cant have non-conjugate complex zeros")
+                    raise BaseException(
+                        "Cant have non-conjugate complex zeros")
                 D[0, 0] = k_per_state
                 CT[0, 0] = pole - np.real(zero)
             index += 1

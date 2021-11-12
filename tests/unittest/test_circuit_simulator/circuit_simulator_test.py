@@ -45,7 +45,8 @@ def test_large_integrator():
     CT[-1] = 1.0
     Gamma_tildeT = np.eye(N)
     Gamma = Gamma_tildeT * (-beta)
-    analogSystem = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analogSystem = cbadc.analog_system.AnalogSystem(
+        A, B, CT, Gamma, Gamma_tildeT)
     analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
     digitalControl = cbadc.digital_control.DigitalControl(Ts, M)
     statespacesimulator = cbadc.simulator.StateSpaceSimulator(
@@ -74,7 +75,8 @@ def test_pre_and_non_pre_computations():
     Gamma = -beta * np.eye(M)
     Gamma_tildeT = np.eye(M)
 
-    analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_system_sc = cbadc.analog_system.AnalogSystem(
+        A, B, CT, Gamma, Gamma_tildeT)
 
     print(digital_control_sc)
     print(analog_system_sc)
@@ -160,7 +162,8 @@ def test_variable_sampling_rate():
     Gamma = -1 / (R_s * C_x) * np.eye(M)
     Gamma_tildeT = np.eye(M)
 
-    analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_system_sc = cbadc.analog_system.AnalogSystem(
+        A, B, CT, Gamma, Gamma_tildeT)
 
     print(digital_control_sc)
     print(analog_system_sc)
@@ -245,7 +248,8 @@ def test_simulator_verify_with_estimator():
     Gamma = -1 / (R_s * C_x) * np.eye(M)
     Gamma_tildeT = np.eye(M)
 
-    analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_system_sc = cbadc.analog_system.AnalogSystem(
+        A, B, CT, Gamma, Gamma_tildeT)
 
     print(digital_control_sc)
     print(analog_system_sc)

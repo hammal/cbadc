@@ -5,12 +5,10 @@
 
 Computation times
 =================
-**60:35.115** total execution time for **tutorials_b_general** files:
+**03:01.830** total execution time for **tutorials_b_general** files:
 
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py` (``plot_e_switched_capacitor_digital_control.py``) | 58:25.415 | 0.0 MB |
-+-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_f_delay_phase_control.py` (``plot_f_delay_phase_control.py``)                               | 02:09.700 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py` (``plot_e_switched_capacitor_digital_control.py``) | 03:01.830 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``)                                   | 00:00.000 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
