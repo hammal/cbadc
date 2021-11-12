@@ -1786,9 +1786,14 @@ class FIRFilter(DigitalEstimator):
                 f.write("{")
                 for m in range(self.analog_system.M):
                     f.write("{")
-                    for k in range(self.K3 - 1):
-                        f.write(f"{self.h[l,k,m]:.17E},")
-                    f.write(f"{self.h[l,-1,m]:.17E}" + "}")
+                    if self.fixed_point:
+                        for k in range(self.K3 - 1):
+                            f.write(f"{self.h[l,k,m]},")
+                        f.write(f"{self.h[l,-1,m]}" + "}")
+                    else:
+                        for k in range(self.K3 - 1):
+                            f.write(f"{self.h[l,k,m]:.17E},")
+                        f.write(f"{self.h[l,-1,m]:.17E}" + "}")
                     if m < (self.analog_system.M - 1):
                         f.write(",")
                 f.write("}")
