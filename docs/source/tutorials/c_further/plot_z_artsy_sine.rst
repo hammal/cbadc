@@ -34,7 +34,7 @@ The plots are rendered using matplotlib.
 
     from cbadc.datasets import hadamard
     from cbadc.simulator import StateSpaceSimulator
-    from cbadc.analog_signal import Sinusodial
+    from cbadc.analog_signal import Sinusoidal
     import numpy as np
     import matplotlib.pyplot as plt
     from matplotlib.colors import hsv_to_rgb
@@ -69,12 +69,12 @@ sinusoidal input and capture the generated bitstream.
     T = pcb.T
 
     # Set the peak amplitude.
-    amplitude = 2.5  # 2.5 V is the theoretical limit for the hardware prototype
-    # Choose the sinusodial frequency via an oversampling ratio (OSR).
+    amplitude = 2.5    # 2.5 V is the theoretical limit for the hardware prototype
+    # Choose the sinusoidal frequency via an oversampling ratio (OSR).
     OSR = 1 << 8
     frequency = 1.0 / (T * OSR)
     # Instantiate the analog signal
-    analog_signal = Sinusodial(amplitude, frequency)
+    analog_signal = Sinusoidal(amplitude, frequency)
     # print to ensure correct parametrization.
     print(analog_signal)
 
@@ -96,7 +96,7 @@ sinusoidal input and capture the generated bitstream.
 
  .. code-block:: none
 
-    Sinusodial parameterized as: 
+    Sinusoidal parameterized as: 
     amplitude = 2.5, 
 
             frequency = 3906.25, 
@@ -148,7 +148,7 @@ and the reference level. The barcodes are then stacked vertically.
     xlim = 256 + 1  # add 1 to get a symmetrical image
 
     x = np.arange(xstart, xstart + xlim)
-    ctrl_sig = np.transpose(ctrl_stream[xstart : xstart + xlim, :])
+    ctrl_sig = np.transpose(ctrl_stream[xstart: xstart + xlim, :])
     # from top to bottom: 0th to 7th bit
     offset = np.reshape(np.repeat(np.arange(M)[::-1], xlim), (M, xlim))
 
@@ -186,7 +186,7 @@ Choose Colors
 We can set the individual colors of the bit signals by using a color cycler.
 Also, we add the input signal on top.
 
-.. GENERATED FROM PYTHON SOURCE LINES 98-117
+.. GENERATED FROM PYTHON SOURCE LINES 98-119
 
 .. code-block:: default
 
@@ -199,10 +199,12 @@ Also, we add the input signal on top.
     # remove the previous line to get the standard matplotlib color sequence
 
     for i in range(M):
-        ax2.fill_between(x, offset[i], ctrl_sig[i] + offset[i], step="pre", alpha=0.5)
+        ax2.fill_between(x, offset[i], ctrl_sig[i] +
+                         offset[i], step="pre", alpha=0.5)
 
     # plot input signal        (adjust amplitude to be slightly smaller that barcode stack)
-    input_signal = analog_signal.evaluate(x * T) / analog_signal.amplitude * M / 2.1 + M / 2
+    input_signal = analog_signal.evaluate(
+        x * T) / analog_signal.amplitude * M / 2.1 + M / 2
     ax2.plot(x, input_signal, "k", linewidth=3)
 
     fig2.tight_layout()
@@ -221,7 +223,7 @@ Also, we add the input signal on top.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 118-124
+.. GENERATED FROM PYTHON SOURCE LINES 120-126
 
 ---------------------
 Color Gradients
@@ -230,7 +232,7 @@ By specifying colors in the HSL space we can control them more intuitively.
 This also allows to create neat gradients.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-155
+.. GENERATED FROM PYTHON SOURCE LINES 126-159
 
 .. code-block:: default
 
@@ -248,7 +250,8 @@ This also allows to create neat gradients.
     lum = np.concatenate(
         (np.linspace(min_lum, max_lum, 4), np.linspace(max_lum, min_lum, 4))
     )
-    custom_cycler = cycler(color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
+    custom_cycler = cycler(
+        color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
 
     fig3, ax3 = plt.subplots(figsize=(40 / 2.54, 24 / 2.54))
     ax3.set_prop_cycle(custom_cycler)
@@ -258,7 +261,8 @@ This also allows to create neat gradients.
         ax3.fill_between(x, offset[i], ctrl_sig[i] + offset[i], step="pre")
 
     # plot input signal        (adjust amplitude to be slightly smaller that barcode stack)
-    input_signal = analog_signal.evaluate(x * T) / analog_signal.amplitude * M / 2.1 + M / 2
+    input_signal = analog_signal.evaluate(
+        x * T) / analog_signal.amplitude * M / 2.1 + M / 2
     ax3.plot(x, input_signal, "k", linewidth=3, solid_capstyle="round")
 
     fig3.tight_layout()
@@ -277,13 +281,13 @@ This also allows to create neat gradients.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 156-159
+.. GENERATED FROM PYTHON SOURCE LINES 160-163
 
 -------------
 More Examples
 -------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 159-201
+.. GENERATED FROM PYTHON SOURCE LINES 163-207
 
 .. code-block:: default
 
@@ -302,7 +306,8 @@ More Examples
     lum = np.concatenate(
         (np.linspace(max_lum, min_lum, 4), np.linspace(min_lum, max_lum, 4))
     )
-    custom_cycler = cycler(color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
+    custom_cycler = cycler(
+        color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
 
     fig4, ax4 = plt.subplots(figsize=(40 / 2.54, 24 / 2.54))
     ax4.set_prop_cycle(custom_cycler)
@@ -322,7 +327,8 @@ More Examples
         va="center",
     )
 
-    input_signal = analog_signal.evaluate(x * T) / analog_signal.amplitude * M / 2.1 + M / 2
+    input_signal = analog_signal.evaluate(
+        x * T) / analog_signal.amplitude * M / 2.1 + M / 2
     ax4.plot(x, input_signal, "k", linewidth=3, solid_capstyle="round")
 
     fig4.tight_layout()
@@ -350,7 +356,7 @@ More Examples
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 202-232
+.. GENERATED FROM PYTHON SOURCE LINES 208-240
 
 .. code-block:: default
 
@@ -369,7 +375,8 @@ More Examples
     lum = np.concatenate(
         (np.linspace(min_lum, max_lum, 4), np.linspace(max_lum, min_lum, 4))
     )
-    custom_cycler = cycler(color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
+    custom_cycler = cycler(
+        color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
 
     fig5, ax5 = plt.subplots(figsize=(40 / 2.54, 24 / 2.54))
     ax5.set_prop_cycle(custom_cycler)
@@ -377,7 +384,8 @@ More Examples
     for i in range(M):
         ax5.fill_between(x, offset[i], ctrl_sig[i] + offset[i], step="pre")
 
-    input_signal = analog_signal.evaluate(x * T) / analog_signal.amplitude * M / 2.1 + M / 2
+    input_signal = analog_signal.evaluate(
+        x * T) / analog_signal.amplitude * M / 2.1 + M / 2
     ax5.plot(x, input_signal, "k", linewidth=2, solid_capstyle="round")
 
     fig5.tight_layout()
@@ -396,11 +404,11 @@ More Examples
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 233-234
+.. GENERATED FROM PYTHON SOURCE LINES 241-242
 
 sphinx_gallery_thumbnail_number = 6
 
-.. GENERATED FROM PYTHON SOURCE LINES 234-262
+.. GENERATED FROM PYTHON SOURCE LINES 242-273
 
 .. code-block:: default
 
@@ -410,14 +418,16 @@ sphinx_gallery_thumbnail_number = 6
     min_lum = 1
     max_lum = 1
 
-    hue = [0, 0.09, 0.18, 0.4, 0.5, 0.6, 0.7, 0.8]  # rainbow with specially picked colors
+    # rainbow with specially picked colors
+    hue = [0, 0.09, 0.18, 0.4, 0.5, 0.6, 0.7, 0.8]
     sat = np.concatenate(
         (np.linspace(min_sat, max_sat, 4), np.linspace(max_sat, min_sat, 4))
     )
     lum = np.concatenate(
         (np.linspace(max_lum, min_lum, 4), np.linspace(min_lum, max_lum, 4))
     )
-    custom_cycler = cycler(color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
+    custom_cycler = cycler(
+        color=[hsv_to_rgb((hue[i], sat[i], lum[i])) for i in range(8)])
 
     fig6, ax6 = plt.subplots(figsize=(40 / 2.54, 24 / 2.54))
     ax6.set_prop_cycle(custom_cycler)
@@ -425,7 +435,8 @@ sphinx_gallery_thumbnail_number = 6
     for i in range(M):
         ax6.fill_between(x, offset[i], ctrl_sig[i] + offset[i], step="pre")
 
-    input_signal = analog_signal.evaluate(x * T) / analog_signal.amplitude * M / 2.1 + M / 2
+    input_signal = analog_signal.evaluate(
+        x * T) / analog_signal.amplitude * M / 2.1 + M / 2
     ax6.plot(x, input_signal, "k", linewidth=4, solid_capstyle="round")
 
     fig6.tight_layout()
@@ -444,7 +455,7 @@ sphinx_gallery_thumbnail_number = 6
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 263-269
+.. GENERATED FROM PYTHON SOURCE LINES 274-280
 
 ------------
 Export Image
@@ -453,7 +464,7 @@ After playing around with the plots, uncomment  one of the lines to export
 your favourite image
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 269-276
+.. GENERATED FROM PYTHON SOURCE LINES 280-287
 
 .. code-block:: default
 
@@ -474,7 +485,7 @@ your favourite image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  4.647 seconds)
+   **Total running time of the script:** ( 1 minutes  6.228 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_further_plot_z_artsy_sine.py:

@@ -60,7 +60,7 @@ print(digital_control)
 #
 # Next, we will load an actual control signal to demonstrate the digital
 # estimator's capabilities. To this end, we will use the
-# `sinusodial_simulation.dat` file that was produced in
+# `sinusoidal_simulation.dat` file that was produced in
 # :doc:`./plot_b_simulate_a_control_bounded_adc`.
 #
 # The control signal file is encoded as raw binary data so to unpack it
@@ -68,26 +68,26 @@ print(digital_control)
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusodial_simulation.dat", M
+    "../a_getting_started/sinusoidal_simulation.dat", M
 )
 control_signal_sequences1 = cbadc.utilities.byte_stream_2_control_signal(
     byte_stream, M)
 
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusodial_simulation.dat", M
+    "../a_getting_started/sinusoidal_simulation.dat", M
 )
 control_signal_sequences2 = cbadc.utilities.byte_stream_2_control_signal(
     byte_stream, M)
 
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusodial_simulation.dat", M
+    "../a_getting_started/sinusoidal_simulation.dat", M
 )
 control_signal_sequences3 = cbadc.utilities.byte_stream_2_control_signal(
     byte_stream, M)
 
 
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusodial_simulation.dat", M
+    "../a_getting_started/sinusoidal_simulation.dat", M
 )
 control_signal_sequences4 = cbadc.utilities.byte_stream_2_control_signal(
     byte_stream, M)

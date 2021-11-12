@@ -79,13 +79,8 @@ phase = np.pi / 3
 offset = 0.0
 
 # Instantiate the analog signal
-<< << << < HEAD
 analog_signal = cbadc.analog_signal.Sinusoidal(
     amplitude, frequency, phase, offset)
-== == == =
-analog_signal = cbadc.analog_signal.Sinusodial(
-    amplitude, frequency, phase, offset)
->>>>>> > origin/master
 # print to ensure correct parametrization.
 print(analog_signal)
 

@@ -426,20 +426,20 @@ Loading Control Signal from File
 
 Next, we will load an actual control signal to demonstrate the digital
 estimator's capabilities. To this end, we will use the
-`sinusodial_simulation.dat` file that was produced in
+`sinusoidal_simulation.dat` file that was produced in
 :doc:`./plot_b_simulate_a_control_bounded_adc`.
 
 The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 172-179
+.. GENERATED FROM PYTHON SOURCE LINES 172-180
 
 .. code-block:: default
 
 
     byte_stream = cbadc.utilities.read_byte_stream_from_file(
-        "sinusodial_simulation.dat", M
+        "sinusoidal_simulation.dat", M
     )
     control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(
         byte_stream, M)
@@ -451,7 +451,8 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 180-186
+
+.. GENERATED FROM PYTHON SOURCE LINES 181-187
 
 Estimating the input
 --------------------
@@ -460,7 +461,7 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 186-214
+.. GENERATED FROM PYTHON SOURCE LINES 187-215
 
 .. code-block:: default
 
@@ -504,7 +505,7 @@ analog system and digital controls as in this example so
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 215-220
+.. GENERATED FROM PYTHON SOURCE LINES 216-221
 
 Plotting the PSD
 ----------------
@@ -512,7 +513,7 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 220-229
+.. GENERATED FROM PYTHON SOURCE LINES 221-230
 
 .. code-block:: default
 
@@ -540,7 +541,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  16.711 seconds)
+   **Total running time of the script:** ( 0 minutes  16.449 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:

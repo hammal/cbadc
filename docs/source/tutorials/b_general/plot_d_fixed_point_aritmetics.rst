@@ -285,7 +285,7 @@ Impulse Response Truncation and Fixed-Point Precision
     control_signal_sequences = [
         cbadc.utilities.byte_stream_2_control_signal(
             cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusodial_simulation.dat", M
+                "../a_getting_started/sinusoidal_simulation.dat", M
             ),
             M,
         )
@@ -454,7 +454,7 @@ Resulting Estimate Precision
     digital_estimators_ref(
         cbadc.utilities.byte_stream_2_control_signal(
             cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusodial_simulation.dat", M
+                "../a_getting_started/sinusoidal_simulation.dat", M
             ),
             M,
         )
@@ -536,7 +536,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  34.064 seconds)
+   **Total running time of the script:** ( 1 minutes  33.917 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_d_fixed_point_aritmetics.py:

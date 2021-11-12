@@ -139,7 +139,7 @@ Analog Signal
 -------------
 
 We will also need an analog signal for conversion.
-In this tutorial we will use a Sinusodial signal.
+In this tutorial we will use a Sinusoidal signal.
 
 .. GENERATED FROM PYTHON SOURCE LINES 44-60
 
@@ -148,7 +148,7 @@ In this tutorial we will use a Sinusodial signal.
 
     # Set the peak amplitude.
     amplitude = 1.0
-    # Choose the sinusodial frequency via an oversampling ratio (OSR).
+    # Choose the sinusoidal frequency via an oversampling ratio (OSR).
     frequency = 1.0 / (T * OSR * (1 << 0))
 
     # We also specify a phase an offset these are hovewer optional.
@@ -156,7 +156,7 @@ In this tutorial we will use a Sinusodial signal.
     offset = 0.0
 
     # Instantiate the analog signal
-    analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
+    analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
 
     print(analog_signal)
 
@@ -171,7 +171,7 @@ In this tutorial we will use a Sinusodial signal.
 
  .. code-block:: none
 
-    Sinusodial parameterized as: 
+    Sinusoidal parameterized as: 
     amplitude = 1.0, 
 
             frequency = 97.65624999999999, 
@@ -1050,16 +1050,16 @@ Compare the execution time of each estimator
  .. code-block:: none
 
     Digital Estimator:
-    5.251790925000023 sec 
+    5.217148019000888 sec 
 
     FIR Estimator:
-    63.97870245099875 sec 
+    38.86268737000137 sec 
 
     IIR Estimator:
-    50.273254034000274 sec 
+    31.151492422002775 sec 
 
     Parallel Estimator:
-    9.251342470000964 sec 
+    8.926730551997025 sec 
 
 
 
@@ -1068,7 +1068,7 @@ Compare the execution time of each estimator
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 20 minutes  37.774 seconds)
+   **Total running time of the script:** ( 19 minutes  8.419 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_a_compare_estimator.py:
