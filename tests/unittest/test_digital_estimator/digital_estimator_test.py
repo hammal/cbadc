@@ -71,7 +71,7 @@ def test_estimation_with_circuit_simulator():
     K2 = 0
 
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    # analogSignals = [Sinusodial(0.5, 10)]
+    # analogSignals = [Sinusoidal(0.5, 10)]
     analogSignals = [ConstantSignal(0.25)]
     digitalControl = DigitalControl(Ts, M)
     circuitSimulator = StateSpaceSimulator(

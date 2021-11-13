@@ -53,7 +53,7 @@ class ConstantSignal(AnalogSignal):
 
     See also
     ---------
-    :py:class:`cbadc.analog_signal.Sinusodial`
+    :py:class:`cbadc.analog_signal.Sinusoidal`
     :py:class:`cbadc.simulator.StateSpaceSimulator`
 
     Examples
@@ -89,13 +89,13 @@ class ConstantSignal(AnalogSignal):
         return f"ConstantSignal has an offset = {self.offset}."
 
 
-class Sinusodial(AnalogSignal):
-    """An analog continuous-time sinusodial signal.
+class Sinusoidal(AnalogSignal):
+    """An analog continuous-time sinusoidal signal.
 
     Parameters
     ----------
     amplitude : `float`
-        The amplitude of the sinusodial.
+        The amplitude of the sinusoidal.
     frequency : `float`
         Frequency of the oscillation in [Hz].
     phase : `float`, optional
@@ -122,9 +122,9 @@ class Sinusodial(AnalogSignal):
 
     Example
     -------
-    >>> from cbadc.analog_signal import Sinusodial
+    >>> from cbadc.analog_signal import Sinusoidal
     >>> import numpy as np
-    >>> u = Sinusodial(1, 123, np.pi/2, 0)
+    >>> u = Sinusoidal(1, 123, np.pi/2, 0)
     >>> print(u.evaluate(0))
     1.0
 
@@ -139,7 +139,7 @@ class Sinusodial(AnalogSignal):
         self.offset: float = offset
 
     def __str__(self):
-        return f"""Sinusodial parameterized as: \namplitude = {self.amplitude}, \n
+        return f"""Sinusoidal parameterized as: \namplitude = {self.amplitude}, \n
         frequency = {self.frequency}, \nphase = {self.phase},
         and\noffset = {self.offset}"""
 
@@ -167,7 +167,7 @@ class Ramp(AnalogSignal):
     Parameters
     ----------
     amplitude : `float`
-        The amplitude of the sinusodial.
+        The amplitude of the sinusoidal.
     period : `float`
         one over the period length of the ramp, specified in [Hz].
     phase : `float`, optional
@@ -197,7 +197,7 @@ class Ramp(AnalogSignal):
         self.offset: float = offset - self.amplitude / 2.0
 
     def __str__(self):
-        return f"""Sinusodial parameterized as: \namplitude = {self.amplitude}, \n
+        return f"""Sinusoidal parameterized as: \namplitude = {self.amplitude}, \n
         frequency = {self.frequency}, \nphase = {self.phase},
         and\noffset = {self.offset}"""
 

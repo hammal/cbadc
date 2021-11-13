@@ -36,7 +36,7 @@ def test_fixed_point():
     size = 1 << 14
 
     analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    analog_signals = [cbadc.analog_signal.Sinusodial(0.5, 10)]
+    analog_signals = [cbadc.analog_signal.Sinusoidal(0.5, 10)]
     # analog_signals = [cbadc.analog_signal.ConstantSignal(0.25)]
     digital_control_floating_point = cbadc.digital_control.DigitalControl(Ts, M)
     circuitSimulator_floating_point = cbadc.simulator.StateSpaceSimulator(

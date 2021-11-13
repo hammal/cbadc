@@ -1,7 +1,7 @@
 import numpy as np
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
-from cbadc.analog_signal import Sinusodial
+from cbadc.analog_signal import Sinusoidal
 from cbadc.digital_estimator import DigitalEstimator, ParallelEstimator, \
     FIRFilter, IIRFilter
 
@@ -27,7 +27,7 @@ K2 = 1 << 8
 size = K2 << 2
 analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
 digitalControl = DigitalControl(Ts, N)
-analogSignals = [Sinusodial(amplitude, frequency, phase)]
+analogSignals = [Sinusoidal(amplitude, frequency, phase)]
 
 t = np.linspace(0, Ts * (size - 1), size)
 

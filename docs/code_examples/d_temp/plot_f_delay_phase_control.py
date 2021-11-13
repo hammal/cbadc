@@ -76,11 +76,11 @@ digital_control_ref = cbadc.digital_control.DigitalControl(
 #
 # The final and third component of the simulation is an analog signal.
 # For this tutorial, we will choose a
-# :py:class:`cbadc.analog_signal.Sinusodial`.
+# :py:class:`cbadc.analog_signal.Sinusoidal`.
 
 # Set the peak amplitude.
 amplitude = 0.5
-# Choose the sinusodial frequency via an oversampling ratio (OSR).
+# Choose the sinusoidal frequency via an oversampling ratio (OSR).
 OSR = 1 << 5
 frequency = 1.0 / (T * (OSR << 3))
 
@@ -89,7 +89,7 @@ phase = np.pi / 3
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
 # print to ensure correct parametrization.
 print(analog_signal)
 
@@ -234,8 +234,8 @@ digital_control_phase = cbadc.digital_control.MultiPhaseDigitalControl(
 digital_control_ref = cbadc.digital_control.DigitalControl(T, M)
 
 # With or without input signal?
-# analog_signal = cbadc.analog_signal.Sinusodial(0 * amplitude, frequency, phase, offset)
-analog_signal = cbadc.analog_signal.Sinusodial(amplitude, frequency, phase, offset)
+# analog_signal = cbadc.analog_signal.Sinusoidal(0 * amplitude, frequency, phase, offset)
+analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
 
 # Instantiate a new simulator with a sampling time.
 simulator_phase = cbadc.simulator.extended_simulation_result(

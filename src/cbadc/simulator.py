@@ -75,7 +75,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
     Examples
     --------
     >>> from cbadc.simulator import StateSpaceSimulator
-    >>> from cbadc.analog_signal import Sinusodial
+    >>> from cbadc.analog_signal import Sinusoidal
     >>> from cbadc.analog_system import AnalogSystem
     >>> from cbadc.digital_control import DigitalControl
     >>> import numpy as np
@@ -86,7 +86,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
     >>> Gamma_tildeT = CT
     >>> analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     >>> digital_control = DigitalControl(1e-6, 2)
-    >>> input_signal = Sinusodial(1.0, 250)
+    >>> input_signal = Sinusoidal(1.0, 250)
     >>> simulator = StateSpaceSimulator(analog_system, digital_control, (input_signal,))
     >>> _ = simulator.__next__()
     >>> _ = simulator.__next__()
@@ -117,7 +117,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
             Union[
                 cbadc.analog_signal.AnalogSignal,
                 cbadc.analog_signal.ConstantSignal,
-                cbadc.analog_signal.Sinusodial,
+                cbadc.analog_signal.Sinusoidal,
                 cbadc.analog_signal.Ramp,
                 cbadc.analog_signal.SincPulse,
             ]
@@ -219,7 +219,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         Examples
         --------
         >>> from cbadc.simulator import StateSpaceSimulator
-        >>> from cbadc.analog_signal import Sinusodial
+        >>> from cbadc.analog_signal import Sinusoidal
         >>> from cbadc.analog_system import AnalogSystem
         >>> from cbadc.digital_control import DigitalControl
         >>> import numpy as np
@@ -230,7 +230,7 @@ class StateSpaceSimulator(Iterator[np.ndarray]):
         >>> Gamma_tildeT = CT
         >>> analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
         >>> digital_control = DigitalControl(1e-6, 2)
-        >>> input_signal = Sinusodial(1.0, 250)
+        >>> input_signal = Sinusoidal(1.0, 250)
         >>> simulator = StateSpaceSimulator(analog_system, digital_control, (input_signal,))
         >>> _ = simulator.__next__()
         >>> _ = simulator.__next__()
@@ -579,7 +579,7 @@ def extended_simulation_result(
 #             Union[
 #                 cbadc.analog_signal.AnalogSignal,
 #                 cbadc.analog_signal.ConstantSignal,
-#                 cbadc.analog_signal.Sinusodial,
+#                 cbadc.analog_signal.Sinusoidal,
 #                 cbadc.analog_signal.Ramp,
 #                 cbadc.analog_signal.SincPulse,
 #             ]

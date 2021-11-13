@@ -23,7 +23,7 @@
       ConstantSignal
       Ramp
       SincPulse
-      Sinusodial
+      Sinusoidal
    
    
 

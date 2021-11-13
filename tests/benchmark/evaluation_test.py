@@ -2,7 +2,7 @@
 # from cbadc.digital_estimator import DigitalEstimator
 # from cbadc.parallel_digital_estimator.digital_estimator import
 # DigitalEstimator as ParallelDigitalEstimator
-# from cbadc import AnalogSignal, Sinusodial
+# from cbadc import AnalogSignal, Sinusoidal
 # from cbadc import AnalogSystem
 # from cbadc import DigitalControl
 # from ..AnalogToDigital import Sin, System, Control, Simulator, WienerFilter
@@ -31,7 +31,7 @@
 # size = 10000
 # analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
 # digitalControl = DigitalControl(Ts, N)
-# analogSignals = [Sinusodial(0.5, 1)]
+# analogSignals = [Sinusoidal(0.5, 1)]
 
 
 # def test_old_library():

@@ -65,12 +65,12 @@ print(digital_control)
 #
 # The final and third component of the simulation is an analog signal.
 # For this tutorial, we will choose a
-# :py:class:`cbadc.analog_signal.Sinusodial`. Again, this is one of several
+# :py:class:`cbadc.analog_signal.Sinusoidal`. Again, this is one of several
 # possible choices.
 
 # Set the peak amplitude.
 amplitude = 0.5
-# Choose the sinusodial frequency via an oversampling ratio (OSR).
+# Choose the sinusoidal frequency via an oversampling ratio (OSR).
 OSR = 1 << 9
 frequency = 1.0 / (T * OSR)
 
@@ -79,7 +79,7 @@ phase = np.pi / 3
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = cbadc.analog_signal.Sinusodial(
+analog_signal = cbadc.analog_signal.Sinusoidal(
     amplitude, frequency, phase, offset)
 # print to ensure correct parametrization.
 print(analog_signal)
@@ -197,9 +197,8 @@ def print_next_10_bytes(stream):
         yield byte
 
 
-cbadc.utilities.write_byte_stream_to_file(
-    "sinusodial_simulation.dat", print_next_10_bytes(byte_stream)
-)
+cbadc.utilities.write_byte_stream_to_file("sinusoidal_simulation.dat",
+                                          print_next_10_bytes(byte_stream))
 
 ###############################################################################
 # Evaluating the Analog State Vector in Between Control Signal Samples

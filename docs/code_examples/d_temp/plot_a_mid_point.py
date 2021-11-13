@@ -38,12 +38,12 @@ print(analog_system, "\n")
 # -------------
 #
 # We will also need an analog signal for conversion.
-# In this tutorial we will use a Sinusodial signal.
-from cbadc.analog_signal import Sinusodial
+# In this tutorial we will use a Sinusoidal signal.
+from cbadc.analog_signal import Sinusoidal
 
 # Set the peak amplitude.
 amplitude = 1.0
-# Choose the sinusodial frequency via an oversampling ratio (OSR).
+# Choose the sinusoidal frequency via an oversampling ratio (OSR).
 frequency = 1.0 / (T * OSR * (1 << 0))
 
 # We also specify a phase an offset these are hovewer optional.
@@ -51,7 +51,7 @@ phase = np.pi / 3
 offset = 0.0
 
 # Instantiate the analog signal
-analog_signal = Sinusodial(amplitude, frequency, phase, offset)
+analog_signal = Sinusoidal(amplitude, frequency, phase, offset)
 
 print(analog_signal)
 

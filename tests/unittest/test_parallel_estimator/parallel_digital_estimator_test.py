@@ -1,6 +1,6 @@
 # from cbadc import StateSpaceSimulator
 # from cbadc.parallel_digital_estimator.digital_estimator import DigitalEstimator
-# from cbadc import AnalogSignal, Sinusodial
+# from cbadc import AnalogSignal, Sinusoidal
 # from cbadc import AnalogSystem
 # from cbadc import DigitalControl
 # import numpy as np
@@ -99,7 +99,7 @@
 #     K2 = 0
 
 #     analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
-#     # analogSignals = [Sinusodial(0.5, 10)]
+#     # analogSignals = [Sinusoidal(0.5, 10)]
 #     analogSignals = [AnalogSignal(0.)]
 #     digitalControl = DigitalControl(Ts, M)
 #     circuitSimulator = StateSpaceSimulator(
@@ -130,7 +130,7 @@
 #     K2 = 100
 
 #     analogSystem = AnalogSystem(A, B, C, Gamma, Gamma_tilde)
-#     analogSignals = [Sinusodial(0.5, 10)]
+#     analogSignals = [Sinusoidal(0.5, 10)]
 #     # analogSignals = [AnalogSignal(0.)]
 #     digitalControl = DigitalControl(Ts, M)
 #     circuitSimulator = StateSpaceSimulator(
