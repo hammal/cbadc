@@ -44,3 +44,7 @@ Added support for switched capacitor digital control by adding a new:
 ### 0.1.2
 
 Added fixed point arithmetics for FIR filter implementation.
+
+### 0.1.5
+
+Added figures of merit (fom) module and MurmannSurvey convenience class.
