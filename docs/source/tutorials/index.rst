@@ -232,6 +232,27 @@ These are further examples showcasing the cbadc package.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="This notebook demonstrate the main functionality of the :py:class:`cbadc.fom.MurmannSurvey` con...">
+
+.. only:: html
+
+ .. figure:: /tutorials/c_further/images/thumb/sphx_glr_plot_a_Murmann_ADC_survey_thumb.png
+     :alt: The Murmann ADC Survey
+
+     :ref:`sphx_glr_tutorials_c_further_plot_a_Murmann_ADC_survey.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/c_further/plot_a_Murmann_ADC_survey
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="This notebook shows examples of artsy plots made from data generated with the  control-bounded ...">
 
 .. only:: html

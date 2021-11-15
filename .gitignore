@@ -16,3 +16,4 @@ unittest.h
 benchmark_*.svg
 docs/source/backreferences
 docs/source/api/autosummary
+*.xls

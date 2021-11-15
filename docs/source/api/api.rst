@@ -19,4 +19,5 @@ Root Modules
     cbadc.digital_estimator
     cbadc.simulator
     cbadc.utilities
+    cbadc.fom
  

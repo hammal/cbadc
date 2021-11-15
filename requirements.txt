@@ -9,3 +9,5 @@ tox
 typing-extensions
 flake8
 pylint
+pandas>=1.3.4
+matplotlib>=3.4.3
