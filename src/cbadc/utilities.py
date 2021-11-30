@@ -397,9 +397,47 @@ def snr_spectrum_computation_extended(
         "sinad": sinad,
     }
 
+def find_n_sinusoidals(spectrum: np.ndarray, n: int, mask_width: int, min_peak_dist: int = None):
+    """Find the n largest peaks in the spectrum and return indexes.
+
+    Parameters
+    ----------
+    spectrum: ndarray
+        a power spectral density or equivalent.
+    n: `int`
+        number of peaks to be considered.
+    mask_width: `int`
+        the width of the returned mask for each peak considered.
+    min_peak_dist: `int`
+        the minimum distance between two peak (such that they are still considered separate peaks).
+        Defaults to mask_width//2. 
+
+    """
+    if (min_peak_dist == None):
+        min_peak_dist = mask_width//2
+    indices = np.array([], dtype=np.int64)
+    remaining_spectrum = np.array(spectrum)
+    
+    for i in range(n):
+        # get peak
+        candidate_peak = np.argmax(np.abs(remaining_spectrum))
+        
+        # add neighbouring indices to result
+        indices_masked = np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2) 
+        indices_masked = np.clip(indices_masked, 0, spectrum.size-1) # clip invalid indices
+        indices = np.concatenate((indices, indices_masked)) # append to rest
+    
+        # remove peak from spectrum
+        remove_from_spectrum = np.arange(candidate_peak-min_peak_dist, candidate_peak+mask_width)
+        remove_from_spectrum = np.clip(remove_from_spectrum, 0, spectrum.size-1) # clip invalid indices 
+        remaining_spectrum[remove_from_spectrum] = 0
+         
+    return np.unique(indices) # sort and remove duplicates
+
 
 def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
     """Find the peak in the spectrum and return indexes.
+    Equivalent to `find_n_sinusoidals(spectrum, 1, mask_width)`.
 
     Parameters
     ----------
@@ -409,11 +447,7 @@ def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
         the width around peak to be considered.
 
     """
-    candidate_peak = np.argmax(np.abs(spectrum))
-    # if no peak then put at first frequencies
-    if (candidate_peak + mask_width) // 2 >= spectrum.size:
-        candidate_peak = mask_width
-    return np.arange(candidate_peak - mask_width // 2, candidate_peak + mask_width // 2)
+    return find_n_sinusoidals(spectrum, 1, mask_width)
 
 
 def show_status(iterator, length: int = 1 << 63):
