@@ -287,3 +287,49 @@ class SincPulse(AnalogSignal):
             self.offset
         )
 
+class Sum(AnalogSignal):
+
+    """A signal which is defined as the sum of two continuous-time analog signals.
+
+    Parameters
+    -----------
+    sigA, sigB : `AnalogSignal`
+        Analog signals to be summed.
+
+    Attributes
+    ----------
+    sigA, sigB : `AnalogSignal`
+        Analog signals to be summed.
+
+    Examples
+    ---------
+    >>> from cbadc.analog_signal import *
+    >>> sine1 = Sinusoidal(0.5, 1000)
+    >>> sine2 = Sinusoidal(0.5, 10)
+    >>> u = Sum(sine1, sine2)
+    >>> print(u.evaluate(0.1))
+    0.0
+
+    """
+    def __init__(self, sigA : AnalogSignal, sigB : AnalogSignal):
+        self.sigA = sigA
+        self.sigB = sigB
+
+    def evaluate(self, t: float) -> float:
+        """Evaluate sum of two signal at time :math:`t`.
+
+        Parameters
+        ----------
+        t : `float`
+            the time instance for evaluation.
+
+        Returns
+        -------
+        float
+            The sum of the two analog signal values.
+        """
+        return self.sigA.evaluate(t) + self.sigB.evaluate(t)
+
+    def __str__(self):
+        
+        return f"Analog signal is a sum of the two following:\n\n{str(self.sigA)}\n\nand\n\n{str(self.sigB)}"
