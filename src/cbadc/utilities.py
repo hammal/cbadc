@@ -232,6 +232,54 @@ def read_byte_stream_from_url(
             pass
     raise StopIteration
 
+def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
+    """Creates an iterator that reads from a CSV file.  
+
+    Parameters
+    ----------
+    filename : `str`
+        filename for input file
+    M : `int`
+        number of controls
+    msb2lsb : `bool`
+        set order of control bits. Default is LSB to MSB
+
+    Yields
+    ------
+    array_like
+        a control signal sample
+
+    Example
+    -------
+    >>> # Given the following file, named `test.csv`, for a setup with four control bits (M=4):
+    >>> # 0,0,0,0
+    >>> # 0,0,0,1
+    >>> # 0,0,1,1
+    >>> # 0,1,1,1
+    >>> # ...
+    >>> #
+    >>> ctrl_reader = csv_2_control_signal("test.csv", msb2lsb=True)
+    >>> for s in ctrl_reader:
+    >>>     print(s)
+    [0 0 0 0]
+    [1 0 0 0]
+    [1 1 0 0]
+    [1 1 1 0]
+
+    Raises
+    ------
+    `RuntimeError`
+        for lines with number of entries different from M.
+        
+    """
+    with open(filename, 'r') as read_obj:
+        for line in read_obj:
+            s = np.fromstring(line, dtype=np.bool, sep=',')
+            if (s.size != M):
+                raise RuntimeError("The number of entries in the current line is not equal to M")
+            if (msb2lsb):
+                s = s[::-1]
+            yield s
 
 def random_control_signal(
     M: int, stop_after_number_of_iterations: int = (1 << 63), random_seed: int = 0
