@@ -278,7 +278,7 @@ def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False, separator
     """
     with open(filename, 'r') as read_obj:
         for line in read_obj:
-            s = np.fromstring(line, dtype=np.bool, sep=separator)
+            s = np.fromstring(line, dtype=np.int8, sep=separator)
             if (s.size != M):
                 raise RuntimeError("The number of entries in the current line is not equal to M")
             if (msb2lsb):
