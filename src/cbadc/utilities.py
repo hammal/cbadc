@@ -242,8 +242,8 @@ def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
     M : `int`
         number of controls
     msb2lsb : `bool`
-        set order of control bits. Default is least significant to most significant bit 
-        from left to right.
+        bit order of input file.
+        Default is least significant to most significant bit from left to right (LSB to MSB).
 
     Yields
     ------
@@ -261,8 +261,7 @@ def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
     0,1,1,1
     """)
     >>> # read control signal from the file just created
-    >>> ctrl_reader = csv_2_control_signal('test.csv', 4, msb2lsb=True)
-    >>> for s in ctrl_reader:
+    >>> for s in csv_2_control_signal('test.csv', 4, msb2lsb=True):
     >>>     print(s)
     [0 0 0 0]
     [1 0 0 0]
