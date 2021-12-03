@@ -233,7 +233,7 @@ def read_byte_stream_from_url(
     raise StopIteration
 
 def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
-    """Creates an iterator that reads from a CSV file.  
+    """Creates an iterator that reads a control sequence from a CSV file.  
 
     Parameters
     ----------
@@ -242,23 +242,26 @@ def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
     M : `int`
         number of controls
     msb2lsb : `bool`
-        set order of control bits. Default is LSB to MSB
+        set order of control bits. Default is least significant to most significant bit 
+        from left to right.
 
     Yields
     ------
-    array_like
+    array_like, shape=(M,)
         a control signal sample
 
     Example
     -------
-    >>> # Given the following file, named `test.csv`, for a setup with four control bits (M=4):
-    >>> # 0,0,0,0
-    >>> # 0,0,0,1
-    >>> # 0,0,1,1
-    >>> # 0,1,1,1
-    >>> # ...
-    >>> #
-    >>> ctrl_reader = csv_2_control_signal("test.csv", msb2lsb=True)
+    >>> # create a csv file with four bits
+    >>> with open('test.csv','w') as f:
+    >>> f.write("""
+    0,0,0,0
+    0,0,0,1
+    0,0,1,1
+    0,1,1,1
+    """)
+    >>> # read control signal from the file just created
+    >>> ctrl_reader = csv_2_control_signal('test.csv', 4, msb2lsb=True)
     >>> for s in ctrl_reader:
     >>>     print(s)
     [0 0 0 0]
