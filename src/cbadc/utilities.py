@@ -232,7 +232,7 @@ def read_byte_stream_from_url(
             pass
     raise StopIteration
 
-def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
+def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False, separator: str = ','):
     """Creates an iterator that reads a control sequence from a CSV file.  
 
     Parameters
@@ -244,6 +244,8 @@ def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
     msb2lsb : `bool`
         bit order of input file.
         Default is least significant to most significant bit from left to right (LSB to MSB).
+    separator : `str`
+        separator used in the input file. Default is ` , ` (comma).
 
     Yields
     ------
@@ -276,7 +278,7 @@ def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False):
     """
     with open(filename, 'r') as read_obj:
         for line in read_obj:
-            s = np.fromstring(line, dtype=np.bool, sep=',')
+            s = np.fromstring(line, dtype=np.bool, sep=separator)
             if (s.size != M):
                 raise RuntimeError("The number of entries in the current line is not equal to M")
             if (msb2lsb):
