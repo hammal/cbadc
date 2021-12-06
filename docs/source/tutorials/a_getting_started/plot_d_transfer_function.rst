@@ -73,7 +73,7 @@ Using the :py:class:`cbadc.analog_system.ChainOfIntegrators` class which
 derives from the main analog system class
 :py:class:`cbadc.analog_system.AnalogSystem`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 44-62
+.. GENERATED FROM PYTHON SOURCE LINES 44-63
 
 .. code-block:: default
 
@@ -91,7 +91,8 @@ derives from the main analog system class
     kappaVec = kappa * beta * np.eye(N)
 
     # Instantiate a chain-of-integrators analog system.
-    analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+    analog_system = cbadc.analog_system.ChainOfIntegrators(
+        betaVec, rhoVec, kappaVec)
     # print the system matrices.
     print(analog_system)
 
@@ -120,7 +121,7 @@ derives from the main analog system class
      [   0.]
      [   0.]
      [   0.]],
-    CT = 
+    CT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
@@ -150,7 +151,7 @@ derives from the main analog system class
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 63-72
+.. GENERATED FROM PYTHON SOURCE LINES 64-73
 
 Plotting the Analog System's Transfer Function
 ----------------------------------------------
@@ -162,7 +163,7 @@ Next, we plot the transfer function of the analog system
 using the class method
 :func:`cbadc.analog_system.AnalogSystem.transfer_function_matrix`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 72-103
+.. GENERATED FROM PYTHON SOURCE LINES 73-105
 
 .. code-block:: default
 
@@ -178,7 +179,8 @@ using the class method
     # For each output 1,...,N compute the corresponding tranfer function seen
     # from the input.
     for n in range(N):
-        plt.semilogx(frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
+        plt.semilogx(
+            frequencies, transfer_function_dB[n, 0, :], label=f"$G_{n+1}(\omega)$")
 
     # Add the norm ||G(omega)||_2
     plt.semilogx(
@@ -209,7 +211,7 @@ using the class method
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 104-135
+.. GENERATED FROM PYTHON SOURCE LINES 106-137
 
 Plotting the Estimator's Signal and Noise Transfer Function
 -----------------------------------------------------------
@@ -243,7 +245,7 @@ results in a row vector
 where :math:`\text{NTF}_\ell(\omega)` refers to the noise transfer function
 from the :math:`\ell`-th observation to the final estimate.
 
-.. GENERATED FROM PYTHON SOURCE LINES 135-187
+.. GENERATED FROM PYTHON SOURCE LINES 137-189
 
 .. code-block:: default
 
@@ -252,8 +254,8 @@ from the :math:`\ell`-th observation to the final estimate.
     # functions). However necessary to instantiate the digital estimator
 
     T = 1 / (2 * beta)
-    digital_control = cbadc.digital_control.DigitalControl(T, N)
-
+    clock = cbadc.analog_signal.Clock(T)
+    digital_control = cbadc.digital_control.DigitalControl(clock, N)
 
     # Compute eta2 for a given bandwidth.
     omega_3dB = (4 * np.pi * beta) / 100.0
@@ -301,24 +303,30 @@ from the :math:`\ell`-th observation to the final estimate.
 
 
 
+.. rst-class:: sphx-glr-script-out
 
-.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_002.png
-   :alt: Signal and noise transfer functions
-   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_002.png
-   :class: sphx-glr-single-img
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "/drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py", line 160, in <module>
+        ntf = digital_estimator.noise_transfer_function(omega)
+      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/cbadc/digital_estimator/digital_estimator.py", line 381, in noise_transfer_function
+        self._lazy_initialise_ntf()
+      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/cbadc/digital_estimator/digital_estimator.py", line 347, in _lazy_initialise_ntf
+        (GGH + self.eta2 * sp.eye(self.analog_system.N_tilde)).inv()
+    NameError: name 'sp' is not defined
 
 
 
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 188-192
+.. GENERATED FROM PYTHON SOURCE LINES 190-194
 
 Setting the Bandwidth of the Estimation Filter
 ----------------------------------------------
 
 Finally, we will investigate the effect of eta2 on the STF and NTF.
 
-.. GENERATED FROM PYTHON SOURCE LINES 192-233
+.. GENERATED FROM PYTHON SOURCE LINES 194-235
 
 .. code-block:: default
 
@@ -365,33 +373,9 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 
 
-
-.. image-sg:: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_003.png
-   :alt: $|G(\omega)|$ - solid, $||\mathbf{H}(\omega)||_2$ - dashed
-   :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_d_transfer_function_003.png
-   :class: sphx-glr-single-img
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-
-
-
-
-
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  24.584 seconds)
+   **Total running time of the script:** ( 0 minutes  7.925 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:

@@ -1,34 +1,36 @@
-cbadc.analog\_system.ButterWorth
+﻿cbadc.analog\_system.ButterWorth
 ================================
 
 .. currentmodule:: cbadc.analog_system
 
 .. autoclass:: ButterWorth
-   :members:                                    
-   :show-inheritance:                           
-   :inherited-members:     
-
-   
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
 
-   
+
+
+
    .. rubric:: Methods
 
    .. autosummary::
-   
+
       ~ButterWorth.__init__
       ~ButterWorth.control_observation
       ~ButterWorth.control_signal_transfer_function_matrix
       ~ButterWorth.derivative
+      ~ButterWorth.homogenius_solution
       ~ButterWorth.signal_observation
+      ~ButterWorth.symbolic_differential_equations
       ~ButterWorth.transfer_function_matrix
       ~ButterWorth.zpk
-   
-   
 
-   
-   
-   
+
+
+
+
+
 
 .. _sphx_glr_backref_cbadc.analog_system.ButterWorth:
 

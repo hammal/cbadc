@@ -2,7 +2,7 @@
 API
 *******************************************
 
-Next follows the cbadc package documentation. 
+Next follows the cbadc package documentation.
 
 ============
 Root Modules
@@ -12,7 +12,7 @@ Root Modules
     :toctree: autosummary
     :recursive:
     :template: custom-module-template.rst
-    
+
     cbadc.analog_signal
     cbadc.analog_system
     cbadc.digital_control
@@ -20,4 +20,3 @@ Root Modules
     cbadc.simulator
     cbadc.utilities
     cbadc.fom
- 

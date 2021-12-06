@@ -115,7 +115,7 @@ analog system and digital control.
      [   0.]
      [   0.]
      [   0.]],
-    CT = 
+    CT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
@@ -140,7 +140,7 @@ analog system and digital control.
      [0.]
      [0.]
      [0.]
-     [0.]] 
+     [0.]]
 
     The Digital Control is parameterized as:
     T = 8e-05,
@@ -271,7 +271,7 @@ which then defaults to 1, i.e., no downsampling.
  .. code-block:: none
 
     eta2 = 87574.25572661227, 49.42376455036846 [dB]
-    FIR estimator is parameterized as 
+    FIR estimator is parameterized as
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -279,7 +279,7 @@ which then defaults to 1, i.e., no downsampling.
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h = 
+    h =
     [[[ 3.55990445e-95  1.42412246e-95 -8.07811499e-96 -6.45762292e-97
         1.32955934e-96 -9.72617900e-98]
       [ 2.76240492e-95  1.82636990e-95 -7.62786724e-96 -1.33980733e-96
@@ -292,7 +292,7 @@ which then defaults to 1, i.e., no downsampling.
       [ 2.76240492e-95 -1.77112250e-95 -8.34780716e-96  8.61459580e-97
         1.47844576e-96  1.38257124e-97]
       [ 3.55990446e-95 -1.35292339e-95 -8.63396392e-96  1.44959196e-97
-        1.36586535e-96  2.17212387e-97]]]. 
+        1.36586535e-96  2.17212387e-97]]].
 
 
 
@@ -398,7 +398,7 @@ Next we repeat the initialization steps above but for a downsampled estimator
 
  .. code-block:: none
 
-    FIR estimator is parameterized as 
+    FIR estimator is parameterized as
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -406,7 +406,7 @@ Next we repeat the initialization steps above but for a downsampled estimator
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h = 
+    h =
     [[[ 3.55990445e-95  1.42412246e-95 -8.07811499e-96 -6.45762292e-97
         1.32955934e-96 -9.72617900e-98]
       [ 2.76240492e-95  1.82636990e-95 -7.62786724e-96 -1.33980733e-96
@@ -419,7 +419,7 @@ Next we repeat the initialization steps above but for a downsampled estimator
       [ 2.76240492e-95 -1.77112250e-95 -8.34780716e-96  8.61459580e-97
         1.47844576e-96  1.38257124e-97]
       [ 3.55990446e-95 -1.35292339e-95 -8.63396392e-96  1.44959196e-97
-        1.36586535e-96  2.17212387e-97]]]. 
+        1.36586535e-96  2.17212387e-97]]].
 
 
 
@@ -700,7 +700,7 @@ New Analog System
      [0.        ]
      [0.        ]
      [0.        ]],
-    CT = 
+    CT =
     [[0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
      [0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0.]
      [0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0.]
@@ -767,7 +767,7 @@ results in the following system.
 
  .. code-block:: none
 
-    FIR estimator is parameterized as 
+    FIR estimator is parameterized as
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -775,7 +775,7 @@ results in the following system.
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h = 
+    h =
     [[[ 3.22671732e-26 -8.89499869e-27 -5.18313820e-27  1.64702740e-27
         8.08357583e-28 -2.46832942e-28]
       [ 3.62156532e-26 -6.14381653e-27 -5.93153659e-27  1.20605140e-27
@@ -881,7 +881,7 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
 
  .. code-block:: none
 
-    FIR estimator is parameterized as 
+    FIR estimator is parameterized as
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -889,7 +889,7 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h = 
+    h =
     [[[ 4.57908971e-87 -4.65114691e-87  1.82792564e-88  6.70779970e-88
        -1.47628062e-88 -6.91352512e-89]
       [ 6.94779186e-87 -4.67950396e-87 -1.70771451e-88  7.41295180e-88
@@ -902,7 +902,7 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
       [ 9.29685995e-87  4.70832786e-87 -3.71706891e-88 -8.17937370e-88
        -1.21559326e-88  9.13414714e-89]
       [ 6.94779186e-87  4.81847681e-87  1.92059492e-89 -7.46238158e-88
-       -1.66273628e-88  7.37212989e-89]]]. 
+       -1.66273628e-88  7.37212989e-89]]].
 
 
 

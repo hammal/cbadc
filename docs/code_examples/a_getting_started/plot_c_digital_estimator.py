@@ -49,9 +49,10 @@ Gamma = [
 ]
 Gamma_tildeT = np.eye(N)
 T = 1.0 / (2 * beta)
+clock = cbadc.analog_signal.Clock(T)
 
 analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-digital_control = cbadc.digital_control.DigitalControl(T, M)
+digital_control = cbadc.digital_control.DigitalControl(clock, M)
 
 # Summarize the analog system, digital control, and digital estimator.
 print(analog_system, "\n")
@@ -170,12 +171,8 @@ for i in digital_estimator:
 # correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "sinusoidal_simulation.dat", M
-)
-control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
-
+byte_stream = cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M)
+control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 ###############################################################################
 # Estimating the input
@@ -226,5 +223,4 @@ plt.xlabel("frequency [Hz]")
 plt.ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
 plt.xlim((f[1], f[-1]))
 plt.grid(which="both")
-
 # sphinx_gallery_thumbnail_number = 2

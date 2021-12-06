@@ -137,8 +137,8 @@ plt.gcf().tight_layout()
 # functions). However necessary to instantiate the digital estimator
 
 T = 1 / (2 * beta)
-digital_control = cbadc.digital_control.DigitalControl(T, N)
-
+clock = cbadc.analog_signal.Clock(T)
+digital_control = cbadc.digital_control.DigitalControl(clock, N)
 
 # Compute eta2 for a given bandwidth.
 omega_3dB = (4 * np.pi * beta) / 100.0

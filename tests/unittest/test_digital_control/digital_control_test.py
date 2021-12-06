@@ -1,17 +1,20 @@
 from cbadc.digital_control import DigitalControl
+from cbadc.analog_signal import Clock
 import numpy as np
 
 
 def test_initialization():
     Ts = 1e-3
     M = 4
-    digitalControl = DigitalControl(Ts, M)
+    clock = Clock(Ts)
+    digitalControl = DigitalControl(clock, M)
 
 
 def test_evaluate():
     Ts = 1e-3
     M = 4
-    digitalControl = DigitalControl(Ts, M)
+    clock = Clock(Ts)
+    digitalControl = DigitalControl(clock, M)
     x = np.random.randn(4)
     t = 0.1
     digitalControl.control_update(t, x)
@@ -24,11 +27,12 @@ def test_control_signal():
     Ts = 1e-3
     epsilon = 1e-9
     M = 4
-    digitalControl = DigitalControl(Ts, M)
+    clock = Clock(Ts)
+    digitalControl = DigitalControl(clock, M)
     x = np.ones(M)
     t = Ts
     np.testing.assert_allclose(np.ones(M), digitalControl.control_signal())
-    print("Inital control signal: ", np.asarray(digitalControl.control_signal()))
+    print("Initial control signal: ", np.asarray(digitalControl.control_signal()))
     digitalControl.control_update(t + epsilon, x)
     res = digitalControl.control_contribution(t + epsilon)
     print(

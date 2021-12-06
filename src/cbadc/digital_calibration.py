@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class Calibrator:
-
     def __init__(self, digitalEstimator):
         self.digitalEstimator = digitalEstimator
 
@@ -18,6 +17,7 @@ class Calibrator:
 
 
 class InputReference:
-
-    def __init__(self, ):
+    def __init__(
+        self,
+    ):
         a = DigitalEstimator

@@ -27,7 +27,7 @@ omega_3dB = 2 * np.pi / (T * OSR)
 
 # Instantiate analog system.
 beta_vec = beta * np.ones(N)
-rho_vec = - omega_3dB ** 2 / beta * np.ones(N)
+rho_vec = -(omega_3dB ** 2) / beta * np.ones(N)
 Gamma = np.diag(-beta_vec)
 analog_system = LeapFrog(beta_vec, rho_vec, Gamma)
 
@@ -67,7 +67,7 @@ from cbadc.simulator import StateSpaceSimulator
 # Set simulation precision parameters
 atol = 1e-6
 rtol = 1e-12
-max_step= T / 10.
+max_step = T / 10.0
 
 # Instantiate digital controls
 digital_control1 = DigitalControl(T, M)
@@ -79,17 +79,17 @@ simulator1 = StateSpaceSimulator(
     analog_system,
     digital_control1,
     [analog_signal],
-    atol = atol,
-    rtol = rtol,
-    max_step = max_step
+    atol=atol,
+    rtol=rtol,
+    max_step=max_step,
 )
 simulator2 = StateSpaceSimulator(
     analog_system,
     digital_control2,
     [analog_signal],
-    atol = atol,
-    rtol = rtol,
-    max_step = max_step
+    atol=atol,
+    rtol=rtol,
+    max_step=max_step,
 )
 
 print(simulator1)
@@ -103,8 +103,9 @@ from cbadc.digital_estimator import FIRFilter
 
 # Set the bandwidth of the estimator
 G_at_omega = np.linalg.norm(
-    analog_system.transfer_function_matrix(np.array([omega_3dB])))
-eta2 = G_at_omega**2
+    analog_system.transfer_function_matrix(np.array([omega_3dB]))
+)
+eta2 = G_at_omega ** 2
 print(f"eta2 = {eta2}, {20 * np.log10(eta2)} [dB]")
 
 # Set the batch size
@@ -112,10 +113,12 @@ K1 = 1 << 10
 K2 = 1 << 10
 
 # Instantiate the default filter
-fir_default = FIRFilter(simulator1, analog_system,
-                        digital_control1, eta2, K1, K2, mid_point=False)
-fir_mid_point = FIRFilter(simulator2, analog_system,
-                          digital_control2, eta2, K1, K2, mid_point=True)
+fir_default = FIRFilter(
+    simulator1, analog_system, digital_control1, eta2, K1, K2, mid_point=False
+)
+fir_mid_point = FIRFilter(
+    simulator2, analog_system, digital_control2, eta2, K1, K2, mid_point=True
+)
 print(fir_default, "\n")
 print(fir_mid_point, "\n")
 
@@ -140,15 +143,20 @@ stf_dB = 20 * np.log10(np.abs(stf.flatten()))
 
 # Signal attenuation at the input signal frequency
 stf_at_omega = fir_mid_point.signal_transfer_function(
-    np.array([2 * np.pi * frequency]))[0]
+    np.array([2 * np.pi * frequency])
+)[0]
 
 # Plot
 plt.figure()
 plt.semilogx(frequencies, stf_dB, label='$STF(\omega)$')
 for n in range(N):
     plt.semilogx(frequencies, ntf_dB[0, n, :], label=f"$|NTF_{n+1}(\omega)|$")
-plt.semilogx(frequencies, 20 * np.log10(np.linalg.norm(
-    ntf[0, :, :], axis=0)), '--', label="$ || NTF(\omega) ||_2 $")
+plt.semilogx(
+    frequencies,
+    20 * np.log10(np.linalg.norm(ntf[0, :, :], axis=0)),
+    '--',
+    label="$ || NTF(\omega) ||_2 $",
+)
 
 # Add labels and legends to figure
 plt.legend()
@@ -168,20 +176,20 @@ plt.gcf().tight_layout()
 # Next visualize the decay of the resulting filter coefficients.
 h_index = np.arange(-K1, K2)
 
-impulse_response_default = np.linalg.norm(
-    np.array(fir_default.h[:, 0, :]), axis=1) ** 2
+impulse_response_default = np.linalg.norm(np.array(fir_default.h[:, 0, :]), axis=1) ** 2
 impulse_response_default_dB = 10 * np.log10(impulse_response_default)
 
-impulse_response_mid_point = np.linalg.norm(
-    np.array(fir_mid_point.h[:, 0, :]), axis=1) ** 2
+impulse_response_mid_point = (
+    np.linalg.norm(np.array(fir_mid_point.h[:, 0, :]), axis=1) ** 2
+)
 impulse_response_mid_point_dB = 10 * np.log10(impulse_response_mid_point)
 
 fig, ax = plt.subplots(2)
 
-ax[0].plot(h_index, impulse_response_default, label=f"Default")
-ax[1].plot(h_index, impulse_response_default_dB, label=f"Default")
-ax[0].plot(h_index, impulse_response_mid_point, label=f"Mid point")
-ax[1].plot(h_index, impulse_response_mid_point_dB, label=f"Mid point")
+ax[0].plot(h_index, impulse_response_default, label="Default")
+ax[1].plot(h_index, impulse_response_default_dB, label="Default")
+ax[0].plot(h_index, impulse_response_mid_point, label="Mid point")
+ax[1].plot(h_index, impulse_response_mid_point_dB, label="Mid point")
 ax[0].legend()
 fig.suptitle(f"For $\eta^2 = {20 * np.log10(eta2)}$ [dB]")
 ax[1].set_xlabel("filter taps k")
@@ -258,37 +266,45 @@ plt.grid(which='both')
 plt.xlim((t_fir[0], t[-1]))
 plt.tight_layout()
 
-mid_point_error = stf_at_omega * \
-    u_mid_point[:(u.size - K1 + 1)] - u_hat_mid_point[(K1 -1):]
-default_error = stf_at_omega * u[:(u.size - K1 + 1)] - u_hat_default[(K1 - 1):]
+mid_point_error = (
+    stf_at_omega * u_mid_point[: (u.size - K1 + 1)] - u_hat_mid_point[(K1 - 1) :]
+)
+default_error = stf_at_omega * u[: (u.size - K1 + 1)] - u_hat_default[(K1 - 1) :]
 plt.figure()
-plt.plot(t[:(u.size - K1 + 1)], mid_point_error,
-         label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Mid point")
-plt.plot(t[:(u.size - K1 + 1)], default_error,
-         label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Default")
+plt.plot(
+    t[: (u.size - K1 + 1)],
+    mid_point_error,
+    label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Mid point",
+)
+plt.plot(
+    t[: (u.size - K1 + 1)],
+    default_error,
+    label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Default",
+)
 plt.xlabel('$t / T$')
 plt.legend()
 plt.title("Estimation error")
 plt.grid(which='both')
 plt.tight_layout()
 
-print(f"Average Mid point error: {np.linalg.norm(mid_point_error) / mid_point_error.size} \nAverage Default error: {np.linalg.norm(default_error) / default_error.size}")
+print(
+    f"Average Mid point error: {np.linalg.norm(mid_point_error) / mid_point_error.size} \nAverage Default error: {np.linalg.norm(default_error) / default_error.size}"
+)
 
 plt.figure()
-u_hat_mid_point_clipped = u_hat_mid_point[(K1 + K2):]
-u_hat_default_clipped = u_hat_default[(K1 + K2):]
+u_hat_mid_point_clipped = u_hat_mid_point[(K1 + K2) :]
+u_hat_default_clipped = u_hat_default[(K1 + K2) :]
 u_clipped = stf_at_omega * u
 f_mid_point, psd_mid_point = compute_power_spectral_density(
-    u_hat_mid_point_clipped, nperseg=1 << 12)
+    u_hat_mid_point_clipped, nperseg=1 << 12
+)
 f_default, psd_default = compute_power_spectral_density(
-    u_hat_default_clipped, nperseg=1 << 12)
+    u_hat_default_clipped, nperseg=1 << 12
+)
 f_ref, psd_ref = compute_power_spectral_density(u_clipped, nperseg=1 << 12)
-plt.semilogx(f_ref, 10 * np.log10(psd_ref),
-             label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
-plt.semilogx(f_mid_point, 10 * np.log10(psd_mid_point),
-             label="$\hat{U}(f)$ Mid point")
-plt.semilogx(f_default, 10 * np.log10(psd_default),
-             label="$\hat{U}(f)$ Default")
+plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
+plt.semilogx(f_mid_point, 10 * np.log10(psd_mid_point), label="$\hat{U}(f)$ Mid point")
+plt.semilogx(f_default, 10 * np.log10(psd_default), label="$\hat{U}(f)$ Default")
 plt.legend()
 plt.ylim((-200, 100))
 plt.xlim((f_default[1], f_default[-1]))

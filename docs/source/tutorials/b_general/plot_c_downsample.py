@@ -41,8 +41,7 @@ rhoVec = betaVec * rho
 kappaVec = kappa * beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
-analog_system = cbadc.analog_system.ChainOfIntegrators(
-    betaVec, rhoVec, kappaVec)
+analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 
 
 T = 1 / (2 * beta)
@@ -70,27 +69,23 @@ print(digital_control)
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
     "../a_getting_started/sinusoidal_simulation.dat", M
 )
-control_signal_sequences1 = cbadc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+control_signal_sequences1 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
     "../a_getting_started/sinusoidal_simulation.dat", M
 )
-control_signal_sequences2 = cbadc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+control_signal_sequences2 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
     "../a_getting_started/sinusoidal_simulation.dat", M
 )
-control_signal_sequences3 = cbadc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+control_signal_sequences3 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 byte_stream = cbadc.utilities.read_byte_stream_from_file(
     "../a_getting_started/sinusoidal_simulation.dat", M
 )
-control_signal_sequences4 = cbadc.utilities.byte_stream_2_control_signal(
-    byte_stream, M)
+control_signal_sequences4 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 ###############################################################################
@@ -149,8 +144,7 @@ stf = digital_estimator_ref.signal_transfer_function(omega)
 stf_dB = 20 * np.log10(np.abs(stf.flatten()))
 
 # Signal attenuation at the input signal frequency
-stf_at_omega = digital_estimator_ref.signal_transfer_function(
-    np.array([omega_3dB]))[0]
+stf_at_omega = digital_estimator_ref.signal_transfer_function(np.array([omega_3dB]))[0]
 
 # Plot
 plt.figure()
@@ -221,8 +215,8 @@ plt.xlim((-50, 1000))
 plt.tight_layout()
 
 plt.figure()
-u_hat_ref_clipped = u_hat_ref[(L1 + L2):]
-u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR:]
+u_hat_ref_clipped = u_hat_ref[(L1 + L2) :]
+u_hat_dow_clipped = u_hat_dow[(L1 + L2) // OSR :]
 f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(
     u_hat_ref_clipped, fs=1.0 / T
 )
@@ -285,20 +279,16 @@ print(new_analog_system)
 
 transfer_function_analog_system = analog_system.transfer_function_matrix(omega)
 
-transfer_function_new_analog_system = new_analog_system.transfer_function_matrix(
-    omega)
+transfer_function_new_analog_system = new_analog_system.transfer_function_matrix(omega)
 
 plt.semilogx(
     omega / (2 * np.pi),
-    20 *
-    np.log10(np.linalg.norm(transfer_function_analog_system[:, 0, :], axis=0)),
+    20 * np.log10(np.linalg.norm(transfer_function_analog_system[:, 0, :], axis=0)),
     label="Default Analog System",
 )
 plt.semilogx(
     omega / (2 * np.pi),
-    20 *
-    np.log10(np.linalg.norm(
-        transfer_function_new_analog_system[:, 0, :], axis=0)),
+    20 * np.log10(np.linalg.norm(transfer_function_new_analog_system[:, 0, :], axis=0)),
     label="Combined Analog System",
 )
 
@@ -362,7 +352,7 @@ plt.semilogy(
 )
 plt.semilogy(
     np.arange(0, numtaps // 2),
-    np.abs(fir_filter[numtaps // 2:]),
+    np.abs(fir_filter[numtaps // 2 :]),
     label="Post FIR Filter",
 )
 plt.semilogy(
@@ -390,8 +380,7 @@ plt.grid(which="both")
 # Compute NTF
 ntf_pre = digital_estimator_dow_and_pre_filt.noise_transfer_function(omega)
 ntf_post = (
-    digital_estimator_dow_and_post_filt.noise_transfer_function(
-        2 * np.pi * f_FIR)
+    digital_estimator_dow_and_post_filt.noise_transfer_function(2 * np.pi * f_FIR)
     * FIR_frequency_response
 )
 ntf_dow = digital_estimator_dow.noise_transfer_function(omega)
@@ -400,8 +389,7 @@ ntf_dow = digital_estimator_dow.noise_transfer_function(omega)
 stf_pre = digital_estimator_dow_and_pre_filt.signal_transfer_function(omega)
 stf_dB_pre = 20 * np.log10(np.abs(stf_pre.flatten()))
 stf_post = (
-    digital_estimator_dow_and_post_filt.signal_transfer_function(
-        2 * np.pi * f_FIR)
+    digital_estimator_dow_and_post_filt.signal_transfer_function(2 * np.pi * f_FIR)
     * FIR_frequency_response
 )
 stf_dB_post = 20 * np.log10(np.abs(stf_post.flatten()))
@@ -412,8 +400,7 @@ stf_dow_dB = 20 * np.log10(np.abs(stf_dow.flatten()))
 plt.figure()
 plt.semilogx(omega / (2 * np.pi), stf_dB_pre, label="$STF(\omega)$ pre-filter")
 plt.semilogx(f_FIR, stf_dB_post, label="$STF(\omega)$ post-filter")
-plt.semilogx(omega / (2 * np.pi), stf_dow_dB,
-             label="$STF(\omega)$ ref", color="black")
+plt.semilogx(omega / (2 * np.pi), stf_dow_dB, label="$STF(\omega)$ ref", color="black")
 plt.semilogx(
     omega / (2 * np.pi),
     20 * np.log10(np.linalg.norm(ntf_pre[:, 0, :], axis=0)),
@@ -459,8 +446,8 @@ for index in cbadc.utilities.show_status(range(size // OSR)):
     u_hat_dow_and_post_filt[index] = next(digital_estimator_dow_and_post_filt)
 
 plt.figure()
-u_hat_dow_and_pre_filt_clipped = u_hat_dow_and_pre_filt[(L1 + L2) // OSR:]
-u_hat_dow_and_post_filt_clipped = u_hat_dow_and_post_filt[(L1 + L2) // OSR:]
+u_hat_dow_and_pre_filt_clipped = u_hat_dow_and_pre_filt[(L1 + L2) // OSR :]
+u_hat_dow_and_post_filt_clipped = u_hat_dow_and_post_filt[(L1 + L2) // OSR :]
 _, psd_dow_and_pre_filt = cbadc.utilities.compute_power_spectral_density(
     u_hat_dow_and_pre_filt_clipped, fs=1.0 / (T * OSR)
 )

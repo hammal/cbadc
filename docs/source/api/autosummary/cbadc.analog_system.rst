@@ -2,56 +2,34 @@
 ====================
 
 .. automodule:: cbadc.analog_system
-  
-   
-   
-   
-
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :template: custom-function-template.rst
-   
-      chain
-      sos2abcd
-      stack
-      tf2abcd
-      zpk2abcd
-   
-   
-
-   
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:                                          
-      :template: custom-class-template.rst               
-   
-      AnalogSystem
-      ButterWorth
-      Cauer
-      ChainOfIntegrators
-      ChebyshevI
-      ChebyshevII
-      IIRDesign
-      LeapFrog
-   
-   
-
-   
-   
-   .. rubric:: Exceptions
-
-   .. autosummary::
-      :toctree:                                          
-   
-      InvalidAnalogSystemError
-   
-   
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   cbadc.analog_system.analog_system
+   cbadc.analog_system.chain_of_integrators
+   cbadc.analog_system.filters
+   cbadc.analog_system.leap_frog
+   cbadc.analog_system.topology

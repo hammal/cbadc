@@ -4,26 +4,26 @@ cbadc.analog\_signal.AnalogSignal
 .. currentmodule:: cbadc.analog_signal
 
 .. autoclass:: AnalogSignal
-   :members:                                    
-   :show-inheritance:                           
-   :inherited-members:     
-
-   
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
 
-   
+
+
+
    .. rubric:: Methods
 
    .. autosummary::
-   
+
       ~AnalogSignal.__init__
       ~AnalogSignal.evaluate
-   
-   
 
-   
-   
-   
+
+
+
+
+
 
 .. _sphx_glr_backref_cbadc.analog_signal.AnalogSignal:
 

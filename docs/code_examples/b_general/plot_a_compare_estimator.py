@@ -64,46 +64,36 @@ print(analog_signal)
 # Each estimator will require an independent stream of control signals.
 # Therefore, we will next instantiate several digital controls and simulators.
 
-# Set simulation precision parameters
-atol = 1e-6
-rtol = 1e-12
+clock = cbadc.analog_signal.Clock(T)
 
 # Instantiate digital controls. We will need four of them as we will compare
 # four different estimators.
-digital_control1 = cbadc.digital_control.DigitalControl(T, M)
-digital_control2 = cbadc.digital_control.DigitalControl(T, M)
-digital_control3 = cbadc.digital_control.DigitalControl(T, M)
-digital_control4 = cbadc.digital_control.DigitalControl(T, M)
+digital_control1 = cbadc.digital_control.DigitalControl(clock, M)
+digital_control2 = cbadc.digital_control.DigitalControl(clock, M)
+digital_control3 = cbadc.digital_control.DigitalControl(clock, M)
+digital_control4 = cbadc.digital_control.DigitalControl(clock, M)
 print(digital_control1)
 
 # Instantiate simulators.
-simulator1 = cbadc.simulator.StateSpaceSimulator(
+simulator1 = cbadc.simulator.Simulator(
     analog_system,
     digital_control1,
     [analog_signal],
-    atol=atol,
-    rtol=rtol,
 )
-simulator2 = cbadc.simulator.StateSpaceSimulator(
+simulator2 = cbadc.simulator.Simulator(
     analog_system,
     digital_control2,
     [analog_signal],
-    atol=atol,
-    rtol=rtol,
 )
-simulator3 = cbadc.simulator.StateSpaceSimulator(
+simulator3 = cbadc.simulator.Simulator(
     analog_system,
     digital_control3,
     [analog_signal],
-    atol=atol,
-    rtol=rtol,
 )
-simulator4 = cbadc.simulator.StateSpaceSimulator(
+simulator4 = cbadc.simulator.Simulator(
     analog_system,
     digital_control4,
     [analog_signal],
-    atol=atol,
-    rtol=rtol,
 )
 print(simulator1)
 

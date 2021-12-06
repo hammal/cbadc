@@ -53,18 +53,18 @@ using a :py:class:`pandas.DataFrame`.
     <class 'pandas.core.frame.DataFrame'>
     RangeIndex: 618 entries, 0 to 617
     Data columns (total 31 columns):
-     #   Column                  Non-Null Count  Dtype  
-    ---  ------                  --------------  -----  
-     0   YEAR                    618 non-null    int64  
-     1   ID                      618 non-null    object 
-     2   TYPE                    618 non-null    object 
-     3   ARCHITECTURE            618 non-null    object 
-     4   TECHNOLOGY              618 non-null    object 
-     5   TITLE                   618 non-null    object 
-     6   ABSTRACT                614 non-null    object 
-     7   AUTHORS                 617 non-null    object 
-     8   COMMENTS                596 non-null    object 
-     9   Csamp [pF]              452 non-null    object 
+     #   Column                  Non-Null Count  Dtype
+    ---  ------                  --------------  -----
+     0   YEAR                    618 non-null    int64
+     1   ID                      618 non-null    object
+     2   TYPE                    618 non-null    object
+     3   ARCHITECTURE            618 non-null    object
+     4   TECHNOLOGY              618 non-null    object
+     5   TITLE                   618 non-null    object
+     6   ABSTRACT                614 non-null    object
+     7   AUTHORS                 617 non-null    object
+     8   COMMENTS                596 non-null    object
+     9   Csamp [pF]              452 non-null    object
      10  AREA [mm^2]             589 non-null    float64
      11  SNDR_lf [dB]            96 non-null     float64
      12  fin_hf [Hz]             618 non-null    float64
@@ -85,7 +85,7 @@ using a :py:class:`pandas.DataFrame`.
      27  FOMS_hf [dB]            618 non-null    float64
      28  FOMW_hf/fsnyq           618 non-null    float64
      29  FOMS,hf+10log(fsnyq)    618 non-null    float64
-     30  CONFERENCE              618 non-null    object 
+     30  CONFERENCE              618 non-null    object
     dtypes: float64(20), int64(1), object(10)
     memory usage: 149.8+ KB
 
@@ -120,7 +120,7 @@ by commands of the following style.
     # It's also possible to output these (sorted and with selected columns) in text format as
 
     only_185dB_FoMS[['FOMS_hf [dB]', 'AUTHORS', 'TITLE',
-                     'YEAR', 'CONFERENCE']].sort_values('FOMS_hf [dB]', ascending=False).style
+                     'YEAR', 'CONFERENCE']].sort_values('FOMS_hf [dB]', ascending=False).style.format(precision=1)
 
 
 
@@ -147,7 +147,7 @@ by commands of the following style.
     <div class="output_subarea output_html rendered_html output_result">
     <style type="text/css">
     </style>
-    <table id="T_a6aea_">
+    <table id="T_347cf_">
       <thead>
         <tr>
           <th class="blank level0" >&nbsp;</th>
@@ -160,156 +160,156 @@ by commands of the following style.
       </thead>
       <tbody>
         <tr>
-          <th id="T_a6aea_level0_row0" class="row_heading level0 row0" >317</th>
-          <td id="T_a6aea_row0_col0" class="data row0 col0" >186.825131</td>
-          <td id="T_a6aea_row0_col1" class="data row0 col1" >Sung-En Hsieh, Chih-Cheng Hsieh</td>
-          <td id="T_a6aea_row0_col2" class="data row0 col2" >A 0.4V 13b 270kS/s SAR-ISDM ADC with an Opamp-Less Time-Domain Integrator</td>
-          <td id="T_a6aea_row0_col3" class="data row0 col3" >2018</td>
-          <td id="T_a6aea_row0_col4" class="data row0 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row0" class="row_heading level0 row0" >317</th>
+          <td id="T_347cf_row0_col0" class="data row0 col0" >186.8</td>
+          <td id="T_347cf_row0_col1" class="data row0 col1" >Sung-En Hsieh, Chih-Cheng Hsieh</td>
+          <td id="T_347cf_row0_col2" class="data row0 col2" >A 0.4V 13b 270kS/s SAR-ISDM ADC with an Opamp-Less Time-Domain Integrator</td>
+          <td id="T_347cf_row0_col3" class="data row0 col3" >2018</td>
+          <td id="T_347cf_row0_col4" class="data row0 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row1" class="row_heading level0 row1" >367</th>
-          <td id="T_a6aea_row1_col0" class="data row1 col0" >184.728754</td>
-          <td id="T_a6aea_row1_col1" class="data row1 col1" >K. Choo, H. An, D. Sylvester, D. Blaauw</td>
-          <td id="T_a6aea_row1_col2" class="data row1 col2" >14.1-ENOB 184.9dB-FoM Capacitor-Array-Assisted Cascaded Charge-Injection SAR ADC</td>
-          <td id="T_a6aea_row1_col3" class="data row1 col3" >2021</td>
-          <td id="T_a6aea_row1_col4" class="data row1 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row1" class="row_heading level0 row1" >367</th>
+          <td id="T_347cf_row1_col0" class="data row1 col0" >184.7</td>
+          <td id="T_347cf_row1_col1" class="data row1 col1" >K. Choo, H. An, D. Sylvester, D. Blaauw</td>
+          <td id="T_347cf_row1_col2" class="data row1 col2" >14.1-ENOB 184.9dB-FoM Capacitor-Array-Assisted Cascaded Charge-Injection SAR ADC</td>
+          <td id="T_347cf_row1_col3" class="data row1 col3" >2021</td>
+          <td id="T_347cf_row1_col4" class="data row1 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row2" class="row_heading level0 row2" >313</th>
-          <td id="T_a6aea_row2_col0" class="data row2 col0" >183.957575</td>
-          <td id="T_a6aea_row2_col1" class="data row2 col1" >Hariprasad Chandrakumar, Dejan Marković</td>
-          <td id="T_a6aea_row2_col2" class="data row2 col2" >A 15.2-ENOB Continuous-Time ΔΣ ADC for a 7.3μW 200mVpp-Linear-Input-Range Neural Recording Front-End</td>
-          <td id="T_a6aea_row2_col3" class="data row2 col3" >2018</td>
-          <td id="T_a6aea_row2_col4" class="data row2 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row2" class="row_heading level0 row2" >313</th>
+          <td id="T_347cf_row2_col0" class="data row2 col0" >184.0</td>
+          <td id="T_347cf_row2_col1" class="data row2 col1" >Hariprasad Chandrakumar, Dejan Marković</td>
+          <td id="T_347cf_row2_col2" class="data row2 col2" >A 15.2-ENOB Continuous-Time ΔΣ ADC for a 7.3μW 200mVpp-Linear-Input-Range Neural Recording Front-End</td>
+          <td id="T_347cf_row2_col3" class="data row2 col3" >2018</td>
+          <td id="T_347cf_row2_col4" class="data row2 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row3" class="row_heading level0 row3" >360</th>
-          <td id="T_a6aea_row3_col0" class="data row3 col0" >183.757533</td>
-          <td id="T_a6aea_row3_col1" class="data row3 col1" >C. Lo, J. Lee, Y. Lim, Y. Yoon, H. Hwang, J. Lee, M. Choi, M. Lee, S. Oh, J. Lee</td>
-          <td id="T_a6aea_row3_col2" class="data row3 col2" >A 116μW 104.4dB-DR 100.6dB-SNDR CT ΔΣ Audio ADC Using Tri-Level Current-Steering DAC with Gate-Leakage Compensated Off-Transistor-Based Bias Noise Filter </td>
-          <td id="T_a6aea_row3_col3" class="data row3 col3" >2021</td>
-          <td id="T_a6aea_row3_col4" class="data row3 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row3" class="row_heading level0 row3" >360</th>
+          <td id="T_347cf_row3_col0" class="data row3 col0" >183.8</td>
+          <td id="T_347cf_row3_col1" class="data row3 col1" >C. Lo, J. Lee, Y. Lim, Y. Yoon, H. Hwang, J. Lee, M. Choi, M. Lee, S. Oh, J. Lee</td>
+          <td id="T_347cf_row3_col2" class="data row3 col2" >A 116μW 104.4dB-DR 100.6dB-SNDR CT ΔΣ Audio ADC Using Tri-Level Current-Steering DAC with Gate-Leakage Compensated Off-Transistor-Based Bias Noise Filter </td>
+          <td id="T_347cf_row3_col3" class="data row3 col3" >2021</td>
+          <td id="T_347cf_row3_col4" class="data row3 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row4" class="row_heading level0 row4" >316</th>
-          <td id="T_a6aea_row4_col0" class="data row4 col0" >183.657990</td>
-          <td id="T_a6aea_row4_col1" class="data row4 col1" >Shoubhik Karmakar, Burak Gönen, Fabio Sebastiano, Robert Van Veldhoven, Kofi A. A. Makinwa</td>
-          <td id="T_a6aea_row4_col2" class="data row4 col2" >A 280μW Dynamic-Zoom ADC with 120dB DR and 118dB SNDR in 1kHz BW</td>
-          <td id="T_a6aea_row4_col3" class="data row4 col3" >2018</td>
-          <td id="T_a6aea_row4_col4" class="data row4 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row4" class="row_heading level0 row4" >316</th>
+          <td id="T_347cf_row4_col0" class="data row4 col0" >183.7</td>
+          <td id="T_347cf_row4_col1" class="data row4 col1" >Shoubhik Karmakar, Burak Gönen, Fabio Sebastiano, Robert Van Veldhoven, Kofi A. A. Makinwa</td>
+          <td id="T_347cf_row4_col2" class="data row4 col2" >A 280μW Dynamic-Zoom ADC with 120dB DR and 118dB SNDR in 1kHz BW</td>
+          <td id="T_347cf_row4_col3" class="data row4 col3" >2018</td>
+          <td id="T_347cf_row4_col4" class="data row4 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row5" class="row_heading level0 row5" >361</th>
-          <td id="T_a6aea_row5_col0" class="data row5 col0" >183.271964</td>
-          <td id="T_a6aea_row5_col1" class="data row5 col1" >S. Mondal, O. Ghadami, D. A. Hall</td>
-          <td id="T_a6aea_row5_col2" class="data row5 col2" >A 139μW 104.8dB-DR 24kHz-BW CTΔΣM with Chopped AC-Coupled OTA-Stacking and FIR DACs</td>
-          <td id="T_a6aea_row5_col3" class="data row5 col3" >2021</td>
-          <td id="T_a6aea_row5_col4" class="data row5 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row5" class="row_heading level0 row5" >361</th>
+          <td id="T_347cf_row5_col0" class="data row5 col0" >183.3</td>
+          <td id="T_347cf_row5_col1" class="data row5 col1" >S. Mondal, O. Ghadami, D. A. Hall</td>
+          <td id="T_347cf_row5_col2" class="data row5 col2" >A 139μW 104.8dB-DR 24kHz-BW CTΔΣM with Chopped AC-Coupled OTA-Stacking and FIR DACs</td>
+          <td id="T_347cf_row5_col3" class="data row5 col3" >2021</td>
+          <td id="T_347cf_row5_col4" class="data row5 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row6" class="row_heading level0 row6" >604</th>
-          <td id="T_a6aea_row6_col0" class="data row6 col0" >183.075773</td>
-          <td id="T_a6aea_row6_col1" class="data row6 col1" >Efraïm Eland, Shoubhik Karmakar, Burak Gönen, Robert van Veldhoven, and Kofi Makinwa</td>
-          <td id="T_a6aea_row6_col2" class="data row6 col2" >A 440μW, 109.8dB DR, 106.5dB SNDR Discrete-Time Zoom ADC with a 20kHz BW</td>
-          <td id="T_a6aea_row6_col3" class="data row6 col3" >2020</td>
-          <td id="T_a6aea_row6_col4" class="data row6 col4" >VLSI</td>
+          <th id="T_347cf_level0_row6" class="row_heading level0 row6" >604</th>
+          <td id="T_347cf_row6_col0" class="data row6 col0" >183.1</td>
+          <td id="T_347cf_row6_col1" class="data row6 col1" >Efraïm Eland, Shoubhik Karmakar, Burak Gönen, Robert van Veldhoven, and Kofi Makinwa</td>
+          <td id="T_347cf_row6_col2" class="data row6 col2" >A 440μW, 109.8dB DR, 106.5dB SNDR Discrete-Time Zoom ADC with a 20kHz BW</td>
+          <td id="T_347cf_row6_col3" class="data row6 col3" >2020</td>
+          <td id="T_347cf_row6_col4" class="data row6 col4" >VLSI</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row7" class="row_heading level0 row7" >238</th>
-          <td id="T_a6aea_row7_col0" class="data row7 col0" >182.791978</td>
-          <td id="T_a6aea_row7_col1" class="data row7 col1" >Y. Chae et al.</td>
-          <td id="T_a6aea_row7_col2" class="data row7 col2" >A 6.3&[mu]W 21bit Incremental Zoom-ADC with 6 ppm INL and 1&[mu]V Offset</td>
-          <td id="T_a6aea_row7_col3" class="data row7 col3" >2013</td>
-          <td id="T_a6aea_row7_col4" class="data row7 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row7" class="row_heading level0 row7" >238</th>
+          <td id="T_347cf_row7_col0" class="data row7 col0" >182.8</td>
+          <td id="T_347cf_row7_col1" class="data row7 col1" >Y. Chae et al.</td>
+          <td id="T_347cf_row7_col2" class="data row7 col2" >A 6.3&[mu]W 21bit Incremental Zoom-ADC with 6 ppm INL and 1&[mu]V Offset</td>
+          <td id="T_347cf_row7_col3" class="data row7 col3" >2013</td>
+          <td id="T_347cf_row7_col4" class="data row7 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row8" class="row_heading level0 row8" >571</th>
-          <td id="T_a6aea_row8_col0" class="data row8 col0" >182.024298</td>
-          <td id="T_a6aea_row8_col1" class="data row8 col1" >Y.-S. Hu, K.-Y. Lin and H.-S. Chen</td>
-          <td id="T_a6aea_row8_col2" class="data row8 col2" >A 510nW 12-bit 200kS/s SAR-Assisted SAR ADC Using a Re-Switching Technique</td>
-          <td id="T_a6aea_row8_col3" class="data row8 col3" >2017</td>
-          <td id="T_a6aea_row8_col4" class="data row8 col4" >VLSI</td>
+          <th id="T_347cf_level0_row8" class="row_heading level0 row8" >571</th>
+          <td id="T_347cf_row8_col0" class="data row8 col0" >182.0</td>
+          <td id="T_347cf_row8_col1" class="data row8 col1" >Y.-S. Hu, K.-Y. Lin and H.-S. Chen</td>
+          <td id="T_347cf_row8_col2" class="data row8 col2" >A 510nW 12-bit 200kS/s SAR-Assisted SAR ADC Using a Re-Switching Technique</td>
+          <td id="T_347cf_row8_col3" class="data row8 col3" >2017</td>
+          <td id="T_347cf_row8_col4" class="data row8 col4" >VLSI</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row9" class="row_heading level0 row9" >368</th>
-          <td id="T_a6aea_row9_col0" class="data row9 col0" >182.003331</td>
-          <td id="T_a6aea_row9_col1" class="data row9 col1" >T-H. Wang, R. Wu, V. Gupta, S. Li</td>
-          <td id="T_a6aea_row9_col2" class="data row9 col2" >A 13.8-ENOB 0.4pF-CIN 3rd-Order Noise-Shaping SAR in a Single-Amplifier EF-CIFF Structure with Fully Dynamic Hardware-Reusing kT/C Noise Cancelation </td>
-          <td id="T_a6aea_row9_col3" class="data row9 col3" >2021</td>
-          <td id="T_a6aea_row9_col4" class="data row9 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row9" class="row_heading level0 row9" >368</th>
+          <td id="T_347cf_row9_col0" class="data row9 col0" >182.0</td>
+          <td id="T_347cf_row9_col1" class="data row9 col1" >T-H. Wang, R. Wu, V. Gupta, S. Li</td>
+          <td id="T_347cf_row9_col2" class="data row9 col2" >A 13.8-ENOB 0.4pF-CIN 3rd-Order Noise-Shaping SAR in a Single-Amplifier EF-CIFF Structure with Fully Dynamic Hardware-Reusing kT/C Noise Cancelation </td>
+          <td id="T_347cf_row9_col3" class="data row9 col3" >2021</td>
+          <td id="T_347cf_row9_col4" class="data row9 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row10" class="row_heading level0 row10" >366</th>
-          <td id="T_a6aea_row10_col0" class="data row10 col0" >181.964611</td>
-          <td id="T_a6aea_row10_col1" class="data row10 col1" >J. Liu, D. Li, Y. Zhong, X. Tang, N. Sun</td>
-          <td id="T_a6aea_row10_col2" class="data row10 col2" >A 250kHz-BW 93dB-SNDR 4th-Order Noise-Shaping SAR Using Capacitor Stacking and Dynamic Buffering</td>
-          <td id="T_a6aea_row10_col3" class="data row10 col3" >2021</td>
-          <td id="T_a6aea_row10_col4" class="data row10 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row10" class="row_heading level0 row10" >366</th>
+          <td id="T_347cf_row10_col0" class="data row10 col0" >182.0</td>
+          <td id="T_347cf_row10_col1" class="data row10 col1" >J. Liu, D. Li, Y. Zhong, X. Tang, N. Sun</td>
+          <td id="T_347cf_row10_col2" class="data row10 col2" >A 250kHz-BW 93dB-SNDR 4th-Order Noise-Shaping SAR Using Capacitor Stacking and Dynamic Buffering</td>
+          <td id="T_347cf_row10_col3" class="data row10 col3" >2021</td>
+          <td id="T_347cf_row10_col4" class="data row10 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row11" class="row_heading level0 row11" >343</th>
-          <td id="T_a6aea_row11_col0" class="data row11 col0" >181.931064</td>
-          <td id="T_a6aea_row11_col1" class="data row11 col1" >MoonHyung Jang, Changuk Lee, Youngcheol Chae</td>
-          <td id="T_a6aea_row11_col2" class="data row11 col2" >A 134μW 24kHz-BW 103.5dB-DR CT ΔΣ Modulator with Chopped Negative-R and Tri-Level FIR DAC</td>
-          <td id="T_a6aea_row11_col3" class="data row11 col3" >2020</td>
-          <td id="T_a6aea_row11_col4" class="data row11 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row11" class="row_heading level0 row11" >343</th>
+          <td id="T_347cf_row11_col0" class="data row11 col0" >181.9</td>
+          <td id="T_347cf_row11_col1" class="data row11 col1" >MoonHyung Jang, Changuk Lee, Youngcheol Chae</td>
+          <td id="T_347cf_row11_col2" class="data row11 col2" >A 134μW 24kHz-BW 103.5dB-DR CT ΔΣ Modulator with Chopped Negative-R and Tri-Level FIR DAC</td>
+          <td id="T_347cf_row11_col3" class="data row11 col3" >2020</td>
+          <td id="T_347cf_row11_col4" class="data row11 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row12" class="row_heading level0 row12" >328</th>
-          <td id="T_a6aea_row12_col0" class="data row12 col0" >181.861861</td>
-          <td id="T_a6aea_row12_col1" class="data row12 col1" >Minglei Zhang, Chi-Hang Chan, Yan Zhu, Rui P. Martins</td>
-          <td id="T_a6aea_row12_col2" class="data row12 col2" >A 0.6V 13b 20MS/s Two-Step TDC-Assisted SAR ADC with PVT Tracking and Speed-Enhanced Techniques</td>
-          <td id="T_a6aea_row12_col3" class="data row12 col3" >2019</td>
-          <td id="T_a6aea_row12_col4" class="data row12 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row12" class="row_heading level0 row12" >328</th>
+          <td id="T_347cf_row12_col0" class="data row12 col0" >181.9</td>
+          <td id="T_347cf_row12_col1" class="data row12 col1" >Minglei Zhang, Chi-Hang Chan, Yan Zhu, Rui P. Martins</td>
+          <td id="T_347cf_row12_col2" class="data row12 col2" >A 0.6V 13b 20MS/s Two-Step TDC-Assisted SAR ADC with PVT Tracking and Speed-Enhanced Techniques</td>
+          <td id="T_347cf_row12_col3" class="data row12 col3" >2019</td>
+          <td id="T_347cf_row12_col4" class="data row12 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row13" class="row_heading level0 row13" >596</th>
-          <td id="T_a6aea_row13_col0" class="data row13 col0" >181.500415</td>
-          <td id="T_a6aea_row13_col1" class="data row13 col1" >B. Gonen, S. Karmakar, R. van Veldhoven and K. A. A. Makinwa</td>
-          <td id="T_a6aea_row13_col2" class="data row13 col2" >A Low Power Continuous-Time Zoom ADC for Audio Applications</td>
-          <td id="T_a6aea_row13_col3" class="data row13 col3" >2019</td>
-          <td id="T_a6aea_row13_col4" class="data row13 col4" >VLSI</td>
+          <th id="T_347cf_level0_row13" class="row_heading level0 row13" >596</th>
+          <td id="T_347cf_row13_col0" class="data row13 col0" >181.5</td>
+          <td id="T_347cf_row13_col1" class="data row13 col1" >B. Gonen, S. Karmakar, R. van Veldhoven and K. A. A. Makinwa</td>
+          <td id="T_347cf_row13_col2" class="data row13 col2" >A Low Power Continuous-Time Zoom ADC for Audio Applications</td>
+          <td id="T_347cf_row13_col3" class="data row13 col3" >2019</td>
+          <td id="T_347cf_row13_col4" class="data row13 col4" >VLSI</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row14" class="row_heading level0 row14" >346</th>
-          <td id="T_a6aea_row14_col0" class="data row14 col0" >181.464962</td>
-          <td id="T_a6aea_row14_col1" class="data row14 col1" >Xiyuan Tang, Xiangxing Yang, Wenda Zhao, Chen-Kai Hsu, Jiaxin Liu, Linxiao Shen, Abhishek Mukherjee, Wei Shi, David Z. Pan, Nan Sun</td>
-          <td id="T_a6aea_row14_col2" class="data row14 col2" >A 13.5b-ENOB Second-Order Noise-Shaping SAR with PVT-Robust Closed-Loop Dynamic Amplifier</td>
-          <td id="T_a6aea_row14_col3" class="data row14 col3" >2020</td>
-          <td id="T_a6aea_row14_col4" class="data row14 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row14" class="row_heading level0 row14" >346</th>
+          <td id="T_347cf_row14_col0" class="data row14 col0" >181.5</td>
+          <td id="T_347cf_row14_col1" class="data row14 col1" >Xiyuan Tang, Xiangxing Yang, Wenda Zhao, Chen-Kai Hsu, Jiaxin Liu, Linxiao Shen, Abhishek Mukherjee, Wei Shi, David Z. Pan, Nan Sun</td>
+          <td id="T_347cf_row14_col2" class="data row14 col2" >A 13.5b-ENOB Second-Order Noise-Shaping SAR with PVT-Robust Closed-Loop Dynamic Amplifier</td>
+          <td id="T_347cf_row14_col3" class="data row14 col3" >2020</td>
+          <td id="T_347cf_row14_col4" class="data row14 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row15" class="row_heading level0 row15" >556</th>
-          <td id="T_a6aea_row15_col0" class="data row15 col0" >180.761996</td>
-          <td id="T_a6aea_row15_col1" class="data row15 col1" >Sung-En Hsieh, Chih-Cheng Hsieh</td>
-          <td id="T_a6aea_row15_col2" class="data row15 col2" >A 0.44fJ/conversion-step 11b 600KS/s SAR ADC with Semi-Resting DAC</td>
-          <td id="T_a6aea_row15_col3" class="data row15 col3" >2016</td>
-          <td id="T_a6aea_row15_col4" class="data row15 col4" >VLSI</td>
+          <th id="T_347cf_level0_row15" class="row_heading level0 row15" >556</th>
+          <td id="T_347cf_row15_col0" class="data row15 col0" >180.8</td>
+          <td id="T_347cf_row15_col1" class="data row15 col1" >Sung-En Hsieh, Chih-Cheng Hsieh</td>
+          <td id="T_347cf_row15_col2" class="data row15 col2" >A 0.44fJ/conversion-step 11b 600KS/s SAR ADC with Semi-Resting DAC</td>
+          <td id="T_347cf_row15_col3" class="data row15 col3" >2016</td>
+          <td id="T_347cf_row15_col4" class="data row15 col4" >VLSI</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row16" class="row_heading level0 row16" >593</th>
-          <td id="T_a6aea_row16_col0" class="data row16 col0" >180.563564</td>
-          <td id="T_a6aea_row16_col1" class="data row16 col1" >H. S. Bindra, A.-J. Annema, S. M. Louwsma and B. Nauta</td>
-          <td id="T_a6aea_row16_col2" class="data row16 col2" >A 0.2 - 8 MS/s 10b flexible SAR ADC Achieving 0.35 - 2.5 fJ/Conv-Step and Using Self-Quenched Dynamic Bias Comparator</td>
-          <td id="T_a6aea_row16_col3" class="data row16 col3" >2019</td>
-          <td id="T_a6aea_row16_col4" class="data row16 col4" >VLSI</td>
+          <th id="T_347cf_level0_row16" class="row_heading level0 row16" >593</th>
+          <td id="T_347cf_row16_col0" class="data row16 col0" >180.6</td>
+          <td id="T_347cf_row16_col1" class="data row16 col1" >H. S. Bindra, A.-J. Annema, S. M. Louwsma and B. Nauta</td>
+          <td id="T_347cf_row16_col2" class="data row16 col2" >A 0.2 - 8 MS/s 10b flexible SAR ADC Achieving 0.35 - 2.5 fJ/Conv-Step and Using Self-Quenched Dynamic Bias Comparator</td>
+          <td id="T_347cf_row16_col3" class="data row16 col3" >2019</td>
+          <td id="T_347cf_row16_col4" class="data row16 col4" >VLSI</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row17" class="row_heading level0 row17" >353</th>
-          <td id="T_a6aea_row17_col0" class="data row17 col0" >180.238720</td>
-          <td id="T_a6aea_row17_col1" class="data row17 col1" >Tsung-Chih Hung, Jia-Ching Wang, Tai-Haur Kuo</td>
-          <td id="T_a6aea_row17_col2" class="data row17 col2" >A Calibration-Free 71.7dB SNDR 100MS/s 0.7mW Weighted-Averaging Correlated Level Shifting Pipelined SAR ADC with Speed-Enhancement Scheme</td>
-          <td id="T_a6aea_row17_col3" class="data row17 col3" >2020</td>
-          <td id="T_a6aea_row17_col4" class="data row17 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row17" class="row_heading level0 row17" >353</th>
+          <td id="T_347cf_row17_col0" class="data row17 col0" >180.2</td>
+          <td id="T_347cf_row17_col1" class="data row17 col1" >Tsung-Chih Hung, Jia-Ching Wang, Tai-Haur Kuo</td>
+          <td id="T_347cf_row17_col2" class="data row17 col2" >A Calibration-Free 71.7dB SNDR 100MS/s 0.7mW Weighted-Averaging Correlated Level Shifting Pipelined SAR ADC with Speed-Enhancement Scheme</td>
+          <td id="T_347cf_row17_col3" class="data row17 col3" >2020</td>
+          <td id="T_347cf_row17_col4" class="data row17 col4" >ISSCC</td>
         </tr>
         <tr>
-          <th id="T_a6aea_level0_row18" class="row_heading level0 row18" >303</th>
-          <td id="T_a6aea_row18_col0" class="data row18 col0" >180.062122</td>
-          <td id="T_a6aea_row18_col1" class="data row18 col1" >Chun-Cheng Liu, Mu-Chen Huang</td>
-          <td id="T_a6aea_row18_col2" class="data row18 col2" >A 0.46mW 5MHz-BW 79.7dB-SNDR Noise-Shaping SAR ADC with Dynamic-Amplifier-Based FIR-IIR Filter </td>
-          <td id="T_a6aea_row18_col3" class="data row18 col3" >2017</td>
-          <td id="T_a6aea_row18_col4" class="data row18 col4" >ISSCC</td>
+          <th id="T_347cf_level0_row18" class="row_heading level0 row18" >303</th>
+          <td id="T_347cf_row18_col0" class="data row18 col0" >180.1</td>
+          <td id="T_347cf_row18_col1" class="data row18 col1" >Chun-Cheng Liu, Mu-Chen Huang</td>
+          <td id="T_347cf_row18_col2" class="data row18 col2" >A 0.46mW 5MHz-BW 79.7dB-SNDR Noise-Shaping SAR ADC with Dynamic-Amplifier-Based FIR-IIR Filter </td>
+          <td id="T_347cf_row18_col3" class="data row18 col3" >2017</td>
+          <td id="T_347cf_row18_col4" class="data row18 col4" >ISSCC</td>
         </tr>
       </tbody>
     </table>
@@ -353,27 +353,31 @@ from the ADC survey.
 
     *
 
-      .. image:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_001.png
-          :alt: Energy
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_001.png
+         :alt: Energy
+         :srcset: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_001.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_002.png
-          :alt: Aperture
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_002.png
+         :alt: Aperture
+         :srcset: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_002.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_003.png
-          :alt: Walden's FoM vs Speed
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_003.png
+         :alt: Walden's FoM vs Speed
+         :srcset: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_003.png
+         :class: sphx-glr-multi-img
 
     *
 
-      .. image:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_004.png
-          :alt: Schreier's FoM vs Speed
-          :class: sphx-glr-multi-img
+      .. image-sg:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_004.png
+         :alt: Schreier's FoM vs Speed
+         :srcset: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_004.png
+         :class: sphx-glr-multi-img
 
 
 
@@ -414,9 +418,10 @@ and ENOB range
 
 
 
-.. image:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_005.png
-    :alt: Area vs Power for ENOB=[11,13) and BW=[0.5MHz, 10MHz)
-    :class: sphx-glr-single-img
+.. image-sg:: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_005.png
+   :alt: Area vs Power for ENOB=[11,13) and BW=[0.5MHz, 10MHz)
+   :srcset: /tutorials/c_further/images/sphx_glr_plot_a_Murmann_ADC_survey_005.png
+   :class: sphx-glr-single-img
 
 
 
@@ -425,7 +430,7 @@ and ENOB range
     <div class="output_subarea output_html rendered_html output_result">
     <style type="text/css">
     </style>
-    <table id="T_9cc8e_">
+    <table id="T_11afc_">
       <thead>
         <tr>
           <th class="blank level0" >&nbsp;</th>
@@ -441,147 +446,147 @@ and ENOB range
       </thead>
       <tbody>
         <tr>
-          <th id="T_9cc8e_level0_row0" class="row_heading level0 row0" >578</th>
-          <td id="T_9cc8e_row0_col0" class="data row0 col0" >31.0</td>
-          <td id="T_9cc8e_row0_col1" class="data row0 col1" >68.2</td>
-          <td id="T_9cc8e_row0_col2" class="data row0 col2" >1000000.0</td>
-          <td id="T_9cc8e_row0_col3" class="data row0 col3" >0.0</td>
-          <td id="T_9cc8e_row0_col4" class="data row0 col4" >SAR</td>
-          <td id="T_9cc8e_row0_col5" class="data row0 col5" >Junhua Shen, Akira Shikata, Anping Liu, and Frederick Chalifoux</td>
-          <td id="T_9cc8e_row0_col6" class="data row0 col6" >A 12-bit 31.1uW 1MS/s SAR ADC with On-Chip Input-Signal-Independent Calibration Achieving 100.4dB SFDR using 256fF Sampling Capacitance</td>
-          <td id="T_9cc8e_row0_col7" class="data row0 col7" >2018</td>
+          <th id="T_11afc_level0_row0" class="row_heading level0 row0" >578</th>
+          <td id="T_11afc_row0_col0" class="data row0 col0" >31.0</td>
+          <td id="T_11afc_row0_col1" class="data row0 col1" >68.2</td>
+          <td id="T_11afc_row0_col2" class="data row0 col2" >1000000.0</td>
+          <td id="T_11afc_row0_col3" class="data row0 col3" >0.0</td>
+          <td id="T_11afc_row0_col4" class="data row0 col4" >SAR</td>
+          <td id="T_11afc_row0_col5" class="data row0 col5" >Junhua Shen, Akira Shikata, Anping Liu, and Frederick Chalifoux</td>
+          <td id="T_11afc_row0_col6" class="data row0 col6" >A 12-bit 31.1uW 1MS/s SAR ADC with On-Chip Input-Signal-Independent Calibration Achieving 100.4dB SFDR using 256fF Sampling Capacitance</td>
+          <td id="T_11afc_row0_col7" class="data row0 col7" >2018</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row1" class="row_heading level0 row1" >117</th>
-          <td id="T_9cc8e_row1_col0" class="data row1 col0" >750.0</td>
-          <td id="T_9cc8e_row1_col1" class="data row1 col1" >72.0</td>
-          <td id="T_9cc8e_row1_col2" class="data row1 col2" >4000000.0</td>
-          <td id="T_9cc8e_row1_col3" class="data row1 col3" >0.0</td>
-          <td id="T_9cc8e_row1_col4" class="data row1 col4" >SDCT</td>
-          <td id="T_9cc8e_row1_col5" class="data row1 col5" >Dorrer, L.; Kuttner, F.; Greco, P.; Derksen, S.</td>
-          <td id="T_9cc8e_row1_col6" class="data row1 col6" >A 3mW 74dB SNR 2MHz CT ΔΣ ADC with a tracking-ADC-quantizer in 0.13 μm CMOS</td>
-          <td id="T_9cc8e_row1_col7" class="data row1 col7" >2005</td>
+          <th id="T_11afc_level0_row1" class="row_heading level0 row1" >117</th>
+          <td id="T_11afc_row1_col0" class="data row1 col0" >750.0</td>
+          <td id="T_11afc_row1_col1" class="data row1 col1" >72.0</td>
+          <td id="T_11afc_row1_col2" class="data row1 col2" >4000000.0</td>
+          <td id="T_11afc_row1_col3" class="data row1 col3" >0.0</td>
+          <td id="T_11afc_row1_col4" class="data row1 col4" >SDCT</td>
+          <td id="T_11afc_row1_col5" class="data row1 col5" >Dorrer, L.; Kuttner, F.; Greco, P.; Derksen, S.</td>
+          <td id="T_11afc_row1_col6" class="data row1 col6" >A 3mW 74dB SNR 2MHz CT ΔΣ ADC with a tracking-ADC-quantizer in 0.13 μm CMOS</td>
+          <td id="T_11afc_row1_col7" class="data row1 col7" >2005</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row2" class="row_heading level0 row2" >190</th>
-          <td id="T_9cc8e_row2_col0" class="data row2 col0" >1130.0</td>
-          <td id="T_9cc8e_row2_col1" class="data row2 col1" >79.1</td>
-          <td id="T_9cc8e_row2_col2" class="data row2 col2" >4000000.0</td>
-          <td id="T_9cc8e_row2_col3" class="data row2 col3" >0.0</td>
-          <td id="T_9cc8e_row2_col4" class="data row2 col4" >SDCT</td>
-          <td id="T_9cc8e_row2_col5" class="data row2 col5" >Sheng-Jui Huang, Yung-Yu Lin</td>
-          <td id="T_9cc8e_row2_col6" class="data row2 col6" >A 1.2V 2MHz BW 0.084mm2 CT ΔΣ ADC with -97.7dBc THD and 80dB DR Using Low-Latency DEM</td>
-          <td id="T_9cc8e_row2_col7" class="data row2 col7" >2009</td>
+          <th id="T_11afc_level0_row2" class="row_heading level0 row2" >190</th>
+          <td id="T_11afc_row2_col0" class="data row2 col0" >1130.0</td>
+          <td id="T_11afc_row2_col1" class="data row2 col1" >79.1</td>
+          <td id="T_11afc_row2_col2" class="data row2 col2" >4000000.0</td>
+          <td id="T_11afc_row2_col3" class="data row2 col3" >0.0</td>
+          <td id="T_11afc_row2_col4" class="data row2 col4" >SDCT</td>
+          <td id="T_11afc_row2_col5" class="data row2 col5" >Sheng-Jui Huang, Yung-Yu Lin</td>
+          <td id="T_11afc_row2_col6" class="data row2 col6" >A 1.2V 2MHz BW 0.084mm2 CT ΔΣ ADC with -97.7dBc THD and 80dB DR Using Low-Latency DEM</td>
+          <td id="T_11afc_row2_col7" class="data row2 col7" >2009</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row3" class="row_heading level0 row3" >215</th>
-          <td id="T_9cc8e_row3_col0" class="data row3 col0" >1392.0</td>
-          <td id="T_9cc8e_row3_col1" class="data row3 col1" >79.3</td>
-          <td id="T_9cc8e_row3_col2" class="data row3 col2" >2083333.3</td>
-          <td id="T_9cc8e_row3_col3" class="data row3 col3" >0.0</td>
-          <td id="T_9cc8e_row3_col4" class="data row3 col4" >SDSC</td>
-          <td id="T_9cc8e_row3_col5" class="data row3 col5" >N. Maghari, U-K. Moon</td>
-          <td id="T_9cc8e_row3_col6" class="data row3 col6" >A Third-order dT ΔΣ Modulator using noise-Shaped Bidirectional Single-Slope Quantizer</td>
-          <td id="T_9cc8e_row3_col7" class="data row3 col7" >2011</td>
+          <th id="T_11afc_level0_row3" class="row_heading level0 row3" >215</th>
+          <td id="T_11afc_row3_col0" class="data row3 col0" >1392.0</td>
+          <td id="T_11afc_row3_col1" class="data row3 col1" >79.3</td>
+          <td id="T_11afc_row3_col2" class="data row3 col2" >2083333.3</td>
+          <td id="T_11afc_row3_col3" class="data row3 col3" >0.0</td>
+          <td id="T_11afc_row3_col4" class="data row3 col4" >SDSC</td>
+          <td id="T_11afc_row3_col5" class="data row3 col5" >N. Maghari, U-K. Moon</td>
+          <td id="T_11afc_row3_col6" class="data row3 col6" >A Third-order dT ΔΣ Modulator using noise-Shaped Bidirectional Single-Slope Quantizer</td>
+          <td id="T_11afc_row3_col7" class="data row3 col7" >2011</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row4" class="row_heading level0 row4" >197</th>
-          <td id="T_9cc8e_row4_col0" class="data row4 col0" >1888.9</td>
-          <td id="T_9cc8e_row4_col1" class="data row4 col1" >80.0</td>
-          <td id="T_9cc8e_row4_col2" class="data row4 col2" >9000000.0</td>
-          <td id="T_9cc8e_row4_col3" class="data row4 col3" >0.0</td>
-          <td id="T_9cc8e_row4_col4" class="data row4 col4" >VCO</td>
-          <td id="T_9cc8e_row4_col5" class="data row4 col5" >G. Taylor, I. Galton</td>
-          <td id="T_9cc8e_row4_col6" class="data row4 col6" >A Mostly Digital Variable-Rate Continuous-Time ADC ΔΣ Modulator</td>
-          <td id="T_9cc8e_row4_col7" class="data row4 col7" >2010</td>
+          <th id="T_11afc_level0_row4" class="row_heading level0 row4" >197</th>
+          <td id="T_11afc_row4_col0" class="data row4 col0" >1888.9</td>
+          <td id="T_11afc_row4_col1" class="data row4 col1" >80.0</td>
+          <td id="T_11afc_row4_col2" class="data row4 col2" >9000000.0</td>
+          <td id="T_11afc_row4_col3" class="data row4 col3" >0.0</td>
+          <td id="T_11afc_row4_col4" class="data row4 col4" >VCO</td>
+          <td id="T_11afc_row4_col5" class="data row4 col5" >G. Taylor, I. Galton</td>
+          <td id="T_11afc_row4_col6" class="data row4 col6" >A Mostly Digital Variable-Rate Continuous-Time ADC ΔΣ Modulator</td>
+          <td id="T_11afc_row4_col7" class="data row4 col7" >2010</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row5" class="row_heading level0 row5" >127</th>
-          <td id="T_9cc8e_row5_col0" class="data row5 col0" >2454.5</td>
-          <td id="T_9cc8e_row5_col1" class="data row5 col1" >80.0</td>
-          <td id="T_9cc8e_row5_col2" class="data row5 col2" >2200000.0</td>
-          <td id="T_9cc8e_row5_col3" class="data row5 col3" >0.0</td>
-          <td id="T_9cc8e_row5_col4" class="data row5 col4" >SDSC, TI</td>
-          <td id="T_9cc8e_row5_col5" class="data row5 col5" >Kye-Shin Lee; Sunwoo Kwon; Franco Maloberti</td>
-          <td id="T_9cc8e_row5_col6" class="data row5 col6" >A 5.4mW 2-Channel Time-Interleaved Multi-bit /spl Delta//spl Sigma/ Modulator with 80dB SNR and 85dB DR for ADSL</td>
-          <td id="T_9cc8e_row5_col7" class="data row5 col7" >2006</td>
+          <th id="T_11afc_level0_row5" class="row_heading level0 row5" >127</th>
+          <td id="T_11afc_row5_col0" class="data row5 col0" >2454.5</td>
+          <td id="T_11afc_row5_col1" class="data row5 col1" >80.0</td>
+          <td id="T_11afc_row5_col2" class="data row5 col2" >2200000.0</td>
+          <td id="T_11afc_row5_col3" class="data row5 col3" >0.0</td>
+          <td id="T_11afc_row5_col4" class="data row5 col4" >SDSC, TI</td>
+          <td id="T_11afc_row5_col5" class="data row5 col5" >Kye-Shin Lee; Sunwoo Kwon; Franco Maloberti</td>
+          <td id="T_11afc_row5_col6" class="data row5 col6" >A 5.4mW 2-Channel Time-Interleaved Multi-bit /spl Delta//spl Sigma/ Modulator with 80dB SNR and 85dB DR for ADSL</td>
+          <td id="T_11afc_row5_col7" class="data row5 col7" >2006</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row6" class="row_heading level0 row6" >86</th>
-          <td id="T_9cc8e_row6_col0" class="data row6 col0" >2727.3</td>
-          <td id="T_9cc8e_row6_col1" class="data row6 col1" >77.3</td>
-          <td id="T_9cc8e_row6_col2" class="data row6 col2" >2200000.0</td>
-          <td id="T_9cc8e_row6_col3" class="data row6 col3" >0.0</td>
-          <td id="T_9cc8e_row6_col4" class="data row6 col4" >SDSC</td>
-          <td id="T_9cc8e_row6_col5" class="data row6 col5" >Putter, B.M.</td>
-          <td id="T_9cc8e_row6_col6" class="data row6 col6" >ΣΔ ADC with finite impulse response feedback DAC</td>
-          <td id="T_9cc8e_row6_col7" class="data row6 col7" >2004</td>
+          <th id="T_11afc_level0_row6" class="row_heading level0 row6" >86</th>
+          <td id="T_11afc_row6_col0" class="data row6 col0" >2727.3</td>
+          <td id="T_11afc_row6_col1" class="data row6 col1" >77.3</td>
+          <td id="T_11afc_row6_col2" class="data row6 col2" >2200000.0</td>
+          <td id="T_11afc_row6_col3" class="data row6 col3" >0.0</td>
+          <td id="T_11afc_row6_col4" class="data row6 col4" >SDSC</td>
+          <td id="T_11afc_row6_col5" class="data row6 col5" >Putter, B.M.</td>
+          <td id="T_11afc_row6_col6" class="data row6 col6" >ΣΔ ADC with finite impulse response feedback DAC</td>
+          <td id="T_11afc_row6_col7" class="data row6 col7" >2004</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row7" class="row_heading level0 row7" >130</th>
-          <td id="T_9cc8e_row7_col0" class="data row7 col0" >3712.5</td>
-          <td id="T_9cc8e_row7_col1" class="data row7 col1" >76.3</td>
-          <td id="T_9cc8e_row7_col2" class="data row7 col2" >6400000.0</td>
-          <td id="T_9cc8e_row7_col3" class="data row7 col3" >0.0</td>
-          <td id="T_9cc8e_row7_col4" class="data row7 col4" >SDSC</td>
-          <td id="T_9cc8e_row7_col5" class="data row7 col5" >Fujimoto, Y.; Kanazawa, Y.; Lore, P.; Miyamoto, M.</td>
-          <td id="T_9cc8e_row7_col6" class="data row7 col6" >An 80/100MS/s 76.3/70.1dB SNDR /spl Delta//spl Sigma/ ADC for Digital TV Receivers</td>
-          <td id="T_9cc8e_row7_col7" class="data row7 col7" >2006</td>
+          <th id="T_11afc_level0_row7" class="row_heading level0 row7" >130</th>
+          <td id="T_11afc_row7_col0" class="data row7 col0" >3712.5</td>
+          <td id="T_11afc_row7_col1" class="data row7 col1" >76.3</td>
+          <td id="T_11afc_row7_col2" class="data row7 col2" >6400000.0</td>
+          <td id="T_11afc_row7_col3" class="data row7 col3" >0.0</td>
+          <td id="T_11afc_row7_col4" class="data row7 col4" >SDSC</td>
+          <td id="T_11afc_row7_col5" class="data row7 col5" >Fujimoto, Y.; Kanazawa, Y.; Lore, P.; Miyamoto, M.</td>
+          <td id="T_11afc_row7_col6" class="data row7 col6" >An 80/100MS/s 76.3/70.1dB SNDR /spl Delta//spl Sigma/ ADC for Digital TV Receivers</td>
+          <td id="T_11afc_row7_col7" class="data row7 col7" >2006</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row8" class="row_heading level0 row8" >120</th>
-          <td id="T_9cc8e_row8_col0" class="data row8 col0" >5000.0</td>
-          <td id="T_9cc8e_row8_col1" class="data row8 col1" >77.0</td>
-          <td id="T_9cc8e_row8_col2" class="data row8 col2" >1200000.0</td>
-          <td id="T_9cc8e_row8_col3" class="data row8 col3" >0.0</td>
-          <td id="T_9cc8e_row8_col4" class="data row8 col4" >SDCT</td>
-          <td id="T_9cc8e_row8_col5" class="data row8 col5" >Fontaine, P.; Mohieldin, A.N.; Bellaouar, A.</td>
-          <td id="T_9cc8e_row8_col6" class="data row8 col6" >A low-noise low-voltage CT ΔΣ modulator with digital compensation of excess loop delay</td>
-          <td id="T_9cc8e_row8_col7" class="data row8 col7" >2005</td>
+          <th id="T_11afc_level0_row8" class="row_heading level0 row8" >120</th>
+          <td id="T_11afc_row8_col0" class="data row8 col0" >5000.0</td>
+          <td id="T_11afc_row8_col1" class="data row8 col1" >77.0</td>
+          <td id="T_11afc_row8_col2" class="data row8 col2" >1200000.0</td>
+          <td id="T_11afc_row8_col3" class="data row8 col3" >0.0</td>
+          <td id="T_11afc_row8_col4" class="data row8 col4" >SDCT</td>
+          <td id="T_11afc_row8_col5" class="data row8 col5" >Fontaine, P.; Mohieldin, A.N.; Bellaouar, A.</td>
+          <td id="T_11afc_row8_col6" class="data row8 col6" >A low-noise low-voltage CT ΔΣ modulator with digital compensation of excess loop delay</td>
+          <td id="T_11afc_row8_col7" class="data row8 col7" >2005</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row9" class="row_heading level0 row9" >89</th>
-          <td id="T_9cc8e_row9_col0" class="data row9 col0" >6818.2</td>
-          <td id="T_9cc8e_row9_col1" class="data row9 col1" >78.0</td>
-          <td id="T_9cc8e_row9_col2" class="data row9 col2" >2200000.0</td>
-          <td id="T_9cc8e_row9_col3" class="data row9 col3" >0.0</td>
-          <td id="T_9cc8e_row9_col4" class="data row9 col4" >SDSC</td>
-          <td id="T_9cc8e_row9_col5" class="data row9 col5" >Gaggl, R.; Inversi, M.; Wiesbauer, A.</td>
-          <td id="T_9cc8e_row9_col6" class="data row9 col6" >A power optimized 14-bit SC ΔΣ modulator for ADSL CO applications</td>
-          <td id="T_9cc8e_row9_col7" class="data row9 col7" >2004</td>
+          <th id="T_11afc_level0_row9" class="row_heading level0 row9" >89</th>
+          <td id="T_11afc_row9_col0" class="data row9 col0" >6818.2</td>
+          <td id="T_11afc_row9_col1" class="data row9 col1" >78.0</td>
+          <td id="T_11afc_row9_col2" class="data row9 col2" >2200000.0</td>
+          <td id="T_11afc_row9_col3" class="data row9 col3" >0.0</td>
+          <td id="T_11afc_row9_col4" class="data row9 col4" >SDSC</td>
+          <td id="T_11afc_row9_col5" class="data row9 col5" >Gaggl, R.; Inversi, M.; Wiesbauer, A.</td>
+          <td id="T_11afc_row9_col6" class="data row9 col6" >A power optimized 14-bit SC ΔΣ modulator for ADSL CO applications</td>
+          <td id="T_11afc_row9_col7" class="data row9 col7" >2004</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row10" class="row_heading level0 row10" >385</th>
-          <td id="T_9cc8e_row10_col0" class="data row10 col0" >25000.0</td>
-          <td id="T_9cc8e_row10_col1" class="data row10 col1" >80.0</td>
-          <td id="T_9cc8e_row10_col2" class="data row10 col2" >2000000.0</td>
-          <td id="T_9cc8e_row10_col3" class="data row10 col3" >0.1</td>
-          <td id="T_9cc8e_row10_col4" class="data row10 col4" >SDSC</td>
-          <td id="T_9cc8e_row10_col5" class="data row10 col5" >Balmelli, P.   Qiuting Huang   Piazza, F.   </td>
-          <td id="T_9cc8e_row10_col6" class="data row10 col6" >A 50-mW 14-bit 2.5-MS/s Σ-Δ modulator in a 0.25 μm digital CMOS technology</td>
-          <td id="T_9cc8e_row10_col7" class="data row10 col7" >2000</td>
+          <th id="T_11afc_level0_row10" class="row_heading level0 row10" >385</th>
+          <td id="T_11afc_row10_col0" class="data row10 col0" >25000.0</td>
+          <td id="T_11afc_row10_col1" class="data row10 col1" >80.0</td>
+          <td id="T_11afc_row10_col2" class="data row10 col2" >2000000.0</td>
+          <td id="T_11afc_row10_col3" class="data row10 col3" >0.1</td>
+          <td id="T_11afc_row10_col4" class="data row10 col4" >SDSC</td>
+          <td id="T_11afc_row10_col5" class="data row10 col5" >Balmelli, P.   Qiuting Huang   Piazza, F.   </td>
+          <td id="T_11afc_row10_col6" class="data row10 col6" >A 50-mW 14-bit 2.5-MS/s Σ-Δ modulator in a 0.25 μm digital CMOS technology</td>
+          <td id="T_11afc_row10_col7" class="data row10 col7" >2000</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row11" class="row_heading level0 row11" >90</th>
-          <td id="T_9cc8e_row11_col0" class="data row11 col0" >30000.0</td>
-          <td id="T_9cc8e_row11_col1" class="data row11 col1" >72.0</td>
-          <td id="T_9cc8e_row11_col2" class="data row11 col2" >5000000.0</td>
-          <td id="T_9cc8e_row11_col3" class="data row11 col3" >0.1</td>
-          <td id="T_9cc8e_row11_col4" class="data row11 col4" >SDSC</td>
-          <td id="T_9cc8e_row11_col5" class="data row11 col5" >Ying, F.; Maloberti, F.</td>
-          <td id="T_9cc8e_row11_col6" class="data row11 col6" >A mirror image free two-path bandpass ΣΔ modulator with 72 dB SNR and 86 dB SFDR</td>
-          <td id="T_9cc8e_row11_col7" class="data row11 col7" >2004</td>
+          <th id="T_11afc_level0_row11" class="row_heading level0 row11" >90</th>
+          <td id="T_11afc_row11_col0" class="data row11 col0" >30000.0</td>
+          <td id="T_11afc_row11_col1" class="data row11 col1" >72.0</td>
+          <td id="T_11afc_row11_col2" class="data row11 col2" >5000000.0</td>
+          <td id="T_11afc_row11_col3" class="data row11 col3" >0.1</td>
+          <td id="T_11afc_row11_col4" class="data row11 col4" >SDSC</td>
+          <td id="T_11afc_row11_col5" class="data row11 col5" >Ying, F.; Maloberti, F.</td>
+          <td id="T_11afc_row11_col6" class="data row11 col6" >A mirror image free two-path bandpass ΣΔ modulator with 72 dB SNR and 86 dB SFDR</td>
+          <td id="T_11afc_row11_col7" class="data row11 col7" >2004</td>
         </tr>
         <tr>
-          <th id="T_9cc8e_level0_row12" class="row_heading level0 row12" >423</th>
-          <td id="T_9cc8e_row12_col0" class="data row12 col0" >3850000.0</td>
-          <td id="T_9cc8e_row12_col1" class="data row12 col1" >76.0</td>
-          <td id="T_9cc8e_row12_col2" class="data row12 col2" >2000000.0</td>
-          <td id="T_9cc8e_row12_col3" class="data row12 col3" >7.7</td>
-          <td id="T_9cc8e_row12_col4" class="data row12 col4" >SDCT</td>
-          <td id="T_9cc8e_row12_col5" class="data row12 col5" >L. Luh   J. Jensen   C.-M. Lin   C.-T. Tsen   D. Le   A. Cosand   S. Thomas   C. Fields   </td>
-          <td id="T_9cc8e_row12_col6" class="data row12 col6" >A 4GHz 4th-Order Passive LC Bandpass Delta-Sigma Modulator with IF at 1.4GHz</td>
-          <td id="T_9cc8e_row12_col7" class="data row12 col7" >2006</td>
+          <th id="T_11afc_level0_row12" class="row_heading level0 row12" >423</th>
+          <td id="T_11afc_row12_col0" class="data row12 col0" >3850000.0</td>
+          <td id="T_11afc_row12_col1" class="data row12 col1" >76.0</td>
+          <td id="T_11afc_row12_col2" class="data row12 col2" >2000000.0</td>
+          <td id="T_11afc_row12_col3" class="data row12 col3" >7.7</td>
+          <td id="T_11afc_row12_col4" class="data row12 col4" >SDCT</td>
+          <td id="T_11afc_row12_col5" class="data row12 col5" >L. Luh   J. Jensen   C.-M. Lin   C.-T. Tsen   D. Le   A. Cosand   S. Thomas   C. Fields   </td>
+          <td id="T_11afc_row12_col6" class="data row12 col6" >A 4GHz 4th-Order Passive LC Bandpass Delta-Sigma Modulator with IF at 1.4GHz</td>
+          <td id="T_11afc_row12_col7" class="data row12 col7" >2006</td>
         </tr>
       </tbody>
     </table>
@@ -593,7 +598,7 @@ and ENOB range
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  20.646 seconds)
+   **Total running time of the script:** ( 0 minutes  23.977 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_further_plot_a_Murmann_ADC_survey.py:

@@ -1,34 +1,35 @@
-cbadc.digital\_estimator.DigitalEstimator
+﻿cbadc.digital\_estimator.DigitalEstimator
 =========================================
 
 .. currentmodule:: cbadc.digital_estimator
 
 .. autoclass:: DigitalEstimator
-   :members:                                    
-   :show-inheritance:                           
-   :inherited-members:     
-
-   
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
 
-   
+
+
+
    .. rubric:: Methods
 
    .. autosummary::
-   
+
       ~DigitalEstimator.__init__
       ~DigitalEstimator.control_signal_transfer_function
       ~DigitalEstimator.filter_lag
       ~DigitalEstimator.noise_transfer_function
+      ~DigitalEstimator.save
       ~DigitalEstimator.set_iterator
       ~DigitalEstimator.signal_transfer_function
       ~DigitalEstimator.warm_up
-   
-   
 
-   
-   
-   
+
+
+
+
+
 
 .. _sphx_glr_backref_cbadc.digital_estimator.DigitalEstimator:
 

@@ -1,7 +1,7 @@
 import numpy as np
 import scipy
 import scipy.linalg
-from cbadc.digital_estimator import care
+from cbadc.digital_estimator._filter_coefficients import care
 
 
 def test_diagonal_elements_of_parallel_version():

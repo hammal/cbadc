@@ -1,34 +1,36 @@
-cbadc.analog\_system.Cauer
+﻿cbadc.analog\_system.Cauer
 ==========================
 
 .. currentmodule:: cbadc.analog_system
 
 .. autoclass:: Cauer
-   :members:                                    
-   :show-inheritance:                           
-   :inherited-members:     
-
-   
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
 
-   
+
+
+
    .. rubric:: Methods
 
    .. autosummary::
-   
+
       ~Cauer.__init__
       ~Cauer.control_observation
       ~Cauer.control_signal_transfer_function_matrix
       ~Cauer.derivative
+      ~Cauer.homogenius_solution
       ~Cauer.signal_observation
+      ~Cauer.symbolic_differential_equations
       ~Cauer.transfer_function_matrix
       ~Cauer.zpk
-   
-   
 
-   
-   
-   
+
+
+
+
+
 
 .. _sphx_glr_backref_cbadc.analog_system.Cauer:
 

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project.optional-dependencies]
-tests = ['pytest', 'pytest-benchmark', 'pytest-cov']
+tests = ['pytest', 'pytest-benchmark', 'pytest-cov','pytest-parallel']
 docs = ['sphinx_rtd_theme', 'nbsphinx', 'sphinx-gallery']
 
 dependencies = [
@@ -13,13 +13,5 @@ dependencies = [
 ]
 
 [tool]
-[tool.pyright]
-include = ["src/cbadc"]
-[tool.flake8]
-ignore = "W605"
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra -q"
-testpaths = [
-    "tests"
-]
+[tool.black]
+skip-string-normalization = true

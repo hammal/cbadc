@@ -80,10 +80,8 @@ impulse_response = np.abs(np.array(digital_estimator.h[0, :, :]))
 h_index = np.arange(-K1, K2)
 fig, ax = plt.subplots(2)
 for index in range(N):
-    ax[0].plot(h_index, impulse_response[:, index],
-               label=f"$h_{index + 1}[k]$")
-    ax[1].semilogy(h_index, impulse_response[:, index],
-                   label=f"$h_{index + 1}[k]$")
+    ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+    ax[1].semilogy(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
 ax[0].legend()
 fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
 ax[1].set_xlabel("filter tap k")
@@ -241,7 +239,7 @@ for index in range(N):
     plt.semilogy(
         np.arange(0, filter_lengths[-1]),
         np.abs(np.array(digital_estimators[-1].h[0, :, :]))[
-            filter_lengths[-1]:, index
+            filter_lengths[-1] :, index
         ],
         label=f"$h_{index + 1}[k]$",
     )
@@ -284,7 +282,7 @@ for index_de in range(len(filter_lengths)):
 
     # Compute power spectral density
     f, psd = cbadc.utilities.compute_power_spectral_density(
-        u_hat[filter_lengths[index_de]:]
+        u_hat[filter_lengths[index_de] :]
     )
 
     # Plot the FIR filters
@@ -293,8 +291,7 @@ for index_de in range(len(filter_lengths)):
     ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
     ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
 
-    ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
-                          label="Reference", color="k")
+    ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref), label="Reference", color="k")
 
     ax[index_de].semilogx(
         f, 10 * np.log10(psd), label=f"K1=K2={filter_lengths[index_de]}", color=color

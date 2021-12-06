@@ -3,6 +3,7 @@
 import numpy as np
 import cbadc
 import logging
+
 logger = logging.getLogger(__name__)
 
 # map (N, beta, rho, kappa, input_signal_type, amplitude, frequency, phase, offset) -> url_string
@@ -29,7 +30,7 @@ class ChainOfIntegrators:
     Parameters
     ----------
     N: `int`
-        number of analog states, (for the chain-of-integrator this also 
+        number of analog states, (for the chain-of-integrator this also
         determines M=N), defaults to N=5.
     beta: `float`
         the integration slope or amplification, defaults to beta=6250.
@@ -39,7 +40,9 @@ class ChainOfIntegrators:
         the control gain, defaults to kappa=1
     """
 
-    def __init__(self, N: int = 5, beta: float = 6250.0, rho: float = 0.0, kappa: float = 1.0) -> None:
+    def __init__(
+        self, N: int = 5, beta: float = 6250.0, rho: float = 0.0, kappa: float = 1.0
+    ) -> None:
         self.size = int(1e12)
         self.N = N
         self.beta = beta
@@ -49,16 +52,22 @@ class ChainOfIntegrators:
         B = np.zeros((N, 1))
         B[0, 0] = beta
         CT = np.eye(N)
-        Gamma = - kappa * beta * np.eye(N)
+        Gamma = -kappa * beta * np.eye(N)
         Gamma_tilde = np.eye(N)
         self.M = self.N
         self.T = 1.0 / (2 * beta)
         self.analog_system = cbadc.analog_system.AnalogSystem(
-            A, B, CT, Gamma, Gamma_tilde)
-        self.digital_control = cbadc.digital_control.DigitalControl(
-            self.T, self.N)
+            A, B, CT, Gamma, Gamma_tilde
+        )
+        self.digital_control = cbadc.digital_control.DigitalControl(self.T, self.N)
 
-    def sin(self, amplitude: float, frequency: float, phase: float = 0.0, offset: float = 0.0):
+    def sin(
+        self,
+        amplitude: float,
+        frequency: float,
+        phase: float = 0.0,
+        offset: float = 0.0,
+    ):
         """Provide control signals and simulation settings for a sinusoidal input signal.
 
         Specifically for an input signal
@@ -88,23 +97,43 @@ class ChainOfIntegrators:
             the maximum length of the simulation (1G control signal samples)
         """
         input_signal = cbadc.analog_signal.Sinusoidal(
-            amplitude, frequency, phase, offset)
+            amplitude, frequency, phase, offset
+        )
         simulator = cbadc.simulator.StateSpaceSimulator(
-            self.analog_system, self.digital_control, [input_signal])
-        params = (self.N, self.beta, self.rho, self.kappa,
-                  "sin", amplitude, frequency, phase, offset)
+            self.analog_system, self.digital_control, [input_signal]
+        )
+        params = (
+            self.N,
+            self.beta,
+            self.rho,
+            self.kappa,
+            "sin",
+            amplitude,
+            frequency,
+            phase,
+            offset,
+        )
         if params in chain_of_integrators_pre_simulations:
             control_signal = cbadc.utilities.byte_stream_2_control_signal(
                 cbadc.utilities.read_byte_stream_from_url(
-                    chain_of_integrators_pre_simulations[params],
-                    self.M), self.M)
+                    chain_of_integrators_pre_simulations[params], self.M
+                ),
+                self.M,
+            )
         else:
             logger.warn(
-                "No pre-computed simulation found. Iterating will invlove time consuming simulating.")
+                "No pre-computed simulation found. Iterating will invlove time consuming simulating."
+            )
             control_signal = simulator
         return control_signal, simulator, self.size
 
-    def ramp(self, amplitude: float, frequency: float, phase: float = 0.0, offset: float = 0.0):
+    def ramp(
+        self,
+        amplitude: float,
+        frequency: float,
+        phase: float = 0.0,
+        offset: float = 0.0,
+    ):
         """Provide control signals and simulation settings for a ramp input signal.
 
         Specifically for an input signal
@@ -133,17 +162,31 @@ class ChainOfIntegrators:
         size: `int`
             the maximum length of the simulation (1G control signal samples)
         """
-        input_signal = cbadc.analog_signal.Ramp(
-            amplitude, frequency, phase, offset)
+        input_signal = cbadc.analog_signal.Ramp(amplitude, frequency, phase, offset)
         simulator = cbadc.simulator.StateSpaceSimulator(
-            self.analog_system, self.digital_control, [input_signal])
-        params = (self.N, self.beta, self.rho, self.kappa,
-                  "ramp", amplitude, frequency, phase, offset)
+            self.analog_system, self.digital_control, [input_signal]
+        )
+        params = (
+            self.N,
+            self.beta,
+            self.rho,
+            self.kappa,
+            "ramp",
+            amplitude,
+            frequency,
+            phase,
+            offset,
+        )
         if params in chain_of_integrators_pre_simulations:
             control_signal = cbadc.utilities.byte_stream_2_control_signal(
-                cbadc.utilities.read_byte_stream_from_url(chain_of_integrators_pre_simulations[params], self.M), self.M)
+                cbadc.utilities.read_byte_stream_from_url(
+                    chain_of_integrators_pre_simulations[params], self.M
+                ),
+                self.M,
+            )
         else:
             logger.warn(
-                "No pre-computed simulation found. Iterating will invlove time consuming simulating.")
+                "No pre-computed simulation found. Iterating will invlove time consuming simulating."
+            )
             control_signal = simulator
         return control_signal, simulator, self.size

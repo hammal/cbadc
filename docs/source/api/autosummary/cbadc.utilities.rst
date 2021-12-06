@@ -2,19 +2,19 @@
 ===============
 
 .. automodule:: cbadc.utilities
-  
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
    .. rubric:: Functions
 
    .. autosummary::
       :toctree:
       :template: custom-function-template.rst
-   
+
       byte_stream_2_control_signal
       compute_power_spectral_density
       control_signal_2_byte_stream
@@ -32,24 +32,15 @@
       write_byte_stream_to_file
       write_byte_stream_to_files
       write_wave
-   
-   
 
-   
-   
+
+
+
+
    .. rubric:: Classes
 
    .. autosummary::
-      :toctree:                                          
-      :template: custom-class-template.rst               
-   
+      :toctree:
+      :template: custom-class-template.rst
+
       FixedPoint
-   
-   
-
-   
-   
-   
-
-
-

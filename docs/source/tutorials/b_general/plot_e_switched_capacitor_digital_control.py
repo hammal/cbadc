@@ -90,8 +90,7 @@ digital_control_sc = cbadc.digital_control.DigitalControl(
 Gamma = 1 / (R_s * C_x) * np.eye(M)
 Gamma_tildeT = -np.eye(M)
 
-analog_system_sc = cbadc.analog_system.AnalogSystem(
-    A, B, CT, Gamma, Gamma_tildeT)
+analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
 print(digital_control_sc)
 print(analog_system_sc)
@@ -154,8 +153,7 @@ K1 = 1 << 8
 K2 = K1
 eta2 = (
     np.linalg.norm(
-        analog_system_sc.transfer_function_matrix(
-            np.array([2 * np.pi / T / OSR]))
+        analog_system_sc.transfer_function_matrix(np.array([2 * np.pi / T / OSR]))
     ).flatten()
     ** 2
 )
@@ -239,8 +237,7 @@ plt.semilogx(
     20
     * np.log10(
         np.linalg.norm(
-            digital_estimator_sc.noise_transfer_function(omega)[
-                :, 0, :], axis=0
+            digital_estimator_sc.noise_transfer_function(omega)[:, 0, :], axis=0
         )
     ),
     "--",
@@ -251,8 +248,7 @@ plt.semilogx(
     20
     * np.log10(
         np.linalg.norm(
-            digital_estimator_ref.noise_transfer_function(omega)[
-                :, 0, :], axis=0
+            digital_estimator_ref.noise_transfer_function(omega)[:, 0, :], axis=0
         )
     ),
     "--",
@@ -287,8 +283,7 @@ for mismatch in mismatch_in_percent:
         cbadc.digital_control.DigitalControl(
             T,
             M,
-            impulse_response=cbadc.digital_control.RCImpulseResponse(
-                R_s * C_Gamma),
+            impulse_response=cbadc.digital_control.RCImpulseResponse(R_s * C_Gamma),
         ),
         eta2,
         K1,
@@ -338,7 +333,7 @@ plt.figure()
 plt.title("Estimates PSD")
 for index, mismatch in enumerate(mismatch_in_percent):
     f, psd = cbadc.utilities.compute_power_spectral_density(
-        estimates[index][K1 + K2:], fs=1.0 / T
+        estimates[index][K1 + K2 :], fs=1.0 / T
     )
     plt.semilogx(f, 10 * np.log10(psd), label=f"Mismatch R_s {mismatch}%")
 plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)

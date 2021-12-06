@@ -1,5 +1,6 @@
 import cbadc
 import numpy as np
+import cbadc.digital_estimator._filter_coefficients
 
 eta2 = 1e3
 N = 15
@@ -17,16 +18,20 @@ R = eta2 * np.eye(1)
 
 
 def test_care():
-    cbadc.digital_estimator.care(A, B, Q, R)
-    cbadc.digital_estimator.care(-A, B, Q, R)
+    cbadc.digital_estimator._filter_coefficients.care(A, B, Q, R)
+    cbadc.digital_estimator._filter_coefficients.care(-A, B, Q, R)
 
 
 def test_brute_force_care():
-    Vf = cbadc.digital_estimator.care(A, B, Q, R)
-    Vb = cbadc.digital_estimator.care(-A, B, Q, R)
+    Vf = cbadc.digital_estimator._filter_coefficients.care(A, B, Q, R)
+    Vb = cbadc.digital_estimator._filter_coefficients.care(-A, B, Q, R)
 
-    Vf2 = cbadc.digital_estimator.bruteForceCare(A, B, Q, R, tau=1e-12)
-    Vb2 = cbadc.digital_estimator.bruteForceCare(-A, B, Q, R, tau=1e-12)
+    Vf2 = cbadc.digital_estimator._filter_coefficients.bruteForceCare(
+        A, B, Q, R, tau=1e-12
+    )
+    Vb2 = cbadc.digital_estimator._filter_coefficients.bruteForceCare(
+        -A, B, Q, R, tau=1e-12
+    )
 
     print(Vf, Vf2)
     np.testing.assert_allclose(Vf, Vf2)

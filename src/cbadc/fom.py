@@ -16,7 +16,7 @@ import matplotlib.colors
 logger = logging.getLogger(__name__)
 
 __twenty_log_2 = 20.0 * np.log10(2.0)
-__quantization_noise_offset = 20.0 * np.log10(np.sqrt(6.0)/2.0)
+__quantization_noise_offset = 20.0 * np.log10(np.sqrt(6.0) / 2.0)
 
 
 def snr_to_enob(SNR: float):
@@ -32,6 +32,36 @@ def snr_to_enob(SNR: float):
         the effective number of bits.
     """
     return (SNR - __quantization_noise_offset) / __twenty_log_2
+
+
+def snr_to_dB(snr: float):
+    """Convert snr to dB
+
+    Parameters
+    ----------
+    snr: `float`
+        the snr not expressed in dB
+    Returns
+    -------
+    : `float`
+        the SNR expressed in dB
+    """
+    return 20.0 * np.log10(snr)
+
+
+def snr_from_dB(snr: float):
+    """Convert SNR from dB
+
+    Parameters
+    ----------
+    snr: `float`
+        the snr expressed in dB
+    Returns
+    -------
+    : `float`
+        the SNR not expressed in dB
+    """
+    return 10 ** (snr / 20.0)
 
 
 def enob_to_snr(ENOB: float):
@@ -128,7 +158,7 @@ def FoM_S(P, fs, SNR):
     return SNR + 10.0 * np.log10(nyquist_frequency(fs) / P)
 
 
-class MurmannSurvey():
+class MurmannSurvey:
     """Data container for Murmann's ADC survey
 
     A convenience class for downloading and parsing
@@ -168,26 +198,19 @@ class MurmannSurvey():
         else:
             logging.info(f"Found local version of {filename}")
 
-        _temp = pd.read_excel(
-            filename, sheet_name=['ISSCC', 'VLSI']
-        )
+        _temp = pd.read_excel(filename, sheet_name=['ISSCC', 'VLSI'])
         _temp['ISSCC']['CONFERENCE'] = 'ISSCC'
         _temp['VLSI']['CONFERENCE'] = 'VLSI'
-        self.db = pd.concat(
-            _temp,
-            ignore_index=True
-        )
+        self.db = pd.concat(_temp, ignore_index=True)
         self._architecture = pd.unique(self.db['ARCHITECTURE'])
         self._color_map = matplotlib.cm.viridis
         self._color_list = [
-            matplotlib.colors.rgb2hex(
-                self._color_map(i)
-            ) for i in np.linspace(0, 0.9, len(self._architecture))
+            matplotlib.colors.rgb2hex(self._color_map(i))
+            for i in np.linspace(0, 0.9, len(self._architecture))
         ]
 
         # Fix some data problems
-        self.db['AREA [mm^2]'] = pd.to_numeric(
-            self.db['AREA [mm^2]'], errors='coerce')
+        self.db['AREA [mm^2]'] = pd.to_numeric(self.db['AREA [mm^2]'], errors='coerce')
 
     def columns(self) -> List[str]:
         """Returns the columns of the dataframe
@@ -225,8 +248,7 @@ class MurmannSurvey():
         ax = plt.gca()
 
         # Plot from Murmann survey
-        self._Murmann_style_data_and_legends(
-            'SNDR_hf [dB]', 'P/fsnyq [pJ]', ax)
+        self._Murmann_style_data_and_legends('SNDR_hf [dB]', 'P/fsnyq [pJ]', ax)
 
         # Plot FoM lines
         _x = [40, 120]
@@ -260,8 +282,7 @@ class MurmannSurvey():
         ax = plt.gca()
 
         # Plot from Murmann survey.
-        self._Murmann_style_data_and_legends(
-            'SNDR_hf [dB]', 'fin_hf [Hz]', ax)
+        self._Murmann_style_data_and_legends('SNDR_hf [dB]', 'fin_hf [Hz]', ax)
 
         # Jitter lines
         _y = [1e6, 1e11]
@@ -295,8 +316,7 @@ class MurmannSurvey():
         ax = plt.gca()
 
         # Plot from Murmann Survey
-        self._Murmann_style_data_and_legends(
-            'fsnyq [Hz]', 'FOMW_hf [fJ/conv-step]', ax)
+        self._Murmann_style_data_and_legends('fsnyq [Hz]', 'FOMW_hf [fJ/conv-step]', ax)
 
         # Envelope
         _x = np.logspace(3, 12, 100)
@@ -366,26 +386,51 @@ class MurmannSurvey():
 
         if BW[0] > BW[1]:
             raise BaseException(
-                "BW must be a tuple with accsending values like (1e6, 1e8)")
+                "BW must be a tuple with accsending values like (1e6, 1e8)"
+            )
         if ENOB[0] > ENOB[1]:
             raise BaseException(
-                "ENOB must be a tuple with accsending values like (8, 10)")
+                "ENOB must be a tuple with accsending values like (8, 10)"
+            )
 
         return self.db[
-            (self.db['fsnyq [Hz]'] >= BW[0]) &
-            (self.db['fsnyq [Hz]'] < BW[1]) &
-            (self.db['SNR [dB]'] >= enob_to_snr(ENOB[0])) &
-            (self.db['SNR [dB]'] < enob_to_snr(ENOB[1]))]
+            (self.db['fsnyq [Hz]'] >= BW[0])
+            & (self.db['fsnyq [Hz]'] < BW[1])
+            & (self.db['SNR [dB]'] >= enob_to_snr(ENOB[0]))
+            & (self.db['SNR [dB]'] < enob_to_snr(ENOB[1]))
+        ]
 
     def _Murmann_style_data_and_legends(self, x, y, ax):
-        self.db[(self.db['CONFERENCE'] == 'ISSCC') & (self.db['YEAR'] == self._current_year)].plot.scatter(
-            x, y, label=f"ISSCC {self._current_year}", color='red', marker='s', ax=ax)
-        self.db[(self.db['CONFERENCE'] == 'VLSI') & (self.db['YEAR'] == self._current_year)].plot.scatter(
-            x, y, label=f"VLSI {self._current_year}", color='blue', marker='D', ax=ax)
-        self.db[(self.db['CONFERENCE'] == 'ISSCC') & (self.db['YEAR'] < self._current_year)].plot.scatter(
-            x, y, label=f"ISSCC 1997-{self._current_year - 1}", color='black', marker='o', ax=ax)
-        self.db[(self.db['CONFERENCE'] == 'VLSI') & (self.db['YEAR'] < self._current_year)].plot.scatter(
-            x, y, label=f"VLSI 1997-{self._current_year - 1}", color='black', marker='x', ax=ax)
+        self.db[
+            (self.db['CONFERENCE'] == 'ISSCC') & (self.db['YEAR'] == self._current_year)
+        ].plot.scatter(
+            x, y, label=f"ISSCC {self._current_year}", color='red', marker='s', ax=ax
+        )
+        self.db[
+            (self.db['CONFERENCE'] == 'VLSI') & (self.db['YEAR'] == self._current_year)
+        ].plot.scatter(
+            x, y, label=f"VLSI {self._current_year}", color='blue', marker='D', ax=ax
+        )
+        self.db[
+            (self.db['CONFERENCE'] == 'ISSCC') & (self.db['YEAR'] < self._current_year)
+        ].plot.scatter(
+            x,
+            y,
+            label=f"ISSCC 1997-{self._current_year - 1}",
+            color='black',
+            marker='o',
+            ax=ax,
+        )
+        self.db[
+            (self.db['CONFERENCE'] == 'VLSI') & (self.db['YEAR'] < self._current_year)
+        ].plot.scatter(
+            x,
+            y,
+            label=f"VLSI 1997-{self._current_year - 1}",
+            color='black',
+            marker='x',
+            ax=ax,
+        )
 
     def _f_sigma_to_jitter_sndr(self, f, sigma):
         return -20.0 * np.log10(2 * np.pi * sigma * f)
@@ -395,10 +440,12 @@ class MurmannSurvey():
         return FoMW * 2 ** ENOB
 
     def _FoMS_SNDR_to_p_fs(self, FoMS, SNDR):
-        return (10 ** (-(FoMS - SNDR)/10.0)) / 2.0
+        return (10 ** (-(FoMS - SNDR) / 10.0)) / 2.0
 
     def _FoMW_envelope(self, f):
-        return self._FoMW_hf_overall * np.sqrt(1.0+(f / self._FoMW_hf_corner)**2)
+        return self._FoMW_hf_overall * np.sqrt(1.0 + (f / self._FoMW_hf_corner) ** 2)
 
     def _FoMS_envelope(self, f):
-        return self._FoMS_hf_overall - 10.0 * np.log10(np.sqrt(1.0+(f / self._FoMS_hf_corner) ** 2))
+        return self._FoMS_hf_overall - 10.0 * np.log10(
+            np.sqrt(1.0 + (f / self._FoMS_hf_corner) ** 2)
+        )

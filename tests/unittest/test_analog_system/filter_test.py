@@ -2,7 +2,7 @@ import numpy as np
 import cbadc
 import scipy.signal
 
-from cbadc.analog_system import zpk2abcd
+from cbadc.analog_system.topology import zpk2abcd
 
 
 def test_Butterworth():
@@ -18,13 +18,12 @@ def test_ButterWorth_transferfunction():
     Wn = 1e3
     butter_worth_system = cbadc.analog_system.ButterWorth(N, Wn)
     print(butter_worth_system)
-    b, a = scipy.signal.butter(N, Wn, btype='low', analog=True)
+    b, a = scipy.signal.butter(N, Wn, btype="low", analog=True)
     print("b, a\n")
     print(b)
     print(a)
 
-    z, p, k = scipy.signal.butter(
-        N, Wn, btype='low', output="zpk", analog=True)
+    z, p, k = scipy.signal.butter(N, Wn, btype="low", output="zpk", analog=True)
 
     print("z,p,k")
     print(z)
@@ -59,14 +58,13 @@ def test_ChebyshevI_transferfunction():
     rp = np.sqrt(2)
     chebyshevI_worth_system = cbadc.analog_system.ChebyshevI(N, Wn, rp)
 
-    b, a = scipy.signal.cheby1(N, rp, Wn, btype='low', analog=True)
+    b, a = scipy.signal.cheby1(N, rp, Wn, btype="low", analog=True)
 
     print("b, a\n")
     print(b)
     print(a)
 
-    z, p, k = scipy.signal.cheby1(
-        N, rp, Wn, btype='low', analog=True, output="zpk")
+    z, p, k = scipy.signal.cheby1(N, rp, Wn, btype="low", analog=True, output="zpk")
     print("z,p,k")
     print(z)
     print(np.sort_complex(p))
@@ -91,18 +89,17 @@ def test_ChebyshevII():
 
 
 def test_ChebyshevII_transferfunction():
-    N = 15
+    N = 8
     Wn = 1e3
     rs = 60
     chebyshevII_worth_system = cbadc.analog_system.ChebyshevII(N, Wn, rs)
 
-    b, a = scipy.signal.cheby2(N, rs, Wn, btype='low', analog=True)
+    b, a = scipy.signal.cheby2(N, rs, Wn, btype="low", analog=True)
     print("b, a\n")
     print(b)
     print(a)
 
-    z, p, k = scipy.signal.cheby2(
-        N, rs, Wn, btype='low', analog=True, output='zpk')
+    z, p, k = scipy.signal.cheby2(N, rs, Wn, btype="low", analog=True, output="zpk")
     print("z,p,k")
     print(z)
     print(np.sort_complex(p))
@@ -135,21 +132,20 @@ def test_Cauer():
 
 
 def test_Cauer_transferfunction():
-    N = 11
+    N = 8
     Wn = 1e3
     rp = np.sqrt(2)
     rs = 60
     cauer_worth_system = cbadc.analog_system.Cauer(N, Wn, rp, rs)
 
-    b, a = scipy.signal.ellip(N, rp, rs, Wn, btype='low', analog=True)
+    b, a = scipy.signal.ellip(N, rp, rs, Wn, btype="low", analog=True)
     print("b, a\n")
     print(b)
     print(a)
     print(cauer_worth_system)
     w, h = scipy.signal.freqs(b, a)
 
-    z, p, k = scipy.signal.ellip(
-        N, rp, rs, Wn, btype='low', analog=True, output='zpk')
+    z, p, k = scipy.signal.ellip(N, rp, rs, Wn, btype="low", analog=True, output="zpk")
     print("z,p,k")
     print(z)
     print(np.sort_complex(p))
@@ -157,6 +153,6 @@ def test_Cauer_transferfunction():
 
     tf = cauer_worth_system.transfer_function_matrix(w)
     print(cauer_worth_system)
-    if not np.allclose(h, tf):
+    if not np.allclose(h, tf, rtol=1e-5, atol=1e-5):
         print(h - tf)
         raise BaseException("Filter mismatch")

@@ -115,7 +115,7 @@ analog system and digital control.
      [   0.]
      [   0.]
      [   0.]],
-    CT = 
+    CT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
@@ -140,7 +140,7 @@ analog system and digital control.
      [0.]
      [0.]
      [0.]
-     [0.]] 
+     [0.]]
 
     The Digital Control is parameterized as:
     T = 8e-05,
@@ -186,7 +186,7 @@ Next we configure the fixed-point precision by instantiating
             number of bits = 20 including sign bit,
             max float value = 1.0,
             and min float value = 1.9073486328125e-06
-        
+
 
 
 

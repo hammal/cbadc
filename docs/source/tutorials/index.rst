@@ -106,8 +106,8 @@ Next follows three basic examples demonstrating how to
 General Examples
 ----------------
 
-Next we highlight various features of the cbadc package. 
-  
+Next we highlight various features of the cbadc package.
+
 
 
 .. raw:: html
@@ -227,7 +227,7 @@ Further Examples
 ----------------
 
 These are further examples showcasing the cbadc package.
-  
+
 
 
 .. raw:: html

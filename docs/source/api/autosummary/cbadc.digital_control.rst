@@ -2,43 +2,34 @@
 ======================
 
 .. automodule:: cbadc.digital_control
-  
-   
-   
-   
-
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :template: custom-function-template.rst
-   
-      overcomplete_set
-      unit_element_set
-   
-   
-
-   
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:                                          
-      :template: custom-class-template.rst               
-   
-      CalibrationControl
-      DigitalControl
-      MultiPhaseDigitalControl
-      RCImpulseResponse
-      StepResponse
-   
-   
-
-   
-   
-   
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   cbadc.digital_control.calibration_control
+   cbadc.digital_control.digital_control
+   cbadc.digital_control.multi_phase_control
+   cbadc.digital_control.switch_capacitor_control
+   cbadc.digital_control.utilities

@@ -128,7 +128,7 @@ Configure a Digital Estimator
 
  .. code-block:: none
 
-    FIR estimator is parameterized as 
+    FIR estimator is parameterized as
     eta2 = 100000.00, 50 [dB],
     Ts = 1e-06,
     K1 = 1024,
@@ -136,7 +136,7 @@ Configure a Digital Estimator
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h = 
+    h =
     [[[-1.78705424e-11  3.59873868e-12  6.75066574e-13 ...  5.09395743e-12
         3.63212138e-12  5.64068310e-12]
       [-1.85063565e-11  3.47173121e-12  7.55741807e-13 ...  5.19952008e-12
@@ -149,7 +149,7 @@ Configure a Digital Estimator
       [-1.85063565e-11 -3.47173121e-12  7.55741807e-13 ...  3.67578729e-12
         5.78952380e-12  3.84152538e-12]
       [-1.78705424e-11 -3.59873868e-12  6.75066574e-13 ...  3.50378048e-12
-        5.64068310e-12  3.63212138e-12]]]. 
+        5.64068310e-12  3.63212138e-12]]].
 
 
 

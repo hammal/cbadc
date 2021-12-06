@@ -46,8 +46,7 @@ def number_of_bytes_selector(M: int):
         return {"number_of_bytes": 4, "format_marker": "i", "c_type_name": "int"}
     if M < 129:
         return {"number_of_bytes": 8, "format_marker": "q", "c_type_name": "long long"}
-    raise BaseException(
-        f"M={M} is larger than 128 which is the largest allowed size")
+    raise BaseException(f"M={M} is larger than 128 which is the largest allowed size")
 
 
 def control_signal_2_byte_stream(
