@@ -243,7 +243,7 @@ def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False, separator
         number of controls
     msb2lsb : `bool`
         bit order of input file.
-        Default is least significant to most significant bit from left to right (LSB to MSB).
+        Default is least significant bit (LSB) to most significant bit (MSB) from left to right.
     separator : `str`
         separator used in the input file. Default is ` , ` (comma).
 
