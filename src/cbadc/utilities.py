@@ -232,6 +232,58 @@ def read_byte_stream_from_url(
             pass
     raise StopIteration
 
+def csv_2_control_signal(filename: str, M: int, msb2lsb: bool = False, separator: str = ','):
+    """Creates an iterator that reads a control sequence from a CSV file.  
+
+    Parameters
+    ----------
+    filename : `str`
+        filename for input file
+    M : `int`
+        number of controls
+    msb2lsb : `bool`
+        bit order of input file.
+        Default is least significant bit (LSB) to most significant bit (MSB) from left to right.
+    separator : `str`
+        separator used in the input file. Default is ` , ` (comma).
+
+    Yields
+    ------
+    array_like, shape=(M,)
+        a control signal sample
+
+    Example
+    -------
+    >>> # create a csv file with four bits
+    >>> with open('test.csv','w') as f:
+    >>> f.write("""
+    0,0,0,0
+    0,0,0,1
+    0,0,1,1
+    0,1,1,1
+    """)
+    >>> # read control signal from the file just created
+    >>> for s in csv_2_control_signal('test.csv', 4, msb2lsb=True):
+    >>>     print(s)
+    [0 0 0 0]
+    [1 0 0 0]
+    [1 1 0 0]
+    [1 1 1 0]
+
+    Raises
+    ------
+    `RuntimeError`
+        for lines with number of entries different from M.
+        
+    """
+    with open(filename, 'r') as read_obj:
+        for line in read_obj:
+            s = np.fromstring(line, dtype=np.int8, sep=separator)
+            if (s.size != M):
+                raise RuntimeError("The number of entries in the current line is not equal to M")
+            if (msb2lsb):
+                s = s[::-1]
+            yield s
 
 def random_control_signal(
     M: int, stop_after_number_of_iterations: int = (1 << 63), random_seed: int = 0
