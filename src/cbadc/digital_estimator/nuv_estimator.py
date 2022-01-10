@@ -94,17 +94,17 @@ class NUVEstimator:
     ):
         # Check inputs
         if K1 < 1:
-            raise BaseException("K1 must be a positive integer.")
+            raise Exception("K1 must be a positive integer.")
         self.K1 = K1
         if K2 < 0:
-            raise BaseException("K2 must be a non negative integer.")
+            raise Exception("K2 must be a non negative integer.")
         self.K2 = K2
         self.K3 = K1 + K2
         self.analog_system = analog_system
         self.covU = covU
         self.bound_y = bound_y
         if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
-            raise BaseException(
+            raise Exception(
                 """Can't compute filter coefficients for system with non-zero
                 D matrix. Consider chaining for removing D"""
             )
@@ -195,7 +195,7 @@ class NUVEstimator:
     def __next__(self) -> np.ndarray:
         # Check if control signal iterator is set.
         if self.control_signal is None:
-            raise BaseException("No iterator set.")
+            raise Exception("No iterator set.")
 
         # Check if there are estimates in the estimate buffer
         if self._estimate_pointer < self.K1:
@@ -235,7 +235,7 @@ class NUVEstimator:
 
     def _input(self, s: np.ndarray) -> bool:
         if self._control_signal_in_buffer == (self.K3):
-            raise BaseException(
+            raise Exception(
                 """Input buffer full. You must compute batch before adding
                 more control signals"""
             )
@@ -308,7 +308,7 @@ class NUVEstimator:
         logger.info("Computing batch.")
         # check if ready to compute buffer
         if self._control_signal_in_buffer < self.K3:
-            raise BaseException("Control signal buffer not full")
+            raise Exception("Control signal buffer not full")
 
         self._update_observation_statistics()
         self._MBF()

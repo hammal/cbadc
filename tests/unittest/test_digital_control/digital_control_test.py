@@ -7,7 +7,7 @@ def test_initialization():
     Ts = 1e-3
     M = 4
     clock = Clock(Ts)
-    digitalControl = DigitalControl(clock, M)
+    DigitalControl(clock, M)
 
 
 def test_evaluate():

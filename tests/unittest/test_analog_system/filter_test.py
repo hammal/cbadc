@@ -39,7 +39,7 @@ def test_ButterWorth_transferfunction():
     if not np.allclose(h, tf):
         # print(h, tf)
         print(h - tf)
-        raise BaseException("Filter mismatch")
+        raise Exception("Filter mismatch")
 
 
 def test_ChebyshevI():
@@ -76,7 +76,7 @@ def test_ChebyshevI_transferfunction():
 
     if not np.allclose(h, tf):
         print(h - tf)
-        raise BaseException("Filter mismatch")
+        raise Exception("Filter mismatch")
 
 
 def test_ChebyshevII():
@@ -117,7 +117,7 @@ def test_ChebyshevII_transferfunction():
     print(chebyshevII_worth_system)
     if not np.allclose(h, tf):
         print(h - tf)
-        raise BaseException("Filter mismatch")
+        raise Exception("Filter mismatch")
 
 
 def test_Cauer():
@@ -155,4 +155,4 @@ def test_Cauer_transferfunction():
     print(cauer_worth_system)
     if not np.allclose(h, tf, rtol=1e-5, atol=1e-5):
         print(h - tf)
-        raise BaseException("Filter mismatch")
+        raise Exception("Filter mismatch")

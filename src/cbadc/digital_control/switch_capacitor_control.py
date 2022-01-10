@@ -64,18 +64,18 @@ class SwitchedCapacitorControl(DigitalControl):
         # Check for invalid period times.
         for m in range(self.M):
             if self.T2[m] <= self.T1[m] or (self.T2[m] + T == self.T1[m]):
-                raise BaseException(
+                raise Exception(
                     f"Invalid T1={self.T1[m]} and T2={self.T2[m]} for m={m}"
                 )
 
         self.T = T
         if (self.T < self.T1).any() or (2 * self.T < self.T2).any():
-            raise BaseException("T1 cannot exceed T and T2 cannot exceed 2T.")
+            raise Exception("T1 cannot exceed T and T2 cannot exceed 2T.")
 
         self.phase = np.zeros(M, dtype=int)
 
         if not isinstance(self.M, int):
-            raise BaseException("M must be an integer.")
+            raise Exception("M must be an integer.")
 
         self._s = np.zeros(self.M, dtype=int)
         self.A = np.array(A, dtype=np.double)

@@ -73,29 +73,7 @@ class LeapFrog(AnalogSystem):
     >>> beta = np.array([101, 102, 103])
     >>> rho = np.array([-1, -2, -3])
     >>> kappa = np.arange(100,109).reshape((3, 3))
-    >>> print(LeapFrog(beta, rho, kappa))
-    The analog system is parameterized as:
-    A =
-    [[ -1.  -2.   0.]
-     [102.   0.  -3.]
-     [  0. 103.   0.]],
-    B =
-    [[101.]
-     [  0.]
-     [  0.]],
-    CT =
-    [[1. 0. 0.]
-     [0. 1. 0.]
-     [0. 0. 1.]],
-    Gamma =
-    [[100. 101. 102.]
-     [103. 104. 105.]
-     [106. 107. 108.]],
-    and Gamma_tildeT =
-    [[-0.5603758  -0.57718708 -0.59399835]
-     [-0.56054048 -0.5771902  -0.59383992]
-     [-0.560702   -0.57719323 -0.59368447]]
-
+    >>> system = LeapFrog(beta, rho, kappa)
 
     Raises
     ------

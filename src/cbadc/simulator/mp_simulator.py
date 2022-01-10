@@ -69,7 +69,7 @@ class MPSimulator(_BaseSimulator):
         clock: cbadc.analog_signal._valid_clock_types = None,
         t_stop: float = math.inf,
         initial_state_vector=None,
-        tol: float = 1e-12,
+        tol: float = 1e-20,
     ):
         super().__init__(
             analog_system,
@@ -79,7 +79,7 @@ class MPSimulator(_BaseSimulator):
             t_stop,
             initial_state_vector,
         )
-        mp.dps = 20
+        mp.dps = 30
         A = mp.matrix(analog_system._A_s)
         B = mp.matrix(analog_system._B_s)
         Gamma = mp.matrix(analog_system._Gamma_s)
@@ -88,25 +88,48 @@ class MPSimulator(_BaseSimulator):
             Gamma,
             [s for s in digital_control._impulse_response],
             (0, mp.mpf(self.clock.T)),
-            tol=tol,
+            tol=1e-30,
         )
 
         self.A = A
         self.B = B
         self.Af = tmp_Af
         self.Gamma_f = tmp_Gamma_f
+        self.Gamma_tilde_f = mp.matrix(analog_system.Gamma_tildeT)
         self._state_vector = mp.matrix(self._state_vector)
         self.tol = tol
 
-    def _ode_solver(self, t_span: Tuple[float, float]):
-        _, input_contributions = invariant_system_solver(
-            self.A, self.B, self.input_signals, t_span, homogeneous=False, tol=self.tol
-        )
-        res = mp.matrix(self.analog_system.N, 1)
-
-        for n in range(self.analog_system.N):
+    def _ode_solver_1(self, t_span: Tuple[float, float]):
+        def diff_equation(x, y):
+            res = mp.matrix(self.analog_system.N, 1)
+            for n in range(self.analog_system.N):
+                for nn in range(self.analog_system.N):
+                    res[n] += self.A[n, nn] * y[nn]
             for l in range(self.analog_system.L):
-                res[n] += input_contributions[n, l]
+                res += self.B[:, l] * self.input_signals[l]._mpmath(x)
+            return res
+
+        f = mp.odefun(diff_equation, t_span[0], self._state_vector, tol=self.tol)
+        return mp.matrix(f(t_span[1]))
+
+    def _ode_solver_2(self, t_span: Tuple[float, float]):
+        def diff_equation(x, y):
+            res = mp.matrix(self.analog_system.N, 1)
+            for n in range(self.analog_system.N):
+                for nn in range(self.analog_system.N):
+                    res[n] += self.A[n, nn] * y[nn]
+            for l in range(self.analog_system.L):
+                res += self.B[:, l] * self.input_signals[l]._mpmath(x)
+            return res
+
+        f = mp.odefun(
+            diff_equation,
+            t_span[0],
+            [0 for _ in range(self.analog_system.N)],
+            tol=self.tol,
+        )
+        res = mp.matrix(f(t_span[1]))
+        res += mp.matrix(self.Af * self._state_vector)
         return res
 
     def __next__(self) -> np.ndarray:
@@ -118,20 +141,19 @@ class MPSimulator(_BaseSimulator):
             raise StopIteration
         # Compute
 
-        # State transition
-        self._state_vector = self.Af * self._state_vector
-        # Input Signals
-        for l in range(self.analog_system.L):
-            self._state_vector += self._ode_solver(t_span)
+        # ODE solver
+        # self._state_vector = self._ode_solver_1(t_span)
+        self._state_vector = self._ode_solver_2(t_span)
 
         # Control signals
         self._state_vector += self.Gamma_f * mp.matrix(
-            mp.mpf('2') * mp.matrix(self.digital_control._s) - mp.mpf('1')
+            mp.mpf('2') * mp.matrix(self.digital_control.control_signal()) - mp.mpf('1')
         )
 
         # Update controls for next period if necessary
         self.digital_control.control_update(
-            t_span[1], np.dot(self.analog_system.Gamma_tildeT, self._state_vector)
+            t_span[1],
+            np.array(self.Gamma_tilde_f * self._state_vector, dtype=np.double),
         )
         self.t = t_end
         return self.digital_control.control_signal()

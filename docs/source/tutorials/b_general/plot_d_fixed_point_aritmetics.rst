@@ -56,7 +56,7 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 27-57
+.. GENERATED FROM PYTHON SOURCE LINES 27-56
 
 .. code-block:: default
 
@@ -77,12 +77,11 @@ analog system and digital control.
     kappaVec = kappa * beta * np.eye(N)
 
     # Instantiate a chain-of-integrators analog system.
-    analog_system = cbadc.analog_system.ChainOfIntegrators(
-        betaVec, rhoVec, kappaVec)
+    analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 
 
     T = 1 / (2 * beta)
-    digital_control = cbadc.digital_control.DigitalControl(T, M)
+    digital_control = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 
 
     # Summarize the analog system, digital control, and digital estimator.
@@ -142,16 +141,24 @@ analog system and digital control.
      [0.]
      [0.]]
 
+    ================================================================================
+
     The Digital Control is parameterized as:
-    T = 8e-05,
-    M = 6,
-    and next update at
-    t = 8e-05
+
+    --------------------------------------------------------------------------------
+
+    clock:
+    Analog signal returns constant 0, i.e., maps t |-> 0.
+
+    M:
+    6
+    ================================================================================
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 58-65
+
+.. GENERATED FROM PYTHON SOURCE LINES 57-64
 
 -------------------------
 Fixed-Point Configuration
@@ -161,7 +168,7 @@ Next we configure the fixed-point precision by instantiating
 :py:class:`cbadc.utilities.FixedPoint`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 65-72
+.. GENERATED FROM PYTHON SOURCE LINES 64-71
 
 .. code-block:: default
 
@@ -191,7 +198,7 @@ Next we configure the fixed-point precision by instantiating
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 73-82
+.. GENERATED FROM PYTHON SOURCE LINES 72-81
 
 ----------------
 Impulse Response
@@ -203,7 +210,7 @@ visualize its impulse responses.
 Note the truncation in the impulse response as a result of the
 :py:class:`cbadc.utilities.FixedPoint` configuration.
 
-.. GENERATED FROM PYTHON SOURCE LINES 82-123
+.. GENERATED FROM PYTHON SOURCE LINES 81-119
 
 .. code-block:: default
 
@@ -212,8 +219,7 @@ Note the truncation in the impulse response as a result of the
     OSR = 1 << 5
     omega_3dB = 2 * np.pi / (2 * T * OSR)
     eta2 = (
-        np.linalg.norm(analog_system.transfer_function_matrix(
-            np.array([omega_3dB]))) ** 2
+        np.linalg.norm(analog_system.transfer_function_matrix(np.array([omega_3dB]))) ** 2
     )
 
     # Instantiate digital estimator
@@ -230,10 +236,8 @@ Note the truncation in the impulse response as a result of the
     h_index = np.arange(-K1, K2)
     fig, ax = plt.subplots(2)
     for index in range(N):
-        ax[0].plot(h_index, impulse_response[:, index],
-                   label=f"$h_{index + 1}[k]$")
-        ax[1].semilogy(h_index, impulse_response[:, index],
-                       label=f"$h_{index + 1}[k]$")
+        ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+        ax[1].semilogy(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
     ax[0].legend()
     fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     ax[1].set_xlabel("filter tap k")
@@ -252,7 +256,7 @@ Note the truncation in the impulse response as a result of the
 
 
 .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_001.png
-   :alt: For $\eta^2 = 84.94011061240755$ [dB]
+   :alt: For $\eta^2 = 84.94011061240678$ [dB]
    :srcset: /tutorials/b_general/images/sphx_glr_plot_d_fixed_point_aritmetics_001.png
    :class: sphx-glr-single-img
 
@@ -268,14 +272,14 @@ Note the truncation in the impulse response as a result of the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-128
+.. GENERATED FROM PYTHON SOURCE LINES 120-124
 
 Impulse Response Truncation and Fixed-Point Precision
 -----------------------------------------------------
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 128-184
+.. GENERATED FROM PYTHON SOURCE LINES 124-174
 
 .. code-block:: default
 
@@ -295,18 +299,12 @@ Impulse Response Truncation and Fixed-Point Precision
     size = 1 << 16
     u_hat = np.zeros(size)
 
-    fixed_points = [cbadc.utilities.FixedPoint(
-        bits, 1.0) for bits in fixed_point_precision]
+    fixed_points = [cbadc.utilities.FixedPoint(bits, 1.0) for bits in fixed_point_precision]
 
 
     digital_estimators = [
         cbadc.digital_estimator.FIRFilter(
-            analog_system,
-            digital_control,
-            eta2,
-            K1,
-            K2,
-            fixed_point=fixed_point,
+            analog_system, digital_control, eta2, K1, K2, fixed_point=fixed_point,
         )
         for fixed_point in fixed_points
     ]
@@ -401,13 +399,13 @@ Impulse Response Truncation and Fixed-Point Precision
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-188
+.. GENERATED FROM PYTHON SOURCE LINES 175-178
 
 Resulting Estimate Precision
 ----------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 188-286
+.. GENERATED FROM PYTHON SOURCE LINES 178-272
 
 .. code-block:: default
 
@@ -435,7 +433,7 @@ Resulting Estimate Precision
         noise_index[signal_index] = False
         noise_index[0:2] = False
         noise_index[harmonics_index] = False
-        noise_index[size // OSR:] = False
+        noise_index[size // OSR :] = False
         res = cbadc.utilities.snr_spectrum_computation_extended(
             psd, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
         )
@@ -475,20 +473,19 @@ Resulting Estimate Precision
     noise_index[signal_index] = False
     noise_index[0:2] = False
     noise_index[harmonics_index] = False
-    noise_index[size // OSR:] = False
+    noise_index[size // OSR :] = False
     res = cbadc.utilities.snr_spectrum_computation_extended(
         psd_ref, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
     )
     SNR = 10 * np.log10(res["snr"])
     ENOB = np.round((SNR - 1.76) / 6.02, 1)
-    description.append(
-        f"Ref, ENOB={ENOB}, THD={round(20 * np.log10(res['thd']))} dB")
+    description.append(f"Ref, ENOB={ENOB}, THD={round(20 * np.log10(res['thd']))} dB")
 
     plt.semilogx(f_ref, 10 * np.log10(psd_ref), label=description[-1])
 
     plt.legend()
     plt.xlabel("frequency [Hz]")
-    plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
     plt.ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
     plt.xlim((0.0002, 0.5))
     _ = plt.ylim((-150, 40))
@@ -498,10 +495,7 @@ Resulting Estimate Precision
     plt.figure()
     plt.title("Estimates in time domain")
     for index in range(len(fixed_point_precision + 1)):
-        t_fir = np.arange(
-            -K1 + 1,
-            size - K2 + 1,
-        )
+        t_fir = np.arange(-K1 + 1, size - K2 + 1,)
         plt.plot(t_fir, u_hats[index], label=description[index])
     plt.ylabel("$\hat{u}(t)$")
     plt.xlim((64000, 64500))
@@ -536,7 +530,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  33.917 seconds)
+   **Total running time of the script:** ( 3 minutes  15.673 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_d_fixed_point_aritmetics.py:

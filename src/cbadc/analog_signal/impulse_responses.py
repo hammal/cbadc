@@ -12,7 +12,7 @@ class _ImpulseResponse(_AnalogSignal):
 
 
 class StepResponse(_ImpulseResponse):
-    def __init__(self, t0: float = 0) -> None:
+    def __init__(self, t0: float = 0.0) -> None:
         super().__init__()
         self.t0 = t0
 

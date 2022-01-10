@@ -37,10 +37,9 @@ def bruteForceCare(
 ) -> np.ndarray:
     timelimit = 10 * 60
     start_time = time.time()
-    try:
-        V = np.array(care(A, B, Q, R), dtype=np.float128)
-    except:
-        V = np.eye(A.shape[0], dtype=np.float128)
+
+    V = np.array(care(A, B, Q, R), dtype=np.float128)
+
     V_tmp = np.ones_like(V) * 1e300
     RInv = np.array(np.linalg.inv(R), dtype=np.float128)
 
@@ -98,7 +97,6 @@ def compute_filter_coefficients(
     solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
     mid_point: bool = False,
 ):
-    logger.info("Computing filter coefficients.")
     # Compute filter coefficients
     A = np.array(analog_system.A).transpose()
     B = np.array(analog_system.CT).transpose()
@@ -110,24 +108,31 @@ def compute_filter_coefficients(
 
     if solver_type == FilterComputationBackend.sympy:
         return _analytical_solver(
-            analog_system, digital_control, eta2, Vf, Vb, mid_point
+            analog_system,
+            digital_control,
+            sp.Matrix(R),
+            sp.Matrix(Vf),
+            sp.Matrix(Vb),
+            mid_point,
         )
     if solver_type == FilterComputationBackend.mpmath:
         return _mp_solver(
-            analog_system, digital_control, eta2, mp.matrix(Vf), mp.matrix(Vb)
+            analog_system,
+            digital_control,
+            mp.matrix(R),
+            mp.matrix(Vf),
+            mp.matrix(Vb),
         )
     else:  # FilterComputationBackend.numpy
-        return _numerical_solver(
-            analog_system, digital_control, eta2, Vf, Vb, mid_point
-        )
+        return _numerical_solver(analog_system, digital_control, R, Vf, Vb, mid_point)
 
 
 def _analytical_solver(
     analog_system: cbadc.analog_system.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
-    eta2: float,
-    Vf: np.ndarray,
-    Vb: np.ndarray,
+    R: sp.Matrix,
+    Vf: sp.Matrix,
+    Vb: sp.Matrix,
     mid_point: bool,
 ):
     if mid_point:
@@ -136,10 +141,14 @@ def _analytical_solver(
     A_sym = sp.Matrix(analog_system.A)
     Vf_sym = sp.Matrix(Vf)
     Vb_sym = sp.Matrix(Vb)
-    eta2_sym = sp.Float(eta2)
-    CCT_sym = sp.Matrix(analog_system.CT).T * sp.Matrix(analog_system.CT)
-    tempAf = A_sym - Vf_sym * CCT_sym / eta2_sym
-    tempAb = A_sym + Vb_sym * CCT_sym / eta2_sym
+    # eta2_sym = sp.Float(eta2)
+    CCT_sym = (
+        sp.Matrix(analog_system.CT).T
+        * sp.matrix(R) ** (-1)
+        * sp.Matrix(analog_system.CT)
+    )
+    tempAf = A_sym - Vf_sym * CCT_sym
+    tempAb = A_sym + Vb_sym * CCT_sym
     Af, Bf = _ode_solver(tempAf, analog_system._Gamma_s, digital_control, Ts)
     Ab, Bb = _ode_solver(-tempAb, -analog_system._Gamma_s, digital_control, Ts)
     W = (Vf_sym + Vb_sym) ** (-1) * sp.Matrix(analog_system.B)
@@ -159,31 +168,38 @@ def _ode_solver(
     Ts: float,
 ):
     sigs = [fun.symbolic() for fun in digital_control._impulse_response]
-    hom, non_hom = analytical_system_solver(
+    hom, non_hom, t = analytical_system_solver(
         tempAf,
         tempBf,
         sigs,
         [d.t0 for d in digital_control._impulse_response],
     )
-    t = sp.Symbol('t', real=True)
     A_sol = np.real(np.array(hom.subs(t, Ts)).astype(np.complex128))
-    B_sol = np.real(np.array(non_hom.subs(t, Ts)).astype(np.complex128))
+    B_sol = np.zeros_like(tempBf)
+    for n in range(B_sol.shape[0]):
+        for m in range(B_sol.shape[1]):
+            B_sol[n, m] = non_hom[m][n].subs(t, Ts).rhs.doit().evalf()
     return A_sol, B_sol
 
 
 def _mp_solver(
     analog_system: cbadc.analog_system.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
-    eta2: float,
+    R: mp.matrix,
     Vf: mp.matrix,
     Vb: mp.matrix,
 ):
-    tol: float = 1e-12
-    CCT = mp.matrix(analog_system.CT).transpose() * mp.matrix(analog_system.CT)
+    tol: float = 1e-40
+    mp.dps = 60
+    CetaCT = (
+        mp.matrix(analog_system.CT).transpose()
+        * R ** (-1)
+        * mp.matrix(analog_system.CT)
+    )
     Ts = mp.mpf(digital_control.clock.T)
     t_span = (mp.mpf('0'), Ts)
-    tempAf: np.ndarray = mp.matrix(analog_system._A_s) - Vf * CCT / eta2
-    tempAb: np.ndarray = mp.matrix(analog_system._A_s) + Vb * CCT / eta2
+    tempAf = mp.matrix(analog_system._A_s) - Vf * CetaCT
+    tempAb = mp.matrix(analog_system._A_s) + Vb * CetaCT
     Af, Bf = mp_system_solver(
         tempAf,
         mp.matrix(analog_system.Gamma),
@@ -225,24 +241,25 @@ def reverse_signal(signal: cbadc.analog_signal._AnalogSignal, T0: float = 0.0):
     """
     new_signal = copy.deepcopy(signal)
     new_signal.evaluate = lambda t: signal.evaluate(T0 - t)
-    new_signal.t0 = T0 - signal.t0
+    new_signal.t0 = -signal.t0
     return new_signal
 
 
 def _numerical_solver(
     analog_system: cbadc.analog_system.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
-    eta2: float,
+    R: np.ndarray,
     Vf: np.ndarray,
     Vb: np.ndarray,
     mid_point: bool,
 ):
     CCT: np.ndarray = np.dot(
-        np.array(analog_system.CT).transpose(), np.array(analog_system.CT)
+        np.array(analog_system.CT).transpose(),
+        np.dot(np.linalg.inv(R), np.array(analog_system.CT)),
     )
     Ts = digital_control.clock.T
-    tempAf: np.ndarray = analog_system.A - np.dot(Vf, CCT) / eta2
-    tempAb: np.ndarray = analog_system.A + np.dot(Vb, CCT) / eta2
+    tempAf: np.ndarray = analog_system.A - np.dot(Vf, CCT)
+    tempAb: np.ndarray = analog_system.A + np.dot(Vb, CCT)
     Af: np.ndarray = np.asarray(scipy.linalg.expm(tempAf * Ts))
     Ab: np.ndarray = np.asarray(scipy.linalg.expm(-tempAb * Ts))
     W, _, _, _ = np.linalg.lstsq(Vf + Vb, analog_system.B, rcond=None)
@@ -266,9 +283,9 @@ def _regular(
     Bf: np.ndarray = np.zeros((analog_system.N, analog_system.M))
     Bb: np.ndarray = np.zeros((analog_system.N, analog_system.M))
 
-    atol = 1e-12
-    rtol = 1e-10
-    max_step = Ts / 1000.0
+    atol = 1e-20
+    rtol = 1e-13
+    max_step = Ts * 1e-5
     for m in range(analog_system.M):
 
         def _derivative_forward_2(t, x):
@@ -291,7 +308,7 @@ def _regular(
             rtol=rtol,
             max_step=max_step,
             method="Radau",
-            jacobian=tempAf,
+            # jacobian=tempAf,
             events=(impulse_start,),
         ).y[:, -1]
 
@@ -310,11 +327,12 @@ def _regular(
             _derivative_backward_2,
             (0, Ts),
             np.zeros(analog_system.N),
+            # solBf,
             atol=atol,
             rtol=rtol,
             max_step=max_step,
             method="Radau",
-            jacobian=-tempAb,
+            # jacobian=-tempAb,
             events=(impulse_stop,),
         ).y[:, -1]
         Bf[:, m] = solBf

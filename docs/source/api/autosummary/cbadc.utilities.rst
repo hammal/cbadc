@@ -18,6 +18,7 @@
       byte_stream_2_control_signal
       compute_power_spectral_density
       control_signal_2_byte_stream
+      find_n_sinusoidals
       find_sinusoidal
       iterator_to_numpy_array
       number_of_bytes_selector
@@ -44,3 +45,9 @@
       :template: custom-class-template.rst
 
       FixedPoint
+
+
+
+
+
+

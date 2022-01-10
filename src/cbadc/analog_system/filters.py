@@ -461,20 +461,20 @@ class IIRDesign(AnalogSystem):
     >>> w = 2 * np.pi * f
     >>> tf = filter.transfer_function_matrix(w)
     >>> fig, ax1 = plt.subplots()
-    >>> ax1.set_title('Analog filter frequency response')
-    >>> ax1.set_ylabel('Amplitude [dB]', color='b')
-    >>> ax1.set_xlabel('Frequency [Hz]')
-    >>> ax1.semilogx(f, 20 * np.log10(np.abs(tf[0, 0, :])))
-    >>> ax1.grid()
+    >>> _ = ax1.set_title('Analog filter frequency response')
+    >>> _ = ax1.set_ylabel('Amplitude [dB]', color='b')
+    >>> _ = ax1.set_xlabel('Frequency [Hz]')
+    >>> _ = ax1.semilogx(f, 20 * np.log10(np.abs(tf[0, 0, :])))
+    >>> _ = ax1.grid()
     >>> ax2 = ax1.twinx()
     >>> angles = np.unwrap(np.angle(tf[0, 0, :]))
-    >>> ax2.plot(f, angles, 'g')
-    >>> ax2.set_ylabel('Angle (radians)', color='g')
-    >>> ax2.grid()
-    >>> ax2.axis('tight')
+    >>> _ = ax2.plot(f, angles, 'g')
+    >>> _ = ax2.set_ylabel('Angle (radians)', color='g')
+    >>> _ = ax2.grid()
+    >>> _ =ax2.axis('tight')
     >>> nticks = 8
-    >>> ax1.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(nticks))
-    >>> ax2.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(nticks))
+    >>> _ = ax1.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(nticks))
+    >>> _ = ax2.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(nticks))
 
     See also
     --------

@@ -48,6 +48,7 @@ class SincPulse(_AnalogSignal):
     def __init__(
         self, amplitude: float, bandwidth: float, t0: float, offset: float = 0.0
     ):
+        super().__init__()
         self.amplitude: float = amplitude
         self.bandwidth: float = bandwidth
         self.t0: float = t0
@@ -58,7 +59,6 @@ class SincPulse(_AnalogSignal):
             't0': mp.mpmathify(t0),
             'offset': mp.mpmathify(offset),
         }
-        super().__init__()
 
     def __str__(self):
         return f"""Sinc pulse parameterized as: t0 = {self.t0}, \n
@@ -102,6 +102,5 @@ class SincPulse(_AnalogSignal):
             a symbolic sinc_pulse function
         """
         return (
-            self.amplitude * sinc(2 * self.bandwidth * (self.t - self.delay))
-            + self.offset
+            self.amplitude * sinc(2 * self.bandwidth * (self.t - self.t0)) + self.offset
         )

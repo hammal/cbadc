@@ -26,7 +26,6 @@ Builds on...
 .. GENERATED FROM PYTHON SOURCE LINES 7-13
 
 .. code-block:: default
-   :lineno-start: 7
 
     import cbadc
     import cbadc.datasets.hadamard
@@ -52,7 +51,6 @@ the wrapper class as
 .. GENERATED FROM PYTHON SOURCE LINES 19-22
 
 .. code-block:: default
-   :lineno-start: 20
 
 
     simulation_wrapper = cbadc.datasets.hadamard.HadamardPCB('B')
@@ -73,13 +71,17 @@ In this case we load
 :py:func:`cbadc.datasets.hadamard.HadamardPCB.simulation_ramp_1_B`
 simulation by invoking
 
-.. GENERATED FROM PYTHON SOURCE LINES 29-33
+.. GENERATED FROM PYTHON SOURCE LINES 29-38
 
 .. code-block:: default
-   :lineno-start: 30
 
 
-    control_signal, ideal_control_signal, simulator, size = simulation_wrapper.simulation_ramp_1_B()
+    (
+        control_signal,
+        ideal_control_signal,
+        simulator,
+        size,
+    ) = simulation_wrapper.simulation_ramp_1_B()
 
     size = 1 << 12
 
@@ -89,16 +91,15 @@ simulation by invoking
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 34-37
+.. GENERATED FROM PYTHON SOURCE LINES 39-42
 
 Configure a Digital Estimator
 -----------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 37-55
+.. GENERATED FROM PYTHON SOURCE LINES 42-56
 
 .. code-block:: default
-   :lineno-start: 37
 
     eta2 = 1e5
     L1 = 1 << 10
@@ -107,12 +108,8 @@ Configure a Digital Estimator
 
 
     digital_estimator = cbadc.digital_estimator.FIRFilter(
-        simulator.analog_system,
-        simulator.digital_control,
-        eta2,
-        L1,
-        L2,
-        downsample=OSR)
+        simulator.analog_system, simulator.digital_control, eta2, L1, L2, downsample=OSR
+    )
 
     print(digital_estimator, "\n")
 
@@ -155,16 +152,15 @@ Configure a Digital Estimator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 56-59
+.. GENERATED FROM PYTHON SOURCE LINES 57-60
 
 Post filtering with FIR
 ------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-66
+.. GENERATED FROM PYTHON SOURCE LINES 60-67
 
 .. code-block:: default
-   :lineno-start: 60
 
 
     numtaps = 1 << 10
@@ -180,16 +176,15 @@ Post filtering with FIR
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 67-70
+.. GENERATED FROM PYTHON SOURCE LINES 68-71
 
 Filtering Estimate
 --------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 70-75
+.. GENERATED FROM PYTHON SOURCE LINES 71-76
 
 .. code-block:: default
-   :lineno-start: 71
 
 
     u_hat = np.zeros(size // OSR)
@@ -206,21 +201,20 @@ Filtering Estimate
 
  .. code-block:: none
 
-      0%|          | 0/128 [00:00<?, ?it/s]      1%|          | 1/128 [00:00<00:58,  2.19it/s]     69%|######8   | 88/128 [00:00<00:00, 208.19it/s]    100%|##########| 128/128 [00:00<00:00, 212.78it/s]
+      0%|          | 0/128 [00:00<?, ?it/s]      2%|1         | 2/128 [00:00<00:06, 19.04it/s]     75%|#######5  | 96/128 [00:00<00:00, 548.19it/s]    100%|##########| 128/128 [00:00<00:00, 532.63it/s]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 76-79
+.. GENERATED FROM PYTHON SOURCE LINES 77-80
 
 Visualize Estimate
 --------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 79-91
+.. GENERATED FROM PYTHON SOURCE LINES 80-92
 
 .. code-block:: default
-   :lineno-start: 80
 
 
     t = np.arange(size // OSR) * OSR
@@ -237,30 +231,31 @@ Visualize Estimate
 
 
 
-.. image:: /datasets/images/sphx_glr_plot_hadamard_001.png
-    :alt: Estimated input signal
-    :class: sphx-glr-single-img
+.. image-sg:: /datasets/images/sphx_glr_plot_hadamard_001.png
+   :alt: Estimated input signal
+   :srcset: /datasets/images/sphx_glr_plot_hadamard_001.png
+   :class: sphx-glr-single-img
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 92-95
+.. GENERATED FROM PYTHON SOURCE LINES 93-96
 
 Visualize Estimate Spectrum
 ---------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 95-108
+.. GENERATED FROM PYTHON SOURCE LINES 96-110
 
 .. code-block:: default
-   :lineno-start: 96
 
 
     plt.figure()
-    u_hat_clipped = u_hat[(L1 + L2) // OSR:]
+    u_hat_clipped = u_hat[(L1 + L2) // OSR :]
     freq, psd = cbadc.utilities.compute_power_spectral_density(
-        u_hat_clipped, fs=1.0/(simulator.digital_control.T * OSR))
+        u_hat_clipped, fs=1.0 / (simulator.digital_control.clock.T * OSR)
+    )
     plt.semilogx(freq, 10 * np.log10(psd), label="$\hat{U}(f)$")
     plt.legend()
     plt.ylim((-300, 50))
@@ -272,19 +267,11 @@ Visualize Estimate Spectrum
 
 
 
-.. image:: /datasets/images/sphx_glr_plot_hadamard_002.png
-    :alt: plot hadamard
-    :class: sphx-glr-single-img
+.. image-sg:: /datasets/images/sphx_glr_plot_hadamard_002.png
+   :alt: plot hadamard
+   :srcset: /datasets/images/sphx_glr_plot_hadamard_002.png
+   :class: sphx-glr-single-img
 
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1964: UserWarning: nperseg = 16384 is greater than input length  = 64, using nperseg = 64
-      warnings.warn('nperseg = {0:d} is greater than input length '
 
 
 
@@ -292,7 +279,7 @@ Visualize Estimate Spectrum
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  8.775 seconds)
+   **Total running time of the script:** ( 0 minutes  21.610 seconds)
 
 
 .. _sphx_glr_download_datasets_plot_hadamard.py:

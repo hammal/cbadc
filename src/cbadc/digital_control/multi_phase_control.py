@@ -60,11 +60,11 @@ class MultiPhaseDigitalControl(DigitalControl):
         self._t_tolerance = t_tolerance
         DigitalControl.__init__(self, clock, M, t0=t0)
         if (phi_1 < 0).any() or (phi_1 > self.clock.T).any():
-            raise BaseException(f"Invalid phi_1 ={phi_1}")
+            raise Exception(f"Invalid phi_1 ={phi_1}")
 
         if impulse_response is not None:
             if len(impulse_response) != self.M:
-                raise BaseException("must be M impulse responses for M phases")
+                raise Exception("must be M impulse responses for M phases")
             self._impulse_response = impulse_response
         else:
             self._impulse_response = [StepResponse() for _ in range(self.M)]

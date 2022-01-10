@@ -2,6 +2,7 @@ import logging
 import sympy as sp
 from typing import List
 import multiprocessing
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -17,14 +18,14 @@ def _non_hom_solver(eq, func, t0=0):
     t = sp.Symbol('t', real=True)
     zero_solution = [s.subs(t, t0).rhs for s in sol]
     initial_condition = sp.solve(
-        [
-            t,
-            *zero_solution,
-        ],
+        [t, *zero_solution],
         dict=True,
     )
     tmp = [
-        s.subs([(c, initial_condition[0][c]) for c in Cons]).rewrite(sp.sin)
+        s.subs([(c, initial_condition[0][c]) for c in Cons])
+        # .rewrite(
+        #    sp.sin
+        # )  # .simplify()
         for s in sol
     ]
     # tmp not pickable :(
@@ -54,12 +55,10 @@ class Process:
             res = self.queue.get()
             # self.process.join()
             if self.process.exitcode:
-                raise BaseException(
-                    f"Process ended with exitcode {self.process.exitcode}"
-                )
+                raise Exception(f"Process ended with exitcode {self.process.exitcode}")
         else:
             res = self._target(*self._args)
-        return res
+        return copy.deepcopy(res)
 
 
 def invariant_system_solver(
@@ -78,7 +77,7 @@ def invariant_system_solver(
 
     t = sp.Symbol('t', real=True)
 
-    non_hom_sol = [[None] * M] * N
+    non_hom_sol = []
 
     processes = []
 
@@ -104,10 +103,11 @@ def invariant_system_solver(
     # Retrive results
     for m, process in enumerate(processes):
         sol_m = process.get()
-        for n in range(N):
-            non_hom_sol[n][m] = sol_m[n].expand(complex=True)
-            # .subs(
-            # t, evaluation_time).rhs.rewrite(sp.exp)
+        non_hom_sol.append(sol_m)
+        # for n in range(N):
+        #     non_hom_sol[m][n] = sol_m[n]  # .expand(complex=True)
+        # .subs(
+        # t, evaluation_time).rhs.rewrite(sp.exp)
 
     # non_hom_sol = (non_hom_sol).expand(complex=True)
     # non_hom_sol = sp.re(sp.simplify(non_hom_sol))

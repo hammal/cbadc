@@ -10,7 +10,7 @@ The plots are rendered using matplotlib.
 """
 
 from cbadc.datasets import hadamard
-from cbadc.simulator import StateSpaceSimulator
+from cbadc.simulator import get_simulator
 from cbadc.analog_signal import Sinusoidal
 import numpy as np
 import matplotlib.pyplot as plt
@@ -46,7 +46,7 @@ print(analog_signal)
 n_cycles = 1 << 10
 end_time = T * n_cycles
 # Instantiate the simulator.
-simulator = StateSpaceSimulator(
+simulator = get_simulator(
     pcb.analog_system, pcb.digital_control, [analog_signal], t_stop=end_time
 )
 

@@ -29,9 +29,26 @@ into your console. Note that, currently cbadc is only supported for Python3.8 an
 
 # Changelog
 
-## 0.1.0
+## 0.2.0
 
-- First public release
+Additions:
+
+- [digital clock](https://..) to aid the simulator and digital estimator computation
+- [digital control]() new interface to support digital clock.
+- Simulator
+  - Analytical simulator
+  - Mpmath simulator
+  - Numerical simulator
+    - Full simulator
+    - pre computed simulator
+
+### 0.1.5
+
+Added figures of merit (fom) module and MurmannSurvey convenience class.
+
+### 0.1.2
+
+Added fixed point arithmetics for FIR filter implementation.
 
 ### 0.1.1
 
@@ -41,10 +58,6 @@ Added support for switched capacitor digital control by adding a new:
 - [digital control](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.digital_control.SwitchedCapacitorControl.html#cbadc.digital_control.SwitchedCapacitorControl),
 - and modifications to the FIR [digital estimator](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.digital_estimator.FIRFilter.html#cbadc.digital_estimator.FIRFilter) to handle the switch cap case.
 
-### 0.1.2
+## 0.1.0
 
-Added fixed point arithmetics for FIR filter implementation.
-
-### 0.1.5
-
-Added figures of merit (fom) module and MurmannSurvey convenience class.
+- First public release

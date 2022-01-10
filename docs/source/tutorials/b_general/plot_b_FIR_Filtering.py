@@ -48,7 +48,7 @@ Gamma_tildeT = CT
 T = 1.0 / (2 * beta)
 
 analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-digital_control = cbadc.digital_control.DigitalControl(T, M)
+digital_control = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 
 # Summarize the analog system, digital control, and digital estimator.
 print(analog_system, "\n")
@@ -288,8 +288,8 @@ for index_de in range(len(filter_lengths)):
     # Plot the FIR filters
     color = next(ax[index_de]._get_lines.prop_cycler)["color"]
 
-    ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-    ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index_de].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index_de].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 
     ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref), label="Reference", color="k")
 

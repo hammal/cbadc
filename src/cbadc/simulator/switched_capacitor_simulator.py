@@ -78,12 +78,12 @@
 #         t_init: float = 0.0,
 #     ):
 #         if analog_system.L != len(input_signal):
-#             raise BaseException(
+#             raise Exception(
 #                 """The analog system does not have as many inputs as in input
 #             list"""
 #             )
 #         if not np.allclose(analog_system.D, np.zeros_like(analog_system.D)):
-#             raise BaseException(
+#             raise Exception(
 #                 """Can't simulate system with non-zero
 #                 D matrix. Consider chaining systems to remove D."""
 #             )
@@ -104,7 +104,7 @@
 #         else:
 #             self.Ts = self.digital_control.T
 #         if self.Ts > self.digital_control.T:
-#             raise BaseException(
+#             raise Exception(
 #                 f"Simulating with a sample period {self.Ts} that exceeds the control period of the digital control {self.digital_control.T}"
 #             )
 
@@ -144,7 +144,7 @@
 #             )
 #             print("initial state vector: ", self._state_vector)
 #             if self._state_vector.size != self.N or len(self._state_vector.shape) > 1:
-#                 raise BaseException(
+#                 raise Exception(
 #                     "initial_state_vector not single dimension of length N"
 #                 )
 

@@ -77,29 +77,7 @@ class ChainOfIntegrators(AnalogSystem):
     >>> beta = np.array([100, 100, 100])
     >>> rho = np.array([-1, -1, -1])
     >>> kappa = np.array([[100, 100, 100]]).transpose()
-    >>> print(ChainOfIntegrators(beta, rho, kappa))
-    The analog system is parameterized as:
-    A =
-    [[ -1.   0.   0.]
-     [100.  -1.   0.]
-     [  0. 100.  -1.]],
-    B =
-    [[100.]
-     [  0.]
-     [  0.]],
-    CT =
-    [[1. 0. 0.]
-     [0. 1. 0.]
-     [0. 0. 1.]],
-    Gamma =
-    [[100.   0.   0.]
-     [  0. 100.   0.]
-     [  0.   0. 100.]],
-    and Gamma_tildeT =
-    [[-1.  0.  0.]
-     [ 0. -1.  0.]
-     [ 0.  0. -1.]]
-
+    >>> system = ChainOfIntegrators(beta, rho, kappa)
 
     Raises
     ------

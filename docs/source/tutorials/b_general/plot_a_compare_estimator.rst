@@ -141,7 +141,7 @@ Analog Signal
 We will also need an analog signal for conversion.
 In this tutorial we will use a Sinusoidal signal.
 
-.. GENERATED FROM PYTHON SOURCE LINES 44-61
+.. GENERATED FROM PYTHON SOURCE LINES 44-60
 
 .. code-block:: default
 
@@ -156,8 +156,7 @@ In this tutorial we will use a Sinusoidal signal.
     offset = 0.0
 
     # Instantiate the analog signal
-    analog_signal = cbadc.analog_signal.Sinusoidal(
-        amplitude, frequency, phase, offset)
+    analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
 
     print(analog_signal)
 
@@ -172,7 +171,6 @@ In this tutorial we will use a Sinusoidal signal.
 
  .. code-block:: none
 
-    Not yet implemented.
 
     Sinusoidal parameterized as:
     amplitude = 1.0,
@@ -185,7 +183,7 @@ In this tutorial we will use a Sinusoidal signal.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 62-67
+.. GENERATED FROM PYTHON SOURCE LINES 61-66
 
 Simulating
 ----------
@@ -193,75 +191,196 @@ Simulating
 Each estimator will require an independent stream of control signals.
 Therefore, we will next instantiate several digital controls and simulators.
 
-.. GENERATED FROM PYTHON SOURCE LINES 67-101
+.. GENERATED FROM PYTHON SOURCE LINES 66-91
 
 .. code-block:: default
 
 
-    clock = cbadc.analog_signal.Clock(T)
 
     # Instantiate digital controls. We will need four of them as we will compare
     # four different estimators.
-    digital_control1 = cbadc.digital_control.DigitalControl(clock, M)
-    digital_control2 = cbadc.digital_control.DigitalControl(clock, M)
-    digital_control3 = cbadc.digital_control.DigitalControl(clock, M)
-    digital_control4 = cbadc.digital_control.DigitalControl(clock, M)
+    digital_control1 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
+    digital_control2 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
+    digital_control3 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
+    digital_control4 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
     print(digital_control1)
 
     # Instantiate simulators.
-    simulator1 = cbadc.simulator.Simulator(
-        analog_system,
-        digital_control1,
-        [analog_signal],
+    simulator1 = cbadc.simulator.get_simulator(
+        analog_system, digital_control1, [analog_signal],
     )
-    simulator2 = cbadc.simulator.Simulator(
-        analog_system,
-        digital_control2,
-        [analog_signal],
+    simulator2 = cbadc.simulator.get_simulator(
+        analog_system, digital_control2, [analog_signal],
     )
-    simulator3 = cbadc.simulator.Simulator(
-        analog_system,
-        digital_control3,
-        [analog_signal],
+    simulator3 = cbadc.simulator.get_simulator(
+        analog_system, digital_control3, [analog_signal],
     )
-    simulator4 = cbadc.simulator.Simulator(
-        analog_system,
-        digital_control4,
-        [analog_signal],
+    simulator4 = cbadc.simulator.get_simulator(
+        analog_system, digital_control4, [analog_signal],
     )
     print(simulator1)
 
 
 
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ Out:
 
-    Traceback (most recent call last):
-      File "/drives1/PhD/cbadc/docs/code_examples/b_general/plot_a_compare_estimator.py", line 79, in <module>
-        simulator1 = cbadc.simulator.Simulator(
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/cbadc/simulator/analytical_simulator.py", line 79, in __init__
-        self.analog_system.homogenius_solution().subs(
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/cbadc/analog_system/analog_system.py", line 278, in homogenius_solution
-        return sp.solvers.ode.systems.matrix_exp(self._A_s, self.t)
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/sympy/solvers/ode/systems.py", line 569, in matrix_exp
-        P, expJ = matrix_exp_jordan_form(A, t)
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/sympy/solvers/ode/systems.py", line 650, in matrix_exp_jordan_form
-        eigenchains = jordan_chains(A)
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/sympy/solvers/ode/systems.py", line 637, in jordan_chains
-        P, blocks = A.jordan_cells()
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/sympy/matrices/matrices.py", line 731, in jordan_cells
-        P, J = self.jordan_form()
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/sympy/matrices/matrices.py", line 416, in jordan_form
-        return _jordan_form(self, calc_transform=calc_transform, **kwargs)
-      File "/home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/sympy/matrices/eigen.py", line 1195, in _jordan_form
-        raise MatrixError(
-    sympy.matrices.common.MatrixError: Jordan normal form is not implemented if the matrix have eigenvalues in CRootOf form
+ .. code-block:: none
+
+    ================================================================================
+
+    The Digital Control is parameterized as:
+
+    --------------------------------------------------------------------------------
+
+    clock:
+    Analog signal returns constant 0, i.e., maps t |-> 0.
+
+    M:
+    6
+    ================================================================================
+
+    ================================================================================
+
+    The Simulator is parameterized by the:
+
+    --------------------------------------------------------------------------------
+
+    Analog System:
+    The analog system is parameterized as:
+    A =
+    [[ -60.23928467  -60.23928467    0.            0.            0.
+         0.        ]
+     [6250.            0.          -60.23928467    0.            0.
+         0.        ]
+     [   0.         6250.            0.          -60.23928467    0.
+         0.        ]
+     [   0.            0.         6250.            0.          -60.23928467
+         0.        ]
+     [   0.            0.            0.         6250.            0.
+       -60.23928467]
+     [   0.            0.            0.            0.         6250.
+         0.        ]],
+    B =
+    [[6250.]
+     [   0.]
+     [   0.]
+     [   0.]
+     [   0.]
+     [   0.]],
+    CT =
+    [[1. 0. 0. 0. 0. 0.]
+     [0. 1. 0. 0. 0. 0.]
+     [0. 0. 1. 0. 0. 0.]
+     [0. 0. 0. 1. 0. 0.]
+     [0. 0. 0. 0. 1. 0.]
+     [0. 0. 0. 0. 0. 1.]],
+    Gamma =
+    [[-6250.     0.     0.     0.     0.     0.]
+     [    0. -6250.     0.     0.     0.     0.]
+     [    0.     0. -6250.     0.     0.     0.]
+     [    0.     0.     0. -6250.     0.     0.]
+     [    0.     0.     0.     0. -6250.     0.]
+     [    0.     0.     0.     0.     0. -6250.]],
+    Gamma_tildeT =
+    [[ 1. -0. -0. -0. -0. -0.]
+     [-0.  1. -0. -0. -0. -0.]
+     [-0. -0.  1. -0. -0. -0.]
+     [-0. -0. -0.  1. -0. -0.]
+     [-0. -0. -0. -0.  1. -0.]
+     [-0. -0. -0. -0. -0.  1.]], and D=[[0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]
+     [0.]]
+
+    Digital Control:
+    ================================================================================
+
+    The Digital Control is parameterized as:
+
+    --------------------------------------------------------------------------------
+
+    clock:
+    Analog signal returns constant 0, i.e., maps t |-> 0.
+
+    M:
+    6
+    ================================================================================
+
+
+    Input signals:
+
+    Sinusoidal parameterized as:
+    amplitude = 1.0,
+    frequency = 97.65624999999999,
+    phase = 0.0,
+    and
+    offset = 0.0
+
+
+    Clock:
+    Analog signal returns constant 0, i.e., maps t |-> 0.
+
+    t_stop:
+    inf
+
+    --------------------------------------------------------------------------------
+
+    Currently the
+
+    state vector is:
+    [0. 0. 0. 0. 0. 0.]
+
+    t:
+    0.0
+
+    --------------------------------------------------------------------------------
+
+
+            ================================================================================
+
+    atol, rtol:
+    1e-09, 1e-06
+
+    Pre computed transition matrix:
+    [[ 9.93992011e-01 -4.80368680e-03  1.15864532e-05 -1.86219752e-08
+       2.24426966e-11 -2.16368686e-14]
+     [ 4.98396398e-01  9.97593570e-01 -4.81334117e-03  1.16027467e-05
+      -1.86421730e-08  2.24643335e-11]
+     [ 1.24724260e-01  4.99398066e-01  9.97591880e-01 -4.81333907e-03
+       1.16027445e-05 -1.86444179e-08]
+     [ 2.07982300e-02  1.24899654e-01  4.99397849e-01  9.97591880e-01
+      -4.81333884e-03  1.16050752e-05]
+     [ 2.60061392e-03  2.08207882e-02  1.24899629e-01  4.99397825e-01
+       9.97591638e-01 -4.81527325e-03]
+     [ 2.60133008e-04  2.60312116e-03  2.08232955e-02  1.24924719e-01
+       4.99598526e-01  9.98795698e-01]]
+
+    Pre-computed control matrix
+    [[-4.98596881e-01  1.20236964e-03 -1.93231669e-06  2.32868176e-09
+      -2.24488703e-12  1.80735119e-15]
+     [-1.24749327e-01 -4.99598767e-01  1.20406035e-03 -1.93441246e-06
+       2.33073947e-09 -2.24668034e-12]
+     [-2.08007372e-02 -1.24924743e-01 -4.99598550e-01  1.20406013e-03
+      -1.93441227e-06  2.33092503e-09]
+     [-2.60082290e-03 -2.08232975e-02 -1.24924721e-01 -4.99598550e-01
+       1.20406011e-03 -1.93464538e-06]
+     [-2.60133008e-04 -2.60312116e-03 -2.08232955e-02 -1.24924719e-01
+      -4.99598526e-01  1.20430195e-03]
+     [-2.16817926e-05 -2.60341984e-04 -2.60333014e-03 -2.08258047e-02
+      -1.24949811e-01 -4.99799251e-01]]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 102-111
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 92-101
 
 Default, Quadratic Complexity, Estimator
 ----------------------------------------
@@ -273,7 +392,7 @@ computed. Therefore, this procedure could be computationally intense for a
 analog system with a large analog state order or equivalently for large
 number of independent digital controls.
 
-.. GENERATED FROM PYTHON SOURCE LINES 111-133
+.. GENERATED FROM PYTHON SOURCE LINES 101-123
 
 .. code-block:: default
 
@@ -286,8 +405,8 @@ number of independent digital controls.
     print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
     # Set the batch size
-    K1 = 1 << 14
-    K2 = 1 << 14
+    K1 = 1 << 11
+    K2 = 1 << 11
 
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
@@ -300,13 +419,99 @@ number of independent digital controls.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 134-137
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    eta2 = 1259410956013.126, 121.00167467047152 [dB]
+    Digital estimator is parameterized as
+
+    eta2 = 1259410956013.13, 121 [dB],
+
+    Ts = 8e-05,
+    K1 = 2048,
+    K2 = 2048,
+
+    and
+    number_of_iterations = 9223372036854775808
+
+    Resulting in the filter coefficients
+    Af =
+    [[ 9.93992011e-01 -4.80368682e-03  1.15864448e-05 -1.85515926e-08
+       1.63410455e-10 -7.50223319e-11]
+     [ 4.98396397e-01  9.97593569e-01 -4.81334317e-03  1.16016953e-05
+      -1.11135429e-08  1.65593442e-08]
+     [ 1.24724256e-01  4.99398045e-01  9.97591782e-01 -4.81356428e-03
+       1.13768870e-05  1.77374675e-07]
+     [ 2.07981872e-02  1.24899305e-01  4.99395630e-01  9.97581755e-01
+      -4.83705939e-03 -1.55238302e-05]
+     [ 2.60019384e-03  2.08166882e-02  1.24867079e-01  4.99198307e-01
+       9.96748934e-01 -6.25618007e-03]
+     [ 2.57435177e-04  2.57297257e-03  2.05433050e-02  1.22849014e-01
+       4.88154288e-01  9.59742079e-01]],
+
+    Ab =
+    [[ 1.00362260e+00  4.82689704e-03  1.16236702e-05  1.86786149e-08
+       2.09634399e-10 -1.97644490e-10]
+     [-5.00804522e-01  9.97589700e-01  4.81334112e-03  1.15948304e-05
+       2.15247964e-08  1.18496514e-08]
+     [ 1.25125657e-01 -4.99397548e-01  9.97591713e-01  4.81382778e-03
+       1.07124083e-05  6.90493745e-07]
+     [-2.08483433e-02  1.24899069e-01 -4.99394396e-01  9.97575580e-01
+       4.85758001e-03 -5.16212805e-05]
+     [ 2.60500526e-03 -2.08147709e-02  1.24852463e-01 -4.99111003e-01
+       9.96381087e-01  7.05497104e-03]
+     [-2.56748688e-04  2.56174243e-03 -2.04480404e-02  1.22206039e-01
+      -4.84970386e-01  9.50489453e-01]],
+
+    Bf =
+    [[-4.98596881e-01  1.20236964e-03 -1.93231278e-06  2.31454334e-09
+      -3.97667673e-11  1.54595877e-11]
+     [-1.24749327e-01 -4.99598767e-01  1.20406083e-03 -1.93395884e-06
+       8.49726085e-10 -4.20727387e-09]
+     [-2.08007368e-02 -1.24924740e-01 -4.99598530e-01  1.20411261e-03
+      -1.87040237e-06 -4.10128631e-08]
+     [-2.60081858e-03 -2.08232546e-02 -1.24924376e-01 -4.99596513e-01
+       1.20951927e-03  5.19835322e-06]
+     [-2.60096754e-04 -2.60270056e-03 -2.08191933e-02 -1.24892521e-01
+      -4.99417729e-01  1.57454839e-03]
+     [-2.14752207e-05 -2.57642154e-04 -2.57316206e-03 -2.05457499e-02
+      -1.22909157e-01 -4.89999233e-01]],
+
+    Bb =
+    [[ 5.01005490e-01  1.20623894e-03  1.93696031e-06  2.34138942e-09
+       4.37598459e-11 -5.22665948e-11]
+     [-1.25150778e-01  4.99598283e-01  1.20406088e-03  1.93243952e-06
+       3.44418669e-09  2.83912974e-09]
+     [ 2.08509199e-02 -1.24924690e-01  4.99598518e-01  1.20416489e-03
+       1.72011597e-06  1.85227738e-07]
+     [-2.60583470e-03  2.08232276e-02 -1.24924193e-01  4.99595398e-01
+       1.21392827e-03 -1.44616071e-05]
+     [ 2.60496116e-04 -2.60249443e-03  2.08172912e-02 -1.24878394e-01
+       4.99342305e-01  1.77775324e-03]
+     [-2.14127285e-05  2.56542055e-04 -2.56194098e-03  2.04515506e-02
+      -1.22306845e-01  4.87667659e-01]],
+
+    and WT =
+    [[ 3.72587870e-02  3.59110828e-04 -3.04746440e-05 -2.93722947e-07
+       3.97693787e-08  3.78364444e-10]].
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 124-127
 
 Visualize Estimator's Transfer Function (Same for Both)
 -------------------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-176
+.. GENERATED FROM PYTHON SOURCE LINES 127-166
 
 .. code-block:: default
 
@@ -350,7 +555,18 @@ Visualize Estimator's Transfer Function (Same for Both)
     plt.gcf().tight_layout()
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-185
+
+
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_001.png
+   :alt: Signal and noise transfer functions
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_001.png
+   :class: sphx-glr-single-img
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 167-175
 
 FIR Filter Estimator
 --------------------
@@ -361,7 +577,7 @@ we visualize the decay of the :math:`\|\cdot\|_2` norm of the corresponding
 filter coefficients. This is an aid to determine if the lookahead and
 lookback sizes L1 and L2 are set sufficiently large.
 
-.. GENERATED FROM PYTHON SOURCE LINES 185-222
+.. GENERATED FROM PYTHON SOURCE LINES 175-210
 
 .. code-block:: default
 
@@ -386,10 +602,8 @@ lookback sizes L1 and L2 are set sufficiently large.
 
     fig, ax = plt.subplots(2)
     for index in range(N):
-        ax[0].plot(h_index, impulse_response[:, index],
-                   label=f"$h_{index + 1}[k]$")
-        ax[1].plot(h_index, impulse_response_dB[:, index],
-                   label=f"$h_{index + 1}[k]$")
+        ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+        ax[1].plot(h_index, impulse_response_dB[:, index], label=f"$h_{index + 1}[k]$")
     ax[0].legend()
     fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     ax[1].set_xlabel("filter taps k")
@@ -403,7 +617,48 @@ lookback sizes L1 and L2 are set sufficiently large.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 223-229
+
+
+.. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_002.png
+   :alt: For $\eta^2 = 121.00167467047152$ [dB]
+   :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_002.png
+   :class: sphx-glr-single-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    FIR estimator is parameterized as
+    eta2 = 1259410956013.13, 121 [dB],
+    Ts = 8e-05,
+    K1 = 2048,
+    K2 = 2048,
+    and
+    number_of_iterations = 9223372036854775808.
+    Resulting in the filter coefficients
+    h =
+    [[[ 1.14306940e-05  1.29489609e-06 -2.52045291e-07 -1.33931980e-08
+        2.31565098e-09 -1.30742478e-12]
+      [ 1.07923609e-05  1.47109957e-06 -2.38094892e-07 -1.57156018e-08
+        2.24329137e-09  1.30261298e-11]
+      [ 1.00652656e-05  1.63654186e-06 -2.22186913e-07 -1.79252860e-08
+        2.15278794e-09  2.73293791e-11]
+      ...
+      [ 1.00652650e-05 -1.44251812e-06 -2.51863760e-07  1.33562581e-08
+        2.45429215e-09  1.65009070e-11]
+      [ 1.07923603e-05 -1.26305993e-06 -2.64447490e-07  1.08719627e-08
+        2.49955991e-09  3.21164379e-11]
+      [ 1.14306935e-05 -1.07455159e-06 -2.74882693e-07  8.31452342e-09
+        2.52489234e-09  4.73997345e-11]]].
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 211-217
 
 IIR Filter Estimator
 --------------------
@@ -412,7 +667,7 @@ The IIR filter is closely related to the FIR filter with the exception
 of an moving average computation.
 See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
 
-.. GENERATED FROM PYTHON SOURCE LINES 229-241
+.. GENERATED FROM PYTHON SOURCE LINES 217-229
 
 .. code-block:: default
 
@@ -429,7 +684,70 @@ See :py:class:`cbadc.digital_estimator.IIRFilter` for more information.
     digital_estimator_iir(simulator3)
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 242-250
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    IIR estimator is parameterized as
+    eta2 = 1259410956013.13, 121 [dB],
+    Ts = 8e-05,
+    K2 = 2048,
+    and
+    number_of_iterations = 9223372036854775808.
+    Resulting in the filter coefficients
+    Af =
+    [[ 9.93992011e-01 -4.80368682e-03  1.15864448e-05 -1.85515926e-08
+       1.63410455e-10 -7.50223319e-11]
+     [ 4.98396397e-01  9.97593569e-01 -4.81334317e-03  1.16016953e-05
+      -1.11135429e-08  1.65593442e-08]
+     [ 1.24724256e-01  4.99398045e-01  9.97591782e-01 -4.81356428e-03
+       1.13768870e-05  1.77374675e-07]
+     [ 2.07981872e-02  1.24899305e-01  4.99395630e-01  9.97581755e-01
+      -4.83705939e-03 -1.55238302e-05]
+     [ 2.60019384e-03  2.08166882e-02  1.24867079e-01  4.99198307e-01
+       9.96748934e-01 -6.25618007e-03]
+     [ 2.57435177e-04  2.57297257e-03  2.05433050e-02  1.22849014e-01
+       4.88154288e-01  9.59742079e-01]],
+    Bf =
+    [[-4.98596881e-01  1.20236964e-03 -1.93231278e-06  2.31454334e-09
+      -3.97667673e-11  1.54595877e-11]
+     [-1.24749327e-01 -4.99598767e-01  1.20406083e-03 -1.93395884e-06
+       8.49726085e-10 -4.20727387e-09]
+     [-2.08007368e-02 -1.24924740e-01 -4.99598530e-01  1.20411261e-03
+      -1.87040237e-06 -4.10128631e-08]
+     [-2.60081858e-03 -2.08232546e-02 -1.24924376e-01 -4.99596513e-01
+       1.20951927e-03  5.19835322e-06]
+     [-2.60096754e-04 -2.60270056e-03 -2.08191933e-02 -1.24892521e-01
+      -4.99417729e-01  1.57454839e-03]
+     [-2.14752207e-05 -2.57642154e-04 -2.57316206e-03 -2.05457499e-02
+      -1.22909157e-01 -4.89999233e-01]],WT =
+    [[ 3.72587870e-02  3.59110828e-04 -3.04746440e-05 -2.93722947e-07
+       3.97693787e-08  3.78364444e-10]],
+     and h =
+    [[[ 1.86212792e-02  2.28154969e-04 -1.46830068e-05 -1.87616530e-07
+        1.94061455e-08  2.52891373e-10]
+      [ 1.85726422e-02  3.24796865e-04 -1.32368983e-05 -2.64504813e-07
+        1.81534335e-08  3.75850022e-10]
+      [ 1.84756129e-02  4.20239300e-04 -1.12914286e-05 -3.32485462e-07
+        1.64896940e-08  4.90005460e-10]
+      ...
+      [ 1.00652650e-05 -1.44251812e-06 -2.51863760e-07  1.33562581e-08
+        2.45429215e-09  1.65009070e-11]
+      [ 1.07923603e-05 -1.26305993e-06 -2.64447490e-07  1.08719627e-08
+        2.49955991e-09  3.21164379e-11]
+      [ 1.14306935e-05 -1.07455159e-06 -2.74882693e-07  8.31452342e-09
+        2.52489234e-09  4.73997345e-11]]].
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 230-238
 
 Parallel Estimator
 ------------------------------
@@ -440,7 +758,7 @@ resembles the default estimator but diagonalizes the filter coefficients
 resulting in a more computationally more efficient filter that can be
 parallelized into independent filter operations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 250-261
+.. GENERATED FROM PYTHON SOURCE LINES 238-249
 
 .. code-block:: default
 
@@ -456,7 +774,97 @@ parallelized into independent filter operations.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 262-269
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Parallel estimator is parameterized as
+    eta2 = 1259410956013.13, 121 [dB],
+    Ts = 8e-05,
+    K1 = 2048,
+    K2 = 2048,
+    and
+    number_of_iterations = 9223372036854775808
+    Resulting in the filter coefficients
+    f_a =
+    [0.99352853+0.08855482j 0.99352853-0.08855482j 0.99020742+0.06151822j
+     0.99020742-0.06151822j 0.98788911+0.02199108j 0.98788911-0.02199108j],
+    b_a =
+    [[-1.38136935e+03+2.51506293e+03j  4.26841429e+02+2.82595564e+02j
+       3.90945213e+01-5.02154026e+01j -4.61566859e+00-4.48169798e+00j
+      -4.43374620e-01+3.13952416e-01j  9.36956967e-03+3.68208127e-02j]
+     [-1.38136935e+03-2.51506293e+03j  4.26841429e+02-2.82595564e+02j
+       3.90945213e+01+5.02154026e+01j -4.61566859e+00+4.48169798e+00j
+      -4.43374620e-01-3.13952416e-01j  9.36956967e-03-3.68208127e-02j]
+     [ 3.02676362e+03-8.51639570e+03j -9.79746501e+02-5.92495176e+02j
+      -5.98609064e+01+3.01180862e+01j -6.65317488e+00+2.19446921e+00j
+      -4.09920461e-01+1.15069267e+00j  7.27422100e-02+8.92621035e-02j]
+     [ 3.02676362e+03+8.51639570e+03j -9.79746501e+02+5.92495176e+02j
+      -5.98609064e+01-3.01180861e+01j -6.65317488e+00-2.19446921e+00j
+      -4.09920461e-01-1.15069267e+00j  7.27422100e-02-8.92621035e-02j]
+     [ 1.64587846e+03-1.36561516e+04j -5.52732368e+02-5.30916615e+02j
+      -2.09658328e+01-1.19692787e+02j -1.11559461e+01-7.04141499e+00j
+      -7.81738548e-01-8.25159236e-01j -1.63333052e-01-5.22025353e-02j]
+     [ 1.64587846e+03+1.36561516e+04j -5.52732368e+02+5.30916615e+02j
+      -2.09658328e+01+1.19692787e+02j -1.11559461e+01+7.04141499e+00j
+      -7.81738548e-01+8.25159236e-01j -1.63333052e-01+5.22025353e-02j]],
+    f_b =
+    [[ 1.38153996e+03-2.51528946e+03j  4.53510548e+02+2.34143075e+02j
+      -3.06136063e+01+5.52005619e+01j -5.28796590e+00-3.46613061e+00j
+       3.47968904e-01-3.90570686e-01j  1.68823963e-02+3.00750056e-02j]
+     [ 1.38153996e+03+2.51528946e+03j  4.53510548e+02-2.34143075e+02j
+      -3.06136063e+01-5.52005619e+01j -5.28796590e+00+3.46613061e+00j
+       3.47968904e-01+3.90570686e-01j  1.68823963e-02-3.00750056e-02j]
+     [ 3.02777145e+03-8.51896570e+03j  1.03840481e+03+4.28469244e+02j
+      -4.04251316e+01+3.99688739e+01j  5.68846326e+00-1.51947402e+00j
+      -2.91086803e-01+1.11522405e+00j -7.93111153e-02-6.76031065e-02j]
+     [ 3.02777145e+03+8.51896570e+03j  1.03840481e+03-4.28469244e+02j
+      -4.04251316e+01-3.99688739e+01j  5.68846326e+00+1.51947402e+00j
+      -2.91086803e-01-1.11522405e+00j -7.93111153e-02+6.76031065e-02j]
+     [-1.64668442e+03+1.36624329e+04j -5.84727395e+02-2.67798133e+02j
+       1.00094661e+01+1.12047350e+02j -1.08624178e+01-4.81058892e+00j
+       5.69853789e-01+7.11277929e-01j -1.50265682e-01-3.75273960e-02j]
+     [-1.64668442e+03-1.36624329e+04j -5.84727395e+02+2.67798133e+02j
+       1.00094661e+01-1.12047350e+02j -1.08624178e+01+4.81058892e+00j
+       5.69853789e-01-7.11277929e-01j -1.50265682e-01+3.75273960e-02j]],
+    b_b =
+    [[-1.38136935e+03+2.51506293e+03j  4.26841429e+02+2.82595564e+02j
+       3.90945213e+01-5.02154026e+01j -4.61566859e+00-4.48169798e+00j
+      -4.43374620e-01+3.13952416e-01j  9.36956967e-03+3.68208127e-02j]
+     [-1.38136935e+03-2.51506293e+03j  4.26841429e+02-2.82595564e+02j
+       3.90945213e+01+5.02154026e+01j -4.61566859e+00+4.48169798e+00j
+      -4.43374620e-01-3.13952416e-01j  9.36956967e-03-3.68208127e-02j]
+     [ 3.02676362e+03-8.51639570e+03j -9.79746501e+02-5.92495176e+02j
+      -5.98609064e+01+3.01180862e+01j -6.65317488e+00+2.19446921e+00j
+      -4.09920461e-01+1.15069267e+00j  7.27422100e-02+8.92621035e-02j]
+     [ 3.02676362e+03+8.51639570e+03j -9.79746501e+02+5.92495176e+02j
+      -5.98609064e+01-3.01180861e+01j -6.65317488e+00-2.19446921e+00j
+      -4.09920461e-01-1.15069267e+00j  7.27422100e-02-8.92621035e-02j]
+     [ 1.64587846e+03-1.36561516e+04j -5.52732368e+02-5.30916615e+02j
+      -2.09658328e+01-1.19692787e+02j -1.11559461e+01-7.04141499e+00j
+      -7.81738548e-01-8.25159236e-01j -1.63333052e-01-5.22025353e-02j]
+     [ 1.64587846e+03+1.36561516e+04j -5.52732368e+02+5.30916615e+02j
+      -2.09658328e+01+1.19692787e+02j -1.11559461e+01+7.04141499e+00j
+      -7.81738548e-01+8.25159236e-01j -1.63333052e-01+5.22025353e-02j]],
+    f_w =
+    [[ 3.03885800e-07+2.89096210e-07j  3.03885800e-07-2.89096210e-07j
+       1.85353653e-07+3.27557820e-07j  1.85353653e-07-3.27557820e-07j
+      -6.07297811e-08-3.44886118e-07j -6.07297811e-08+3.44886118e-07j]],
+    and b_w =
+    [[-3.03911447e-07-2.89128778e-07j -3.03911447e-07+2.89128778e-07j
+       1.85407012e-07+3.27659639e-07j  1.85407012e-07-3.27659639e-07j
+       6.07565229e-08+3.45045113e-07j  6.07565229e-08-3.45045113e-07j]].
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 250-257
 
 Estimating (Filtering)
 ----------------------
@@ -466,7 +874,7 @@ estimators. Note that since no stop criteria is set for either the analog
 signal, the simulator, or the digital estimator this iteration could
 potentially continue until the default stop criteria of 2^63 iterations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 269-282
+.. GENERATED FROM PYTHON SOURCE LINES 257-270
 
 .. code-block:: default
 
@@ -484,7 +892,13 @@ potentially continue until the default stop criteria of 2^63 iterations.
         u_hat_parallel[index] = next(digital_estimator_parallel)
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 283-288
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 271-276
 
 Visualizing Results
 -------------------
@@ -492,7 +906,7 @@ Visualizing Results
 Finally, we summarize the comparision by visualizing the resulting estimate
 in both time and frequency domain.
 
-.. GENERATED FROM PYTHON SOURCE LINES 288-404
+.. GENERATED FROM PYTHON SOURCE LINES 276-386
 
 .. code-block:: default
 
@@ -544,12 +958,11 @@ in both time and frequency domain.
     plt.tight_layout()
 
     batch_error = stf_at_omega * u - u_hat_batch
-    fir_error = stf_at_omega * u[: (u.size - L1 + 1)] - u_hat_fir[(L1 - 1):]
-    iir_error = stf_at_omega * u[: (u.size - L1 + 1)] - u_hat_iir[(L1 - 1):]
+    fir_error = stf_at_omega * u[: (u.size - L1 + 1)] - u_hat_fir[(L1 - 1) :]
+    iir_error = stf_at_omega * u[: (u.size - L1 + 1)] - u_hat_iir[(L1 - 1) :]
     parallel_error = stf_at_omega * u - u_hat_parallel
     plt.figure()
-    plt.plot(t, batch_error,
-             label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Batch")
+    plt.plot(t, batch_error, label="$|\mathrm{STF}(2 \pi f_u) * u(t) - \hat{u}(t)|$ Batch")
     plt.plot(
         t[: (u.size - L1 + 1)],
         fir_error,
@@ -581,28 +994,23 @@ in both time and frequency domain.
     )
 
     plt.figure()
-    u_hat_batch_clipped = u_hat_batch[(K1 + K2): -K2]
-    u_hat_fir_clipped = u_hat_fir[(L1 + L2):]
-    u_hat_iir_clipped = u_hat_iir[(K1 + K2): -K2]
-    u_hat_parallel_clipped = u_hat_parallel[(K1 + K2): -K2]
+    u_hat_batch_clipped = u_hat_batch[(K1 + K2) : -K2]
+    u_hat_fir_clipped = u_hat_fir[(L1 + L2) :]
+    u_hat_iir_clipped = u_hat_iir[(K1 + K2) : -K2]
+    u_hat_parallel_clipped = u_hat_parallel[(K1 + K2) : -K2]
     u_clipped = stf_at_omega * u
-    f_batch, psd_batch = cbadc.utilities.compute_power_spectral_density(
-        u_hat_batch_clipped)
-    f_fir, psd_fir = cbadc.utilities.compute_power_spectral_density(
-        u_hat_fir_clipped)
-    f_iir, psd_iir = cbadc.utilities.compute_power_spectral_density(
-        u_hat_iir_clipped)
+    f_batch, psd_batch = cbadc.utilities.compute_power_spectral_density(u_hat_batch_clipped)
+    f_fir, psd_fir = cbadc.utilities.compute_power_spectral_density(u_hat_fir_clipped)
+    f_iir, psd_iir = cbadc.utilities.compute_power_spectral_density(u_hat_iir_clipped)
     f_parallel, psd_parallel = cbadc.utilities.compute_power_spectral_density(
         u_hat_parallel_clipped
     )
     f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(u_clipped)
-    plt.semilogx(f_ref, 10 * np.log10(psd_ref),
-                 label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
+    plt.semilogx(f_ref, 10 * np.log10(psd_ref), label="$\mathrm{STF}(2 \pi f_u) * U(f)$")
     plt.semilogx(f_batch, 10 * np.log10(psd_batch), label="$\hat{U}(f)$ Batch")
     plt.semilogx(f_fir, 10 * np.log10(psd_fir), label="$\hat{U}(f)$ FIR")
     plt.semilogx(f_iir, 10 * np.log10(psd_iir), label="$\hat{U}(f)$ IIR")
-    plt.semilogx(f_parallel, 10 * np.log10(psd_parallel),
-                 label="$\hat{U}(f)$ Parallel")
+    plt.semilogx(f_parallel, 10 * np.log10(psd_parallel), label="$\hat{U}(f)$ Parallel")
     plt.legend()
     plt.ylim((-200, 50))
     plt.xlim((f_fir[1], f_fir[-1]))
@@ -613,14 +1021,85 @@ in both time and frequency domain.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 405-409
+
+
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_003.png
+         :alt: Estimated input signal
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_003.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_004.png
+         :alt: Estimated input signal
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_004.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_005.png
+         :alt: Estimated input signal
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_005.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_006.png
+         :alt: Estimation error
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_006.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_007.png
+         :alt: plot a compare estimator
+         :srcset: /tutorials/b_general/images/sphx_glr_plot_a_compare_estimator_007.png
+         :class: sphx-glr-multi-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/matplotlib/cbook/__init__.py:1298: ComplexWarning: Casting complex values to real discards the imaginary part
+      return np.asarray(x, float)
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/matplotlib/cbook/__init__.py:1298: ComplexWarning: Casting complex values to real discards the imaginary part
+      return np.asarray(x, float)
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/matplotlib/cbook/__init__.py:1298: ComplexWarning: Casting complex values to real discards the imaginary part
+      return np.asarray(x, float)
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/matplotlib/cbook/__init__.py:1298: ComplexWarning: Casting complex values to real discards the imaginary part
+      return np.asarray(x, float)
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/matplotlib/cbook/__init__.py:1298: ComplexWarning: Casting complex values to real discards the imaginary part
+      return np.asarray(x, float)
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/matplotlib/cbook/__init__.py:1298: ComplexWarning: Casting complex values to real discards the imaginary part
+      return np.asarray(x, float)
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/matplotlib/cbook/__init__.py:1298: ComplexWarning: Casting complex values to real discards the imaginary part
+      return np.asarray(x, float)
+    Average Batch Error: 0.00010008368878960507
+    Average FIR Error: 0.00010364079490205285
+    Average IIR Error: 0.00010400190814274451
+    Average Parallel Error: 0.00010008368868233555
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/signal/spectral.py:1816: UserWarning: Input data is complex, switching to return_onesided=False
+      warnings.warn('Input data is complex, switching to '
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 387-391
 
 Compute Time
 ------------
 
 Compare the execution time of each estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 409-478
+.. GENERATED FROM PYTHON SOURCE LINES 391-460
 
 .. code-block:: default
 
@@ -695,9 +1174,34 @@ Compare the execution time of each estimator
 
 
 
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Digital Estimator:
+    4.8952754869969795 sec
+
+    FIR Estimator:
+    19.358395716000814 sec
+
+    IIR Estimator:
+    20.700807867993717 sec
+
+    Parallel Estimator:
+    9.081553351003095 sec
+
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.458 seconds)
+   **Total running time of the script:** ( 7 minutes  18.040 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_a_compare_estimator.py:

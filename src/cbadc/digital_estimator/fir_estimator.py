@@ -119,21 +119,21 @@ class FIRFilter(DigitalEstimator):
         downsample: int = 1,
         offset: np.ndarray = None,
         fixed_point: cbadc.utilities.FixedPoint = None,
-        solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
     ):
         """Initializes filter coefficients"""
         if K1 < 0:
-            raise BaseException("K1 must be non negative integer.")
+            raise Exception("K1 must be non negative integer.")
         self.K1 = K1
         if K2 < 1:
-            raise BaseException("K2 must be a positive integer.")
+            raise Exception("K2 must be a positive integer.")
         self.K2 = K2
         self.K3 = K1 + K2
         self._filter_lag = self.K2 - 2
         self.analog_system = analog_system
         self.digital_control = digital_control
         if eta2 < 0.0:
-            raise BaseException("eta2 must be non negative.")
+            raise Exception("eta2 must be non negative.")
         self.eta2 = eta2
         self.control_signal = None
         self.number_of_iterations = stop_after_number_of_iterations
@@ -153,7 +153,7 @@ class FIRFilter(DigitalEstimator):
         if offset is not None:
             self.offset = np.array(offset, dtype=np.float64)
             if self.offset.size != self.analog_system.L:
-                raise BaseException("offset is not of size L")
+                raise Exception("offset is not of size L")
         else:
             self.offset = np.zeros(self.analog_system.L, dtype=np.float64)
 
@@ -168,7 +168,7 @@ class FIRFilter(DigitalEstimator):
         # For transfer functions
         self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
         # Compute filter coefficients
-        self._determine_solver_type(solver_type)
+        self.solver_type = solver_type
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
 
         # Initialize filter.
@@ -563,7 +563,7 @@ class FIRFilter(DigitalEstimator):
     def __next__(self) -> np.ndarray:
         # Check if control signal iterator is set.
         if self.control_signal is None:
-            raise BaseException("No iterator set.")
+            raise Exception("No iterator set.")
 
         # Check if the end of prespecified size
         self._iteration += self.downsample

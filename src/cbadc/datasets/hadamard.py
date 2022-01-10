@@ -31,7 +31,7 @@ class HadamardPCB:
             self.T = 1.0 / 24e6
             self.c_1 = 120e-12
         else:
-            raise BaseException("Specified PCB version does not supported.")
+            raise Exception("Specified PCB version does not supported.")
         # Hadamard matrix
         H_n = scipy.linalg.hadamard(4)
         buffer_loss = self.r_3 / (4 * self.r_3 + self.r_1)
@@ -53,7 +53,9 @@ class HadamardPCB:
         self.analog_system = cbadc.analog_system.AnalogSystem(
             A, B, CT, Gamma, Gamma_tildeT
         )
-        self.digital_control = cbadc.digital_control.DigitalControl(self.T, 8)
+        self.digital_control = cbadc.digital_control.DigitalControl(
+            cbadc.analog_signal.Clock(self.T), 8
+        )
 
     def simulation_ramp_1_B(self):
         """20 mHz period length, 4.5 Vpp ramp input simulation
@@ -91,14 +93,14 @@ class HadamardPCB:
 
         """
         if self.pcb != "B":
-            raise BaseException("This simulation was made with PCB-B")
+            raise Exception("This simulation was made with PCB-B")
         input_signal = cbadc.analog_signal.Ramp(4.5, 1 / 20e-3)
         size = int(100e6)
-        ideal_simulator = cbadc.simulator.StateSpaceSimulator(
+        ideal_simulator = cbadc.simulator.get_simulator(
             self.analog_system,
             self.digital_control,
             [input_signal],
-            t_stop=self.digital_control.T * size,
+            t_stop=self.digital_control.clock.T * size,
         )
         control_signal_hardware = cbadc.utilities.byte_stream_2_control_signal(
             cbadc.utilities.read_byte_stream_from_url(

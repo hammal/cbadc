@@ -47,6 +47,7 @@ class Clock(_AnalogSignal):
         duty_cycle: float = 0.5,
         max_swing: float = 2.0,
     ) -> None:
+        super().__init__()
         self.T = T
         self.tt = tt
         self._tt_2 = self.tt / 2.0
@@ -55,19 +56,17 @@ class Clock(_AnalogSignal):
         self._neq_pulse_time = self.duty_cycle * self.T
         self.max_value = max_swing / 2.0
         if duty_cycle > 1.0 or duty_cycle <= 0.0:
-            raise BaseException(
+            raise Exception(
                 f"duty_cycle must be a number between 0 and up to 1. Not {duty_cycle}"
             )
         if tt > self.max_step():
-            raise BaseException(
-                f"transition time tt can't be longer than smallest clock period"
+            raise Exception(
+                "transition time tt can't be longer than smallest clock period"
             )
         if td > T:
-            raise BaseException(
+            raise Exception(
                 "Does not make sense to have longer global delay than time period."
             )
-
-        super().__init__()
 
     def max_step(self):
         return self.T * min(self.duty_cycle, 1 - self.duty_cycle)

@@ -187,9 +187,7 @@ def zpk2abcd(z, p, k):
 
     """
     if len(z) > len(p) or len(p) < 1:
-        raise BaseException(
-            "Incorrect specification. can't have more zeros than poles."
-        )
+        raise Exception("Incorrect specification. can't have more zeros than poles.")
 
     # Sort poles and zeros
     p = _sort_by_complex_descending(p)
@@ -217,7 +215,7 @@ def zpk2abcd(z, p, k):
                 A = np.array([[a1, b1], [b2, a2]])
             else:
                 if np.imag(pole_1) != 0 or np.imag(pole_2) != 0:
-                    raise BaseException("Can't have non-conjugate complex poles")
+                    raise Exception("Can't have non-conjugate complex poles")
                 A = np.array([[np.real(pole_1), 0], [1.0, np.real(pole_2)]])
 
             if index < len(z):
@@ -232,7 +230,7 @@ def zpk2abcd(z, p, k):
                         ]
                     )
                     if not np.allclose(np.imag(y), np.zeros(2)):
-                        raise BaseException("Can't have non-conjugate complex zeros")
+                        raise Exception("Can't have non-conjugate complex zeros")
                     M = np.array([[-1.0, 0], [-A[1, 1], A[1, 0]]])
                     sol = np.linalg.solve(M, np.real(y))
                     D = k_per_state ** 2 * np.array([[1.0]])
@@ -240,7 +238,7 @@ def zpk2abcd(z, p, k):
                 else:
                     # Single zero
                     if np.imag(zero_1) != 0:
-                        raise BaseException("Can't have non-conjugate complex zero")
+                        raise Exception("Can't have non-conjugate complex zero")
                     c1 = 1.0
                     c2 = (A[1, 1] - np.real(zero_1)) / A[1, 0]
                     CT = np.array([[c1, c2]])
@@ -255,7 +253,7 @@ def zpk2abcd(z, p, k):
             # Only one pole and possibly zero left
             pole = p[index]
             if np.imag(pole) != 0:
-                raise BaseException("Can't have non-conjugate complex poles")
+                raise Exception("Can't have non-conjugate complex poles")
             A = np.array([[np.real(pole)]])
             B = np.array([[k_per_state]])
             CT = np.array([[1.0]])
@@ -263,7 +261,7 @@ def zpk2abcd(z, p, k):
             if index < len(z):
                 zero = z[index]
                 if np.imag(zero) != 0:
-                    raise BaseException("Cant have non-conjugate complex zeros")
+                    raise Exception("Cant have non-conjugate complex zeros")
                 D[0, 0] = k_per_state
                 CT[0, 0] = pole - np.real(zero)
             index += 1
@@ -278,7 +276,7 @@ def _sort_by_complex_descending(list: np.ndarray) -> np.ndarray:
     complex_indexes = np.imag(list) != 0
     number_of_complex_poles = np.sum(complex_indexes)
     if not _complex_conjugate_pairs(list[complex_indexes]):
-        raise BaseException("Not complex conjugate pairs")
+        raise Exception("Not complex conjugate pairs")
     sorted = np.zeros_like(list)
     sorted[:number_of_complex_poles] = list[complex_indexes]
     list[number_of_complex_poles:] = list[complex_indexes != True]
@@ -388,9 +386,7 @@ def tf2abcd(
         direct transition matrix.
     """
     if b.size != (a.size + 1) or len(b) > b.size or len(a) > a.size:
-        raise BaseException(
-            f"a and b are not correctly configures with b={b} and a={a}"
-        )
+        raise Exception(f"a and b are not correctly configures with b={b} and a={a}")
     L = a.size
     A = np.zeros((a.size, a.size))
     B = np.zeros((a.size, 1))

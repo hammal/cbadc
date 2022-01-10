@@ -46,6 +46,11 @@ class Sinusoidal(_AnalogSignal):
 
     """
 
+    amplitude: float
+    angularFrequency: float
+    phase: float
+    offset: float
+
     def __init__(
         self,
         amplitude: float,
@@ -53,6 +58,7 @@ class Sinusoidal(_AnalogSignal):
         phase: float = 0.0,
         offset: float = 0.0,
     ):
+        super().__init__()
         self.amplitude: float = amplitude
         self.frequency: float = frequency
         self.angularFrequency: float = 2 * np.pi * self.frequency
@@ -61,10 +67,10 @@ class Sinusoidal(_AnalogSignal):
         self._mpmath_dic = {
             'amplitude': mp.mpmathify(amplitude),
             'frequency': mp.mpmathify(frequency),
+            'angularFrequency': mp.mpmathify('2') * mp.pi * mp.mpmathify(frequency),
             'phase': mp.mpmathify(phase),
             'offset': mp.mpmathify(offset),
         }
-        super().__init__()
 
     def __str__(self):
         return f"""
@@ -98,7 +104,9 @@ offset = {self.offset}
         t = mp.mpmathify(t)
         return (
             self._mpmath_dic['amplitude']
-            * mp.sin(mp.mpf('2') * mp.pi * t + self._mpmath_dic['phase'])
+            * mp.sin(
+                self._mpmath_dic['angularFrequency'] * t + self._mpmath_dic['phase']
+            )
             + self._mpmath_dic['offset']
         )
 

@@ -139,7 +139,7 @@ def test_tf2abcd():
 
     try:
         cb.analog_system.topology.tf2abcd(temp, temp)
-    except BaseException:
+    except Exception:
         pass
 
     A, B, CT, D = cb.analog_system.topology.tf2abcd(b, a)

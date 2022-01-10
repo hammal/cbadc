@@ -45,7 +45,7 @@ analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec
 
 
 T = 1 / (2 * beta)
-digital_control = cbadc.digital_control.DigitalControl(T, M)
+digital_control = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 
 
 # Summarize the analog system, digital control, and digital estimator.
@@ -256,7 +256,7 @@ plt.semilogx(f_ref, 10 * np.log10(psd_ref), label=description[-1])
 
 plt.legend()
 plt.xlabel("frequency [Hz]")
-plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 plt.ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
 plt.xlim((0.0002, 0.5))
 _ = plt.ylim((-150, 40))

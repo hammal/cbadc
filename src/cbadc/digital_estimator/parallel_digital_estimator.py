@@ -125,21 +125,21 @@ class ParallelEstimator(DigitalEstimator):
         Ts: float = None,
         mid_point: bool = False,
         downsample: int = 1,
-        solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
     ):
         # Check inputs
         if K1 < 1:
-            raise BaseException("K1 must be a positive integer.")
+            raise Exception("K1 must be a positive integer.")
         self.K1 = K1
         if K2 < 0:
-            raise BaseException("K2 must be a non negative integer.")
+            raise Exception("K2 must be a non negative integer.")
         self.K2 = K2
         self.K3 = K1 + K2
         self._filter_lag = -1
         self.analog_system = analog_system
         self.digital_control = digital_control
         if eta2 < 0:
-            raise BaseException("eta2 must be non negative.")
+            raise Exception("eta2 must be non negative.")
         if Ts:
             self.Ts = Ts
         else:
@@ -164,7 +164,7 @@ class ParallelEstimator(DigitalEstimator):
         self.mid_point = mid_point
 
         # Initialize filters
-        self._determine_solver_type(solver_type)
+        self.solver_type = solver_type
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
         self._allocate_memory_buffers()
 
@@ -204,7 +204,7 @@ class ParallelEstimator(DigitalEstimator):
         mean: np.complex128 = np.complex128(0)
         # check if ready to compute buffer
         if self._control_signal_in_buffer < self.K3:
-            raise BaseException("Control signal buffer not full")
+            raise Exception("Control signal buffer not full")
 
         self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
 
@@ -236,7 +236,7 @@ class ParallelEstimator(DigitalEstimator):
 
     def _input(self, s: np.ndarray) -> bool:
         if self._control_signal_in_buffer == (self.K3):
-            raise BaseException(
+            raise Exception(
                 "Input buffer full. You must compute batch before adding more control signals"
             )
         self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
@@ -251,7 +251,7 @@ class ParallelEstimator(DigitalEstimator):
     def __next__(self) -> np.ndarray:
         # Check if control signal iterator is set.
         if self.control_signal is None:
-            raise BaseException("No iterator set.")
+            raise Exception("No iterator set.")
 
         # Check if the end of prespecified size
         if self.number_of_iterations < self._iteration:

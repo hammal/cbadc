@@ -39,6 +39,8 @@ def overcomplete_set(Gamma: np.ndarray, M: int):
             cost[index] = sol.fun
             candidate_set[:, index] = sol.x / np.linalg.norm(sol.x, ord=2)
 
+        best_candidate_index = np.argmax(cost)
+
         T = np.vstack(
             (T, candidate_set[:, best_candidate_index].reshape((1, T.shape[1])))
         )
@@ -89,7 +91,7 @@ def unit_element_set(N: int, M: int, candidates=[-1, 1, 0]):
     # ]
     # print(candidate_set)
     if candidate_set.shape[0] < M:
-        raise BaseException("Not enough unique combinations; M is set to large.")
+        raise Exception("Not enough unique combinations; M is set to large.")
     set = candidate_set[0, :].reshape((N, 1))
     candidate_set = np.delete(candidate_set, 0, 0)
 

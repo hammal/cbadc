@@ -25,9 +25,7 @@ class SimulatorType(enum.Enum):
 def get_simulator(
     analog_system: cbadc.analog_system._valid_analog_system_types,
     digital_control: cbadc.digital_control._valid_digital_control_types,
-    input_signal: List[
-        cbadc.analog_signal._valid_input_signal_types,
-    ],
+    input_signal: List[cbadc.analog_signal._valid_input_signal_types],
     clock: cbadc.analog_signal._valid_clock_types = None,
     t_stop: float = math.inf,
     initial_state_vector=None,

@@ -1,5 +1,5 @@
 import numpy as np
-from ..analog_signal import StepResponse, _valid_clock_types
+from ..analog_signal import StepResponse, _valid_clock_types, Clock
 from ..analog_signal.impulse_responses import _ImpulseResponse
 
 
@@ -47,11 +47,6 @@ class DigitalControl:
     >>> clock = Clock(T)
     >>> M = 4
     >>> dc = DigitalControl(clock, M)
-    >>> print(dc)
-    The Digital Control is parameterized as:
-    T = 1e-06,
-    M = 4, and next update at
-    t = 1e-06
     """
 
     def __init__(
@@ -61,6 +56,8 @@ class DigitalControl:
         t0: float = 0.0,
         impulse_response: _ImpulseResponse = StepResponse(),
     ):
+        if not isinstance(clock, Clock):
+            raise Exception("Clock must derive from cbadc.analog_signal.Clock")
         self.clock = clock
         self.M = M
         self.M_tilde = M
@@ -104,14 +101,14 @@ class DigitalControl:
         Examples
         --------
         >>> from cbadc.digital_control import DigitalControl
+        >>> from cbadc.analog_signal import Clock
         >>> import numpy as np
         >>> T = 1e-6
         >>> M = 4
-        >>> dc = DigitalControl(T, M)
-        >>> _ = dc.control_contribution(T, np.array([-0.1, -0.2, 0.3, 99]))
-        >>> res = dc.control_signal()
-        >>> print(np.array(res))
-        [0 0 1 1]
+        >>> dc = DigitalControl(Clock(T), M)
+        >>> _ = dc.control_contribution(T)
+        >>> dc.control_signal()
+        array([ True,  True,  True,  True])
 
 
         Returns

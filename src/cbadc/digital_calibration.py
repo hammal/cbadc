@@ -20,4 +20,4 @@ class InputReference:
     def __init__(
         self,
     ):
-        a = DigitalEstimator
+        _ = DigitalEstimator

@@ -99,23 +99,7 @@ class AnalogSystem:
     >>> CT = np.array([[1, 2], [0, 1]]).transpose()
     >>> Gamma = np.array([[-1, 0], [0, -5]])
     >>> Gamma_tildeT = CT.transpose()
-    >>> print(AnalogSystem(A, B, CT, Gamma, Gamma_tildeT))
-    The analog system is parameterized as:
-    A =
-    [[1. 2.]
-     [3. 4.]],
-    B =
-    [[1.]
-     [2.]],
-    CT =
-    [[1. 0.]
-     [2. 1.]],
-    Gamma =
-    [[-1.  0.]
-     [ 0. -5.]],
-    and Gamma_tildeT =
-    [[1. 2.]
-     [0. 1.]]
+    >>> system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
     Raises
     ------
@@ -128,8 +112,8 @@ class AnalogSystem:
         A: npt.ArrayLike,
         B: npt.ArrayLike,
         CT: npt.ArrayLike,
-        Gamma: npt.ArrayLike,
-        Gamma_tildeT: npt.ArrayLike,
+        Gamma: Union[npt.ArrayLike, None],
+        Gamma_tildeT: Union[npt.ArrayLike, None],
         D: Union[npt.ArrayLike, None] = None,
     ):
         """Create an analog system.
@@ -229,9 +213,6 @@ class AnalogSystem:
         self.omega = sp.Symbol('omega')
         self._atf_lambda = None
         self._ctf_lambda = None
-        # Diagonalize A
-        self._A_s_P, self._A_s_D = self._A_s.diagonalize(normalize=True)
-        self._A_s_P_inv = self._A_s_P.inv()
 
     def derivative(
         self, x: np.ndarray, t: float, u: np.ndarray, s: np.ndarray
@@ -304,14 +285,14 @@ class AnalogSystem:
             the functions for which the equations relate.
         """
         equations = []
-        functions = []
+        # functions = []
         for n in range(self.N):
             expr = sp.Float(0)
             for nn in range(self.N):
                 expr += self._A_s[n, nn] * self.x[nn]
             if input_signal:
                 expr += self._B_s[n, dim] * input
-            else:
+            elif self._Gamma_s is not None:
                 expr += self._Gamma_s[n, dim] * input
             equations.append(sp.Eq(self.x[n].diff(self.t), expr))
         return equations, self.x
@@ -383,6 +364,9 @@ class AnalogSystem:
 
     def _lazy_initialize_CTF(self):
         logger.info("Computing analytical control transfer function.")
+        # Diagonalize A
+        self._A_s_P, self._A_s_D = self._A_s.diagonalize(normalize=True)
+        self._A_s_P_inv = self._A_s_P.inv()
         self._ctf_s_matrix = (
             self._A_s_P
             * (sp.I * self.omega * sp.eye(self.N) - self._A_s_D).inv()

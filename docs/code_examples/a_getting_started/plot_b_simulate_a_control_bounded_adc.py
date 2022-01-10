@@ -99,8 +99,11 @@ size = 1 << 18
 end_time = T * size
 
 # Instantiate the simulator.
-simulator = cbadc.simulator.Simulator(
-    analog_system, digital_control, [analog_signal], t_stop=end_time
+simulator = cbadc.simulator.get_simulator(
+    analog_system,
+    digital_control,
+    [analog_signal],
+    t_stop=end_time,
 )
 # Depending on your analog system the step above might take some time to
 # compute as it involves precomputing solutions to initial value problems.
@@ -154,7 +157,7 @@ print(simulator)
 # Repeating the steps above we now get for the following
 # ten control cycles.
 
-ext_simulator = cbadc.simulator.extended_simulation_result(simulator.simulator)
+ext_simulator = cbadc.simulator.extended_simulation_result(simulator)
 for res in cbadc.utilities.show_status(ext_simulator):
     if index > 29:
         break
@@ -178,8 +181,11 @@ for res in cbadc.utilities.show_status(ext_simulator):
 # :func:`cbadc.utilities.write_byte_stream_to_file` functions.
 
 # Instantiate a new simulator and control.
-simulator = cbadc.simulator.Simulator(
-    analog_system, digital_control, [analog_signal], t_stop=end_time
+simulator = cbadc.simulator.get_simulator(
+    analog_system,
+    digital_control,
+    [analog_signal],
+    t_stop=end_time,
 )
 
 # Construct byte stream.
@@ -245,7 +251,7 @@ plt.figure()
 plt.title("Analog state vectors")
 for index in range(N):
     plt.plot(time_vector, states[index, :], label=f"$x_{index + 1}(t)$")
-plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 plt.xlabel("$t/T$")
 plt.xlim((0, 10))
 plt.legend()
@@ -255,8 +261,8 @@ plt.rcParams["figure.figsize"] = [6.40, 6.40 * 2]
 fig, ax = plt.subplots(N, 2)
 for index in range(N):
     color = next(ax[0, 0]._get_lines.prop_cycler)["color"]
-    ax[index, 0].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-    ax[index, 1].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index, 0].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index, 1].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
     ax[index, 0].plot(time_vector, states[index, :], color=color)
     ax[index, 1].plot(time_vector, control_signals[index, :], "--", color=color)
     ax[index, 0].set_ylabel(f"$x_{index + 1}(t)$")
@@ -288,8 +294,8 @@ L_infty_norm = np.linalg.norm(states, ord=np.inf, axis=0)
 bins = 150
 plt.rcParams["figure.figsize"] = [6.40, 4.80]
 fig, ax = plt.subplots(2, sharex=True)
-ax[0].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-ax[1].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+ax[0].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+ax[1].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 ax[0].hist(L_2_norm, bins=bins, density=True)
 ax[1].hist(L_infty_norm, bins=bins, density=True, color="orange")
 plt.suptitle("Estimated probability densities")

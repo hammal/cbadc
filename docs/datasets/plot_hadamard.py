@@ -97,7 +97,7 @@ plt.tight_layout()
 plt.figure()
 u_hat_clipped = u_hat[(L1 + L2) // OSR :]
 freq, psd = cbadc.utilities.compute_power_spectral_density(
-    u_hat_clipped, fs=1.0 / (simulator.digital_control.T * OSR)
+    u_hat_clipped, fs=1.0 / (simulator.digital_control.clock.T * OSR)
 )
 plt.semilogx(freq, 10 * np.log10(psd), label="$\hat{U}(f)$")
 plt.legend()

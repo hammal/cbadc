@@ -14,7 +14,7 @@ from .numerical_simulator import FullSimulator, PreComputedControlSignalsSimulat
 from .analytical_simulator import AnalyticalSimulator
 from .mp_simulator import MPSimulator
 from .utilities import extended_simulation_result
-from .wrapper import get_simulator
+from .wrapper import get_simulator, SimulatorType
 
 
 _valid_simulators = Union[

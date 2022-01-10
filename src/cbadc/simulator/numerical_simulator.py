@@ -72,8 +72,8 @@ class FullSimulator(_BaseSimulator):
         clock: cbadc.analog_signal._valid_clock_types = None,
         t_stop: float = math.inf,
         initial_state_vector=None,
-        atol: float = 1e-9,
-        rtol: float = 1e-6,
+        atol: float = 1e-12,
+        rtol: float = 1e-8,
     ):
         super().__init__(
             analog_system,
@@ -145,15 +145,16 @@ class FullSimulator(_BaseSimulator):
         # Default Case
         t = t_span[0]
         y_new = self._state_vector[:]
-        while not np.allclose(t, t_span[1]):
+        atol_clock = self.digital_control.clock.T * 1e-4
+        while not np.allclose(t, t_span[1], atol=atol_clock):
             res = scipy.integrate.solve_ivp(
                 f,
                 (t, t_span[1]),
                 y_new,
                 atol=self.atol,
                 rtol=self.rtol,
-                method="Radau",
-                jac=self.analog_system.A,
+                # method="Radau",
+                # jac=self.analog_system.A,
                 # method="DOP853",
                 events=(
                     control_update,
@@ -239,8 +240,8 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         clock: cbadc.analog_signal._valid_clock_types = None,
         t_stop: float = math.inf,
         initial_state_vector=None,
-        atol: float = 1e-6,
-        rtol: float = 1e-6,
+        atol: float = 1e-12,
+        rtol: float = 1e-8,
     ):
         _BaseSimulator.__init__(
             self,
@@ -256,7 +257,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         self.atol = atol
         self.rtol = rtol
         if self.clock.T != self.digital_control.clock.T:
-            raise BaseException(
+            raise Exception(
                 "For this simulator, both simulation clock and digital control clock must have same clock period."
             )
         self._pre_computations()

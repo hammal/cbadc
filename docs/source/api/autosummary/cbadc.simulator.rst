@@ -30,6 +30,7 @@
 
    cbadc.simulator.analytical_simulator
    cbadc.simulator.base_simulator
+   cbadc.simulator.mp_simulator
    cbadc.simulator.numerical_simulator
    cbadc.simulator.simulator
    cbadc.simulator.state_bounds

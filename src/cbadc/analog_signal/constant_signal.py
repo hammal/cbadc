@@ -34,8 +34,8 @@ class ConstantSignal(_AnalogSignal):
 
     def __init__(self, offset: float = 0.0):
         """Create a constant analog signal."""
-        self.offset: float = offset
         super().__init__()
+        self.offset: float = offset
 
     def symbolic(self) -> Float:
         """Returns as symbolic exression

@@ -64,33 +64,32 @@ print(analog_signal)
 # Each estimator will require an independent stream of control signals.
 # Therefore, we will next instantiate several digital controls and simulators.
 
-clock = cbadc.analog_signal.Clock(T)
 
 # Instantiate digital controls. We will need four of them as we will compare
 # four different estimators.
-digital_control1 = cbadc.digital_control.DigitalControl(clock, M)
-digital_control2 = cbadc.digital_control.DigitalControl(clock, M)
-digital_control3 = cbadc.digital_control.DigitalControl(clock, M)
-digital_control4 = cbadc.digital_control.DigitalControl(clock, M)
+digital_control1 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
+digital_control2 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
+digital_control3 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
+digital_control4 = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 print(digital_control1)
 
 # Instantiate simulators.
-simulator1 = cbadc.simulator.Simulator(
+simulator1 = cbadc.simulator.get_simulator(
     analog_system,
     digital_control1,
     [analog_signal],
 )
-simulator2 = cbadc.simulator.Simulator(
+simulator2 = cbadc.simulator.get_simulator(
     analog_system,
     digital_control2,
     [analog_signal],
 )
-simulator3 = cbadc.simulator.Simulator(
+simulator3 = cbadc.simulator.get_simulator(
     analog_system,
     digital_control3,
     [analog_signal],
 )
-simulator4 = cbadc.simulator.Simulator(
+simulator4 = cbadc.simulator.get_simulator(
     analog_system,
     digital_control4,
     [analog_signal],
@@ -116,8 +115,8 @@ eta2 = G_at_omega ** 2
 print(f"eta2 = {eta2}, {10 * np.log10(eta2)} [dB]")
 
 # Set the batch size
-K1 = 1 << 14
-K2 = 1 << 14
+K1 = 1 << 11
+K2 = 1 << 11
 
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).

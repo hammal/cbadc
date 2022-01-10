@@ -46,7 +46,7 @@ def snr_to_dB(snr: float):
     : `float`
         the SNR expressed in dB
     """
-    return 20.0 * np.log10(snr)
+    return 10.0 * np.log10(snr)
 
 
 def snr_from_dB(snr: float):
@@ -61,7 +61,7 @@ def snr_from_dB(snr: float):
     : `float`
         the SNR not expressed in dB
     """
-    return 10 ** (snr / 20.0)
+    return 10 ** (snr / 10.0)
 
 
 def enob_to_snr(ENOB: float):
@@ -385,13 +385,9 @@ class MurmannSurvey:
         """
 
         if BW[0] > BW[1]:
-            raise BaseException(
-                "BW must be a tuple with accsending values like (1e6, 1e8)"
-            )
+            raise Exception("BW must be a tuple with accsending values like (1e6, 1e8)")
         if ENOB[0] > ENOB[1]:
-            raise BaseException(
-                "ENOB must be a tuple with accsending values like (8, 10)"
-            )
+            raise Exception("ENOB must be a tuple with accsending values like (8, 10)")
 
         return self.db[
             (self.db['fsnyq [Hz]'] >= BW[0])

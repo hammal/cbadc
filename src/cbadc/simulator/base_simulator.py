@@ -60,12 +60,12 @@ class _BaseSimulator(Iterator[np.ndarray]):
         initial_state_vector=None,
     ):
         if analog_system.L != len(input_signal):
-            raise BaseException(
+            raise Exception(
                 """The analog system does not have as many inputs as in input
             list"""
             )
         if not np.allclose(analog_system.D, np.zeros_like(analog_system.D)):
-            raise BaseException(
+            raise Exception(
                 """Can't simulate system with non-zero
                 D matrix. Consider chaining systems to remove D."""
             )
@@ -95,9 +95,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
                 self._state_vector.size != self.analog_system.N
                 or len(self._state_vector.shape) > 1
             ):
-                raise BaseException(
-                    "initial_state_vector not single dimension of length N"
-                )
+                raise Exception("initial_state_vector not single dimension of length N")
         else:
             self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
         self._res = np.zeros(self.analog_system.N, dtype=np.double)
@@ -105,27 +103,6 @@ class _BaseSimulator(Iterator[np.ndarray]):
     def state_vector(self) -> np.ndarray:
         """return current analog system state vector :math:`\mathbf{x}(t)`
         evaluated at time :math:`t`.
-
-        Examples
-        --------
-        >>> from cbadc.simulator.base_simulator import _BaseSimulator
-        >>> from cbadc.analog_signal import Sinusoidal
-        >>> from cbadc.analog_system import AnalogSystem
-        >>> from cbadc.digital_control import DigitalControl
-        >>> import numpy as np
-        >>> A = np.array([[0., 0], [6250., 0.]])
-        >>> B = np.array([[6250., 0]]).transpose()
-        >>> CT = np.array([[1, 0], [0, 1]])
-        >>> Gamma = np.array([[-6250, 0], [0, -6250]])
-        >>> Gamma_tildeT = CT
-        >>> analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-        >>> digital_control = DigitalControl(1e-6, 2)
-        >>> input_signal = Sinusoidal(1.0, 250)
-        >>> simulator = _BaseSimulator(analog_system, digital_control, (input_signal,))
-        >>> _ = simulator.__next__()
-        >>> _ = simulator.__next__()
-        >>> print(np.array(simulator.state_vector()))
-        [-0.00623036 -0.00626945]
 
         Returns
         -------

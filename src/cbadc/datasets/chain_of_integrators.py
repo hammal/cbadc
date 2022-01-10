@@ -59,7 +59,9 @@ class ChainOfIntegrators:
         self.analog_system = cbadc.analog_system.AnalogSystem(
             A, B, CT, Gamma, Gamma_tilde
         )
-        self.digital_control = cbadc.digital_control.DigitalControl(self.T, self.N)
+        self.digital_control = cbadc.digital_control.DigitalControl(
+            cbadc.analog_signal.Clock(self.T), self.N
+        )
 
     def sin(
         self,

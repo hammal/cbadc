@@ -58,12 +58,12 @@ class ConservativeControl(DigitalControl):
             self.bounds = [(-0.5e-3, 0.5e-3) for _ in range(M)]
         else:
             if len(bounds) != M:
-                raise BaseException("Must be M bounds")
+                raise Exception("Must be M bounds")
             for b in bounds:
                 if len(b) != 2:
-                    raise BaseException("each of the M bounds must be tuples of size 2")
+                    raise Exception("each of the M bounds must be tuples of size 2")
                 if b[0] > b[1]:
-                    raise BaseException(
+                    raise Exception(
                         "the bounds must be organized as (lower bound, upper bound)"
                     )
                 self.bounds = bounds

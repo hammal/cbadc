@@ -45,7 +45,7 @@ analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec
 
 
 T = 1 / (2 * beta)
-digital_control = cbadc.digital_control.DigitalControl(T, M)
+digital_control = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 
 
 # Summarize the analog system, digital control, and digital estimator.

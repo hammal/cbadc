@@ -104,7 +104,6 @@ analog system and digital control.
 
  .. code-block:: none
 
-    Not yet implemented.
     The analog system is parameterized as:
     A =
     [[ -62.5    0.     0.     0.     0.     0. ]
@@ -259,6 +258,8 @@ such as eta2, the batch size K1, and possible the lookahead K2.
 
  .. code-block:: none
 
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/integrate/_ivp/common.py:39: UserWarning: The following arguments have no effect for a chosen solver: `jacobian`.
+      warn("The following arguments have no effect for a chosen solver: {}."
     Digital estimator is parameterized as
 
     eta2 = 10000000.00, 70 [dB],
@@ -415,6 +416,8 @@ Note that batch and lookahead sizes are automatically handled such that for
 
  .. code-block:: none
 
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/integrate/_ivp/common.py:39: UserWarning: The following arguments have no effect for a chosen solver: `jacobian`.
+      warn("The following arguments have no effect for a chosen solver: {}."
     [-0.24974734]
     [-0.25252069]
     [-0.25370925]
@@ -443,16 +446,13 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 173-180
+.. GENERATED FROM PYTHON SOURCE LINES 173-177
 
 .. code-block:: default
 
 
-    byte_stream = cbadc.utilities.read_byte_stream_from_file(
-        "sinusoidal_simulation.dat", M
-    )
-    control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(
-        byte_stream, M)
+    byte_stream = cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M)
+    control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 
@@ -461,7 +461,7 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 181-187
+.. GENERATED FROM PYTHON SOURCE LINES 178-184
 
 Estimating the input
 --------------------
@@ -470,7 +470,7 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 187-215
+.. GENERATED FROM PYTHON SOURCE LINES 184-212
 
 .. code-block:: default
 
@@ -511,10 +511,19 @@ analog system and digital controls as in this example so
    :class: sphx-glr-single-img
 
 
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/integrate/_ivp/common.py:39: UserWarning: The following arguments have no effect for a chosen solver: `jacobian`.
+      warn("The following arguments have no effect for a chosen solver: {}."
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 216-221
+
+.. GENERATED FROM PYTHON SOURCE LINES 213-218
 
 Plotting the PSD
 ----------------
@@ -522,7 +531,7 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 221-229
+.. GENERATED FROM PYTHON SOURCE LINES 218-226
 
 .. code-block:: default
 
@@ -549,7 +558,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  17.726 seconds)
+   **Total running time of the script:** ( 0 minutes  49.733 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:

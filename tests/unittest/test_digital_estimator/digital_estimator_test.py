@@ -75,7 +75,7 @@ def test_batch_iterations():
     # raise "temp"
 
 
-def test_estimation_with_circuit_simulator():
+def test_estimation_simulator():
     eta2 = 1e12
     K1 = 1000
     K2 = 0

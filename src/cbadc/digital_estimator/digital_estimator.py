@@ -134,24 +134,24 @@ class DigitalEstimator(Iterator[np.ndarray]):
     ):
         # Check inputs
         if K1 < 1:
-            raise BaseException("K1 must be a positive integer.")
+            raise Exception("K1 must be a positive integer.")
         self.K1 = K1
         if K2 < 0:
-            raise BaseException("K2 must be a non negative integer.")
+            raise Exception("K2 must be a non negative integer.")
         self.K2 = K2
         self.K3 = K1 + K2
         self._filter_lag = -1
         self.analog_system = analog_system
 
         if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
-            raise BaseException(
+            raise Exception(
                 """Can't compute filter coefficients for system with non-zero
                 D matrix. Consider chaining for removing D"""
             )
 
         self.digital_control = digital_control
         if eta2 < 0:
-            raise BaseException("eta2 must be non negative.")
+            raise Exception("eta2 must be non negative.")
         if Ts:
             self.Ts = Ts
         else:
@@ -175,22 +175,11 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
         self.mid_point = mid_point
         # Initialize filters
-        self._determine_solver_type(solver_type)
+        self.solver_type = solver_type
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
         self._allocate_memory_buffers()
         self._ntf_lambda = None
         self._stf_lambda = None
-
-    def _determine_solver_type(self, solver_type: FilterComputationBackend):
-        if isinstance(solver_type, FilterComputationBackend):
-            self.solver_type = solver_type
-        else:
-            if self.analog_system.N > 10:
-                self.solver_type = FilterComputationBackend.numpy
-            elif self.analog_system.N > 1:
-                self.solver_type = FilterComputationBackend.mpmath
-            else:
-                self.solver_type = FilterComputationBackend.sympy
 
     def filter_lag(self):
         """Return the lag of the filter.
@@ -277,7 +266,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
         temp_forward_mean = np.zeros(self.analog_system.N, dtype=np.double)
         # check if ready to compute buffer
         if self._control_signal_in_buffer < self.K3:
-            raise BaseException("Control signal buffer not full")
+            raise Exception("Control signal buffer not full")
         # compute lookahead
         for k1 in range(self.K3 - 1, self.K1 - 1, -1):
             temp = np.dot(self.Ab, self._mean[self.K1, :]) + np.dot(
@@ -314,7 +303,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
 
     def _input(self, s: np.ndarray) -> bool:
         if self._control_signal_in_buffer == (self.K3):
-            raise BaseException(
+            raise Exception(
                 """Input buffer full. You must compute batch before adding
                 more control signals"""
             )
@@ -334,7 +323,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
     def __next__(self) -> np.ndarray:
         # Check if control signal iterator is set.
         if self.control_signal is None:
-            raise BaseException("No iterator set.")
+            raise Exception("No iterator set.")
         # Check if the end of prespecified size
         if self.number_of_iterations < self._iteration:
             raise StopIteration
@@ -420,7 +409,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
             result[:, :, index] = np.abs(
-                np.dot(GH, np.linalg.inv(GGH + self.eta2Matrix))
+                np.dot(GH, np.linalg.pinv(GGH + self.eta2Matrix))
             )
             # result[:, :, index] = self._ntf_lambda(o)
         return result
@@ -468,7 +457,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
             result[:, index] = np.abs(
-                np.dot(GH, np.dot(np.linalg.inv(GGH + self.eta2Matrix), G))
+                np.dot(GH, np.dot(np.linalg.pinv(GGH + self.eta2Matrix), G))
             )
             # result[:, index] = self._stf_lambda(o)
         return result

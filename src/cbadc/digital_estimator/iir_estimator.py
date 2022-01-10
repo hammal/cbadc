@@ -107,17 +107,17 @@ class IIRFilter(DigitalEstimator):
         Ts: float = None,
         mid_point: bool = False,
         downsample: int = 1,
-        solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
     ):
         """Initializes filter coefficients"""
         if K2 < 0:
-            raise BaseException("K2 must be non negative integer.")
+            raise Exception("K2 must be non negative integer.")
         self.K2 = K2
         self._filter_lag = self.K2 - 2
         self.analog_system = analog_system
         self.digital_control = digital_control
         if eta2 < 0:
-            raise BaseException("eta2 must be non negative.")
+            raise Exception("eta2 must be non negative.")
         self.eta2 = eta2
         self.control_signal = None
         self.number_of_iterations = stop_after_number_of_iterations
@@ -135,7 +135,7 @@ class IIRFilter(DigitalEstimator):
         self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
 
         # Compute filter coefficients
-        self._determine_solver_type(solver_type)
+        self.solver_type = solver_type
         DigitalEstimator._compute_filter_coefficients(
             self, analog_system, digital_control, eta2
         )
@@ -160,7 +160,7 @@ class IIRFilter(DigitalEstimator):
     def __next__(self) -> np.ndarray:
         # Check if control signal iterator is set.
         if self.control_signal is None:
-            raise BaseException("No iterator set.")
+            raise Exception("No iterator set.")
 
         # Check if the end of prespecified size
         self._iteration += 1

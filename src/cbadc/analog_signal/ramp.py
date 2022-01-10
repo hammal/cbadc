@@ -35,6 +35,7 @@ class Ramp(_AnalogSignal):
     def __init__(
         self, amplitude: float, period: float, phase: float = 0.0, offset: float = 0.0
     ):
+        super().__init__()
         self.amplitude: float = amplitude
         self.period: float = period
         self.phase: float = phase
@@ -45,11 +46,10 @@ class Ramp(_AnalogSignal):
             'phase': mp.mpmathify(phase),
             'offset': mp.mpmathify(offset),
         }
-        super().__init__()
 
     def __str__(self):
-        return f"""Sinusoidal parameterized as: \namplitude = {self.amplitude}, \n
-        frequency = {self.frequency}, \nphase = {self.phase},
+        return f"""Ramp parameterized as: \namplitude = {self.amplitude}, \n
+        period = {self.period}, \nphase = {self.phase},
         and\noffset = {self.offset}"""
 
     def evaluate(self, t: float) -> float:
@@ -77,4 +77,4 @@ class Ramp(_AnalogSignal):
         : :py:class:`sympy.Symbol`
             a ramp symbolic function
         """
-        return self.amplitude * ((t + self.phase) % self.period) + self.offset
+        return self.amplitude * ((self.t + self.phase) % self.period) + self.offset

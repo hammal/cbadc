@@ -1,28 +1,36 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Testing and Benchmarking
+name: Linting and Testing
 
-on: [pull_request]
+on: push
 
 jobs:
-  tox_test:
-    timeout-minutes: 3000
-    strategy:
-      matrix:
-        python-version: ["py38", "py39"]
+  check_lint:
+    name: "Check if PEP8"
     runs-on: [self-hosted]
     steps:
       - name: Checkout github repo
         uses: actions/checkout@v2
 
-      - name: Print hostname
-        run: cat /etc/hostname;
+      - name: Linting
+        run: python3.8 -m tox -e linters
 
-      - name: InstallDependencies
-        run: python3.8 -m pip install --upgrade pip -r requirements.txt
 
-      - name: UnitTest
+  doc_and_unit_tests:
+    strategy:
+      matrix:
+        python-version: ["py38", "py39","py310"]
+    runs-on: [self-hosted]
+    needs: linting_check
+    steps:
+      - name: Checkout github repo
+        uses: actions/checkout@v2
+
+      - name: Run doctests
+        run: python3.8 -m tox -e doc-test
+
+      - name: Run unittests
         run: python3.8 -m tox -e ${{ matrix.python-version }}
 
       - name: Upload Unit Test Results
@@ -39,19 +47,3 @@ jobs:
           name: Unit Test Results (Python ${{ matrix.python-version }})
           path: pytest-doctests.xml
 
-  publish-test-results:
-    name: "Publish Unit Tests Results"
-    needs: tox_test
-    runs-on: ubuntu-latest
-    if: always()
-
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          path: artifacts
-
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          files: artifacts/**/*.xml

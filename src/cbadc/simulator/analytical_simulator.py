@@ -104,10 +104,10 @@ class AnalyticalSimulator(_BaseSimulator):
             for l in range(self.analog_system.L):
                 self.Bf[n][l] = sp.lambdify(
                     (self.input_signals[l].t, self.input_signals[l].sym_phase),
-                    sp.re(tmp_Bf[n][l]),
+                    sp.re(tmp_Bf[l][n]),
                 )
             for m in range(self.analog_system.M):
-                self.Gamma[n, m] = tmp_Bf[n][m + self.analog_system.L].doit().evalf()
+                self.Gamma[n, m] = tmp_Bf[m + self.analog_system.L][n].doit().evalf()
 
     def __next__(self) -> np.ndarray:
         """Computes the next control signal :math:`\mathbf{s}[k]`"""

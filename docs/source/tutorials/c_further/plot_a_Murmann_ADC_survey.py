@@ -10,7 +10,6 @@ using a :py:class:`pandas.DataFrame`.
 """
 
 import cbadc.fom
-import matplotlib.pyplot as plt
 
 adc_survey = cbadc.fom.MurmannSurvey()
 
