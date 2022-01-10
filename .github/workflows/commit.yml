@@ -22,7 +22,7 @@ jobs:
       matrix:
         python-version: ["py38", "py39","py310"]
     runs-on: [self-hosted]
-    needs: linting_check
+    needs: check_lint
     steps:
       - name: Checkout github repo
         uses: actions/checkout@v2
@@ -46,4 +46,3 @@ jobs:
         with:
           name: Unit Test Results (Python ${{ matrix.python-version }})
           path: pytest-doctests.xml
-
