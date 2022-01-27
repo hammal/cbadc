@@ -79,8 +79,11 @@ jobs:
       - name: Checkout github repo
         uses: actions/checkout@v2
 
+      - name: install cbadc
+        run: python3.10 -m pip install .
+
       - name: Execute tutorial
-        run: python3.10 -m pip install . ; python3.10 docs/code_examples/${{ matrix.tutorial }}
+        run: python3.10 docs/code_examples/${{ matrix.tutorial }}
 
   benchmarks:
     timeout-minutes: 3000
