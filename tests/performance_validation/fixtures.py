@@ -1,7 +1,9 @@
 from cbadc.specification import get_chain_of_integrator, get_leap_frog
 
 
-def setup_filter(N, ENOB, BW, analog_system, digital_control, excess_delay=0.0):
+def setup_filter(
+    N, ENOB, BW, analog_system, digital_control, excess_delay=0.0, local_feedback=False
+):
     res = {'N': N, 'ENOB': ENOB, 'BW': BW}
     if analog_system == 'chain-of-integrators':
         analog_system, digital_control = get_chain_of_integrator(
@@ -10,6 +12,7 @@ def setup_filter(N, ENOB, BW, analog_system, digital_control, excess_delay=0.0):
             ENOB=ENOB,
             digital_control=digital_control,
             excess_delay=excess_delay,
+            local_feedback=local_feedback,
         )
         res['analog_system'] = analog_system
         res['digital_control'] = digital_control
@@ -20,6 +23,7 @@ def setup_filter(N, ENOB, BW, analog_system, digital_control, excess_delay=0.0):
             ENOB=ENOB,
             digital_control=digital_control,
             excess_delay=excess_delay,
+            local_feedback=local_feedback,
         )
         res['analog_system'] = analog_system
         res['digital_control'] = digital_control

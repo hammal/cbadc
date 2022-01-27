@@ -1,3 +1,4 @@
+"""Analog constant signals."""
 import numpy as np
 from ._analog_signal import _AnalogSignal
 from sympy import Float

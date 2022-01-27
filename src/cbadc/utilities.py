@@ -551,7 +551,7 @@ def iterator_to_numpy_array(iterator: Iterator[bytes], size: int, L: int = 1):
     return data
 
 
-def write_wave(filename: str, sample_rate: int, data: npt.ArrayLike):
+def write_wave(filename: str, sample_rate: int, data: np.ndarray):
     """Create wave file from data array.
 
     This is a wrapper function for :py:func:`scipy.io.wavefile.write`.

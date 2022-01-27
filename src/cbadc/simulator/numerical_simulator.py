@@ -1,9 +1,4 @@
-"""
-This module implements numeric solvers for
-simulating the analog_system digital control interactions.
-
-"""
-
+"""Numerical solvers."""
 import logging
 import cbadc.analog_system
 import cbadc.digital_control
@@ -13,7 +8,7 @@ import scipy.integrate
 import scipy.linalg
 import math
 from typing import List
-from .base_simulator import _BaseSimulator
+from ._base_simulator import _BaseSimulator
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -72,8 +67,8 @@ class FullSimulator(_BaseSimulator):
         clock: cbadc.analog_signal._valid_clock_types = None,
         t_stop: float = math.inf,
         initial_state_vector=None,
-        atol: float = 1e-12,
-        rtol: float = 1e-8,
+        atol: float = 1e-20,
+        rtol: float = 1e-12,
     ):
         super().__init__(
             analog_system,
@@ -156,10 +151,7 @@ class FullSimulator(_BaseSimulator):
                 # method="Radau",
                 # jac=self.analog_system.A,
                 # method="DOP853",
-                events=(
-                    control_update,
-                    *t0_impulse_response,
-                ),
+                events=(control_update, *t0_impulse_response),
             )
             if res.status == -1:
                 logger.critical(f"IVP solver failed, See:\n\n{res}")

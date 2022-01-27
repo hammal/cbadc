@@ -1,3 +1,4 @@
+"""The leap-frog analog system"""
 import numpy as np
 from .analog_system import AnalogSystem, InvalidAnalogSystemError
 
@@ -34,6 +35,8 @@ class LeapFrog(AnalogSystem):
     ----------
     beta : `array_like`, shape=(N,)
         vector with per integrator signal amplification :math:`\\begin{pmatrix}\\beta_1 & \cdots & \\beta_N \\end{pmatrix}`.
+    alpha : `array_like`, shape=(N-1,)
+        feedback factor vector :math:`\\begin{pmatrix}\\alpha_1 & \cdots & \\alpha_{N-1} \\end{pmatrix}`.
     rho : `array_like`, shape=(N,)
         local feedback factor vector :math:`\\begin{pmatrix}\\rho_1 & \cdots & \\rho_N \\end{pmatrix}`.
     kappa : `array_like`, shape=(N,)
@@ -81,10 +84,14 @@ class LeapFrog(AnalogSystem):
         For faulty analog system parametrization.
     """
 
-    def __init__(self, beta: np.ndarray, rho: np.ndarray, kappa: np.ndarray):
+    def __init__(
+        self, beta: np.ndarray, alpha: np.ndarray, rho: np.ndarray, kappa: np.ndarray
+    ):
         """Create an leap-frog analog system."""
         if beta.shape[0] != beta.size:
             InvalidAnalogSystemError(self, "beta must be a one dimensional vector")
+        if alpha.shape[0] != alpha.size:
+            InvalidAnalogSystemError(self, "alpha must be a one dimensional vector")
         if rho.shape[0] != rho.size:
             InvalidAnalogSystemError(self, "rho must be a one dimensional vector")
         if kappa.shape[0] != kappa.size:
@@ -98,11 +105,12 @@ class LeapFrog(AnalogSystem):
         N = beta.size
 
         # Analog system parameters
-        A = np.diag(rho[1:], k=1) + np.diag(beta[1:], k=-1)
-        A[0, 0] = rho[0]
+        A = np.diag(alpha, k=1) + np.diag(beta[1:], k=-1) + np.diag(rho)
         B = np.zeros((N, 1))
         B[0] = beta[0]
         CT = np.eye(N)
+        # CT = np.zeros((1, N))
+        # CT[-1] = 1
 
         # Check if Kappa is specified as a vector
         if kappa.shape[1] == 1:

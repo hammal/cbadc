@@ -1,6 +1,7 @@
+"""Simulation utilities."""
 from typing import Dict, Generator
 import numpy as np
-from .base_simulator import _BaseSimulator
+from ._base_simulator import _BaseSimulator
 
 
 def extended_simulation_result(

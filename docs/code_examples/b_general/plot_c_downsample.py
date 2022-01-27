@@ -66,25 +66,17 @@ print(digital_control)
 # correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 # and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusoidal_simulation.dat", M
-)
+byte_stream = cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M)
 control_signal_sequences1 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
-byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusoidal_simulation.dat", M
-)
+byte_stream = cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M)
 control_signal_sequences2 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
-byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusoidal_simulation.dat", M
-)
+byte_stream = cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M)
 control_signal_sequences3 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
-byte_stream = cbadc.utilities.read_byte_stream_from_file(
-    "../a_getting_started/sinusoidal_simulation.dat", M
-)
+byte_stream = cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M)
 control_signal_sequences4 = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
@@ -231,7 +223,7 @@ plt.xlim((f_ref[1], f_ref[-1]))
 plt.xlabel("$f$ [Hz]")
 plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
 plt.grid(which="both")
-plt.show()
+# plt.show()
 
 ###############################################################################
 # Prepending a Virtual Bandlimiting Filter
@@ -472,7 +464,7 @@ plt.xlim((f_ref[1], f_ref[-1]))
 plt.xlabel("$f$ [Hz]")
 plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
 plt.grid(which="both")
-plt.show()
+# plt.show()
 
 ###############################################################################
 # In Time Domain

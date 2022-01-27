@@ -1,3 +1,4 @@
+"""A multi-phase digital control"""
 import numpy as np
 from ..analog_signal.impulse_responses import StepResponse
 from ..analog_signal import _valid_clock_types

@@ -216,7 +216,7 @@ Plotting the Estimator's Signal and Noise Transfer Function
 
 To determine the estimate's signal and noise transfer function, we must
 instantiate a digital estimator
-:py:class:`cbadc.digital_estimator.DigitalEstimator`. The bandwidth of the
+:py:class:`cbadc.digital_estimator.BatchEstimator`. The bandwidth of the
 digital estimation filter is mainly determined by the parameter
 :math:`\eta^2` as the noise transfer function (NTF) follows as
 
@@ -229,8 +229,8 @@ and similarly, the signal transfer function (STF) follows as
 :math:`\text{STF}( \omega) = \text{NTF}( \omega) \mathbf{G}( \omega)`.
 
 We compute these two by invoking the class methods
-:func:`cbadc.digital_estimator.DigitalEstimator.noise_transfer_function` and
-:func:`cbadc.digital_estimator.DigitalEstimator.signal_transfer_function`
+:func:`cbadc.digital_estimator.BatchEstimator.noise_transfer_function` and
+:func:`cbadc.digital_estimator.BatchEstimator.signal_transfer_function`
 respectively.
 
 the digital estimator requires us to also instantiate a digital control
@@ -265,7 +265,7 @@ from the :math:`\ell`-th observation to the final estimate.
     )
 
     # Instantiate estimator.
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1=1
     )
 
@@ -329,7 +329,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
     plt.figure()
     for eta2 in eta2_vec:
         # Instantiate an estimator for each eta.
-        digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+        digital_estimator = cbadc.digital_estimator.BatchEstimator(
             analog_system, digital_control, eta2, K1=1
         )
         # Compute stf and ntf
@@ -378,7 +378,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  56.178 seconds)
+   **Total running time of the script:** ( 58 minutes  54.280 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:

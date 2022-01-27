@@ -1,3 +1,4 @@
+"""Simulaton method wrapper."""
 from typing import List
 import cbadc
 import logging
@@ -31,13 +32,8 @@ def get_simulator(
     initial_state_vector=None,
     atol: float = 1e-9,
     rtol: float = 1e-6,
-    simulator_type: SimulatorType = None,
+    simulator_type: SimulatorType = SimulatorType.pre_computed_numerical,
 ):
-    if isinstance(simulator_type, SimulatorType):
-        simulator_type = simulator_type
-    else:
-        simulator_type = SimulatorType.pre_computed_numerical
-
     if SimulatorType.full_numerical == simulator_type:
         logger.info("FullSimulator used for simulation.")
         return FullSimulator(

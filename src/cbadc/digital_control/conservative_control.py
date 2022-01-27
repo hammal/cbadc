@@ -1,3 +1,4 @@
+"""The conservative control using 1.5bit quantizers"""
 from typing import List, Tuple
 import numpy as np
 from ..analog_signal import StepResponse, _valid_clock_types

@@ -1,7 +1,4 @@
-"""This module implements analytical solvers for
-simulating the analog_system digital control interactions.
-"""
-
+"""Extended numerical precision solvers."""
 import logging
 import math
 from typing import List, Tuple
@@ -13,7 +10,7 @@ import cbadc.analog_signal
 from ..ode_solver.mpmath import invariant_system_solver
 import numpy as np
 import sympy as sp
-from .base_simulator import _BaseSimulator
+from ._base_simulator import _BaseSimulator
 from mpmath import mp
 
 logger = logging.getLogger(__name__)
@@ -39,6 +36,8 @@ class MPSimulator(_BaseSimulator):
         determines a stop time, defaults to :py:obj:`math.inf`
     initial_state_vector: `array_like`, shape=(N), `optional`
         initial state vector.
+    decimal_places: `int`, optional
+        number of decimal places used in simulation
 
     Attributes
     ----------
@@ -70,6 +69,7 @@ class MPSimulator(_BaseSimulator):
         t_stop: float = math.inf,
         initial_state_vector=None,
         tol: float = 1e-20,
+        decimal_places=20,
     ):
         super().__init__(
             analog_system,
@@ -79,16 +79,20 @@ class MPSimulator(_BaseSimulator):
             t_stop,
             initial_state_vector,
         )
-        mp.dps = 30
+        # Fix decimal places
+        self.dps = decimal_places
+        self.tol = tol
         A = mp.matrix(analog_system._A_s)
         B = mp.matrix(analog_system._B_s)
         Gamma = mp.matrix(analog_system._Gamma_s)
+        tmp_dps = mp.dps
+        mp.dps = self.dps
         tmp_Af, tmp_Gamma_f = invariant_system_solver(
             A,
             Gamma,
             [s for s in digital_control._impulse_response],
             (0, mp.mpf(self.clock.T)),
-            tol=1e-30,
+            tol=self.tol,
         )
 
         self.A = A
@@ -97,7 +101,7 @@ class MPSimulator(_BaseSimulator):
         self.Gamma_f = tmp_Gamma_f
         self.Gamma_tilde_f = mp.matrix(analog_system.Gamma_tildeT)
         self._state_vector = mp.matrix(self._state_vector)
-        self.tol = tol
+        mp.dps = tmp_dps
 
     def _ode_solver_1(self, t_span: Tuple[float, float]):
         def diff_equation(x, y):
@@ -113,6 +117,9 @@ class MPSimulator(_BaseSimulator):
         return mp.matrix(f(t_span[1]))
 
     def _ode_solver_2(self, t_span: Tuple[float, float]):
+        tmp_dps = mp.dps
+        mp.dps = self.dps
+
         def diff_equation(x, y):
             res = mp.matrix(self.analog_system.N, 1)
             for n in range(self.analog_system.N):
@@ -130,6 +137,7 @@ class MPSimulator(_BaseSimulator):
         )
         res = mp.matrix(f(t_span[1]))
         res += mp.matrix(self.Af * self._state_vector)
+        mp.dps = tmp_dps
         return res
 
     def __next__(self) -> np.ndarray:

@@ -1,3 +1,4 @@
+"""Analog impulse response signals from common linear systems."""
 from typing import Union
 import numpy as np
 import sympy as sp
@@ -15,6 +16,7 @@ class StepResponse(_ImpulseResponse):
     def __init__(self, t0: float = 0.0) -> None:
         super().__init__()
         self.t0 = t0
+        self._t0_mpmath = mp.mpmathify(t0)
 
     def evaluate(self, t: float) -> float:
         """Returns the step response function

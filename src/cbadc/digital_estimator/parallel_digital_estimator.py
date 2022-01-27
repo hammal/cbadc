@@ -1,13 +1,14 @@
+"""The digital parallel estimator."""
 import cbadc
 import numpy as np
 import logging
-from .digital_estimator import DigitalEstimator
+from .batch_estimator import BatchEstimator
 from ._filter_coefficients import FilterComputationBackend
 
 logger = logging.getLogger(__name__)
 
 
-class ParallelEstimator(DigitalEstimator):
+class ParallelEstimator(BatchEstimator):
     """Parallelized batch estimator implementation.
 
     The parallel estimator estimates a filtered version
@@ -16,7 +17,7 @@ class ParallelEstimator(DigitalEstimator):
     signals :math:`\mathbf{s}[k]`.
 
     Specifically, the parallel estimator is a modified version of the default
-    estimator :py:class:`cbadc.digital_estimator.DigitalEstimator` where the
+    estimator :py:class:`cbadc.digital_estimator.BatchEstimator` where the
     the filter matrices are diagonalized enabling a more efficient and
     possible parallelizable filter implementation. The estimate is computed as
 
@@ -32,7 +33,7 @@ class ParallelEstimator(DigitalEstimator):
 
     Furthermore, :math:`f_a, b_a \in \mathbb{R}^{N}`, :math:`f_b, b_b \in \mathbb{R}^{N \\times M}`,
     and :math:`f_w, b_w \in \mathbb{R}^{L \\times N}` are the precomputed filter coefficient formed
-    from the filter coefficients as in :py:class:`cbadc.digital_estimator.DigitalEstimator`.
+    from the filter coefficients as in :py:class:`cbadc.digital_estimator.BatchEstimator`.
 
     Parameters
     ----------
@@ -125,7 +126,7 @@ class ParallelEstimator(DigitalEstimator):
         Ts: float = None,
         mid_point: bool = False,
         downsample: int = 1,
-        solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
+        solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
     ):
         # Check inputs
         if K1 < 1:
@@ -175,16 +176,16 @@ class ParallelEstimator(DigitalEstimator):
         eta2: float,
     ):
         # Compute filter coefficients from base class
-        DigitalEstimator._compute_filter_coefficients(
+        BatchEstimator._compute_filter_coefficients(
             self, analog_system, digital_control, eta2
         )
         # Parallelize
         temp, Q_f = np.linalg.eig(self.Af)
         self.forward_a = np.array(temp, dtype=np.complex128)
-        Q_f_inv = np.linalg.pinv(Q_f, rcond=1e-20)
+        Q_f_inv = np.linalg.pinv(Q_f, rcond=1e-100)
         temp, Q_b = np.linalg.eig(self.Ab)
         self.backward_a = np.array(temp, dtype=np.complex128)
-        Q_b_inv = np.linalg.pinv(Q_b, rcond=1e-20)
+        Q_b_inv = np.linalg.pinv(Q_b, rcond=1e-100)
 
         self.forward_b = np.array(np.dot(Q_f_inv, self.Bf), dtype=np.complex128)
         self.backward_b = np.array(np.dot(Q_b_inv, self.Bb), dtype=np.complex128)

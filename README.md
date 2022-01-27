@@ -27,24 +27,33 @@ pip install cbadc
 
 into your console. Note that, currently cbadc is only supported for Python3.8 and later.
 
+# Source Code
+The source code is hosted on [https://github.com/hammal/cbadc](https://github.com/hammal/cbadc).
+
 # Changelog
 
 ## 0.2.0
 
-Additions:
+Major structural changes. Mainly motivated by improving simulators and filter coefficient computations to support switch-cap digital control simulations.
 
+Specifically,
 - [digital clock](https://..) to aid the simulator and digital estimator computation
-- [digital control]() new interface to support digital clock.
-- Simulator
-  - Analytical simulator
-  - Mpmath simulator
-  - Numerical simulator
-    - Full simulator
-    - pre computed simulator
-
+- [digital control]() and derived classes have a new interface to support [digital clock](), i.e, `DigitalControl(..., clock, ...)`.
+- [Simulator]()
+  - [Analytical simulator]() implemented using [SymPy](https://www.sympy.org/en/index.html)
+  - [Mpmath simulator]() implemented using [mpmath](https://mpmath.org)
+  - Two Numerical simulators implemented using [NumPy](https://numpy.org)
+    - [Full simulator]() the pervious default simulator.
+    - [pre-computed simulator]() same as Full simulator with the distinction that the control contributions are pre-computed.
+  - The previous default [StateSpaceSimulator class](https://cbadc.readthedocs.io/en/v0.1.0/api/autosummary/cbadc.simulator.StateSpaceSimulator.html#cbadc.simulator.StateSpaceSimulator) has been replaced by the [`get_simulator`]() function. The simulation backend is chosen by passing an instance of [SimulatorType]().
+  - The simulation clock period Ts is replaced by the [digital clock]() object and thus all simulator classes and the factory function `get_simulation(..., clock, ...)` is now instantiated with a clock determining the sample times.
+- [Digital Estimator](https://cbadc.readthedocs.io/en/v0.1.0/api/autosummary/cbadc.digital_estimator.DigitalEstimator.html#cbadc.digital_estimator.DigitalEstimator)
+  - The default DigitalEstimator changes it's name to [BatchEstimator]()
+  - an additional filter computation backend implemented with [mpmath](https://mpmath.org)
+- Improved [care]() implementation using [SymPy](https://www.sympy.org/en/index.html) instead of [SciPy](https://scipy.org).
 ### 0.1.5
 
-Added figures of merit (fom) module and MurmannSurvey convenience class.
+Added figures of merit [fom](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.fom.html#module-cbadc.fom) modul, [MurmannSurvey](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.fom.MurmannSurvey.html#cbadc.fom.MurmannSurvey) convenience class, and a new tutorial [The Murmann ADC Survey](https://cbadc.readthedocs.io/en/latest/tutorials/c_further/plot_a_Murmann_ADC_survey.html#sphx-glr-tutorials-c-further-plot-a-murmann-adc-survey-py).
 
 ### 0.1.2
 

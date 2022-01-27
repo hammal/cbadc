@@ -22,6 +22,8 @@ __quantization_noise_offset = 20.0 * np.log10(np.sqrt(6.0) / 2.0)
 def snr_to_enob(SNR: float):
     """Compute the effective number of bits (ENOB).
 
+    :math:`f(\\text{SNR}) \\approx \\frac{\\text{SNR} - 1.76}{6.02}`
+
     Parameters
     ----------
     SNR: `float`
@@ -36,6 +38,8 @@ def snr_to_enob(SNR: float):
 
 def snr_to_dB(snr: float):
     """Convert snr to dB
+
+    :math:`f(\\text{snr}) = 10 \log(\\text{snr})`
 
     Parameters
     ----------
@@ -52,6 +56,8 @@ def snr_to_dB(snr: float):
 def snr_from_dB(snr: float):
     """Convert SNR from dB
 
+    :math:`f(\\text{snr}) = 10^{ \\frac{\\text{snr}}{10}}`
+
     Parameters
     ----------
     snr: `float`
@@ -66,6 +72,8 @@ def snr_from_dB(snr: float):
 
 def enob_to_snr(ENOB: float):
     """Convert effective number of bits into SNR
+
+    :math:`f(\\text{ENOB}) \\approx 6.02 \\cdot \\text{ENOB} + 1.76`
 
     Parameters
     ----------
@@ -83,6 +91,8 @@ def enob_to_snr(ENOB: float):
 def nyquist_frequency(fs: float):
     """The Nyquist frequency or bandwidth of a sampled signal.
 
+    :math:`f(f_s)=f_s / 2`
+
     Parameters
     ----------
     fs: `float`
@@ -98,6 +108,8 @@ def nyquist_frequency(fs: float):
 
 def OSR(fs, f_sig):
     """The oversampling ratio (OSR)
+
+    :math:`f(f_s, f_{\\text{sig}}) = \\frac{f_s}{2 \\cdot f_{\\text{sig}}}`
 
     Parameters
     ----------
@@ -117,7 +129,9 @@ def OSR(fs, f_sig):
 def FoM_W(P, fs, ENOB):
     """The Walden figure of merit (FoM)
 
-    See  `Walden 1999<https://ieeexplore.ieee.org/document/761034>`_
+    :math:`f(P, f_s, \\text{ENOB}) = \\frac{P}{2 \cdot f_s \\cdot \\text{ENOB}}`
+
+    See  `Walden 1999 <https://ieeexplore.ieee.org/document/761034>`_
 
     Parameters
     ----------
@@ -138,6 +152,8 @@ def FoM_W(P, fs, ENOB):
 
 def FoM_S(P, fs, SNR):
     """The Schreier figure fo merit.
+
+    :math:`f(P, f_s, \\text{SNR}) = \\text{SNR} + 10 \log\\left(\\frac{f_s}{2 \cdot P}\\right)`
 
     From the book `Understanding Delta-Sigma Data Converters`.
 

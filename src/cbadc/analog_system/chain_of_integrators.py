@@ -1,3 +1,4 @@
+"""The chain-of-integrators analog-system."""
 import numpy as np
 from .analog_system import AnalogSystem, InvalidAnalogSystemError
 from ..fom import enob_to_snr, snr_from_dB
@@ -109,6 +110,8 @@ class ChainOfIntegrators(AnalogSystem):
         B = np.zeros((N, 1))
         B[0] = beta[0]
         CT = np.eye(N)
+        # CT = np.zeros((1, N))
+        # CT[-1] = 1
 
         # Check if Kappa is specified as a vector
         if kappa.shape[1] == 1:

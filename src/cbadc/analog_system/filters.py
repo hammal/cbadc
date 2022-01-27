@@ -1,3 +1,4 @@
+"""A selection of standard filters expressed as analog systems."""
 import scipy.signal
 import logging
 from .analog_system import AnalogSystem

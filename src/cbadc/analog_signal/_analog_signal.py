@@ -1,11 +1,4 @@
-"""Predefined common analog signals
-
-This module focuses on representing analog signals, i.e., mappings from the
-time :math:`t` to a signal value :math:`u(t)`. Typically for signal processing
-algorithms, we are used to handeling discrete-time signals, i.e. samples of
-signals. However, since the control-bounded A/D converters are converting
-continuous-time signals we need tools to define signals that can be evaluated
-over their whole continuous domain.
+"""
 """
 import logging
 from typing import Union

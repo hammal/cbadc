@@ -1,3 +1,4 @@
+"""Filter coefficient computations."""
 from typing import List
 
 from mpmath.calculus.optimization import jacobian
@@ -10,6 +11,7 @@ import scipy.linalg
 import scipy.integrate
 import numpy as np
 import sympy as sp
+import mpmath as mp
 from mpmath import mp
 from numpy.linalg import LinAlgError
 from multiprocessing import Process, Queue
@@ -26,6 +28,10 @@ class FilterComputationBackend(enum.Enum):
     mpmath = 3
 
 
+class BruteForceCareException(Exception):
+    pass
+
+
 def bruteForceCare(
     A: np.ndarray,
     B: np.ndarray,
@@ -35,19 +41,21 @@ def bruteForceCare(
     rtol=1e-200,
     atol=1e-300,
 ) -> np.ndarray:
+
+    # raise BruteForceCareException("Currently not a reliable implementation.")
     timelimit = 10 * 60
     start_time = time.time()
 
-    V = np.array(care(A, B, Q, R), dtype=np.float128)
-
+    V = _numpy_care(A, B, Q, R)
+    # V = np.eye(A.shape[0])
     V_tmp = np.ones_like(V) * 1e300
-    RInv = np.array(np.linalg.inv(R), dtype=np.float128)
+    RInv = np.linalg.inv(R)
 
     shrink = 1.0 - 1e-2
 
     while not np.allclose(V, V_tmp, rtol=rtol, atol=atol):
         if time.time() - start_time > timelimit:
-            raise Exception("Brute Force CARE solver ran out of time")
+            raise BruteForceCareException("Brute Force CARE solver ran out of time")
         V_tmp = V[:, :]
         try:
             V = V + tau * (
@@ -68,6 +76,12 @@ def bruteForceCare(
     return np.array(V, dtype=np.double)
 
 
+def _scipy_care(
+    A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray
+) -> np.ndarray:
+    return scipy.linalg.solve_continuous_are(A, B, Q, R, balanced=True)
+
+
 def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarray:
     """
     This function solves the forward and backward continuous Riccati equation.
@@ -80,21 +94,85 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
     V = np.zeros_like(A)
 
     try:
-        V = scipy.linalg.solve_continuous_are(A, B, Q, R, balanced=True)
-    except LinAlgError:
+        V = _analytical_care(A, B, Q, R)
+    except sp.PrecisionExhausted:
         logger.warning(
-            """Cholesky Method Failed for computing the CARE of Vf.
-            Starting brute force"""
+            """PrecisionExhausted in analytical CARE solver, switching to Scipy."""
         )
-        V = bruteForceCare(A, B, Q, R)
-    return np.array(V, dtype=np.double)
+        try:
+            V = _scipy_care(A, B, Q, R)
+        except LinAlgError:
+            logger.warning(
+                """Scipy Cholesky method failed for CARE solver.
+            Starting brute force"""
+            )
+            V = bruteForceCare(A, B, Q, R)
+    return np.array((V + V.transpose()) / 2, dtype=np.double)
+
+
+def _analytical_care(
+    A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray
+) -> sp.Matrix:
+    A = sp.Matrix(A)
+    B = sp.Matrix(B)
+    Q = sp.Matrix(Q)
+    R = sp.Matrix(R)
+
+    Z = sp.Matrix([[A, -B * R.inv() * B.transpose()], [-Q, -A.transpose()]])
+
+    (P, D) = Z.diagonalize(reals_only=False, sort=True)
+    sol = P[A.shape[0] :, : A.shape[1]] * P[: A.shape[0], : A.shape[1]].inv()
+    V: sp.Matrix = sp.re(sp.simplify(sol))
+    return (V + V.transpose()) / 2
+
+
+def _numpy_care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.array:
+    Z = np.vstack(
+        (
+            np.hstack((A, -np.dot(B, np.dot(np.linalg.inv(R), B.T)))),
+            np.hstack((-Q, -A.transpose())),
+        )
+    )
+    W, V = np.linalg.eig(Z)
+    # Sort
+    idx = W.argsort()
+    W = W[idx]
+    V = V[:, idx]
+    sol = np.dot(
+        V[A.shape[0] :, : Q.shape[1]], np.linalg.pinv(V[: A.shape[0], : Q.shape[1]])
+    )
+    return np.real(sol)
+
+
+def _mpmath_care(
+    A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray
+) -> mp.matrix:
+    B = mp.matrix(B)
+    A = mp.matrix(A)
+    Q = mp.matrix(Q)
+    R = mp.matrix(R)
+
+    Z = mp.matrix(A.rows + Q.rows, Q.cols + A.rows)
+
+    Z_11 = A
+    Z_12 = -B * R ** (-1) * B.T
+    Z_21 = -Q
+    Z_22 = -A.T
+    Z[: Z_11.rows, : Z_11.cols] = Z_11
+    Z[: Z_11.rows, Z_11.cols :] = Z_12
+    Z[Z_11.rows :, : Z_21.cols] = Z_21
+    Z[Z_11.rows :, Z_21.cols :] = Z_22
+    E, Q = mp.eig(Z)
+    sol = Q[Z_11.rows :, : Z_11.cols] * Q[: Z_11.rows, : Z_11.cols] ** (-1)
+    raise NotImplementedError
+    return np.real(np.array(sol.tolist(), dtype=np.complex128)).astype(np.float64)
 
 
 def compute_filter_coefficients(
     analog_system: cbadc.analog_system.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     eta2: float,
-    solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
+    solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
     mid_point: bool = False,
 ):
     # Compute filter coefficients
@@ -117,11 +195,7 @@ def compute_filter_coefficients(
         )
     if solver_type == FilterComputationBackend.mpmath:
         return _mp_solver(
-            analog_system,
-            digital_control,
-            mp.matrix(R),
-            mp.matrix(Vf),
-            mp.matrix(Vb),
+            analog_system, digital_control, mp.matrix(R), mp.matrix(Vf), mp.matrix(Vb)
         )
     else:  # FilterComputationBackend.numpy
         return _numerical_solver(analog_system, digital_control, R, Vf, Vb, mid_point)
@@ -144,7 +218,7 @@ def _analytical_solver(
     # eta2_sym = sp.Float(eta2)
     CCT_sym = (
         sp.Matrix(analog_system.CT).T
-        * sp.matrix(R) ** (-1)
+        * sp.Matrix(R) ** (-1)
         * sp.Matrix(analog_system.CT)
     )
     tempAf = A_sym - Vf_sym * CCT_sym
@@ -169,10 +243,7 @@ def _ode_solver(
 ):
     sigs = [fun.symbolic() for fun in digital_control._impulse_response]
     hom, non_hom, t = analytical_system_solver(
-        tempAf,
-        tempBf,
-        sigs,
-        [d.t0 for d in digital_control._impulse_response],
+        tempAf, tempBf, sigs, [d.t0 for d in digital_control._impulse_response]
     )
     A_sol = np.real(np.array(hom.subs(t, Ts)).astype(np.complex128))
     B_sol = np.zeros_like(tempBf)
@@ -190,8 +261,12 @@ def _mp_solver(
     Vb: mp.matrix,
 ):
     tol: float = 1e-40
-    mp.dps = 60
-    CetaCT = (
+    # set number of decimal places.
+    dps = 50
+    tmp_dps = mp.dps
+    mp.dps = dps
+
+    CetaCT = mp.matrix(
         mp.matrix(analog_system.CT).transpose()
         * R ** (-1)
         * mp.matrix(analog_system.CT)
@@ -216,7 +291,9 @@ def _mp_solver(
     WT = mp.matrix(analog_system.L, analog_system.N)
     VfVb = Vf + Vb
     for l in range(analog_system.L):
-        WT[l, :] = mp.qr_solve(VfVb, mp.matrix(analog_system.B))[0].transpose()
+        WT[l, :] = mp.qr_solve(VfVb, mp.matrix(analog_system.B))[l].transpose()
+        # WT[l, :] = mp.lu_solve(VfVb, mp.matrix(analog_system.B))[l].transpose()
+    mp.dps = tmp_dps
     return Af, Ab, Bf, Bb, WT
 
 
@@ -241,7 +318,9 @@ def reverse_signal(signal: cbadc.analog_signal._AnalogSignal, T0: float = 0.0):
     """
     new_signal = copy.deepcopy(signal)
     new_signal.evaluate = lambda t: signal.evaluate(T0 - t)
+    new_signal._mpmath = lambda t: signal._mpmath(mp.mpf(T0) - t)
     new_signal.t0 = -signal.t0
+    new_signal._t0_mpmath = -signal._t0_mpmath
     return new_signal
 
 
@@ -262,7 +341,7 @@ def _numerical_solver(
     tempAb: np.ndarray = analog_system.A + np.dot(Vb, CCT)
     Af: np.ndarray = np.asarray(scipy.linalg.expm(tempAf * Ts))
     Ab: np.ndarray = np.asarray(scipy.linalg.expm(-tempAb * Ts))
-    W, _, _, _ = np.linalg.lstsq(Vf + Vb, analog_system.B, rcond=None)
+    W, _, _, _ = np.linalg.lstsq(Vf + Vb, analog_system.B, rcond=-1)
     WT = W.transpose()
     if mid_point:
         Bf, Bb = _mid_point(analog_system, digital_control, tempAf, tempAb)
@@ -283,9 +362,9 @@ def _regular(
     Bf: np.ndarray = np.zeros((analog_system.N, analog_system.M))
     Bb: np.ndarray = np.zeros((analog_system.N, analog_system.M))
 
-    atol = 1e-20
-    rtol = 1e-13
-    max_step = Ts * 1e-5
+    atol = 1e-100
+    rtol = 1e-14
+    # max_step = Ts * 1e-5
     for m in range(analog_system.M):
 
         def _derivative_forward_2(t, x):
@@ -306,8 +385,8 @@ def _regular(
             np.zeros(analog_system.N),
             atol=atol,
             rtol=rtol,
-            max_step=max_step,
-            method="Radau",
+            # max_step=max_step,
+            # method="Radau",
             # jacobian=tempAf,
             events=(impulse_start,),
         ).y[:, -1]
@@ -330,8 +409,8 @@ def _regular(
             # solBf,
             atol=atol,
             rtol=rtol,
-            max_step=max_step,
-            method="Radau",
+            # max_step=max_step,
+            # method="Radau",
             # jacobian=-tempAb,
             events=(impulse_stop,),
         ).y[:, -1]
@@ -389,12 +468,6 @@ def _mid_point(
         for n in range(analog_system.N):
             Bf[n, m] = solBf[n]
             Bb[n, m] = solBb[n]
-    Bf = np.dot(
-        np.eye(analog_system.N) + scipy.linalg.expm(tempAf * Ts / 2.0),
-        Bf,
-    )
-    Bb = np.dot(
-        np.eye(analog_system.N) + scipy.linalg.expm(tempAb * Ts / 2.0),
-        Bb,
-    )
+    Bf = np.dot(np.eye(analog_system.N) + scipy.linalg.expm(tempAf * Ts / 2.0), Bf)
+    Bb = np.dot(np.eye(analog_system.N) + scipy.linalg.expm(tempAb * Ts / 2.0), Bb)
     return Bf, Bb

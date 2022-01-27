@@ -32,12 +32,17 @@ def get_chain_of_integrator(**kwargs):
 
     if all(param in kwargs for param in ('ENOB', 'N', 'BW')):
         SNR = enob_to_snr(kwargs['ENOB'])
+        snr = snr_from_dB(SNR)
         N = kwargs['N']
         omega_3dB = 2.0 * np.pi * kwargs['BW']
-        xi = 5e-2 / (np.pi * (2 * N + 1))
-        gain_per_stage = 10 ** ((xi * SNR) / (20 * N))
-        beta = gain_per_stage * omega_3dB
-        rho = -np.abs(omega_3dB)
+        # xi = 1e-1 / (np.pi * (2 * N * 0 + 1))
+        xi = 5e-3 / np.pi
+        gamma = (xi * snr) ** (1.0 / (2.0 * N))
+        beta = gamma * omega_3dB
+        if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
+            rho = -omega_3dB / gamma
+        else:
+            rho = 0
         kappa = beta
         T = 1.0 / (2.0 * beta)
         all_ones = np.ones(N)
@@ -46,7 +51,7 @@ def get_chain_of_integrator(**kwargs):
         )
         t0 = kwargs['excess_delay'] * T
         if kwargs.get('digital_control') == 'switch_cap':
-            scale = 1e2
+            scale = 5e1
             tau = 1.0 / (beta * scale)
             v_cap = 0.5
             kappa = v_cap * beta * scale
@@ -54,6 +59,7 @@ def get_chain_of_integrator(**kwargs):
             digital_control = DigitalControl(
                 Clock(T), N, impulse_response=impulse_response
             )
+            # print(impulse_response.evaluate(T))
         else:
             impulse_response = StepResponse(t0)
             digital_control = DigitalControl(
@@ -108,23 +114,25 @@ def get_leap_frog(**kwargs):
 
     if all(param in kwargs for param in ('ENOB', 'N', 'BW')):
         SNR = enob_to_snr(kwargs['ENOB'])
+        snr = snr_from_dB(SNR)
         N = kwargs['N']
         omega_BW = 2.0 * np.pi * kwargs['BW']
-        xi = 1e-1 / np.pi
-        beta = 10 ** ((xi * SNR) / (20 * N))
-        forward_gain = omega_BW / 2 * beta
-        feeback_gain = -omega_BW / 2 / beta
-        T = 1.0 / (2.0 * forward_gain)
-        kappa = forward_gain
-        all_ones = np.ones(N)
-        all_but_one_ones = np.ones_like(all_ones)
-        all_but_one_ones[0] = 0.0
+        xi = 7e-2 / np.pi
+        gamma = (xi * snr) ** (1.0 / (2.0 * N))
+        beta = (omega_BW / 2.0) * gamma
+        alpha = -(omega_BW / 2.0) / gamma
+        if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
+            rho = -(omega_BW / 2.0) / gamma * 1e-2
+        else:
+            rho = 0
+        T = 1.0 / (2.0 * beta)
+        kappa = beta
         t0 = kwargs['excess_delay'] * T
         if kwargs.get('digital_control') == 'switch-cap':
-            scale = 1e2
-            tau = 1.0 / (forward_gain * scale)
+            scale = 5e1
+            tau = 1.0 / (beta * scale)
             v_cap = 0.5
-            kappa = v_cap * forward_gain * scale
+            kappa = v_cap * beta * scale
             impulse_response = RCImpulseResponse(tau, t0)
             digital_control = DigitalControl(
                 Clock(T), N, impulse_response=impulse_response
@@ -137,7 +145,10 @@ def get_leap_frog(**kwargs):
             digital_control = DigitalControl(Clock(T), N)
 
         analog_system = LeapFrog(
-            forward_gain * all_ones, feeback_gain * all_but_one_ones, kappa * np.eye(N)
+            beta * np.ones(N),
+            alpha * np.ones(N - 1),
+            rho * np.ones(N),
+            kappa * np.eye(N),
         )
         return (analog_system, digital_control)
 

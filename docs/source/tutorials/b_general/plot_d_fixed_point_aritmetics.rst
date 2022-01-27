@@ -279,7 +279,7 @@ Impulse Response Truncation and Fixed-Point Precision
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-174
+.. GENERATED FROM PYTHON SOURCE LINES 124-177
 
 .. code-block:: default
 
@@ -288,9 +288,7 @@ Impulse Response Truncation and Fixed-Point Precision
 
     control_signal_sequences = [
         cbadc.utilities.byte_stream_2_control_signal(
-            cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusoidal_simulation.dat", M
-            ),
+            cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
             M,
         )
         for _ in fixed_point_precision
@@ -304,7 +302,12 @@ Impulse Response Truncation and Fixed-Point Precision
 
     digital_estimators = [
         cbadc.digital_estimator.FIRFilter(
-            analog_system, digital_control, eta2, K1, K2, fixed_point=fixed_point,
+            analog_system,
+            digital_control,
+            eta2,
+            K1,
+            K2,
+            fixed_point=fixed_point,
         )
         for fixed_point in fixed_points
     ]
@@ -399,13 +402,13 @@ Impulse Response Truncation and Fixed-Point Precision
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 175-178
+.. GENERATED FROM PYTHON SOURCE LINES 178-181
 
 Resulting Estimate Precision
 ----------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 178-272
+.. GENERATED FROM PYTHON SOURCE LINES 181-276
 
 .. code-block:: default
 
@@ -451,9 +454,7 @@ Resulting Estimate Precision
 
     digital_estimators_ref(
         cbadc.utilities.byte_stream_2_control_signal(
-            cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusoidal_simulation.dat", M
-            ),
+            cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
             M,
         )
     )
@@ -495,7 +496,10 @@ Resulting Estimate Precision
     plt.figure()
     plt.title("Estimates in time domain")
     for index in range(len(fixed_point_precision + 1)):
-        t_fir = np.arange(-K1 + 1, size - K2 + 1,)
+        t_fir = np.arange(
+            -K1 + 1,
+            size - K2 + 1,
+        )
         plt.plot(t_fir, u_hats[index], label=description[index])
     plt.ylabel("$\hat{u}(t)$")
     plt.xlim((64000, 64500))
@@ -530,7 +534,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 3 minutes  15.673 seconds)
+   **Total running time of the script:** ( 1 minutes  59.590 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_d_fixed_point_aritmetics.py:

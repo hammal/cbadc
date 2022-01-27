@@ -1,3 +1,5 @@
+"""Analog clock signals.
+"""
 from ._analog_signal import _AnalogSignal
 from sympy import Piecewise
 import numpy as np
@@ -42,7 +44,7 @@ class Clock(_AnalogSignal):
     def __init__(
         self,
         T: float,
-        tt: float = 1e-12,
+        tt: float = 1e-14,
         td: float = 0.0,
         duty_cycle: float = 0.5,
         max_swing: float = 2.0,
@@ -138,7 +140,7 @@ class Clock(_AnalogSignal):
 
 def delay_clock_by_duty_cycle(clock: Clock, delay: float = 0):
     """Create a delayed clock version of
-    an already existing clock singal.
+    an already existing clock signal.
 
     Parameters
     ----------

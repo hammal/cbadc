@@ -342,7 +342,7 @@ K1=K2=180 filter taps or more. This is confirmed by simulation as the
 harmonics in the estimated spectrum disappear for larger number of
 filter taps. Note also the reference used in the spectral plots which
 corresponds to the default implementation
-:py:class:`cbadc.digital_estimator.DigitalEstimator` using a much
+:py:class:`cbadc.digital_estimator.BatchEstimator` using a much
 longer lookahead than corresponding FIR filters implementations.
 
 The simulation is often a robust way of determining a minimum
@@ -354,7 +354,7 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 202-324
+.. GENERATED FROM PYTHON SOURCE LINES 202-320
 
 .. code-block:: default
 
@@ -365,9 +365,7 @@ of different lengths as their decay varies.
 
     control_signal_sequences = [
         cbadc.utilities.byte_stream_2_control_signal(
-            cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusoidal_simulation.dat", M
-            ),
+            cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
             M,
         )
         for _ in filter_lengths
@@ -408,7 +406,7 @@ of different lengths as their decay varies.
     plt.xlim((0, filter_lengths[-1]))
     plt.grid(which="both")
 
-    digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimators_ref = cbadc.digital_estimator.BatchEstimator(
         analog_system,
         digital_control,
         eta2,
@@ -419,9 +417,7 @@ of different lengths as their decay varies.
 
     digital_estimators_ref(
         cbadc.utilities.byte_stream_2_control_signal(
-            cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusoidal_simulation.dat", M
-            ),
+            cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
             M,
         )
     )
@@ -514,7 +510,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 6 minutes  49.539 seconds)
+   **Total running time of the script:** ( 4 minutes  30.785 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_b_FIR_Filtering.py:

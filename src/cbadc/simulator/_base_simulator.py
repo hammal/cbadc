@@ -42,7 +42,8 @@ class _BaseSimulator(Iterator[np.ndarray]):
         a clock to which the outputs of the simulator are synchronized.
     t_stop : `float`
         end time at which the generator raises :py:class:`StopIteration`.
-
+    initial_state_vector: `array_like`
+        the initial state of the simulator.
 
     Yields
     ------

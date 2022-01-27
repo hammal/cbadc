@@ -17,3 +17,14 @@ benchmark_*.svg
 docs/source/backreferences
 docs/source/api/autosummary
 *.xls
+FIR_filter_C_header_with_fixed_point.h
+FIR_filter_C_header.h
+profile_full_system_stats
+pytest-doctests.xml
+pytest-doctests.xml
+tests/performance_validation/.prof_stats
+tests/performance_validation/digital_estimator_filter_coefficients_numpy.prof
+tests/performance_validation/digital_estimator_filter_coefficients_numpy.txt
+tests/profiling/.prof_stats
+tests/profiling/profiling_stats.prof
+tests/profiling/profiling_stats.txt

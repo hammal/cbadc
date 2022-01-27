@@ -1,16 +1,17 @@
+"""The digital FIR estimator"""
 from typing import Union
 import cbadc
 import logging
 import os
 import scipy.integrate
 import numpy as np
-from .digital_estimator import DigitalEstimator
+from .batch_estimator import BatchEstimator
 from ._filter_coefficients import FilterComputationBackend
 
 logger = logging.getLogger(__name__)
 
 
-class FIRFilter(DigitalEstimator):
+class FIRFilter(BatchEstimator):
     """FIR filter implementation of the digital estimator.
 
     Specifically, the FIR filter estimator estimates a filtered version :math:`\hat{\mathbf{u}}(t)` (shaped by
@@ -119,7 +120,7 @@ class FIRFilter(DigitalEstimator):
         downsample: int = 1,
         offset: np.ndarray = None,
         fixed_point: cbadc.utilities.FixedPoint = None,
-        solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
+        solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
     ):
         """Initializes filter coefficients"""
         if K1 < 0:

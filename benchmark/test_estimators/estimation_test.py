@@ -3,7 +3,7 @@ from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from cbadc.analog_signal import Sinusoidal, Clock
 from cbadc.digital_estimator import (
-    DigitalEstimator,
+    BatchEstimator,
     ParallelEstimator,
     FIRFilter,
     IIRFilter,
@@ -58,7 +58,7 @@ def test_benchmark_parallel_estimator_algorithm(benchmark):
 
 
 def test_benchmark_digital_estimator_algorithm(benchmark):
-    est = DigitalEstimator(analogSystem, digitalControl, eta2, K1, K2)
+    est = BatchEstimator(analogSystem, digitalControl, eta2, K1, K2)
     est(controlSequence())
     result = benchmark(iterate_through, est)
     assert result == size

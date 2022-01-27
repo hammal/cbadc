@@ -20,18 +20,20 @@ import cbadc
 # Determine system parameters
 N = 6
 M = N
-beta = 6250
-# Set control period
-T = 1.0 / (2.0 * beta)
-# Adjust the feedback to achieve a bandwidth corresponding to OSR.
-OSR = 128
-omega_3dB = 2 * np.pi / (T * OSR)
+
+BW = 1e3
+OSR = 32
+# Fix per-stage gain at bandwidth
+gamma = OSR / np.pi
+omega_3dB = 2 * np.pi * BW
 
 # Instantiate analog system.
-beta_vec = beta * np.ones(N)
-rho_vec = -(omega_3dB ** 2) / beta * np.ones(N)
+beta_vec = gamma * (omega_3dB / 2) * np.ones(N)
+alpha_vec = -(omega_3dB / 2) / gamma * np.ones(N - 1)
+rho_vec = np.zeros(N)
+T = 1.0 / (2.0 * beta_vec[0])
 Gamma = np.diag(-beta_vec)
-analog_system = cbadc.analog_system.LeapFrog(beta_vec, rho_vec, Gamma)
+analog_system = cbadc.analog_system.LeapFrog(beta_vec, alpha_vec, rho_vec, Gamma)
 
 print(analog_system, "\n")
 
@@ -45,8 +47,7 @@ print(analog_system, "\n")
 # Set the peak amplitude.
 amplitude = 1.0
 # Choose the sinusoidal frequency via an oversampling ratio (OSR).
-frequency = 1.0 / (T * OSR * (1 << 0))
-
+frequency = BW / 4
 # We also specify a phase an offset these are hovewer optional.
 phase = 0.0
 offset = 0.0
@@ -55,7 +56,6 @@ offset = 0.0
 analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
 
 print(analog_signal)
-
 
 ###############################################################################
 # Simulating
@@ -75,24 +75,16 @@ print(digital_control1)
 
 # Instantiate simulators.
 simulator1 = cbadc.simulator.get_simulator(
-    analog_system,
-    digital_control1,
-    [analog_signal],
+    analog_system, digital_control1, [analog_signal]
 )
 simulator2 = cbadc.simulator.get_simulator(
-    analog_system,
-    digital_control2,
-    [analog_signal],
+    analog_system, digital_control2, [analog_signal]
 )
 simulator3 = cbadc.simulator.get_simulator(
-    analog_system,
-    digital_control3,
-    [analog_signal],
+    analog_system, digital_control3, [analog_signal]
 )
 simulator4 = cbadc.simulator.get_simulator(
-    analog_system,
-    digital_control4,
-    [analog_signal],
+    analog_system, digital_control4, [analog_signal]
 )
 print(simulator1)
 
@@ -101,7 +93,7 @@ print(simulator1)
 # ----------------------------------------
 #
 # Next we instantiate the quadratic and default estimator
-# :py:class:`cbadc.digital_estimator.DigitalEstimator`. Note that during its
+# :py:class:`cbadc.digital_estimator.BatchEstimator`. Note that during its
 # construction, the corresponding filter coefficients of the system will be
 # computed. Therefore, this procedure could be computationally intense for a
 # analog system with a large analog state order or equivalently for large
@@ -120,7 +112,7 @@ K2 = 1 << 11
 
 # Instantiate the digital estimator (this is where the filter coefficients are
 # computed).
-digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
+digital_estimator_batch = cbadc.digital_estimator.BatchEstimator(
     analog_system, digital_control1, eta2, K1, K2
 )
 digital_estimator_batch(simulator1)
@@ -135,7 +127,7 @@ print(digital_estimator_batch, "\n")
 
 # Logspace frequencies
 frequencies = np.logspace(-3, 0, 100)
-omega = 4 * np.pi * beta * frequencies
+omega = 4 * np.pi * beta_vec[0] * frequencies
 
 # Compute NTF
 ntf = digital_estimator_batch.noise_transfer_function(omega)
@@ -388,7 +380,7 @@ plt.xlim((f_fir[1], f_fir[-1]))
 plt.xlabel("frequency [Hz]")
 plt.ylabel("$ \mathrm{V}^2 \, / \, (1 \mathrm{Hz})$")
 plt.grid(which="both")
-plt.show()
+# plt.show()
 
 
 ###############################################################################
@@ -408,7 +400,7 @@ def iterate_number_of_times(iterator, number_of_times):
         _ = next(iterator)
 
 
-digital_estimator_batch = cbadc.digital_estimator.DigitalEstimator(
+digital_estimator_batch = cbadc.digital_estimator.BatchEstimator(
     analog_system, digital_control1, eta2, K1, K2
 )
 digital_estimator_fir = cbadc.digital_estimator.FIRFilter(
@@ -429,7 +421,7 @@ digital_estimator_iir(dummy_input_control_signal())
 length = 1 << 14
 repetitions = 10
 
-print("Digital Estimator:")
+print("Batch Estimator:")
 print(
     timeit.timeit(
         lambda: iterate_number_of_times(digital_estimator_batch, length),

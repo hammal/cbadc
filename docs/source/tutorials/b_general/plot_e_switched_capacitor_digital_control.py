@@ -453,6 +453,7 @@ plt.xlabel("$t/T$")
 plt.xlim((K1 + K2, K1 + K2 + 1000))
 plt.legend()
 
+
 # Plot estimates PSD
 for index, jitter in enumerate(clock_jitter):
     plt.figure()

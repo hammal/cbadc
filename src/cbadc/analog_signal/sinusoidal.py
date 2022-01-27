@@ -1,3 +1,4 @@
+"""Sinusoidal signals."""
 from typing import Union
 import numpy as np
 from ._analog_signal import _AnalogSignal

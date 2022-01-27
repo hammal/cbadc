@@ -1,3 +1,4 @@
+"""Convenience functions for digital control design."""
 import numpy as np
 import itertools
 import scipy.optimize

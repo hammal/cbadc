@@ -17,10 +17,7 @@ def _non_hom_solver(eq, func, t0=0):
     Cons = [next(constants) for _ in func]
     t = sp.Symbol('t', real=True)
     zero_solution = [s.subs(t, t0).rhs for s in sol]
-    initial_condition = sp.solve(
-        [t, *zero_solution],
-        dict=True,
-    )
+    initial_condition = sp.solve([t, *zero_solution], dict=True)
     tmp = [
         s.subs([(c, initial_condition[0][c]) for c in Cons])
         # .rewrite(

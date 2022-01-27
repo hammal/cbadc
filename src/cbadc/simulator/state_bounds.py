@@ -1,3 +1,4 @@
+"""Report system for states."""
 import numpy as np
 
 

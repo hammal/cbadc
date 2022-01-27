@@ -1,3 +1,4 @@
+"""The digital NUV estimator."""
 from typing import Iterator
 import cbadc
 import logging
@@ -17,7 +18,7 @@ class NUVEstimator:
 
     In comparision to the linear complexity estimators
 
-    - :py:class:`cbadc.digital_estimator.DigitalEstimator`
+    - :py:class:`cbadc.digital_estimator.BatchEstimator`
     - :py:class:`cbadc.digital_estimator.ParallelEstimator`
     - :py:class:`cbadc.digital_estimator.IIRFilter`
     - :py:class:`cbadc.digital_estimator.FIRFilter`
@@ -159,18 +160,10 @@ class NUVEstimator:
         # )
         self._xi_tilde = np.zeros((self.K3 + 1, self.analog_system.N), dtype=np.double)
         self._sigma_squared_1 = np.ones(
-            (
-                self.K3,
-                self.analog_system.N_tilde,
-            ),
-            dtype=np.double,
+            (self.K3, self.analog_system.N_tilde), dtype=np.double
         )
         self._sigma_squared_2 = np.ones(
-            (
-                self.K3,
-                self.analog_system.N_tilde,
-            ),
-            dtype=np.double,
+            (self.K3, self.analog_system.N_tilde), dtype=np.double
         )
         self._posterior_observation_mean = np.zeros(
             (self.K3, self.analog_system.N_tilde), dtype=np.double

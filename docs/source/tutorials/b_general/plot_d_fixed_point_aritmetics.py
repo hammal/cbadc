@@ -126,9 +126,7 @@ fixed_point_precision = np.array([8, 10, 12, 14, 16, 20, 24])
 
 control_signal_sequences = [
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
     for _ in fixed_point_precision
@@ -222,9 +220,7 @@ digital_estimators_ref = cbadc.digital_estimator.FIRFilter(
 
 digital_estimators_ref(
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
 )

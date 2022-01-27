@@ -1,7 +1,4 @@
-"""This module implements analytical solvers for
-simulating the analog_system digital control interactions.
-"""
-
+"""Analytical solvers."""
 import logging
 import math
 from typing import List
@@ -11,7 +8,8 @@ import cbadc.analog_signal
 from ..ode_solver.sympy import invariant_system_solver
 import numpy as np
 import sympy as sp
-from .base_simulator import _BaseSimulator
+import mpmath as mp
+from ._base_simulator import _BaseSimulator
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -75,6 +73,8 @@ class AnalyticalSimulator(_BaseSimulator):
             t_stop,
             initial_state_vector,
         )
+        mp.dps = 30
+        self._state_vector = mp.matrix(self._state_vector)
         signals = [
             *[s.symbolic() for s in self.input_signals],
             *[s.symbolic() for s in self.digital_control._impulse_response],
@@ -91,15 +91,20 @@ class AnalyticalSimulator(_BaseSimulator):
         # replace t and extract rhs of expression
         tmp_Bf = [[s.subs(t, self.clock.T).rhs for s in ss] for ss in tmp_Bf]
 
-        self.Af = np.array(tmp_Af.evalf(subs={t: self.clock.T})).astype(np.float64)
+        # self.Af = np.array(tmp_Af.evalf(subs={t: self.clock.T})).astype(np.float64)
+        self.Af = mp.matrix(tmp_Af.evalf(subs={t: self.clock.T}))
 
         self.Bf = [
             [None for _ in range(self.analog_system.L)]
             for _ in range(self.analog_system.N)
         ]
-        self.Gamma = np.zeros(
-            (self.analog_system.N, self.analog_system.M), dtype=np.float64
-        )
+        # self.Gamma = np.zeros(
+        #     (self.analog_system.N, self.analog_system.M), dtype=np.float64
+        # )
+        self.Gamma = mp.matrix(self.analog_system.N, self.analog_system.M)
+
+        self.Gamma_tildeT = mp.matrix(self.analog_system.Gamma_tildeT)
+
         for n in range(self.analog_system.N):
             for l in range(self.analog_system.L):
                 self.Bf[n][l] = sp.lambdify(
@@ -119,7 +124,8 @@ class AnalyticalSimulator(_BaseSimulator):
         # Compute
 
         # State transition
-        self._state_vector = np.dot(self.Af, self._state_vector)
+        # self._state_vector = np.dot(self.Af, self._state_vector)
+        self._state_vector = self.Af * self._state_vector
         # Input Signals
         for n in range(self.analog_system.N):
             for l in range(self.analog_system.L):
@@ -133,15 +139,17 @@ class AnalyticalSimulator(_BaseSimulator):
                 self._state_vector[n] += self.Bf[n][l](t_end - self.t, artifical_phase)
 
         # Control signals
-        self._state_vector += np.dot(
-            self.Gamma,
-            np.asarray(2 * self.digital_control._s - 1, dtype=np.double),
-        ).flatten()
+        # self._state_vector += np.dot(
+        #     self.Gamma, np.asarray(2 * self.digital_control._s - 1, dtype=np.double)
+        # ).flatten()
+
+        self._state_vector += self.Gamma * (2 * mp.matrix(self.digital_control._s) - 1)
 
         # Update controls for next period if necessary
-        self.digital_control.control_update(
-            t_span[1], np.dot(self.analog_system.Gamma_tildeT, self._state_vector)
-        )
+        control_observation = np.array(
+            (self.Gamma_tildeT * self._state_vector).tolist(), dtype=np.float64
+        ).flatten()
+        self.digital_control.control_update(t_span[1], control_observation)
         self.t = t_end
         return self.digital_control.control_signal()
 

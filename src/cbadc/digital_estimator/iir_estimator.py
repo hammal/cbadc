@@ -1,13 +1,14 @@
+"""The digital IIR estimator"""
 import cbadc
 import logging
 import numpy as np
-from .digital_estimator import DigitalEstimator
+from .batch_estimator import BatchEstimator
 from ._filter_coefficients import FilterComputationBackend
 
 logger = logging.getLogger(__name__)
 
 
-class IIRFilter(DigitalEstimator):
+class IIRFilter(BatchEstimator):
     """IIR filter implementation of the digital estimator.
 
     Specifically, the IIR filter estimator estimates a filtered version :math:`\hat{\mathbf{u}}(t)` (shaped by
@@ -107,7 +108,9 @@ class IIRFilter(DigitalEstimator):
         Ts: float = None,
         mid_point: bool = False,
         downsample: int = 1,
-        solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
+        solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        *args,
+        **kwargs,
     ):
         """Initializes filter coefficients"""
         if K2 < 0:
@@ -136,7 +139,7 @@ class IIRFilter(DigitalEstimator):
 
         # Compute filter coefficients
         self.solver_type = solver_type
-        DigitalEstimator._compute_filter_coefficients(
+        BatchEstimator._compute_filter_coefficients(
             self, analog_system, digital_control, eta2
         )
 

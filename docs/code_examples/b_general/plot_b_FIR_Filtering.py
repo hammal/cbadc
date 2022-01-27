@@ -188,7 +188,7 @@ plt.gcf().tight_layout()
 # harmonics in the estimated spectrum disappear for larger number of
 # filter taps. Note also the reference used in the spectral plots which
 # corresponds to the default implementation
-# :py:class:`cbadc.digital_estimator.DigitalEstimator` using a much
+# :py:class:`cbadc.digital_estimator.BatchEstimator` using a much
 # longer lookahead than corresponding FIR filters implementations.
 #
 # The simulation is often a robust way of determining a minimum
@@ -206,9 +206,7 @@ eta2 = 1e6
 
 control_signal_sequences = [
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
     for _ in filter_lengths
@@ -249,7 +247,7 @@ plt.ylabel("$| h_\ell [k]|$")
 plt.xlim((0, filter_lengths[-1]))
 plt.grid(which="both")
 
-digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
+digital_estimators_ref = cbadc.digital_estimator.BatchEstimator(
     analog_system,
     digital_control,
     eta2,
@@ -260,9 +258,7 @@ digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
 
 digital_estimators_ref(
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
 )

@@ -1,3 +1,4 @@
+"""The default digital control."""
 import numpy as np
 from ..analog_signal import StepResponse, _valid_clock_types, Clock
 from ..analog_signal.impulse_responses import _ImpulseResponse

@@ -109,12 +109,12 @@ class AnalogSystem:
 
     def __init__(
         self,
-        A: npt.ArrayLike,
-        B: npt.ArrayLike,
-        CT: npt.ArrayLike,
-        Gamma: Union[npt.ArrayLike, None],
-        Gamma_tildeT: Union[npt.ArrayLike, None],
-        D: Union[npt.ArrayLike, None] = None,
+        A: np.ndarray,
+        B: np.ndarray,
+        CT: np.ndarray,
+        Gamma: Union[np.ndarray, None],
+        Gamma_tildeT: Union[np.ndarray, None],
+        D: Union[np.ndarray, None] = None,
     ):
         """Create an analog system.
 

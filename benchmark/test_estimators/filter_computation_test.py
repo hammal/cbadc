@@ -3,7 +3,7 @@ from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from cbadc.analog_signal import Sinusoidal, Clock
 from cbadc.digital_estimator import (
-    DigitalEstimator,
+    BatchEstimator,
     ParallelEstimator,
     IIRFilter,
     FIRFilter,
@@ -46,7 +46,7 @@ def test_filter_computation_parallel_estimator_algorithm(benchmark):
 
 def test_filter_computation_digital_estimator_algorithm(benchmark):
     def setup():
-        DigitalEstimator(analogSystem, digitalControl, eta2, K1, K2)
+        BatchEstimator(analogSystem, digitalControl, eta2, K1, K2)
 
     benchmark(setup)
 

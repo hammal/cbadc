@@ -1,3 +1,4 @@
+"""Switched capacitor digital control"""
 import numpy as np
 from .digital_control import DigitalControl
 

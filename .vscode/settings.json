@@ -15,5 +15,6 @@
     "xlim",
     "ylabel",
     "ylim"
-  ]
+  ],
+  "python.formatting.provider": "black"
 }

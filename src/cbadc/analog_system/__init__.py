@@ -1,10 +1,6 @@
 """Analog systems
 
-This module provides a general :py:class:`cbadc.analog_system.AnalogSystem`
-class with the necessary functionality to do transient simulations, compute
-transfer functions, and exposing the relevant system parameters as
-attributes. Additionally, several derived convenience classes are defined
-to quickly initialize analog systems of particular structures.
+A selection of pre-configures and general analog system structures.
 """
 from typing import Union
 from .analog_system import AnalogSystem, InvalidAnalogSystemError

@@ -219,7 +219,7 @@ Setting up the Filter
 
 To produce estimates we need to compute the filter coefficients of the
 digital estimator. This is part of the instantiation process of the
-DigitalEstimator class. However, these computations require us to
+BatchEstimator class. However, these computations require us to
 specify both the analog system, the digital control and the filter parameters
 such as eta2, the batch size K1, and possible the lookahead K2.
 
@@ -239,7 +239,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
 
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1
     )
 
@@ -258,8 +258,6 @@ such as eta2, the batch size K1, and possible the lookahead K2.
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/integrate/_ivp/common.py:39: UserWarning: The following arguments have no effect for a chosen solver: `jacobian`.
-      warn("The following arguments have no effect for a chosen solver: {}."
     Digital estimator is parameterized as
 
     eta2 = 10000000.00, 70 [dB],
@@ -393,7 +391,7 @@ Note that batch and lookahead sizes are automatically handled such that for
     control_signal_sequences = cbadc.utilities.random_control_signal(
         M, stop_after_number_of_iterations=sequence_length, random_seed=42
     )
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1, K2
     )
 
@@ -416,8 +414,6 @@ Note that batch and lookahead sizes are automatically handled such that for
 
  .. code-block:: none
 
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/integrate/_ivp/common.py:39: UserWarning: The following arguments have no effect for a chosen solver: `jacobian`.
-      warn("The following arguments have no effect for a chosen solver: {}."
     [-0.24974734]
     [-0.25252069]
     [-0.25370925]
@@ -479,7 +475,7 @@ analog system and digital controls as in this example so
     u_hat = np.zeros(stop_after_number_of_iterations)
     K1 = 1 << 10
     K2 = 1 << 11
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system,
         digital_control,
         eta2,
@@ -510,15 +506,6 @@ analog system and digital controls as in this example so
    :srcset: /tutorials/a_getting_started/images/sphx_glr_plot_c_digital_estimator_001.png
    :class: sphx-glr-single-img
 
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /home/hammal/anaconda3/envs/py38/lib/python3.8/site-packages/scipy/integrate/_ivp/common.py:39: UserWarning: The following arguments have no effect for a chosen solver: `jacobian`.
-      warn("The following arguments have no effect for a chosen solver: {}."
 
 
 
@@ -558,7 +545,7 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  49.733 seconds)
+   **Total running time of the script:** ( 30 minutes  44.839 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:

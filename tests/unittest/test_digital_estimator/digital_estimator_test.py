@@ -1,5 +1,5 @@
 from cbadc.simulator import get_simulator
-from cbadc.digital_estimator import DigitalEstimator
+from cbadc.digital_estimator import BatchEstimator
 from cbadc.analog_signal import ConstantSignal, Clock
 from cbadc.analog_system import AnalogSystem
 from cbadc.digital_control import DigitalControl
@@ -33,7 +33,7 @@ def test_initialization():
     eta2 = 1.0
     K1 = 100
     K2 = 0
-    DigitalEstimator(analog_system, digitalControl, eta2, K1, K2)
+    BatchEstimator(analog_system, digitalControl, eta2, K1, K2)
 
 
 def test_estimation():
@@ -45,7 +45,7 @@ def test_estimation():
 
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
-    estimator = DigitalEstimator(
+    estimator = BatchEstimator(
         analogSystem, digitalControl, eta2, K1, K2, stop_after_number_of_iterations=25
     )
     estimator(controlSequence())
@@ -61,7 +61,7 @@ def test_batch_iterations():
     K2 = 1000
 
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    estimator = DigitalEstimator(
+    estimator = BatchEstimator(
         analogSystem,
         digitalControl,
         eta2,
@@ -88,7 +88,7 @@ def test_estimation_simulator():
     circuitSimulator = get_simulator(
         analogSystem, digitalControl, analogSignals, clock, t_stop=Ts * 1000
     )
-    estimator = DigitalEstimator(analogSystem, digitalControl, eta2, K1, K2)
+    estimator = BatchEstimator(analogSystem, digitalControl, eta2, K1, K2)
     estimator(circuitSimulator)
     for est in estimator:
         print(est)
@@ -102,7 +102,7 @@ def test_ntf():
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     clock = Clock(Ts)
     digitalControl = DigitalControl(clock, M)
-    estimator = DigitalEstimator(analogSystem, digitalControl, eta2, K1, K2)
+    estimator = BatchEstimator(analogSystem, digitalControl, eta2, K1, K2)
     omega = np.logspace(-5, 0) * beta
     ntf = estimator.noise_transfer_function(omega)
     print(ntf)
@@ -115,7 +115,7 @@ def test_stf():
     analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     clock = Clock(Ts)
     digitalControl = DigitalControl(clock, M)
-    estimator = DigitalEstimator(analogSystem, digitalControl, eta2, K1, K2)
+    estimator = BatchEstimator(analogSystem, digitalControl, eta2, K1, K2)
     omega = np.logspace(-5, 0) * beta
     stf = estimator.signal_transfer_function(omega)
     print(stf)

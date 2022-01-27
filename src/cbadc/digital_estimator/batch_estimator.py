@@ -1,7 +1,4 @@
-"""Digital estimators.
-
-This module provides alternative implementations for the control-bounded A/D
-conterter's digital estimator.
+"""The digital batch estimator
 """
 from typing import Iterator
 import cbadc
@@ -17,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class DigitalEstimator(Iterator[np.ndarray]):
+class BatchEstimator(Iterator[np.ndarray]):
     """Batch estimator implementation.
 
     The digital estimator estimates a filtered version
@@ -130,7 +127,7 @@ class DigitalEstimator(Iterator[np.ndarray]):
         Ts: float = None,
         mid_point: bool = False,
         downsample: int = 1,
-        solver_type: FilterComputationBackend = FilterComputationBackend.numpy,
+        solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
     ):
         # Check inputs
         if K1 < 1:
