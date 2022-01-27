@@ -60,13 +60,27 @@ jobs:
   tutorials:
     timeout-minutes: 3000
     runs-on: [self-hosted]
+    strategy:
+      matrix:
+        tutorial:
+          [
+            "a_getting_started/plot_b_simulate_a_control_bounded_adc.py",
+            "a_getting_started/plot_c_digital_estimator.py",
+            "a_getting_started/plot_d_transfer_function.py",
+            "b_general/plot_a_compare_estimator.py",
+            "b_general/plot_b_FIR_Filtering.py",
+            "b_general/plot_d_fixed_point_aritmetics.py",
+            "b_general/plot_e_switched_capacitor_digital_control.py",
+            "c_further/plot_a_Murmann_ADC_survey.py",
+            "c_further/plot_z_artsy_sine.py",
+          ]
     # needs: doc_and_unit_tests
     steps:
       - name: Checkout github repo
         uses: actions/checkout@v2
 
-      - name: Execute tutorials
-        run: tox -e tutorials
+      - name: Execute tutorial
+        run: python docs/code_examples/${{ matrix.tutorial }}
 
   benchmarks:
     timeout-minutes: 3000
