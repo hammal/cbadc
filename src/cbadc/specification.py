@@ -122,7 +122,7 @@ def get_leap_frog(**kwargs):
         beta = (omega_BW / 2.0) * gamma
         alpha = -(omega_BW / 2.0) / gamma
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
-            rho = -(omega_BW / 2.0) / gamma * 1e-2
+            rho = -(omega_BW / 2.0) / gamma * 1e-2 * 0
         else:
             rho = 0
         T = 1.0 / (2.0 * beta)
