@@ -21,7 +21,7 @@ jobs:
       matrix:
         python-version: ["py38", "py39", "py310"]
     runs-on: [self-hosted]
-    needs: check_lint
+    # needs: check_lint
     steps:
       - name: Checkout github repo
         uses: actions/checkout@v2
