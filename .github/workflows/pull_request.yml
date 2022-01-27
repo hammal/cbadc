@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Full performance validation
-        run: python3.8 -m tox -e full-test
+        run: tox -e full-test
 
   tutorials:
     timeout-minutes: 3000
@@ -66,7 +66,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Execute tutorials
-        run: python3.8 -m tox -e tutorials
+        run: tox -e tutorials
 
   benchmarks:
     timeout-minutes: 3000
@@ -77,7 +77,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Benchmarking
-        run: python3.8 -m tox -e benchmark
+        run: tox -e benchmark
 
   # docs:
   #   runs-on: ubuntu-latest
