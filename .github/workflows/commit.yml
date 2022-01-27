@@ -16,11 +16,10 @@ jobs:
       - name: Linting
         run: python3.8 -m tox -e linters
 
-
   doc_and_unit_tests:
     strategy:
       matrix:
-        python-version: ["py38", "py39","py310"]
+        python-version: ["py38", "py39", "py310"]
     runs-on: [self-hosted]
     needs: check_lint
     steps:
@@ -46,3 +45,20 @@ jobs:
         with:
           name: Unit Test Results (Python ${{ matrix.python-version }})
           path: pytest-doctests.xml
+
+  publish-test-results:
+    name: "Publish Unit Tests Results"
+    needs: doc_and_unit_tests
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: artifacts/**/*.xml
