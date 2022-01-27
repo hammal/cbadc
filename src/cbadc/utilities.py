@@ -256,21 +256,19 @@ def csv_2_control_signal(
 
     Example
     -------
-    >>> # create a csv file with four bits
-    >>> with open('test.csv','w') as f:
-    >>> f.write("""
-    0, 0, 0, 0
-    0, 0, 0, 1
-    0, 0, 1, 1
-    0, 1, 1, 1
-    """)
-    >>> # read control signal from the file just created
-    >>> for s in csv_2_control_signal('test.csv', 4, msb2lsb=True):
-    >>>     print(s)
-    [0 0 0 0]
-    [1 0 0 0]
-    [1 1 0 0]
-    [1 1 1 0]
+
+    .. code block::
+
+        # create a csv file with four bits
+        with open('test.csv','w') as f:
+            f.write("0, 0, 0, 0\n0, 0, 0, 1\n0, 0, 1, 1\n0, 1, 1, 1")
+        # read control signal from the file just created
+        for s in csv_2_control_signal('test.csv', 4, msb2lsb=True):
+            print(s)
+        [0 0 0 0]
+        [1 0 0 0]
+        [1 1 0 0]
+        [1 1 1 0]
 
     Raises
     ------

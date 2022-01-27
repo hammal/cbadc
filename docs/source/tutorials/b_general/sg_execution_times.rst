@@ -5,16 +5,16 @@
 
 Computation times
 =================
-**45:16.968** total execution time for **tutorials_b_general** files:
+**29:56.164** total execution time for **tutorials_b_general** files:
 
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py` (``plot_e_switched_capacitor_digital_control.py``) | 45:16.968 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py` (``plot_e_switched_capacitor_digital_control.py``) | 22:09.248 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``)                                   | 00:00.000 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_b_FIR_Filtering.py` (``plot_b_FIR_Filtering.py``)                                           | 02:56.107 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_b_FIR_Filtering.py` (``plot_b_FIR_Filtering.py``)                                           | 00:00.000 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``)                                   | 02:06.941 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_c_downsample.py` (``plot_c_downsample.py``)                                                 | 00:00.000 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_c_downsample.py` (``plot_c_downsample.py``)                                                 | 01:31.655 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_general_plot_d_fixed_point_aritmetics.py` (``plot_d_fixed_point_aritmetics.py``)                         | 00:00.000 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_general_plot_d_fixed_point_aritmetics.py` (``plot_d_fixed_point_aritmetics.py``)                         | 01:12.213 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+

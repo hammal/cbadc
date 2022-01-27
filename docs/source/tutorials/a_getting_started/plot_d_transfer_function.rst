@@ -378,7 +378,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 58 minutes  54.280 seconds)
+   **Total running time of the script:** ( 0 minutes  43.372 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:

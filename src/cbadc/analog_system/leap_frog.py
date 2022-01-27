@@ -74,9 +74,10 @@ class LeapFrog(AnalogSystem):
     >>> import numpy as np
     >>> from cbadc.analog_system import LeapFrog
     >>> beta = np.array([101, 102, 103])
-    >>> rho = np.array([-1, -2, -3])
+    >>> alpha = np.array([-1, -2])
+    >>> rho = np.array([0, 0, 0])
     >>> kappa = np.arange(100,109).reshape((3, 3))
-    >>> system = LeapFrog(beta, rho, kappa)
+    >>> system = LeapFrog(beta, alpha, rho, kappa)
 
     Raises
     ------

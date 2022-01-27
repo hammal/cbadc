@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**00:03.681** total execution time for **tutorials_c_further** files:
+**00:01.472** total execution time for **tutorials_c_further** files:
 
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_c_further_plot_z_artsy_sine.py` (``plot_z_artsy_sine.py``)                 | 00:01.855 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_c_further_plot_z_artsy_sine.py` (``plot_z_artsy_sine.py``)                 | 00:00.778 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_c_further_plot_a_Murmann_ADC_survey.py` (``plot_a_Murmann_ADC_survey.py``) | 00:01.827 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_c_further_plot_a_Murmann_ADC_survey.py` (``plot_a_Murmann_ADC_survey.py``) | 00:00.694 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
