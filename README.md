@@ -25,7 +25,7 @@ For a in depth description of the control-bounded conversion concept consider th
 # Installation
 
 Install [cbadc](https://pypi.org/project/cbadc/) by typing
- 
+
 ```bash
 pip install cbadc
 ```
@@ -34,6 +34,9 @@ into your console. Note that, currently cbadc is only supported for Python3.8 an
 
 # Source Code
 The source code is hosted on [https://github.com/hammal/cbadc](https://github.com/hammal/cbadc).
+
+# Bugs and Issues
+Please report problems at [https://github.com/hammal/cbadc/issues](https://github.com/hammal/cbadc/issues)
 
 # Changelog
 
