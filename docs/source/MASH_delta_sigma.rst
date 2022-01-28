@@ -1,5 +1,5 @@
 -----------------------------------
-MASH :math:`\Delta\Sigma` Converter 
+MASH :math:`\Delta\Sigma` Converter
 -----------------------------------
 
 Next we will determine how a MASH :math:`\Delta\Sigma` modulator
@@ -7,7 +7,7 @@ can be described as a control-bounded converter thus resulting in
 an alternative subsequent digital filter.
 
 For this purpose we are considering the continuous-time transformed
-version of 
+version of
 
 .. image:: images/MASHmodulator.v2.svg
     :width: 500

@@ -82,16 +82,15 @@ CT = np.eye(N)
 # using the impulse response :func:`cbadc.digital_control.RCImpulseResponse`
 # as
 
-impulse_response = cbadc.digital_control.RCImpulseResponse(R_s * C_Gamma)
+impulse_response = cbadc.analog_signal.RCImpulseResponse(R_s * C_Gamma)
 digital_control_sc = cbadc.digital_control.DigitalControl(
-    T, M, impulse_response=impulse_response
+    cbadc.analog_signal.Clock(T), M, impulse_response=impulse_response
 )
 
 Gamma = 1 / (R_s * C_x) * np.eye(M)
 Gamma_tildeT = -np.eye(M)
 
-analog_system_sc = cbadc.analog_system.AnalogSystem(
-    A, B, CT, Gamma, Gamma_tildeT)
+analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
 print(digital_control_sc)
 print(analog_system_sc)
@@ -107,8 +106,12 @@ Ts = T / 100.0
 size = 1 << 12
 
 simulator_sc = cbadc.simulator.extended_simulation_result(
-    cbadc.simulator.StateSpaceSimulator(
-        analog_system_sc, digital_control_sc, [analog_signal], Ts=Ts
+    cbadc.simulator.get_simulator(
+        analog_system_sc,
+        digital_control_sc,
+        [analog_signal],
+        cbadc.analog_signal.Clock(Ts),
+        simulator_type=cbadc.simulator.SimulatorType.analytical,
     )
 )
 
@@ -116,13 +119,16 @@ simulator_sc = cbadc.simulator.extended_simulation_result(
 analog_system_ref = cbadc.analog_system.AnalogSystem(
     A, B, CT, np.eye(N) * beta, Gamma_tildeT
 )
-digital_control_ref = cbadc.digital_control.DigitalControl(T, M)
+digital_control_ref = cbadc.digital_control.DigitalControl(
+    cbadc.analog_signal.Clock(T), M
+)
 simulator_ref = cbadc.simulator.extended_simulation_result(
-    cbadc.simulator.StateSpaceSimulator(
+    cbadc.simulator.get_simulator(
         analog_system_ref,
         digital_control_ref,
         [analog_signal],
-        Ts=Ts,
+        cbadc.analog_signal.Clock(Ts),
+        simulator_type=cbadc.simulator.SimulatorType.analytical,
     )
 )
 
@@ -141,7 +147,7 @@ for index in range(N):
     plt.title("Analog state trajectories for " + f"$x_{index + 1}(t)$")
     plt.plot(t / T, states[:, index], label="SC")
     plt.plot(t / T, states_ref[:, index], label="ref")
-    plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
     plt.xlabel("$t/T$")
     plt.legend()
 
@@ -154,8 +160,7 @@ K1 = 1 << 8
 K2 = K1
 eta2 = (
     np.linalg.norm(
-        analog_system_sc.transfer_function_matrix(
-            np.array([2 * np.pi / T / OSR]))
+        analog_system_sc.transfer_function_matrix(np.array([2 * np.pi / T / OSR]))
     ).flatten()
     ** 2
 )
@@ -239,8 +244,7 @@ plt.semilogx(
     20
     * np.log10(
         np.linalg.norm(
-            digital_estimator_sc.noise_transfer_function(omega)[
-                :, 0, :], axis=0
+            digital_estimator_sc.noise_transfer_function(omega)[:, 0, :], axis=0
         )
     ),
     "--",
@@ -251,8 +255,7 @@ plt.semilogx(
     20
     * np.log10(
         np.linalg.norm(
-            digital_estimator_ref.noise_transfer_function(omega)[
-                :, 0, :], axis=0
+            digital_estimator_ref.noise_transfer_function(omega)[:, 0, :], axis=0
         )
     ),
     "--",
@@ -285,10 +288,9 @@ for mismatch in mismatch_in_percent:
         # cbadc.analog_system.chain([filter, analog_system_sc]),
         analog_system_sc,
         cbadc.digital_control.DigitalControl(
-            T,
+            cbadc.analog_signal.Clock(T),
             M,
-            impulse_response=cbadc.digital_control.RCImpulseResponse(
-                R_s * C_Gamma),
+            impulse_response=cbadc.analog_signal.RCImpulseResponse(R_s * C_Gamma),
         ),
         eta2,
         K1,
@@ -299,7 +301,7 @@ for mismatch in mismatch_in_percent:
     digital_estimator_sc.convolve(fir_filter)
 
     digital_estimator_sc(
-        cbadc.simulator.StateSpaceSimulator(
+        cbadc.simulator.get_simulator(
             cbadc.analog_system.AnalogSystem(
                 A,
                 B,
@@ -308,14 +310,14 @@ for mismatch in mismatch_in_percent:
                 Gamma_tildeT,
             ),
             cbadc.digital_control.DigitalControl(
-                T,
+                cbadc.analog_signal.Clock(T),
                 M,
-                impulse_response=cbadc.digital_control.RCImpulseResponse(
+                impulse_response=cbadc.analog_signal.RCImpulseResponse(
                     (1 + mismatch / 100) * R_s * C_Gamma
                 ),
             ),
             [analog_signal],
-            pre_compute_control_interactions=False,
+            simulator_type=cbadc.simulator.SimulatorType.analytical,
         )
     )
     u_hat = np.zeros(size)
@@ -328,7 +330,7 @@ plt.figure()
 plt.title("Estimates")
 for index, mismatch in enumerate(mismatch_in_percent):
     plt.plot(t / T, estimates[index], label=f"Mismatch R_s {mismatch}%")
-plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 plt.xlabel("$t/T$")
 plt.xlim((K1 + K2, K1 + K2 + 100))
 plt.legend()
@@ -338,140 +340,143 @@ plt.figure()
 plt.title("Estimates PSD")
 for index, mismatch in enumerate(mismatch_in_percent):
     f, psd = cbadc.utilities.compute_power_spectral_density(
-        estimates[index][K1 + K2:], fs=1.0 / T
+        estimates[index][K1 + K2 :], fs=1.0 / T
     )
     plt.semilogx(f, 10 * np.log10(psd), label=f"Mismatch R_s {mismatch}%")
-plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 plt.xlabel("f [Hz]")
 plt.ylabel("V^2/Hz [dB]")
 plt.legend()
 
-# ###############################################################################
-# # Clock Jitter Sensitivity
-# # ------------------------
-# #
-# jitter_std = np.power(10.0, np.arange(-6, 0)) * T
-# # jitter_std = np.arange(3) * T * 0.3
-# clock_jitter = [lambda: (np.random.random() - 0.5) * std for std in jitter_std]
+###############################################################################
+# Clock Jitter Sensitivity
+# ------------------------
+#
+jitter_std = np.power(10.0, np.arange(-6, 0)) * T
+# jitter_std = np.arange(3) * T * 0.3
+clock_jitter = [lambda: (np.random.random() - 0.5) * std for std in jitter_std]
 
-# size = 1 << 14
-# t = np.arange(size) * T
+size = 1 << 14
+t = np.arange(size) * T
 
-# estimates = []
-# estimates_ref = []
+estimates = []
+estimates_ref = []
 
-# for jitter in clock_jitter:
-#     digital_estimator_sc = cbadc.digital_estimator.FIRFilter(
-#         # cbadc.analog_system.chain([filter, analog_system_sc]),
-#         analog_system_sc,
-#         cbadc.digital_control.DigitalControl(
-#             T,
-#             M,
-#             impulse_response=cbadc.digital_control.RCImpulseResponse(R_s * C_Gamma),
-#         ),
-#         eta2,
-#         K1,
-#         K2,
-#     )
+for jitter in clock_jitter:
+    digital_estimator_sc = cbadc.digital_estimator.FIRFilter(
+        # cbadc.analog_system.chain([filter, analog_system_sc]),
+        analog_system_sc,
+        cbadc.digital_control.DigitalControl(
+            cbadc.analog_signal.Clock(T),
+            M,
+            impulse_response=cbadc.analog_signal.RCImpulseResponse(R_s * C_Gamma),
+        ),
+        eta2,
+        K1,
+        K2,
+        solver_type=cbadc.digital_estimator.FilterComputationBackend.mpmath,
+    )
 
-#     # Apply FIR filter
-#     # digital_estimator_sc.convolve(fir_filter)
+    # Apply FIR filter
+    # digital_estimator_sc.convolve(fir_filter)
 
-#     digital_estimator_sc(
-#         cbadc.simulator.StateSpaceSimulator(
-#             analog_system_sc,
-#             cbadc.digital_control.DigitalControl(
-#                 T,
-#                 M,
-#                 impulse_response=cbadc.digital_control.RCImpulseResponse(R_s * C_Gamma),
-#             ),
-#             [analog_signal],
-#             clock_jitter=jitter,
-#         )
-#     )
+    digital_estimator_sc(
+        cbadc.simulator.get_simulator(
+            analog_system_sc,
+            cbadc.digital_control.DigitalControl(
+                cbadc.analog_signal.Clock(T),
+                M,
+                impulse_response=cbadc.analog_signal.RCImpulseResponse(R_s * C_Gamma),
+            ),
+            [analog_signal],
+            simulator_type=cbadc.simulator.SimulatorType.analytical,
+        )
+    )
 
-#     digital_estimator_ref = cbadc.digital_estimator.FIRFilter(
-#         # cbadc.analog_system.chain([filter, analog_system_ref]),
-#         analog_system_ref,
-#         cbadc.digital_control.DigitalControl(T, M),
-#         eta2,
-#         K1,
-#         K2,
-#     )
+    digital_estimator_ref = cbadc.digital_estimator.FIRFilter(
+        # cbadc.analog_system.chain([filter, analog_system_ref]),
+        analog_system_ref,
+        cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M),
+        eta2,
+        K1,
+        K2,
+        solver_type=cbadc.digital_estimator.FilterComputationBackend.mpmath,
+    )
 
-#     # Apply FIR filter
-#     # digital_estimator_ref.convolve(fir_filter)
+    # Apply FIR filter
+    # digital_estimator_ref.convolve(fir_filter)
 
-#     digital_estimator_ref(
-#         cbadc.simulator.StateSpaceSimulator(
-#             analog_system_ref,
-#             cbadc.digital_control.DigitalControl(T, M),
-#             [analog_signal],
-#             clock_jitter=jitter,
-#         )
-#     )
+    digital_estimator_ref(
+        cbadc.simulator.get_simulator(
+            analog_system_ref,
+            cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M),
+            [analog_signal],
+            simulator_type=cbadc.simulator.SimulatorType.analytical,
+        )
+    )
 
-#     u_hat = np.zeros(size)
-#     u_hat_ref = np.zeros_like(u_hat)
-#     digital_estimator_sc.warm_up()
-#     digital_estimator_ref.warm_up()
-#     for index in cbadc.utilities.show_status(range(size)):
-#         u_hat[index] = next(digital_estimator_sc)
-#         u_hat_ref[index] = next(digital_estimator_ref)
-#     estimates.append(u_hat)
-#     estimates_ref.append(u_hat_ref)
+    u_hat = np.zeros(size)
+    u_hat_ref = np.zeros_like(u_hat)
+    digital_estimator_sc.warm_up()
+    digital_estimator_ref.warm_up()
+    for index in cbadc.utilities.show_status(range(size)):
+        u_hat[index] = next(digital_estimator_sc)
+        u_hat_ref[index] = next(digital_estimator_ref)
+    estimates.append(u_hat)
+    estimates_ref.append(u_hat_ref)
 
-# # Plot estimates in time domain
-# plt.figure()
-# plt.title("Estimates")
-# for index, jitter in enumerate(clock_jitter):
-#     plt.plot(
-#         t / T,
-#         estimates[index],
-#         label=f"Std / T = {np.round(jitter_std[index] / T * 100, 3)}%",
-#     )
-# plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-# plt.xlabel("$t/T$")
-# plt.xlim((K1 + K2, K1 + K2 + 1000))
-# plt.legend()
+# Plot estimates in time domain
+plt.figure()
+plt.title("Estimates")
+for index, jitter in enumerate(clock_jitter):
+    plt.plot(
+        t / T,
+        estimates[index],
+        label=f"Std / T = {np.round(jitter_std[index] / T * 100, 3)}%",
+    )
+plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.xlabel("$t/T$")
+plt.xlim((K1 + K2, K1 + K2 + 1000))
+plt.legend()
 
-# # Plot estimates in time domain
-# plt.figure()
-# plt.title("Ref Estimates")
-# for index, jitter in enumerate(clock_jitter):
-#     plt.plot(
-#         t / T,
-#         estimates_ref[index],
-#         label=f"Ref Std / T = {np.round(jitter_std[index] / T * 100, 3)}%",
-#     )
-# plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-# plt.xlabel("$t/T$")
-# plt.xlim((K1 + K2, K1 + K2 + 1000))
-# plt.legend()
+# Plot estimates in time domain
+plt.figure()
+plt.title("Ref Estimates")
+for index, jitter in enumerate(clock_jitter):
+    plt.plot(
+        t / T,
+        estimates_ref[index],
+        label=f"Ref Std / T = {np.round(jitter_std[index] / T * 100, 3)}%",
+    )
+plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.xlabel("$t/T$")
+plt.xlim((K1 + K2, K1 + K2 + 1000))
+plt.legend()
 
-# # Plot estimates PSD
-# for index, jitter in enumerate(clock_jitter):
-#     plt.figure()
-#     plt.title("Estimates PSD Clock Jitter")
 
-#     f, psd = cbadc.utilities.compute_power_spectral_density(
-#         estimates[index][K1 + K2 :], fs=1.0 / T
-#     )
-#     f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(
-#         estimates_ref[index][K1 + K2 :], fs=1.0 / T
-#     )
-#     plt.semilogx(
-#         f,
-#         10 * np.log10(psd),
-#         label=f"SC (Std/T) = +- {np.round(jitter_std[index] / T * 100, 3)}%",
-#     )
-#     plt.semilogx(
-#         f_ref,
-#         10 * np.log10(psd_ref),
-#         "--",
-#         label=f"Ref (Std/T) = +- {np.round(jitter_std[index] / T  * 100, 3)}%",
-#     )
-#     plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-#     plt.xlabel("f [Hz]")
-#     plt.ylabel("V^2/Hz [dB]")
-#     plt.legend()
+# Plot estimates PSD
+for index, jitter in enumerate(clock_jitter):
+    plt.figure()
+    plt.title("Estimates PSD Clock Jitter")
+
+    f, psd = cbadc.utilities.compute_power_spectral_density(
+        estimates[index][K1 + K2 :], fs=1.0 / T
+    )
+    f_ref, psd_ref = cbadc.utilities.compute_power_spectral_density(
+        estimates_ref[index][K1 + K2 :], fs=1.0 / T
+    )
+    plt.semilogx(
+        f,
+        10 * np.log10(psd),
+        label=f"SC (Std/T) = +- {np.round(jitter_std[index] / T * 100, 3)}%",
+    )
+    plt.semilogx(
+        f_ref,
+        10 * np.log10(psd_ref),
+        "--",
+        label=f"Ref (Std/T) = +- {np.round(jitter_std[index] / T  * 100, 3)}%",
+    )
+    plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    plt.xlabel("f [Hz]")
+    plt.ylabel("V^2/Hz [dB]")
+    plt.legend()

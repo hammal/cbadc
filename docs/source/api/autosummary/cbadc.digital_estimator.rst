@@ -2,43 +2,35 @@
 ========================
 
 .. automodule:: cbadc.digital_estimator
-  
-   
-   
-   
-
-   
-   
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :template: custom-function-template.rst
-   
-      bruteForceCare
-      care
-   
-   
-
-   
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:                                          
-      :template: custom-class-template.rst               
-   
-      DigitalEstimator
-      FIRFilter
-      IIRFilter
-      NUVEstimator
-      ParallelEstimator
-   
-   
-
-   
-   
-   
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   cbadc.digital_estimator.batch_estimator
+   cbadc.digital_estimator.digital_estimator
+   cbadc.digital_estimator.fir_estimator
+   cbadc.digital_estimator.iir_estimator
+   cbadc.digital_estimator.nuv_estimator
+   cbadc.digital_estimator.parallel_digital_estimator

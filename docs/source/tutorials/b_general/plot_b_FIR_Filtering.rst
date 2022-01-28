@@ -84,7 +84,7 @@ example.
     T = 1.0 / (2 * beta)
 
     analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    digital_control = cbadc.digital_control.DigitalControl(T, M)
+    digital_control = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 
     # Summarize the analog system, digital control, and digital estimator.
     print(analog_system, "\n")
@@ -115,7 +115,7 @@ example.
      [   0.]
      [   0.]
      [   0.]],
-    CT = 
+    CT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
@@ -140,13 +140,21 @@ example.
      [0.]
      [0.]
      [0.]
-     [0.]] 
+     [0.]]
+
+    ================================================================================
 
     The Digital Control is parameterized as:
-    T = 8e-05,
-    M = 6,
-    and next update at
-    t = 8e-05
+
+    --------------------------------------------------------------------------------
+
+    clock:
+    Analog signal returns constant 0, i.e., maps t |-> 0.
+
+    M:
+    6
+    ================================================================================
+
 
 
 
@@ -161,7 +169,7 @@ Next we instantiate a :py:class:`cbadc.digital_estimator.FIRFilter` and
 visualize its impulse responses.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 65-98
+.. GENERATED FROM PYTHON SOURCE LINES 65-96
 
 .. code-block:: default
 
@@ -183,10 +191,8 @@ visualize its impulse responses.
     h_index = np.arange(-K1, K2)
     fig, ax = plt.subplots(2)
     for index in range(N):
-        ax[0].plot(h_index, impulse_response[:, index],
-                   label=f"$h_{index + 1}[k]$")
-        ax[1].semilogy(h_index, impulse_response[:, index],
-                       label=f"$h_{index + 1}[k]$")
+        ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+        ax[1].semilogy(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
     ax[0].legend()
     fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
     ax[1].set_xlabel("filter tap k")
@@ -210,7 +216,7 @@ visualize its impulse responses.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 99-118
+.. GENERATED FROM PYTHON SOURCE LINES 97-116
 
 -----------------------------------
 Impulse Response and :math:`\eta^2`
@@ -232,7 +238,7 @@ and does not necessarily generalize.
 We additionally plot the corresponding digital estimator transfer functions
 as a function of the bandwidth parameter :math:`\eta^2`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 118-181
+.. GENERATED FROM PYTHON SOURCE LINES 116-179
 
 .. code-block:: default
 
@@ -320,29 +326,10 @@ as a function of the bandwidth parameter :math:`\eta^2`.
          :class: sphx-glr-multi-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/b_general/plot_b_FIR_Filtering.py:156: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
 
 
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 182-204
+.. GENERATED FROM PYTHON SOURCE LINES 180-202
 
 Filter length
 -------------
@@ -355,7 +342,7 @@ K1=K2=180 filter taps or more. This is confirmed by simulation as the
 harmonics in the estimated spectrum disappear for larger number of
 filter taps. Note also the reference used in the spectral plots which
 corresponds to the default implementation
-:py:class:`cbadc.digital_estimator.DigitalEstimator` using a much
+:py:class:`cbadc.digital_estimator.BatchEstimator` using a much
 longer lookahead than corresponding FIR filters implementations.
 
 The simulation is often a robust way of determining a minimum
@@ -367,7 +354,7 @@ control signals :math:`\mathbf{s}[k]` can be filtered with FIR filters
 of different lengths as their decay varies.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 204-327
+.. GENERATED FROM PYTHON SOURCE LINES 202-320
 
 .. code-block:: default
 
@@ -378,9 +365,7 @@ of different lengths as their decay varies.
 
     control_signal_sequences = [
         cbadc.utilities.byte_stream_2_control_signal(
-            cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusoidal_simulation.dat", M
-            ),
+            cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
             M,
         )
         for _ in filter_lengths
@@ -411,7 +396,7 @@ of different lengths as their decay varies.
         plt.semilogy(
             np.arange(0, filter_lengths[-1]),
             np.abs(np.array(digital_estimators[-1].h[0, :, :]))[
-                filter_lengths[-1]:, index
+                filter_lengths[-1] :, index
             ],
             label=f"$h_{index + 1}[k]$",
         )
@@ -421,7 +406,7 @@ of different lengths as their decay varies.
     plt.xlim((0, filter_lengths[-1]))
     plt.grid(which="both")
 
-    digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimators_ref = cbadc.digital_estimator.BatchEstimator(
         analog_system,
         digital_control,
         eta2,
@@ -432,9 +417,7 @@ of different lengths as their decay varies.
 
     digital_estimators_ref(
         cbadc.utilities.byte_stream_2_control_signal(
-            cbadc.utilities.read_byte_stream_from_file(
-                "../a_getting_started/sinusoidal_simulation.dat", M
-            ),
+            cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
             M,
         )
     )
@@ -454,17 +437,16 @@ of different lengths as their decay varies.
 
         # Compute power spectral density
         f, psd = cbadc.utilities.compute_power_spectral_density(
-            u_hat[filter_lengths[index_de]:]
+            u_hat[filter_lengths[index_de] :]
         )
 
         # Plot the FIR filters
         color = next(ax[index_de]._get_lines.prop_cycler)["color"]
 
-        ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-        ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+        ax[index_de].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+        ax[index_de].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 
-        ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
-                              label="Reference", color="k")
+        ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref), label="Reference", color="k")
 
         ax[index_de].semilogx(
             f, 10 * np.log10(psd), label=f"K1=K2={filter_lengths[index_de]}", color=color
@@ -528,7 +510,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  45.069 seconds)
+   **Total running time of the script:** ( 2 minutes  56.107 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_general_plot_b_FIR_Filtering.py:

@@ -41,12 +41,11 @@ rhoVec = betaVec * rho
 kappaVec = kappa * beta * np.eye(N)
 
 # Instantiate a chain-of-integrators analog system.
-analog_system = cbadc.analog_system.ChainOfIntegrators(
-    betaVec, rhoVec, kappaVec)
+analog_system = cbadc.analog_system.ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 
 
 T = 1 / (2 * beta)
-digital_control = cbadc.digital_control.DigitalControl(T, M)
+digital_control = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 
 
 # Summarize the analog system, digital control, and digital estimator.
@@ -84,8 +83,7 @@ print(fixed_point)
 OSR = 1 << 5
 omega_3dB = 2 * np.pi / (2 * T * OSR)
 eta2 = (
-    np.linalg.norm(analog_system.transfer_function_matrix(
-        np.array([omega_3dB]))) ** 2
+    np.linalg.norm(analog_system.transfer_function_matrix(np.array([omega_3dB]))) ** 2
 )
 
 # Instantiate digital estimator
@@ -102,10 +100,8 @@ impulse_response = np.abs(np.array(digital_estimator.h[0, :, :]))
 h_index = np.arange(-K1, K2)
 fig, ax = plt.subplots(2)
 for index in range(N):
-    ax[0].plot(h_index, impulse_response[:, index],
-               label=f"$h_{index + 1}[k]$")
-    ax[1].semilogy(h_index, impulse_response[:, index],
-                   label=f"$h_{index + 1}[k]$")
+    ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+    ax[1].semilogy(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
 ax[0].legend()
 fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
 ax[1].set_xlabel("filter tap k")
@@ -130,9 +126,7 @@ fixed_point_precision = np.array([8, 10, 12, 14, 16, 20, 24])
 
 control_signal_sequences = [
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
     for _ in fixed_point_precision
@@ -141,8 +135,7 @@ control_signal_sequences = [
 size = 1 << 16
 u_hat = np.zeros(size)
 
-fixed_points = [cbadc.utilities.FixedPoint(
-    bits, 1.0) for bits in fixed_point_precision]
+fixed_points = [cbadc.utilities.FixedPoint(bits, 1.0) for bits in fixed_point_precision]
 
 
 digital_estimators = [
@@ -209,7 +202,7 @@ for index_de, bits in enumerate(fixed_point_precision):
     noise_index[signal_index] = False
     noise_index[0:2] = False
     noise_index[harmonics_index] = False
-    noise_index[size // OSR:] = False
+    noise_index[size // OSR :] = False
     res = cbadc.utilities.snr_spectrum_computation_extended(
         psd, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
     )
@@ -227,9 +220,7 @@ digital_estimators_ref = cbadc.digital_estimator.FIRFilter(
 
 digital_estimators_ref(
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
 )
@@ -249,20 +240,19 @@ noise_index = np.ones(psd_ref.size, dtype=bool)
 noise_index[signal_index] = False
 noise_index[0:2] = False
 noise_index[harmonics_index] = False
-noise_index[size // OSR:] = False
+noise_index[size // OSR :] = False
 res = cbadc.utilities.snr_spectrum_computation_extended(
     psd_ref, signal_index, noise_index, harmonics_mask=harmonics_index, fs=1 / T
 )
 SNR = 10 * np.log10(res["snr"])
 ENOB = np.round((SNR - 1.76) / 6.02, 1)
-description.append(
-    f"Ref, ENOB={ENOB}, THD={round(20 * np.log10(res['thd']))} dB")
+description.append(f"Ref, ENOB={ENOB}, THD={round(20 * np.log10(res['thd']))} dB")
 
 plt.semilogx(f_ref, 10 * np.log10(psd_ref), label=description[-1])
 
 plt.legend()
 plt.xlabel("frequency [Hz]")
-plt.grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 plt.ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
 plt.xlim((0.0002, 0.5))
 _ = plt.ylim((-150, 40))

@@ -120,7 +120,7 @@ derives from the main analog system class
      [   0.]
      [   0.]
      [   0.]],
-    CT = 
+    CT =
     [[1. 0. 0. 0. 0. 0.]
      [0. 1. 0. 0. 0. 0.]
      [0. 0. 1. 0. 0. 0.]
@@ -216,7 +216,7 @@ Plotting the Estimator's Signal and Noise Transfer Function
 
 To determine the estimate's signal and noise transfer function, we must
 instantiate a digital estimator
-:py:class:`cbadc.digital_estimator.DigitalEstimator`. The bandwidth of the
+:py:class:`cbadc.digital_estimator.BatchEstimator`. The bandwidth of the
 digital estimation filter is mainly determined by the parameter
 :math:`\eta^2` as the noise transfer function (NTF) follows as
 
@@ -229,8 +229,8 @@ and similarly, the signal transfer function (STF) follows as
 :math:`\text{STF}( \omega) = \text{NTF}( \omega) \mathbf{G}( \omega)`.
 
 We compute these two by invoking the class methods
-:func:`cbadc.digital_estimator.DigitalEstimator.noise_transfer_function` and
-:func:`cbadc.digital_estimator.DigitalEstimator.signal_transfer_function`
+:func:`cbadc.digital_estimator.BatchEstimator.noise_transfer_function` and
+:func:`cbadc.digital_estimator.BatchEstimator.signal_transfer_function`
 respectively.
 
 the digital estimator requires us to also instantiate a digital control
@@ -252,8 +252,8 @@ from the :math:`\ell`-th observation to the final estimate.
     # functions). However necessary to instantiate the digital estimator
 
     T = 1 / (2 * beta)
-    digital_control = cbadc.digital_control.DigitalControl(T, N)
-
+    clock = cbadc.analog_signal.Clock(T)
+    digital_control = cbadc.digital_control.DigitalControl(clock, N)
 
     # Compute eta2 for a given bandwidth.
     omega_3dB = (4 * np.pi * beta) / 100.0
@@ -265,7 +265,7 @@ from the :math:`\ell`-th observation to the final estimate.
     )
 
     # Instantiate estimator.
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1=1
     )
 
@@ -329,7 +329,7 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
     plt.figure()
     for eta2 in eta2_vec:
         # Instantiate an estimator for each eta.
-        digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+        digital_estimator = cbadc.digital_estimator.BatchEstimator(
             analog_system, digital_control, eta2, K1=1
         )
         # Compute stf and ntf
@@ -372,26 +372,13 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
    :class: sphx-glr-single-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-    /drives1/PhD/cbadc/docs/code_examples/a_getting_started/plot_d_transfer_function.py:204: RuntimeWarning: divide by zero encountered in log10
-      ntf_dB = 20 * np.log10(np.abs(ntf))
-
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  24.584 seconds)
+   **Total running time of the script:** ( 0 minutes  43.372 seconds)
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:

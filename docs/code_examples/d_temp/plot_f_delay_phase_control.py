@@ -270,8 +270,8 @@ fig, ax = plt.subplots(N, 2)
 for index in range(N):
     color1 = next(ax[0, 0]._get_lines.prop_cycler)["color"]
     color2 = next(ax[0, 0]._get_lines.prop_cycler)["color"]
-    ax[index, 0].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-    ax[index, 1].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index, 0].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index, 1].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
     ax[index, 0].plot(time_vector, states[0, index, :], color=color1, label="Phase")
     ax[index, 0].plot(time_vector, states[1, index, :], color=color2, label="Ref")
     ax[index, 1].plot(
@@ -311,8 +311,8 @@ L_infty_norm = np.linalg.norm(states, ord=np.inf, axis=1)
 bins = 150
 plt.rcParams["figure.figsize"] = [6.40, 4.80]
 fig, ax = plt.subplots(2, sharex=True)
-ax[0].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-ax[1].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+ax[0].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+ax[1].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 ax[0].hist(L_2_norm[0, :], bins=bins, density=True, label="Phase")
 ax[0].hist(L_2_norm[1, :], bins=bins, density=True, label="Ref")
 ax[1].hist(L_infty_norm[0, :], bins=bins, density=True, color="orange", label="Phase")

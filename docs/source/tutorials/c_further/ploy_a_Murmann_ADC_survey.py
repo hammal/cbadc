@@ -11,6 +11,7 @@ using a :py:class:`pandas.DataFrame`.
 
 import cbadc.fom
 import matplotlib.pyplot as plt
+
 plt.rcParams["figure.figsize"] = [16, 10]  # modify default size of plot
 
 adc_survey = cbadc.fom.MurmannSurvey()

@@ -10,6 +10,7 @@ Tutorials
 
 Here we demonstrate common use cases for the cbadc package.
 
+
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
@@ -106,8 +107,8 @@ Next follows three basic examples demonstrating how to
 General Examples
 ----------------
 
-Next we highlight various features of the cbadc package. 
-  
+Next we highlight various features of the cbadc package.
+
 
 
 .. raw:: html
@@ -227,7 +228,7 @@ Further Examples
 ----------------
 
 These are further examples showcasing the cbadc package.
-  
+
 
 
 .. raw:: html
@@ -253,7 +254,7 @@ These are further examples showcasing the cbadc package.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This notebook shows examples of artsy plots made from data generated with the  control-bounded ...">
+    <div class="sphx-glr-thumbcontainer" tooltip="This notebook shows examples of artsy plots made from data generated with the control-bounded c...">
 
 .. only:: html
 

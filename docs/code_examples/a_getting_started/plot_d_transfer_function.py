@@ -106,7 +106,7 @@ plt.gcf().tight_layout()
 #
 # To determine the estimate's signal and noise transfer function, we must
 # instantiate a digital estimator
-# :py:class:`cbadc.digital_estimator.DigitalEstimator`. The bandwidth of the
+# :py:class:`cbadc.digital_estimator.BatchEstimator`. The bandwidth of the
 # digital estimation filter is mainly determined by the parameter
 # :math:`\eta^2` as the noise transfer function (NTF) follows as
 #
@@ -119,8 +119,8 @@ plt.gcf().tight_layout()
 # :math:`\text{STF}( \omega) = \text{NTF}( \omega) \mathbf{G}( \omega)`.
 #
 # We compute these two by invoking the class methods
-# :func:`cbadc.digital_estimator.DigitalEstimator.noise_transfer_function` and
-# :func:`cbadc.digital_estimator.DigitalEstimator.signal_transfer_function`
+# :func:`cbadc.digital_estimator.BatchEstimator.noise_transfer_function` and
+# :func:`cbadc.digital_estimator.BatchEstimator.signal_transfer_function`
 # respectively.
 #
 # the digital estimator requires us to also instantiate a digital control
@@ -137,8 +137,8 @@ plt.gcf().tight_layout()
 # functions). However necessary to instantiate the digital estimator
 
 T = 1 / (2 * beta)
-digital_control = cbadc.digital_control.DigitalControl(T, N)
-
+clock = cbadc.analog_signal.Clock(T)
+digital_control = cbadc.digital_control.DigitalControl(clock, N)
 
 # Compute eta2 for a given bandwidth.
 omega_3dB = (4 * np.pi * beta) / 100.0
@@ -150,7 +150,7 @@ eta2 = (
 )
 
 # Instantiate estimator.
-digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+digital_estimator = cbadc.digital_estimator.BatchEstimator(
     analog_system, digital_control, eta2, K1=1
 )
 
@@ -196,7 +196,7 @@ eta2_vec = np.logspace(0, 10, 11)[::2]
 plt.figure()
 for eta2 in eta2_vec:
     # Instantiate an estimator for each eta.
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1=1
     )
     # Compute stf and ntf

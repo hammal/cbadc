@@ -2,10 +2,10 @@
 Control-Bounded A/D Conversion
 ******************************
 
-Analog-to-digital (A/D) conversion is an ubiquitous part of most of todays 
+Analog-to-digital (A/D) conversion is an ubiquitous part of most of todays
 electronic devices as it interfaces the analog world we live in with the
-digital domain. Control-bounded A/D conversion is a type of A/D conversion 
-that indirectly converts analog signals into their digital counterpart by 
+digital domain. Control-bounded A/D conversion is a type of A/D conversion
+that indirectly converts analog signals into their digital counterpart by
 stabilizing an analog system using digital control.
 
 ===========================
@@ -24,9 +24,9 @@ digital estimate :math:`\hat{u}[k]` by applying
    :alt: Conventional A/D conversion.
    :align: center
 
-The three steps are additionally shown in the figure above, where we see the 
+The three steps are additionally shown in the figure above, where we see the
 preconditioning, sampling, and quantization steps from
-left to right. 
+left to right.
 
 ===================
 A new A/D interface
@@ -42,24 +42,24 @@ differently, as outlined in the figure below.
 
 Specifically, the conversion process is divided into three main components.
 
-The :doc:`analog system (AS) <analog_system>`, preconditions the input signal 
-by amplifying desired, while suppressing undesired, signal characteristics. 
-Note that the AS is a fully analog system. Additionally, the A/D 
+The :doc:`analog system (AS) <analog_system>`, preconditions the input signal
+by amplifying desired, while suppressing undesired, signal characteristics.
+Note that the AS is a fully analog system. Additionally, the A/D
 converter's overall conversion performance is directly linked to the amount of
-amplification provided in this stage. 
+amplification provided in this stage.
 
 The :doc:`digital control (DC) <digital_control>` stabilizes the AS by observing
 a sampled and quantized version of the internal AS states and, based on these
-observations, provide a control signal :math:`\mathbf{s}[k]` which is fed back 
+observations, provide a control signal :math:`\mathbf{s}[k]` which is fed back
 into the AS (via a digital-to-analog (D/A) conversion step). The goal of DC is to
-(physically) bound the internal AS states. The DC ability to bound the AS states 
-will directly affect the overall conversion performance. In contrast to the AS, 
-the DC is a fully digital system, operating in synchronization with a global clock, 
-with the exception of the control signal contribution :math:`\mathbf{s}(t)` which 
+(physically) bound the internal AS states. The DC ability to bound the AS states
+will directly affect the overall conversion performance. In contrast to the AS,
+the DC is a fully digital system, operating in synchronization with a global clock,
+with the exception of the control signal contribution :math:`\mathbf{s}(t)` which
 is a continuous-time analog version of the control signal :math:`\mathbf{s}[k]`.
 
 Finally, the :doc:`digital estimator (DE) <digital_estimator>` provides samples of a
-continuous-time estimate :math:`\hat{u}(t)` given the control signal 
+continuous-time estimate :math:`\hat{u}(t)` given the control signal
 :math:`\mathbf{s}[k]` and the knowledge of the general AS and DC parametrization.
 In many ways, the DE is the heart of the control-bounded A/D conversion scheme as it
 is able to produce estimates for essentially arbitrary AS and DC combinations. The
@@ -73,12 +73,12 @@ news are:
   therefore, for a given AS and DC, provide you with the resulting filter coefficient
   of a DE.
 
-In summary, the control-bounded A/D converter principle approaches A/D 
-conversion unconventionally as, instead of breaking down the conversion 
-into sampling and quantization steps, we focus on stabilizing an analog system 
-using a digital control. In this view, conversion performance takes on a new shape as 
-increasing the AS amplification in combination with a DC that enforces tighter control 
-implies an increased A/D conversion performance. This results in 
+In summary, the control-bounded A/D converter principle approaches A/D
+conversion unconventionally as, instead of breaking down the conversion
+into sampling and quantization steps, we focus on stabilizing an analog system
+using a digital control. In this view, conversion performance takes on a new shape as
+increasing the AS amplification in combination with a DC that enforces tighter control
+implies an increased A/D conversion performance. This results in
 a whole new analog design space with a considerable more unconstrained A/D interface,
 which in turn provides design opportunities for the analog designer.
 
@@ -87,21 +87,21 @@ Relation to :math:`\Delta\Sigma` Modulators
 -------------------------------------------
 
 But wait, the figure above looks like a continuous-time :math:`\Delta\Sigma` modulator?
-Is it just the same? 
+Is it just the same?
 
 Not quite. It is true that, in the scalar input, state vector, and control signal case,
-there is no difference between the AS and DC of the control-bounded architecture presented 
+there is no difference between the AS and DC of the control-bounded architecture presented
 above and a first order continuous-time :math:`\Delta\Sigma` modulator. However, the DE
-filter is derived in a conceptually different way compared to a decimation filer. 
+filter is derived in a conceptually different way compared to a decimation filer.
 Furthermore, for a general AS and DC the closest :math:`\Delta\Sigma` concept is the
-MASH :math:`\Delta\Sigma` modulator concept. However, the MASH concept requires a 
-digital cancellation logic which fundamentally constrains how the AS and DC can be 
-interconnected. In comparison, the control-bounded DE pose no such restrictions but 
+MASH :math:`\Delta\Sigma` modulator concept. However, the MASH concept requires a
+digital cancellation logic which fundamentally constrains how the AS and DC can be
+interconnected. In comparison, the control-bounded DE pose no such restrictions but
 instead enables a vast AS and DC design space.
 
-Interestingly, :doc:`any MASH converter can be written in the form of a control-bounded A/D 
-converter<MASH_delta_sigma>` and thereby benefit from using the simple design procedure of the 
-DE as opposed to the conventional way of a digital cancellation logic followed by a 
+Interestingly, :doc:`any MASH converter can be written in the form of a control-bounded A/D
+converter<MASH_delta_sigma>` and thereby benefit from using the simple design procedure of the
+DE as opposed to the conventional way of a digital cancellation logic followed by a
 decimation filter.
 
 ======================
@@ -126,7 +126,7 @@ In particular, consider the :ref:`getting_started`.
 
 .. toctree::
    :hidden:
-  
+
    analog_system
    digital_control
    digital_estimator

@@ -48,7 +48,7 @@ Gamma_tildeT = CT
 T = 1.0 / (2 * beta)
 
 analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-digital_control = cbadc.digital_control.DigitalControl(T, M)
+digital_control = cbadc.digital_control.DigitalControl(cbadc.analog_signal.Clock(T), M)
 
 # Summarize the analog system, digital control, and digital estimator.
 print(analog_system, "\n")
@@ -80,10 +80,8 @@ impulse_response = np.abs(np.array(digital_estimator.h[0, :, :]))
 h_index = np.arange(-K1, K2)
 fig, ax = plt.subplots(2)
 for index in range(N):
-    ax[0].plot(h_index, impulse_response[:, index],
-               label=f"$h_{index + 1}[k]$")
-    ax[1].semilogy(h_index, impulse_response[:, index],
-                   label=f"$h_{index + 1}[k]$")
+    ax[0].plot(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
+    ax[1].semilogy(h_index, impulse_response[:, index], label=f"$h_{index + 1}[k]$")
 ax[0].legend()
 fig.suptitle(f"For $\eta^2 = {10 * np.log10(eta2)}$ [dB]")
 ax[1].set_xlabel("filter tap k")
@@ -190,7 +188,7 @@ plt.gcf().tight_layout()
 # harmonics in the estimated spectrum disappear for larger number of
 # filter taps. Note also the reference used in the spectral plots which
 # corresponds to the default implementation
-# :py:class:`cbadc.digital_estimator.DigitalEstimator` using a much
+# :py:class:`cbadc.digital_estimator.BatchEstimator` using a much
 # longer lookahead than corresponding FIR filters implementations.
 #
 # The simulation is often a robust way of determining a minimum
@@ -208,9 +206,7 @@ eta2 = 1e6
 
 control_signal_sequences = [
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
     for _ in filter_lengths
@@ -241,7 +237,7 @@ for index in range(N):
     plt.semilogy(
         np.arange(0, filter_lengths[-1]),
         np.abs(np.array(digital_estimators[-1].h[0, :, :]))[
-            filter_lengths[-1]:, index
+            filter_lengths[-1] :, index
         ],
         label=f"$h_{index + 1}[k]$",
     )
@@ -251,7 +247,7 @@ plt.ylabel("$| h_\ell [k]|$")
 plt.xlim((0, filter_lengths[-1]))
 plt.grid(which="both")
 
-digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
+digital_estimators_ref = cbadc.digital_estimator.BatchEstimator(
     analog_system,
     digital_control,
     eta2,
@@ -262,9 +258,7 @@ digital_estimators_ref = cbadc.digital_estimator.DigitalEstimator(
 
 digital_estimators_ref(
     cbadc.utilities.byte_stream_2_control_signal(
-        cbadc.utilities.read_byte_stream_from_file(
-            "../a_getting_started/sinusoidal_simulation.dat", M
-        ),
+        cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M),
         M,
     )
 )
@@ -284,17 +278,16 @@ for index_de in range(len(filter_lengths)):
 
     # Compute power spectral density
     f, psd = cbadc.utilities.compute_power_spectral_density(
-        u_hat[filter_lengths[index_de]:]
+        u_hat[filter_lengths[index_de] :]
     )
 
     # Plot the FIR filters
     color = next(ax[index_de]._get_lines.prop_cycler)["color"]
 
-    ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
-    ax[index_de].grid(b=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index_de].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    ax[index_de].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
 
-    ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref),
-                          label="Reference", color="k")
+    ax[index_de].semilogx(f_ref, 10 * np.log10(psd_ref), label="Reference", color="k")
 
     ax[index_de].semilogx(
         f, 10 * np.log10(psd), label=f"K1=K2={filter_lengths[index_de]}", color=color
