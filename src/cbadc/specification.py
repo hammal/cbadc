@@ -55,13 +55,13 @@ def get_chain_of_integrator(**kwargs):
         if 'xi' in kwargs:
             xi = kwargs['xi']
         gamma = (xi * snr) ** (1.0 / (2.0 * N))
-        beta = gamma * omega_3dB
+        beta = -gamma * omega_3dB
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -omega_3dB / gamma
         else:
             rho = 0
         kappa = beta
-        T = 1.0 / (2.0 * beta)
+        T = 1.0 / np.abs(2.0 * beta)
         all_ones = np.ones(N)
         analog_system = ChainOfIntegrators(
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
@@ -71,7 +71,7 @@ def get_chain_of_integrator(**kwargs):
             t0 = kwargs['excess_delay'] * T
         if kwargs.get('digital_control') == 'switch_cap':
             scale = 5e1
-            tau = 1.0 / (beta * scale)
+            tau = 1.0 / (np.abs(beta) * scale)
             v_cap = 0.5
             kappa = v_cap * beta * scale
             impulse_response = RCImpulseResponse(tau, t0)
@@ -167,7 +167,7 @@ def get_leap_frog(**kwargs):
             t0 = kwargs['excess_delay'] * T
         if kwargs.get('digital_control') == 'switch-cap':
             scale = 5e1
-            tau = 1.0 / (beta * scale)
+            tau = 1.0 / (np.abs(beta) * scale)
             v_cap = 0.5
             kappa = v_cap * beta * scale
             impulse_response = RCImpulseResponse(tau, t0)
