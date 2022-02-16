@@ -1,12 +1,14 @@
+exclude: ^docs/source/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.1.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
-      # - id: trailing-whitespace
+      - id: trailing-whitespace
+    exclude: ^tests/unittest/test_circuit_level/
   - repo: https://github.com/psf/black
-    rev: 21.11b0
+    rev: 22.1.0
     hooks:
       - id: black
         # It is recommended to specify the latest version of Python
