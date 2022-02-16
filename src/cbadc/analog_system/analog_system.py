@@ -147,11 +147,11 @@ class AnalogSystem:
                 raise InvalidAnalogSystemError(
                     self, "N does not agree with control input matrix Gamma."
                 )
-            self.M = self.Gamma.shape[1]
+            self.M: int = self.Gamma.shape[1]
         else:
             self.Gamma = None
             self._Gamma_s = None
-            self.M = 0
+            self.M: int = 0
 
         if Gamma_tildeT is not None:
             self.Gamma_tildeT = np.array(Gamma_tildeT, dtype=np.double)
@@ -162,13 +162,13 @@ class AnalogSystem:
                     """N does not agree with control observation matrix
                     Gamma_tilde.""",
                 )
-            self.M_tilde = self.Gamma_tildeT.shape[0]
+            self.M_tilde: int = self.Gamma_tildeT.shape[0]
         else:
             self.Gamma_tildeT = None
             self._Gamma_tildeT_s = None
-            self.M_tilde = 0
+            self.M_tilde: int = 0
 
-        self.N = self.A.shape[0]
+        self.N: int = self.A.shape[0]
 
         if self.A.shape[0] != self.A.shape[1]:
             raise InvalidAnalogSystemError(self, "system matrix not square")
@@ -179,8 +179,8 @@ class AnalogSystem:
         if len(self.CT.shape) == 1:
             self.CT = self.CT.reshape((1, self.N))
 
-        self.L = self.B.shape[1]
-        self.N_tilde = self.CT.shape[0]
+        self.L: int = self.B.shape[1]
+        self.N_tilde: int = self.CT.shape[0]
 
         self.temp_derivative = np.zeros(self.N, dtype=np.double)
         self.temp_y = np.zeros(self.N_tilde, dtype=np.double)
@@ -351,16 +351,17 @@ class AnalogSystem:
         )
         self._atf_lambda = sp.lambdify((self.omega), self._atf_s_matrix)
 
-    def _atf(self, _omega: float) -> np.ndarray:
+    def _atf_symbolic(self, _omega: float) -> np.ndarray:
         if self._atf_lambda is None:
             self._lazy_initialize_ATF()
         return np.array(self._atf_lambda(_omega)).astype(np.complex128)
-        # tf = np.dot(
-        #     np.linalg.pinv(complex(0, _omega) *
-        #                    np.eye(self.N) - self.A, rcond=1e-300),
-        #     self.B,
-        # )
-        # return tf
+
+    def _atf(self, _omega: float) -> np.ndarray:
+        tf = np.dot(
+            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
+            self.B,
+        )
+        return tf
 
     def _lazy_initialize_CTF(self):
         logger.info("Computing analytical control transfer function.")
@@ -415,7 +416,9 @@ class AnalogSystem:
         resp = np.einsum("ij,jkl", self.CT, result)
         return np.asarray(resp)
 
-    def transfer_function_matrix(self, omega: np.ndarray) -> np.ndarray:
+    def transfer_function_matrix(
+        self, omega: np.ndarray, symbolic: bool = True
+    ) -> np.ndarray:
         """Evaluate the analog signal transfer function at the angular
         frequencies of the omega array.
 
@@ -432,6 +435,8 @@ class AnalogSystem:
         omega: `array_like`, shape=(K,)
             an array_like object containing the angular frequencies for
             evaluation.
+        symbolic: `bool`, `optional`
+            solve using symbolic methods, defaults to True.
 
         Returns
         -------
@@ -443,7 +448,10 @@ class AnalogSystem:
         result = np.zeros((self.N, self.L, size), dtype=complex)
         resp = np.zeros((self.N_tilde, self.L, size))
         for index in range(size):
-            result[:, :, index] = self._atf(omega[index])
+            if symbolic:
+                result[:, :, index] = self._atf_symbolic(omega[index])
+            else:
+                result[:, :, index] = self._atf(omega[index])
             resp[:, :, index] = self.D
         # resp = np.einsum('ij,jkl', self.CT, result)
         resp = resp + np.tensordot(self.CT, result, axes=((1), (0)))
@@ -465,6 +473,7 @@ class AnalogSystem:
         return scipy.signal.ss2zpk(self.A, self.B, self.CT, self.D, input=0)
 
     def __str__(self):
+        np.set_printoptions(formatter={'float': '{: 0.2e}'.format})
         return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nGamma_tildeT =\n{np.array(self.Gamma_tildeT)}, and D={self.D}"
 
 

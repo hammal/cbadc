@@ -67,12 +67,16 @@ jobs:
             "a_getting_started/plot_b_simulate_a_control_bounded_adc.py",
             "a_getting_started/plot_c_digital_estimator.py",
             "a_getting_started/plot_d_transfer_function.py",
-            "b_general/plot_a_compare_estimator.py",
-            "b_general/plot_b_FIR_Filtering.py",
-            "b_general/plot_d_fixed_point_aritmetics.py",
-            "b_general/plot_e_switched_capacitor_digital_control.py",
-            "c_further/plot_a_Murmann_ADC_survey.py",
-            "c_further/plot_z_artsy_sine.py",
+            "b_high_level_simulation/plot_a_compare_estimator.py",
+            "b_high_level_simulation/plot_b_FIR_Filtering.py",
+            "b_high_level_simulation/plot_d_fixed_point_aritmetics.py",
+            "b_high_level_simulation/plot_e_switched_capacitor_digital_control.py",
+            "b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications.py",
+            "c_circuit_level/plot_a_analog_system.py",
+            "c_circuit_level/plot_b_analog_frontend.py",
+            "c_circuit_level/plot_c_testbench.py",
+            "d_further/plot_a_Murmann_ADC_survey.py",
+            "d_further/plot_z_artsy_sine.py",
           ]
     # needs: doc_and_unit_tests
     steps:

@@ -95,7 +95,7 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
 
     try:
         V = _analytical_care(A, B, Q, R)
-    except sp.PrecisionExhausted:
+    except (sp.PrecisionExhausted, TypeError):
         logger.warning(
             """PrecisionExhausted in analytical CARE solver, switching to Scipy."""
         )

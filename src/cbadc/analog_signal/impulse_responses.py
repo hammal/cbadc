@@ -13,10 +13,12 @@ class _ImpulseResponse(_AnalogSignal):
 
 
 class StepResponse(_ImpulseResponse):
-    def __init__(self, t0: float = 0.0) -> None:
+    def __init__(self, t0: float = 0.0, amplitude=1.0) -> None:
         super().__init__()
         self.t0 = t0
+        self.amplitude = amplitude
         self._t0_mpmath = mp.mpmathify(t0)
+        self._amplitude_mpmath = mp.mpmathify(amplitude)
 
     def evaluate(self, t: float) -> float:
         """Returns the step response function
@@ -29,16 +31,18 @@ class StepResponse(_ImpulseResponse):
             evaluated at time
         t0: `float`, `optional`
             starting time
+        amplitude: `float`, `optional`
+            the amplitude of the impulse response
 
         Returns
         -------
         `float`:
             the step response evaluated at t.
         """
-        return 1.0 if t >= self.t0 else 0.0
+        return self.amplitude if t >= self.t0 else 0.0
 
     def _mpmath(self, t: Union[mp.mpf, float]):
-        return mp.mpf('1.0')
+        return mp.mpf(self._amplitude_mpmath)
 
     def symbolic(self):
         """Returns as symbolic exression
@@ -49,16 +53,18 @@ class StepResponse(_ImpulseResponse):
             the resulting function
         """
         # return sp.Piecewise((0, self.t < self.t0), (1, True))
-        return sp.Integer(1)
+        return sp.Float(self.amplitude)
 
 
 class RCImpulseResponse(_ImpulseResponse):
-    def __init__(self, tau: float, t0: float = 0):
+    def __init__(self, tau: float, t0: float = 0, amplitude=1.0):
         super().__init__()
         self.tau = tau
         self.t0 = t0
+        self.amplitude = amplitude
         self._tau_mpmath = mp.mpmathify(tau)
         self._t0_mpmath = mp.mpmathify(t0)
+        self._amplitude_mpmath = mp.mpmathify(amplitude)
 
     def evaluate(self, t: float) -> float:
         """Returns the impulse response of a RC circuit.
@@ -79,6 +85,8 @@ class RCImpulseResponse(_ImpulseResponse):
             time constant.
         t0: `float`, `optional`
             starting time
+        amplitude: `float`, `optional`
+            the amplitude of the impulse response
 
         Returns
         --------
@@ -88,11 +96,11 @@ class RCImpulseResponse(_ImpulseResponse):
         if t < self.t0:
             return 0.0
         else:
-            return np.exp((self.t0 - t) / self.tau)
+            return self.amplitude * np.exp((self.t0 - t) / self.tau)
 
     def _mpmath(self, t: Union[mp.mpf, float]):
         t = mp.mpmathify(t)
-        return mp.exp((self._t0_mpmath - t) / self._tau_mpmath)
+        return self._amplitude_mpmath * mp.exp((self._t0_mpmath - t) / self._tau_mpmath)
 
     def symbolic(self):
         """Returns as symbolic exression
@@ -102,7 +110,7 @@ class RCImpulseResponse(_ImpulseResponse):
         : :py:class:`sympy.Symbol`
             the resulting function
         """
-        return sp.exp((self.t0 - self.t) / self.tau)
+        return sp.Float(self.amplitude) * sp.exp((self.t0 - self.t) / self.tau)
         # return sp.Piecewise(
         #     (0, self.t < self.t0),
         #     (sp.exp((self.t0 - self.t) / self.tau), True)

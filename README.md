@@ -59,6 +59,15 @@ Specifically,
   - The default DigitalEstimator changes it's name to [BatchEstimator]()
   - an additional filter computation backend implemented with [mpmath](https://mpmath.org)
 - Improved [care]() implementation using [SymPy](https://www.sympy.org/en/index.html) instead of [SciPy](https://scipy.org).
+- `cbadc.specification.get_chain_of_integrator` and `cbadc.specification.get_leap_frog` a computation aid to dimension chain-of-integrators and leap-frog analog-frontends to meet ENOB and BW specifications
+
+Added verilog-ams circuit-level submodule
+
+Such that circuit-level implementations can be
+- constructed in Verilog-ams
+- the resulting filter coefficients can be computed
+- the resulting analog frontends can be simulated.
+
 ### 0.1.5
 
 Added figures of merit [fom](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.fom.html#module-cbadc.fom) modul, [MurmannSurvey](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.fom.MurmannSurvey.html#cbadc.fom.MurmannSurvey) convenience class, and a new tutorial [The Murmann ADC Survey](https://cbadc.readthedocs.io/en/latest/tutorials/c_further/plot_a_Murmann_ADC_survey.html#sphx-glr-tutorials-c-further-plot-a-murmann-adc-survey-py).

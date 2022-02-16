@@ -23,7 +23,7 @@ This documentation is structured in five parts.
    control-bounded_converters
    tutorials/index
    api/api
-   datasets/index
+   //    datasets/index
    terminology
 
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
