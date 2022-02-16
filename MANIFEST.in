@@ -3,5 +3,5 @@ include requirements.txt
 include README.md
 include tox.ini
 include pyproject.toml
-include src/cbadc/circuit_level/templates/*.vams
-include src/cbadc/circuit_level/templates/*.txt
+graft src/cbadc
+global-exclude *.py[cod]
