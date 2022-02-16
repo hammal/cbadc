@@ -35,8 +35,8 @@ class Comparator(Module):
             Parameter("ttime", "10p"),
         ]
         analog_statements = [
-            f"@(cross(V(clk) - V(sgd), -1)) begin",
-            f"\tif(V(s_tilde) > V(sgd))",
+            "@(cross(V(clk) - V(sgd), -1)) begin",
+            "\tif(V(s_tilde) > V(sgd))",
             "\t\tV(s, vgd) <+ V(vdd, vgd) * transition(1, dly, ttime);",
             "\telse",
             "\t\tV(s, vgd) <+ V(vdd, vgd) * transition(0, dly, ttime);",

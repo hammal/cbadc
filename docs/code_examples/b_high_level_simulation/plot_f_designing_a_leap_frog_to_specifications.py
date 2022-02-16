@@ -156,7 +156,7 @@ for n in N[1:][::-1]:
         label=f"N={n}, OSR={1/(2 * digital_control.clock.T * BW):.0f}, est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB",
     )
 
-plt.title(f"Power spectral density of input estimate")
+plt.title("Power spectral density of input estimate")
 plt.xlabel('Hz')
 plt.ylabel('$V^2$ / Hz dB')
 plt.legend()
@@ -232,7 +232,7 @@ for n in N[1:][::-1]:
         label=f"N={n}, OSR={1/(2 * digital_control.clock.T * BW):.0f}, est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB",
     )
 
-plt.title(f"Power spectral density of input estimate")
+plt.title("Power spectral density of input estimate")
 plt.xlabel('Hz')
 plt.ylabel('$V^2$ / Hz dB')
 plt.legend()

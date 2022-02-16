@@ -147,7 +147,7 @@ class _SubModule:
 
     def _check_ports(self):
         for port in self.ports:
-            if not port in self.nets:
+            if port not in self.nets:
                 raise Exception("All ports must be specified among the nets")
 
     def _module_comment(self) -> List[str]:

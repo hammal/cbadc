@@ -55,7 +55,7 @@ class TestBench:
             lstrip_blocks=True,
         )
         if not isinstance(input_signal, Sinusoidal):
-            raise NotImplemented("Currently only supported for sinusodials.")
+            raise NotImplementedError("Currently only supported for sinusodials.")
         self.analog_frontend = analog_frontend
         self._input_signal = input_signal
         self._simulation_clock = clock

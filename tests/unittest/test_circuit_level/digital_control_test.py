@@ -7,19 +7,19 @@ def test_ComparatorModule():
     assert (
         comparator.render()[0][-1]
         == """// comparator
-//
+// 
 // Ports: vdd, vgd, vsgd, clk, s_tilde, s
-//
+// 
 // Parameters: dly, ttime
-//
+// 
 // Functional Description:
-//
+// 
 // A comparator implementation where
 // the output signal s(t) is updated at the
 // falling edge of the V(clk) signal depending
 // on the input signal V(s_tilde) is above or
 // below a given threshold.
-//
+// 
 // threshold determines the descision threshold.
 // Furthermore, dly and ttime specifies how quickly the
 // comparator can switch its output.
@@ -62,13 +62,13 @@ def test_DigitalControlModule(get_simulator):
     assert (
         digital_control_module.render()[0][-1]
         == """// digital_control
-//
+// 
 // Ports: vdd, vgd, vsgd, clk, s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3, s_tilde_4, s_0, s_1, s_2, s_3, s_4
-//
-// Parameters:
-//
+// 
+// Parameters: 
+// 
 // Functional Description:
-//
+// 
 // A digital control which mainly connects
 // M comparators to the input and outputs of
 // the module itself.

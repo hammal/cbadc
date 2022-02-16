@@ -202,7 +202,7 @@ BW_log = np.log10(BW)
 frequencies = np.logspace(BW_log - 2, BW_log + 1, 500)
 omegas = 2 * np.pi * frequencies
 
-## Plot digital estimators transfer functions
+# Plot digital estimators transfer functions
 
 for key, system in compare_systems.items():
     digital_estimator = system['digital_estimator']
@@ -266,7 +266,7 @@ for key, system in compare_systems.items():
     )
 
 
-plt.title(f"Power spectral density of input estimate")
+plt.title("Power spectral density of input estimate")
 plt.xlabel('Hz')
 plt.ylabel('$V^2$ / Hz dB')
 plt.legend()

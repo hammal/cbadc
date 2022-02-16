@@ -143,10 +143,10 @@ compare_systems = {
     'verilog_ideal': verilog_analog_frontend.get_estimator(
         *digital_estimator_parameters
     ),
-    f'finite_gain op-amp': finite_gain_op_amp_analog_frontend.get_estimator(
+    'finite_gain op-amp': finite_gain_op_amp_analog_frontend.get_estimator(
         *digital_estimator_parameters
     ),
-    f'single_pole op-amp': first_order_pole_op_amp_analog_frontend.get_estimator(
+    'single_pole op-amp': first_order_pole_op_amp_analog_frontend.get_estimator(
         *digital_estimator_parameters
     ),
 }

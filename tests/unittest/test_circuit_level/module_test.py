@@ -19,10 +19,10 @@ def test_Module_inputs():
     assert (
         module.render()[0][-1]
         == """// op-amp
-//
+// 
 // Ports: in_0, in_1
-//
-// Parameters:
+// 
+// Parameters: 
 //
 module op-amp(in_0, in_1);
 
@@ -50,10 +50,10 @@ def test_Module_ports():
     assert (
         module.render()[0][-1]
         == """// op-amp
-//
+// 
 // Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-//
-// Parameters:
+// 
+// Parameters: 
 //
 module op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
 
@@ -114,9 +114,9 @@ def test_Module_ports_and_parameters():
     assert (
         module.render()[0][-1]
         == """// op-amp
-//
+// 
 // Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-//
+// 
 // Parameters: r_0, r_1, r_2, r_3, r_4, r_5, int_6, int_7, int_8, int_9, int_10, int_11
 //
 module op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
@@ -296,9 +296,9 @@ def test_Module_ports_and_parameters_and_analog_statements():
     assert (
         module.render()[0][-1]
         == """// op-amp
-//
+// 
 // Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-//
+// 
 // Parameters: r_0, r_1, r_2, r_3, r_4, r_5, int_6, int_7, int_8, int_9, int_10, int_11
 //
 module op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
@@ -382,9 +382,9 @@ def test_Module_ports_and_parameters_and_submodules():
     assert (
         "\n\n\n".join(super_module.render()[0])
         == """// submodule_2
-//
+// 
 // Ports: out_0, out_1, io_0
-//
+// 
 // Parameters: r_4, r_5
 //
 module submodule_2(out_0, out_1, io_0);
@@ -408,9 +408,9 @@ endmodule
 
 
 // submodule_1
-//
+// 
 // Ports: in_1, out_0
-//
+// 
 // Parameters: r_4, r_5
 //
 module submodule_1(in_1, out_0);
@@ -432,9 +432,9 @@ endmodule
 
 
 // submodule_0
-//
+// 
 // Ports: in_0
-//
+// 
 // Parameters: r_4, r_5
 //
 module submodule_0(in_0);
@@ -454,9 +454,9 @@ endmodule
 
 
 // super_module
-//
+// 
 // Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-//
+// 
 // Parameters: r_4, r_5
 //
 module super_module(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
@@ -477,14 +477,14 @@ module super_module(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
 
 
     submodule_0 #(
-            .r_4(r_4),
+            .r_4(r_4), 
             .r_5(r_5)
     ) instance_0 (
             .in_0(in_0)
     );
 
     submodule_1 #(
-            .r_4(r_4),
+            .r_4(r_4), 
             .r_5(r_5)
     ) instance_1 (
             .in_1(in_0),
@@ -492,7 +492,7 @@ module super_module(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
     );
 
     submodule_2 #(
-            .r_4(r_4),
+            .r_4(r_4), 
             .r_5(r_5)
     ) instance_2 (
             .out_0(in_0),

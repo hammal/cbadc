@@ -53,7 +53,7 @@ class StateSpaceLinearSystem(Module):
             Wire(f"x_{n}", False, False, True, comment=f"internal_state {n}")
             for n in range(self.analog_system.N)
         ]
-        self._y = [Wire(f"y", False, True, True, comment="Output")]
+        self._y = [Wire("y", False, True, True, comment="Output")]
         self.outputs = [
             *self._y,
         ]
