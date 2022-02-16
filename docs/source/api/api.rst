@@ -18,5 +18,7 @@ Root Modules
     cbadc.digital_control
     cbadc.digital_estimator
     cbadc.simulator
+    cbadc.circuit_level
     cbadc.utilities
     cbadc.fom
+    cbadc.specification

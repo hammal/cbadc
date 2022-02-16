@@ -12,4 +12,4 @@ matplotlib>=3.4.3
 xlrd >= 1.0.0
 sympy >= 1.9
 mpmath >= 1.1
-jinja2 >= 2.11
+jinja2 >= 3

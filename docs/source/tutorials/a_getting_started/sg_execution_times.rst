@@ -5,12 +5,12 @@
 
 Computation times
 =================
-**03:16.044** total execution time for **tutorials_a_getting_started** files:
+**03:25.932** total execution time for **tutorials_a_getting_started** files:
 
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_a_getting_started_plot_b_simulate_a_control_bounded_adc.py` (``plot_b_simulate_a_control_bounded_adc.py``) | 02:11.631 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_a_getting_started_plot_b_simulate_a_control_bounded_adc.py` (``plot_b_simulate_a_control_bounded_adc.py``) | 02:17.144 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_a_getting_started_plot_d_transfer_function.py` (``plot_d_transfer_function.py``)                           | 00:43.372 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_a_getting_started_plot_d_transfer_function.py` (``plot_d_transfer_function.py``)                           | 00:45.984 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_a_getting_started_plot_c_digital_estimator.py` (``plot_c_digital_estimator.py``)                           | 00:21.040 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_a_getting_started_plot_c_digital_estimator.py` (``plot_c_digital_estimator.py``)                           | 00:22.805 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+

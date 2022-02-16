@@ -129,7 +129,7 @@ def OSR(fs, f_sig):
 def FoM_W(P, fs, ENOB):
     """The Walden figure of merit (FoM)
 
-    :math:`f(P, f_s, \\text{ENOB}) = \\frac{P}{2 \cdot f_s \\cdot \\text{ENOB}}`
+    :math:`f(P, f_s, \\text{ENOB}) = \\frac{P}{f_s \\cdot 2 ^{ \\text{ENOB}}}`
 
     See  `Walden 1999 <https://ieeexplore.ieee.org/document/761034>`_
 

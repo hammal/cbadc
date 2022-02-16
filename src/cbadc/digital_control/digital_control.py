@@ -75,6 +75,17 @@ class DigitalControl:
         "Jitter the phase by t"
         self._t_next += t
 
+    def reset(self, t0: float = 0.0):
+        """Reset the digital control clock
+
+        Parameters
+        ----------
+        t0: `float`, `optional`
+            time to set next update at, defaults to 0.
+        """
+        self._t_next = t0
+        self._t_last_update = t0 * np.ones(self.M)
+
     def control_update(self, t: float, s_tilde: np.ndarray):
         """Updates the control at time t if valid.
 

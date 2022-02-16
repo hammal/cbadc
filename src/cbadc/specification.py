@@ -19,6 +19,21 @@ def get_chain_of_integrator(**kwargs):
     The following examples demonstrate the
     valid input specifications
 
+    Parameters
+    ----------
+    ENOB: `float`
+        targeted effective number of bits.
+    N: `int`
+        system order.
+    BW: `float`
+        target bandwidth
+    xi: `float`, `optional`
+        a proportionality constant, defaults to 0.0016.
+    local_feedback: `bool`, `optional`
+        include local feedback, defaults to False.
+    excess_delay: `float`, `optional`
+        delay control actions by an excess delay, defaults to 0.
+
     Examples
     --------
     >>> import cbadc.specification
@@ -37,6 +52,8 @@ def get_chain_of_integrator(**kwargs):
         omega_3dB = 2.0 * np.pi * kwargs['BW']
         # xi = 1e-1 / (np.pi * (2 * N * 0 + 1))
         xi = 5e-3 / np.pi
+        if 'xi' in kwargs:
+            xi = kwargs['xi']
         gamma = (xi * snr) ** (1.0 / (2.0 * N))
         beta = gamma * omega_3dB
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
@@ -49,7 +66,9 @@ def get_chain_of_integrator(**kwargs):
         analog_system = ChainOfIntegrators(
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
-        t0 = kwargs['excess_delay'] * T
+        t0 = 0.0
+        if 'excess_delay' in kwargs:
+            t0 = kwargs['excess_delay'] * T
         if kwargs.get('digital_control') == 'switch_cap':
             scale = 5e1
             tau = 1.0 / (beta * scale)
@@ -101,6 +120,21 @@ def get_leap_frog(**kwargs):
     The following examples demonstrate the
     valid input specifications
 
+    Parameters
+    ----------
+    ENOB: `float`
+        targeted effective number of bits.
+    N: `int`
+        system order.
+    BW: `float`
+        target bandwidth
+    xi: `float`, `optional`
+        a proportionality constant, defaults to 0.022.
+    local_feedback: `bool`, `optional`
+        include local feedback, defaults to False.
+    excess_delay: `float`, `optional`
+        delay control actions by an excess delay, defaults to 0.
+
     Examples
     --------
     >>> import cbadc.specification
@@ -118,16 +152,19 @@ def get_leap_frog(**kwargs):
         N = kwargs['N']
         omega_BW = 2.0 * np.pi * kwargs['BW']
         xi = 7e-2 / np.pi
+        if 'xi' in kwargs:
+            xi = kwargs['xi']
         gamma = (xi * snr) ** (1.0 / (2.0 * N))
-        beta = (omega_BW / 2.0) * gamma
-        alpha = -(omega_BW / 2.0) / gamma
+        beta = -(omega_BW / 2.0) * gamma
+        alpha = (omega_BW / 2.0) / gamma
+        rho = 0
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -(omega_BW / 2.0) / gamma * 1e-2 * 0
-        else:
-            rho = 0
-        T = 1.0 / (2.0 * beta)
+        T = 1.0 / np.abs(2.0 * beta)
         kappa = beta
-        t0 = kwargs['excess_delay'] * T
+        t0 = 0.0
+        if 'excess_delay' in kwargs:
+            t0 = kwargs['excess_delay'] * T
         if kwargs.get('digital_control') == 'switch-cap':
             scale = 5e1
             tau = 1.0 / (beta * scale)
