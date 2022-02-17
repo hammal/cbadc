@@ -91,22 +91,7 @@ Analog System
 
 
 
-.. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/Users/hammal/Projects/cbadc/docs/code_examples/c_circuit_level/plot_c_testbench.py", line 34, in <module>
-        verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/state_space_equations.py", line 216, in __init__
-        super().__init__(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/module.py", line 324, in __init__
-        super().__init__(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/module.py", line 119, in __init__
-        loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/jinja2/loaders.py", line 319, in __init__
-        raise ValueError(
-    ValueError: The 'cbadc' package was not installed in a way that PackageLoader understands.
 
 
 
@@ -128,6 +113,12 @@ as
     verilog_digital_control = cbadc.circuit_level.DigitalControl(
         copy.deepcopy(target_digital_control)
     )
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 69-74
@@ -160,6 +151,12 @@ class as
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 92-97
 
 Input Signal and Simulation Clock
@@ -179,6 +176,12 @@ and simulation clock
         frequency /= 2
     input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
     simulation_clock = cbadc.analog_signal.Clock(target_digital_control.clock.T)
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 106-111
@@ -215,6 +218,12 @@ Instantiating the testbench reminds the simulation setup.
 
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 133-139
 
 Spice Scripts and Verilog Modules
@@ -236,6 +245,21 @@ together with the analog frontend verilog module.
     finite_gain_op_amp_testbench.to_file(filename="finite_gain_op_amp_testbench")
 
     first_order_pole_op_amp_testbench.to_file(filename="first_order_pole_op_amp_testbench")
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
+      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 149-162
@@ -302,7 +326,7 @@ Simulation and Verification
     frequencies = np.logspace(BW_log - 2, BW_log + 1, 500)
     omegas = 2 * np.pi * frequencies
 
-    ## Plot digital estimators transfer functions
+    # Plot digital estimators transfer functions
 
     for key, system in compare_systems.items():
         digital_estimator = system['digital_estimator']
@@ -366,7 +390,7 @@ Simulation and Verification
         )
 
 
-    plt.title(f"Power spectral density of input estimate")
+    plt.title("Power spectral density of input estimate")
     plt.xlabel('Hz')
     plt.ylabel('$V^2$ / Hz dB')
     plt.legend()
@@ -376,9 +400,32 @@ Simulation and Verification
 
 
 
+
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image-sg:: /tutorials/c_circuit_level/images/sphx_glr_plot_c_testbench_001.png
+         :alt: Signal and noise transfer functions
+         :srcset: /tutorials/c_circuit_level/images/sphx_glr_plot_c_testbench_001.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/c_circuit_level/images/sphx_glr_plot_c_testbench_002.png
+         :alt: Power spectral density of input estimate
+         :srcset: /tutorials/c_circuit_level/images/sphx_glr_plot_c_testbench_002.png
+         :class: sphx-glr-multi-img
+
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.002 seconds)
+   **Total running time of the script:** ( 2 minutes  6.348 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_c_testbench.py:

@@ -228,7 +228,7 @@ We confirm the results above by full system simulations
             label=f"N={n}, OSR={1/(2 * digital_control.clock.T * BW):.0f}, est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB",
         )
 
-    plt.title(f"Power spectral density of input estimate")
+    plt.title("Power spectral density of input estimate")
     plt.xlabel('Hz')
     plt.ylabel('$V^2$ / Hz dB')
     plt.legend()
@@ -322,7 +322,7 @@ Performance Validation Leap-Frog
             label=f"N={n}, OSR={1/(2 * digital_control.clock.T * BW):.0f}, est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB",
         )
 
-    plt.title(f"Power spectral density of input estimate")
+    plt.title("Power spectral density of input estimate")
     plt.xlabel('Hz')
     plt.ylabel('$V^2$ / Hz dB')
     plt.legend()
@@ -357,7 +357,7 @@ Performance Validation Leap-Frog
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 4 minutes  35.275 seconds)
+   **Total running time of the script:** ( 5 minutes  2.315 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_f_designing_a_leap_frog_to_specifications.py:

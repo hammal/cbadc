@@ -114,7 +114,7 @@ analog system and digital control.
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]],
-    CT =
+    CT = 
     [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
@@ -139,7 +139,7 @@ analog system and digital control.
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]
-     [ 0.00e+00]]
+     [ 0.00e+00]] 
 
     ================================================================================
 
@@ -153,7 +153,7 @@ analog system and digital control.
     M:
     6
     ================================================================================
-
+        
 
 
 
@@ -193,7 +193,7 @@ Next we configure the fixed-point precision by instantiating
             number of bits = 20 including sign bit,
             max float value = 1.0,
             and min float value = 1.9073486328125e-06
-
+        
 
 
 
@@ -534,7 +534,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  11.247 seconds)
+   **Total running time of the script:** ( 1 minutes  12.769 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_d_fixed_point_aritmetics.py:

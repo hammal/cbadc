@@ -131,22 +131,90 @@ as
 
 
 
+
+
 .. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
+ Out:
 
-    Traceback (most recent call last):
-      File "/Users/hammal/Projects/cbadc/docs/code_examples/c_circuit_level/plot_a_analog_system.py", line 68, in <module>
-        verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/state_space_equations.py", line 216, in __init__
-        super().__init__(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/module.py", line 324, in __init__
-        super().__init__(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/module.py", line 119, in __init__
-        loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/jinja2/loaders.py", line 319, in __init__
-        raise ValueError(
-    ValueError: The 'cbadc' package was not installed in a way that PackageLoader understands.
+ .. code-block:: none
+
+    // analog_system
+    // 
+    // Ports: vdd, vgd, vsgd, u_0, s_0, s_1, s_2, s_3, s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3
+    // 
+    // Parameters: 
+    // 
+    // Functional Description
+    // 
+    // The analog system directly modeled using differential
+    // equations.
+    // 
+    // Specifically, we use the state space model equations
+    // 
+    // ddt(x(t)) = A x(t) + B u(t) + Gamma s(t)
+    // s_tilde(t) = Gamma_tildeT x(t)
+    // 
+    // where
+    // 
+    // x(t) = [x_0, x_1, x_2, x_3]^T
+    // u(t) = [u_0]^T
+    // s(t) = [s_0, s_1, s_2, s_3]^T
+    // s_tilde(t) = [s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3]^T
+    // 
+    // A ≈
+    // [0.00e+00, 3.00e+05, 0.00e+00, 0.00e+00]
+    // [-3.29e+07, 0.00e+00, 3.00e+05, 0.00e+00]
+    // [0.00e+00, -3.29e+07, 0.00e+00, 3.00e+05]
+    // [0.00e+00, 0.00e+00, -3.29e+07, 0.00e+00]
+    // 
+    // B ≈
+    // [-3.29e+07]
+    // [0.00e+00]
+    // [0.00e+00]
+    // [0.00e+00]
+    // 
+    // Gamma ≈
+    // [-3.29e+07, -0.00e+00, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -3.29e+07, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -3.29e+07, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -0.00e+00, -3.29e+07]
+    // 
+    // Gamma_tildeT ≈
+    // [1.00e+00, 0.00e+00, 0.00e+00, 0.00e+00]
+    // [0.00e+00, 1.00e+00, 0.00e+00, 0.00e+00]
+    // [0.00e+00, 0.00e+00, 1.00e+00, 0.00e+00]
+    // [0.00e+00, 0.00e+00, 0.00e+00, 1.00e+00]
+    //
+    module analog_system(vdd, vgd, vsgd, u_0, s_0, s_1, s_2, s_3, s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3);
+
+        input vdd; // positive supply
+        input vgd; // ground
+        input vsgd; // signal ground
+        input u_0;
+        input s_0;
+        input s_1;
+        input s_2;
+        input s_3;
+
+        output s_tilde_0;
+        output s_tilde_1;
+        output s_tilde_2;
+        output s_tilde_3;
+
+
+        analog begin
+            ddt(V(x_0), sgd) <+ 300279.0005861069*V(x_1, sgd) -32868113.926798508*V(s_0, sgd) -32868113.926798508*V(u_0, sgd);
+            ddt(V(x_1), sgd) <+ -32868113.926798508*V(x_0, sgd) 300279.0005861069*V(x_2, sgd) -32868113.926798508*V(s_1, sgd);
+            ddt(V(x_2), sgd) <+ -32868113.926798508*V(x_1, sgd) 300279.0005861069*V(x_3, sgd) -32868113.926798508*V(s_2, sgd);
+            ddt(V(x_3), sgd) <+ -32868113.926798508*V(x_2, sgd) -32868113.926798508*V(s_3, sgd);
+            V(s_tilde_0, sgd) <+ 1.0*V(x_0, sgd);
+            V(s_tilde_1, sgd) <+ 1.0*V(x_1, sgd);
+            V(s_tilde_2, sgd) <+ 1.0*V(x_2, sgd);
+            V(s_tilde_3, sgd) <+ 1.0*V(x_3, sgd);
+        end
+
+    endmodule
 
 
 
@@ -182,6 +250,526 @@ with capacitive feedback.
     ideal_op_amp_analog_system.to_file(filename="ideal_op_amp_analog_system.vams")
 
 
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
+      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+    // resistor_network_gamma_tildeT
+    // 
+    // Ports: in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3
+    // 
+    // Parameters: 
+    // 
+    // Functional Description:
+    // 
+    // Resistor network connecting inputs and outputs according to the following matrix
+    // 
+    // [out_0] ≈ [1.00e+12, inf, inf, inf] [in_0]
+    // [out_1] ≈ [inf, 1.00e+12, inf, inf] [in_1]
+    // [out_2] ≈ [inf, inf, 1.00e+12, inf] [in_2]
+    // [out_3] ≈ [inf, inf, inf, 1.00e+12] [in_3]
+    // 
+    // note the resistors are specified by their resistive values in Ohms
+    //
+    module resistor_network_gamma_tildeT(in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3);
+
+
+        inout in_0;
+        inout in_1;
+        inout in_2;
+        inout in_3;
+        inout out_0;
+        inout out_1;
+        inout out_2;
+        inout out_3;
+
+
+        analog begin
+            I(in_0, out_0) <+ 1e-12 * V(in_0,out_0);
+            I(in_1, out_1) <+ 1e-12 * V(in_1,out_1);
+            I(in_2, out_2) <+ 1e-12 * V(in_2,out_2);
+            I(in_3, out_3) <+ 1e-12 * V(in_3,out_3);
+        end
+
+    endmodule
+
+
+    // resistor_network_gamma
+    // 
+    // Ports: in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3
+    // 
+    // Parameters: 
+    // 
+    // Functional Description:
+    // 
+    // Resistor network connecting inputs and outputs according to the following matrix
+    // 
+    // [out_0] ≈ [3.04e+04, inf, inf, inf] [in_0]
+    // [out_1] ≈ [inf, 3.04e+04, inf, inf] [in_1]
+    // [out_2] ≈ [inf, inf, 3.04e+04, inf] [in_2]
+    // [out_3] ≈ [inf, inf, inf, 3.04e+04] [in_3]
+    // 
+    // note the resistors are specified by their resistive values in Ohms
+    //
+    module resistor_network_gamma(in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3);
+
+
+        inout in_0;
+        inout in_1;
+        inout in_2;
+        inout in_3;
+        inout out_0;
+        inout out_1;
+        inout out_2;
+        inout out_3;
+
+
+        analog begin
+            I(in_0, out_0) <+ 3.286811392679851e-05 * V(in_0,out_0);
+            I(in_1, out_1) <+ 3.286811392679851e-05 * V(in_1,out_1);
+            I(in_2, out_2) <+ 3.286811392679851e-05 * V(in_2,out_2);
+            I(in_3, out_3) <+ 3.286811392679851e-05 * V(in_3,out_3);
+        end
+
+    endmodule
+
+
+    // resistor_network_b
+    // 
+    // Ports: in_0, out_0, out_1, out_2, out_3
+    // 
+    // Parameters: 
+    // 
+    // Functional Description:
+    // 
+    // Resistor network connecting inputs and outputs according to the following matrix
+    // 
+    // [out_0] ≈ [3.04e+04] [in_0]
+    // [out_1] ≈ [-inf] [in_1]
+    // [out_2] ≈ [-inf] [in_2]
+    // [out_3] ≈ [-inf] [in_3]
+    // 
+    // note the resistors are specified by their resistive values in Ohms
+    //
+    module resistor_network_b(in_0, out_0, out_1, out_2, out_3);
+
+
+        inout in_0;
+        inout out_0;
+        inout out_1;
+        inout out_2;
+        inout out_3;
+
+
+        analog begin
+            I(in_0, out_0) <+ 3.286811392679851e-05 * V(in_0,out_0);
+        end
+
+    endmodule
+
+
+    // resistor_network_a
+    // 
+    // Ports: in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3
+    // 
+    // Parameters: 
+    // 
+    // Functional Description:
+    // 
+    // Resistor network connecting inputs and outputs according to the following matrix
+    // 
+    // [out_0] ≈ [-inf, -3.33e+06, -inf, -inf] [in_0]
+    // [out_1] ≈ [3.04e+04, -inf, -3.33e+06, -inf] [in_1]
+    // [out_2] ≈ [-inf, 3.04e+04, -inf, -3.33e+06] [in_2]
+    // [out_3] ≈ [-inf, -inf, 3.04e+04, -inf] [in_3]
+    // 
+    // note the resistors are specified by their resistive values in Ohms
+    //
+    module resistor_network_a(in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3);
+
+
+        inout in_0;
+        inout in_1;
+        inout in_2;
+        inout in_3;
+        inout out_0;
+        inout out_1;
+        inout out_2;
+        inout out_3;
+
+
+        analog begin
+            I(in_1, out_0) <+ -3.002790005861069e-07 * V(in_1,out_0);
+            I(in_0, out_1) <+ 3.286811392679851e-05 * V(in_0,out_1);
+            I(in_2, out_1) <+ -3.002790005861069e-07 * V(in_2,out_1);
+            I(in_1, out_2) <+ 3.286811392679851e-05 * V(in_1,out_2);
+            I(in_3, out_2) <+ -3.002790005861069e-07 * V(in_3,out_2);
+            I(in_2, out_3) <+ 3.286811392679851e-05 * V(in_2,out_3);
+        end
+
+    endmodule
+
+
+    // inverting_amplifier_int_3
+    // 
+    // Ports: vdd, vgd, p_in, n_in, out
+    // 
+    // Parameters: C
+    // 
+    // Functional Description:
+    // 
+    // Op-amp integrator configuration where
+    // a capacitor is connected as negative feedback
+    // i.e., between the output and negative input
+    // of the op-amp.
+    // 
+    // The resulting differential equations are
+    // C ddt(V(out, n_in)) = I(out, n_in)
+    //
+    module inverting_amplifier_int_3(vdd, vgd, p_in, n_in, out);
+
+        input vdd; // positive supply
+        input vgd; // ground
+        input p_in; // positive input
+
+        output out; // output
+
+        inout n_in; // negative input
+
+        parameter real C = 1e-12;
+
+
+
+        ideal_op_amp op_amp_int_3 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(p_in),
+                .n_in(n_in),
+                .out(out)
+        );
+
+        analog begin
+            ddt(V(out, n_in)) <+ I(out, n_in) / C;
+        end
+
+    endmodule
+
+
+    // inverting_amplifier_int_2
+    // 
+    // Ports: vdd, vgd, p_in, n_in, out
+    // 
+    // Parameters: C
+    // 
+    // Functional Description:
+    // 
+    // Op-amp integrator configuration where
+    // a capacitor is connected as negative feedback
+    // i.e., between the output and negative input
+    // of the op-amp.
+    // 
+    // The resulting differential equations are
+    // C ddt(V(out, n_in)) = I(out, n_in)
+    //
+    module inverting_amplifier_int_2(vdd, vgd, p_in, n_in, out);
+
+        input vdd; // positive supply
+        input vgd; // ground
+        input p_in; // positive input
+
+        output out; // output
+
+        inout n_in; // negative input
+
+        parameter real C = 1e-12;
+
+
+
+        ideal_op_amp op_amp_int_2 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(p_in),
+                .n_in(n_in),
+                .out(out)
+        );
+
+        analog begin
+            ddt(V(out, n_in)) <+ I(out, n_in) / C;
+        end
+
+    endmodule
+
+
+    // inverting_amplifier_int_1
+    // 
+    // Ports: vdd, vgd, p_in, n_in, out
+    // 
+    // Parameters: C
+    // 
+    // Functional Description:
+    // 
+    // Op-amp integrator configuration where
+    // a capacitor is connected as negative feedback
+    // i.e., between the output and negative input
+    // of the op-amp.
+    // 
+    // The resulting differential equations are
+    // C ddt(V(out, n_in)) = I(out, n_in)
+    //
+    module inverting_amplifier_int_1(vdd, vgd, p_in, n_in, out);
+
+        input vdd; // positive supply
+        input vgd; // ground
+        input p_in; // positive input
+
+        output out; // output
+
+        inout n_in; // negative input
+
+        parameter real C = 1e-12;
+
+
+
+        ideal_op_amp op_amp_int_1 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(p_in),
+                .n_in(n_in),
+                .out(out)
+        );
+
+        analog begin
+            ddt(V(out, n_in)) <+ I(out, n_in) / C;
+        end
+
+    endmodule
+
+
+    // ideal_op_amp
+    // 
+    // Ports: vdd, vgd, p_in, n_in, out
+    // 
+    // Parameters: 
+    // 
+    // Functional Description:
+    // 
+    // Ideal op-amp implementation.
+    //
+    module ideal_op_amp(vdd, vgd, p_in, n_in, out);
+
+        input vdd; // positive supply
+        input vgd; // ground
+        input p_in; // positive input
+
+        output out; // output
+
+        inout n_in; // negative input
+
+
+        analog begin
+            V(out): V(p_in, n_in) == 0;
+        end
+
+    endmodule
+
+
+    // inverting_amplifier_int_0
+    // 
+    // Ports: vdd, vgd, p_in, n_in, out
+    // 
+    // Parameters: C
+    // 
+    // Functional Description:
+    // 
+    // Op-amp integrator configuration where
+    // a capacitor is connected as negative feedback
+    // i.e., between the output and negative input
+    // of the op-amp.
+    // 
+    // The resulting differential equations are
+    // C ddt(V(out, n_in)) = I(out, n_in)
+    //
+    module inverting_amplifier_int_0(vdd, vgd, p_in, n_in, out);
+
+        input vdd; // positive supply
+        input vgd; // ground
+        input p_in; // positive input
+
+        output out; // output
+
+        inout n_in; // negative input
+
+        parameter real C = 1e-12;
+
+
+
+        ideal_op_amp op_amp_int_0 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(p_in),
+                .n_in(n_in),
+                .out(out)
+        );
+
+        analog begin
+            ddt(V(out, n_in)) <+ I(out, n_in) / C;
+        end
+
+    endmodule
+
+
+    // analog_system
+    // 
+    // Ports: vdd, vgd, vsgd, u_0, s_0, s_1, s_2, s_3, s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3
+    // 
+    // Parameters: 
+    // 
+    // Functional Description
+    // 
+    // An analog system enforcing the differential equations.
+    // 
+    // ddt(x(t)) = A x(t) + B u(t) + Gamma s(t)
+    // s_tilde(t) = Gamma_tildeT x(t)
+    // 
+    // where
+    // 
+    // x(t) = [x_0, x_1, x_2, x_3]^T
+    // u(t) = [u_0]^T
+    // s(t) = [s_0, s_1, s_2, s_3]^T
+    // s_tilde(t) = [s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3]^T
+    // 
+    // A ≈
+    // [0.00e+00, 3.00e+05, 0.00e+00, 0.00e+00]
+    // [-3.29e+07, 0.00e+00, 3.00e+05, 0.00e+00]
+    // [0.00e+00, -3.29e+07, 0.00e+00, 3.00e+05]
+    // [0.00e+00, 0.00e+00, -3.29e+07, 0.00e+00]
+    // 
+    // B ≈
+    // [-3.29e+07]
+    // [0.00e+00]
+    // [0.00e+00]
+    // [0.00e+00]
+    // 
+    // Gamma ≈
+    // [-3.29e+07, -0.00e+00, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -3.29e+07, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -3.29e+07, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -0.00e+00, -3.29e+07]
+    // 
+    // Gamma_tildeT ≈
+    // [1.00e+00, 0.00e+00, 0.00e+00, 0.00e+00]
+    // [0.00e+00, 1.00e+00, 0.00e+00, 0.00e+00]
+    // [0.00e+00, 0.00e+00, 1.00e+00, 0.00e+00]
+    // [0.00e+00, 0.00e+00, 0.00e+00, 1.00e+00]
+    // CT ≈
+    // [1.00e+00, 0.00e+00, 0.00e+00, 0.00e+00]
+    // [0.00e+00, 1.00e+00, 0.00e+00, 0.00e+00]
+    // [0.00e+00, 0.00e+00, 1.00e+00, 0.00e+00]
+    // [0.00e+00, 0.00e+00, 0.00e+00, 1.00e+00]
+    //
+    module analog_system(vdd, vgd, vsgd, u_0, s_0, s_1, s_2, s_3, s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3);
+
+        input vdd; // positive supply
+        input vgd; // ground
+        input vsgd; // signal ground
+        input u_0; // input channel 0
+        input s_0; // control signal 0
+        input s_1; // control signal 1
+        input s_2; // control signal 2
+        input s_3; // control signal 3
+
+        output s_tilde_0; // control observation 0
+        output s_tilde_1; // control observation 1
+        output s_tilde_2; // control observation 2
+        output s_tilde_3; // control observation 3
+
+
+
+        inverting_amplifier_int_0 int_0 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(vsgd),
+                .n_in(vgd_0),
+                .out(x_0)
+        );
+
+        inverting_amplifier_int_1 int_1 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(vsgd),
+                .n_in(vgd_1),
+                .out(x_1)
+        );
+
+        inverting_amplifier_int_2 int_2 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(vsgd),
+                .n_in(vgd_2),
+                .out(x_2)
+        );
+
+        inverting_amplifier_int_3 int_3 (
+                .vdd(vdd),
+                .vgd(vgd),
+                .p_in(vsgd),
+                .n_in(vgd_3),
+                .out(x_3)
+        );
+
+        resistor_network_a A (
+                .in_0(x_0),
+                .in_1(x_1),
+                .in_2(x_2),
+                .in_3(x_3),
+                .out_0(vgd_0),
+                .out_1(vgd_1),
+                .out_2(vgd_2),
+                .out_3(vgd_3)
+        );
+
+        resistor_network_b B (
+                .in_0(u_0),
+                .out_0(vgd_0),
+                .out_1(vgd_1),
+                .out_2(vgd_2),
+                .out_3(vgd_3)
+        );
+
+        resistor_network_gamma Gamma (
+                .in_0(s_0),
+                .in_1(s_1),
+                .in_2(s_2),
+                .in_3(s_3),
+                .out_0(vgd_0),
+                .out_1(vgd_1),
+                .out_2(vgd_2),
+                .out_3(vgd_3)
+        );
+
+        resistor_network_gamma_tildeT Gamma_tildeT (
+                .in_0(x_0),
+                .in_1(x_1),
+                .in_2(x_2),
+                .in_3(x_3),
+                .out_0(s_tilde_0),
+                .out_1(s_tilde_1),
+                .out_2(s_tilde_2),
+                .out_3(s_tilde_3)
+        );
+
+    endmodule
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 103-105
 
 :download:`ideal_op_amp_analog_system.vams <ideal_op_amp_analog_system.vams>`
@@ -210,6 +798,12 @@ imperfections such as finite gain and first order pole.
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 124-131
 
 again the corresponding verilog files can be found below
@@ -232,6 +826,21 @@ and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrder
     first_order_pole_op_amp_analog_system.to_file(
         filename="first_order_pole_op_amp_analog_system.vams"
     )
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
+      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 142-159
@@ -289,9 +898,142 @@ functions of the analog systems we covered previously.
 
 
 
+
+.. image-sg:: /tutorials/c_circuit_level/images/sphx_glr_plot_a_analog_system_002.png
+   :alt: Analog system transfer function
+   :srcset: /tutorials/c_circuit_level/images/sphx_glr_plot_a_analog_system_002.png
+   :class: sphx-glr-single-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    The analog system is parameterized as:
+    A =
+    [[ 0.00e+00  3.00e+05  0.00e+00  0.00e+00]
+     [-3.29e+07  0.00e+00  3.00e+05  0.00e+00]
+     [ 0.00e+00 -3.29e+07  0.00e+00  3.00e+05]
+     [ 0.00e+00  0.00e+00 -3.29e+07  0.00e+00]],
+    B =
+    [[-3.29e+07]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]],
+    CT = 
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00]],
+    Gamma =
+    [[-3.29e+07 -0.00e+00 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -3.29e+07 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -3.29e+07 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -3.29e+07]],
+    Gamma_tildeT =
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00]], and D=[[ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]]
+    The analog system is parameterized as:
+    A =
+    [[-6.54e+05  3.00e+05  0.00e+00  0.00e+00]
+     [-3.29e+07 -6.54e+05  3.00e+05  0.00e+00]
+     [ 0.00e+00 -3.29e+07 -6.54e+05  3.00e+05]
+     [ 0.00e+00  0.00e+00 -3.29e+07 -6.57e+05]],
+    B =
+    [[-3.29e+07]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]],
+    CT = 
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00]],
+    Gamma =
+    [[-3.29e+07 -0.00e+00 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -3.29e+07 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -3.29e+07 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -3.29e+07]],
+    Gamma_tildeT =
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00]], and D=[[ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]]
+    The analog system is parameterized as:
+    A =
+    [[-1.98e+08 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05  5.50e+05  0.00e+00
+       0.00e+00]
+     [-0.00e+00 -1.98e+08 -0.00e+00 -0.00e+00 -6.03e+07 -7.85e+05  5.50e+05
+       0.00e+00]
+     [-0.00e+00 -0.00e+00 -1.98e+08 -0.00e+00  0.00e+00 -6.03e+07 -7.85e+05
+       5.50e+05]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -1.99e+08  0.00e+00  0.00e+00 -6.04e+07
+      -7.85e+05]
+     [-7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05 -0.00e+00 -0.00e+00
+      -0.00e+00]
+     [-0.00e+00 -7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05 -0.00e+00
+      -0.00e+00]
+     [-0.00e+00 -0.00e+00 -7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05
+      -0.00e+00]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00
+      -7.85e+05]],
+    B =
+    [[-6.03e+07]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]],
+    CT = 
+    [[ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -1.00e+00 -0.00e+00 -0.00e+00
+      -0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -0.00e+00 -1.00e+00 -0.00e+00
+      -0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -0.00e+00 -0.00e+00 -1.00e+00
+      -0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -0.00e+00 -0.00e+00 -0.00e+00
+      -1.00e+00]],
+    Gamma =
+    [[-6.03e+07  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00 -6.03e+07  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00 -6.03e+07  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00 -6.04e+07]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00]],
+    Gamma_tildeT =
+    [[ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -1.00e+00 -0.00e+00 -0.00e+00
+      -0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -0.00e+00 -1.00e+00 -0.00e+00
+      -0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -0.00e+00 -0.00e+00 -1.00e+00
+      -0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -0.00e+00 -0.00e+00 -0.00e+00
+      -1.00e+00]], and D=[[ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]]
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.246 seconds)
+   **Total running time of the script:** ( 0 minutes  3.058 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_a_analog_system.py:

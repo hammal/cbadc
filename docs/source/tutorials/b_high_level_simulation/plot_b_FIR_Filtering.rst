@@ -115,7 +115,7 @@ example.
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]],
-    CT =
+    CT = 
     [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
@@ -140,7 +140,7 @@ example.
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]
-     [ 0.00e+00]]
+     [ 0.00e+00]] 
 
     ================================================================================
 
@@ -154,7 +154,7 @@ example.
     M:
     6
     ================================================================================
-
+        
 
 
 
@@ -510,7 +510,7 @@ of different lengths as their decay varies.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  58.273 seconds)
+   **Total running time of the script:** ( 3 minutes  0.862 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_b_FIR_Filtering.py:

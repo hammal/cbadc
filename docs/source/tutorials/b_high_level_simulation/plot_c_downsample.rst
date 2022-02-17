@@ -114,7 +114,7 @@ analog system and digital control.
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]],
-    CT =
+    CT = 
     [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
@@ -139,7 +139,7 @@ analog system and digital control.
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]
-     [ 0.00e+00]]
+     [ 0.00e+00]] 
 
     ================================================================================
 
@@ -153,7 +153,7 @@ analog system and digital control.
     M:
     6
     ================================================================================
-
+        
 
 
 
@@ -266,7 +266,7 @@ which then defaults to 1, i.e., no downsampling.
  .. code-block:: none
 
     eta2 = 87574.25572661487, 49.42376455036858 [dB]
-    FIR estimator is parameterized as
+    FIR estimator is parameterized as 
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -274,14 +274,14 @@ which then defaults to 1, i.e., no downsampling.
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h =
+    h = 
     [[[ 3.56e-95  1.42e-95 -8.08e-96 -6.46e-97  1.33e-96 -9.73e-98]
       [ 2.76e-95  1.83e-95 -7.63e-96 -1.34e-96  1.39e-96 -1.25e-98]
       [ 1.77e-95  2.20e-95 -6.82e-96 -2.06e-96  1.39e-96  8.21e-98]
       ...
       [ 1.77e-95 -2.16e-95 -7.69e-96  1.62e-96  1.54e-96  4.50e-98]
       [ 2.76e-95 -1.77e-95 -8.35e-96  8.61e-97  1.48e-96  1.38e-97]
-      [ 3.56e-95 -1.35e-95 -8.63e-96  1.45e-97  1.37e-96  2.17e-97]]].
+      [ 3.56e-95 -1.35e-95 -8.63e-96  1.45e-97  1.37e-96  2.17e-97]]]. 
 
 
 
@@ -375,7 +375,7 @@ Next we repeat the initialization steps above but for a downsampled estimator
 
  .. code-block:: none
 
-    FIR estimator is parameterized as
+    FIR estimator is parameterized as 
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -383,14 +383,14 @@ Next we repeat the initialization steps above but for a downsampled estimator
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h =
+    h = 
     [[[ 3.56e-95  1.42e-95 -8.08e-96 -6.46e-97  1.33e-96 -9.73e-98]
       [ 2.76e-95  1.83e-95 -7.63e-96 -1.34e-96  1.39e-96 -1.25e-98]
       [ 1.77e-95  2.20e-95 -6.82e-96 -2.06e-96  1.39e-96  8.21e-98]
       ...
       [ 1.77e-95 -2.16e-95 -7.69e-96  1.62e-96  1.54e-96  4.50e-98]
       [ 2.76e-95 -1.77e-95 -8.35e-96  8.61e-97  1.48e-96  1.38e-97]
-      [ 3.56e-95 -1.35e-95 -8.63e-96  1.45e-97  1.37e-96  2.17e-97]]].
+      [ 3.56e-95 -1.35e-95 -8.63e-96  1.45e-97  1.37e-96  2.17e-97]]]. 
 
 
 
@@ -641,7 +641,7 @@ New Analog System
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]],
-    CT =
+    CT = 
     [[ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00
        1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00
@@ -720,7 +720,7 @@ results in the following system.
 
  .. code-block:: none
 
-    FIR estimator is parameterized as
+    FIR estimator is parameterized as 
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -728,7 +728,7 @@ results in the following system.
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h =
+    h = 
     [[[ 3.23e-26 -8.89e-27 -5.18e-27  1.65e-27  8.08e-28 -2.47e-28]
       [ 3.62e-26 -6.14e-27 -5.93e-27  1.21e-27  9.43e-28 -1.87e-28]
       [ 3.87e-26 -3.06e-27 -6.45e-27  7.02e-28  1.04e-27 -1.17e-28]
@@ -828,7 +828,7 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
 
  .. code-block:: none
 
-    FIR estimator is parameterized as
+    FIR estimator is parameterized as 
     eta2 = 87574.26, 49 [dB],
     Ts = 8e-05,
     K1 = 4096,
@@ -836,14 +836,14 @@ the resulting FIR filter coefficients with another lowpass FIR filter.
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
-    h =
+    h = 
     [[[ 4.58e-87 -4.65e-87  1.83e-88  6.71e-88 -1.48e-88 -6.91e-89]
       [ 6.95e-87 -4.68e-87 -1.71e-88  7.41e-88 -1.07e-88 -8.41e-89]
       [ 9.30e-87 -4.52e-87 -5.56e-88  7.90e-88 -5.79e-89 -9.74e-89]
       ...
       [ 1.15e-86  4.40e-87 -7.91e-88 -8.65e-88 -6.70e-89  1.07e-88]
       [ 9.30e-87  4.71e-87 -3.72e-88 -8.18e-88 -1.22e-88  9.13e-89]
-      [ 6.95e-87  4.82e-87  1.92e-89 -7.46e-88 -1.66e-88  7.37e-89]]].
+      [ 6.95e-87  4.82e-87  1.92e-89 -7.46e-88 -1.66e-88  7.37e-89]]]. 
 
     /Users/hammal/Projects/cbadc/docs/code_examples/b_high_level_simulation/plot_c_downsample.py:334: RuntimeWarning: divide by zero encountered in log10
       plt.semilogx(f_FIR, 20 * np.log10(np.abs(FIR_frequency_response)))
@@ -1005,7 +1005,7 @@ effect.
 
  .. code-block:: none
 
-      0%|          | 0/8192 [00:00<?, ?it/s]      6%|6         | 496/8192 [00:00<00:01, 4955.29it/s]     12%|#2        | 992/8192 [00:00<00:01, 4919.59it/s]     18%|#8        | 1506/8192 [00:00<00:01, 5018.15it/s]     25%|##4       | 2041/8192 [00:00<00:01, 5146.37it/s]     31%|###1      | 2562/8192 [00:00<00:01, 5166.70it/s]     38%|###7      | 3088/8192 [00:00<00:00, 5197.70it/s]     44%|####4     | 3625/8192 [00:00<00:00, 5253.78it/s]     51%|#####     | 4155/8192 [00:00<00:00, 5267.68it/s]     57%|#####7    | 4683/8192 [00:00<00:00, 5271.34it/s]     64%|######3   | 5212/8192 [00:01<00:00, 5274.66it/s]     70%|#######   | 5745/8192 [00:01<00:00, 5289.85it/s]     77%|#######6  | 6277/8192 [00:01<00:00, 5296.38it/s]     83%|########3 | 6808/8192 [00:01<00:00, 5297.97it/s]     90%|########9 | 7342/8192 [00:01<00:00, 5309.14it/s]     96%|#########6| 7873/8192 [00:01<00:00, 5301.37it/s]    100%|##########| 8192/8192 [00:01<00:00, 5239.05it/s]
+      0%|          | 0/8192 [00:00<?, ?it/s]      6%|5         | 474/8192 [00:00<00:01, 4733.61it/s]     12%|#1        | 976/8192 [00:00<00:01, 4899.59it/s]     18%|#8        | 1477/8192 [00:00<00:01, 4949.10it/s]     24%|##4       | 1988/8192 [00:00<00:01, 5010.28it/s]     30%|###       | 2490/8192 [00:00<00:01, 4967.89it/s]     37%|###6      | 2997/8192 [00:00<00:01, 5001.34it/s]     43%|####2     | 3498/8192 [00:00<00:00, 4949.25it/s]     49%|####8     | 3997/8192 [00:00<00:00, 4960.56it/s]     55%|#####5    | 4517/8192 [00:00<00:00, 5033.98it/s]     61%|######1   | 5021/8192 [00:01<00:00, 5028.18it/s]     67%|######7   | 5524/8192 [00:01<00:00, 4971.15it/s]     74%|#######3  | 6022/8192 [00:01<00:00, 4970.12it/s]     80%|#######9  | 6520/8192 [00:01<00:00, 4947.88it/s]     86%|########5 | 7021/8192 [00:01<00:00, 4964.77it/s]     92%|#########2| 7550/8192 [00:01<00:00, 5061.90it/s]     98%|#########8| 8057/8192 [00:01<00:00, 5040.22it/s]    100%|##########| 8192/8192 [00:01<00:00, 4989.30it/s]
 
 
 
@@ -1113,7 +1113,7 @@ in terms of precision (see the PSD plot above).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  31.133 seconds)
+   **Total running time of the script:** ( 1 minutes  33.510 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_c_downsample.py:

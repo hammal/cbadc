@@ -8,22 +8,22 @@ cbadc.datasets.hadamard.HadamardPCB
    :show-inheritance:
    :inherited-members:
 
+   
 
 
-
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~HadamardPCB.__init__
       ~HadamardPCB.simulation_ramp_1_B
+   
+   
 
-
-
-
-
-
+   
+   
+   
 
 .. _sphx_glr_backref_cbadc.datasets.hadamard.HadamardPCB:
 
