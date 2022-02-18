@@ -4,7 +4,7 @@ Welcome to the Control-Bounded A/D Conversion Toolbox's Documentation
 
 This is the official documentation for the `control-bounded analog-to-digital conversion (cbadc)
 <https://pypi.org/project/cbadc/>`_ python package, which is a **toolbox** intended
-to aid and inspire the **creation** of **control-bounded analog-to-digital (A/D) converters**. 
+to aid and inspire the **creation** of **control-bounded analog-to-digital (A/D) converters**.
 
 The cbadc toolbox enables you to:
 
@@ -15,20 +15,20 @@ The cbadc toolbox enables you to:
 Contents
 ========
 
-This documentation is structured in five parts. 
+This documentation is structured in five parts.
 
 .. toctree::
    :maxdepth: 1
-   
+
    control-bounded_converters
    tutorials/index
    api/api
-   datasets/index
+   //    datasets/index
    terminology
-   
+
 where :doc:`control-bounded_converters` gives an overview of the control-bounded
 A/D conversion's main concepts and terminology, :doc:`tutorials/index` provide
-tutorials demonstrating common use cases, the :doc:`api/api` chapter 
+tutorials demonstrating common use cases, the :doc:`api/api` chapter
 contains the package documentation, and :doc:`datasets/index` provide
 access to datasets for benchmarking and from hardware prototypes.
 
@@ -52,7 +52,7 @@ Getting Started
 If you are familiar with the basics of control-bounded A/D conversion a good place
 to start is the :ref:`getting_started` tutorials.
 
-Alternatively, for a brief crash course on control-bounded A/D conversion first 
+Alternatively, for a brief crash course on control-bounded A/D conversion first
 check out the :doc:`control-bounded_converters` chapter.
 
 Github

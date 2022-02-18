@@ -3,7 +3,7 @@ Datasets
 ***********
 
 In this section we share control-bounded converter simulation data.
-The main motivation, being that: software simulation is time consuming 
+The main motivation, being that: software simulation is time consuming
 and to provide several hardware generated control signal sequences for
 comparison and benchmarking.
 
@@ -25,10 +25,10 @@ These base classes are described below.
     :template: custom-module-template.rst
 
     cbadc.datasets.chain_of_integrators
-    cbadc.datasets.hadamard 
+    cbadc.datasets.hadamard
 
 ==========================
 Examples
 ==========================
-    
+
 Here follows examples demonstrating how to quickly load and use the pre-simulated data.

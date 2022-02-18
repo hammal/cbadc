@@ -53,7 +53,7 @@ analog system and digital control.
    :align: center
    :alt: The chain of integrators ADC.
 
-.. GENERATED FROM PYTHON SOURCE LINES 24-60
+.. GENERATED FROM PYTHON SOURCE LINES 24-61
 
 .. code-block:: default
 
@@ -85,9 +85,10 @@ analog system and digital control.
     ]
     Gamma_tildeT = np.eye(N)
     T = 1.0 / (2 * beta)
+    clock = cbadc.analog_signal.Clock(T)
 
     analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    digital_control = cbadc.digital_control.DigitalControl(T, M)
+    digital_control = cbadc.digital_control.DigitalControl(clock, M)
 
     # Summarize the analog system, digital control, and digital estimator.
     print(analog_system, "\n")
@@ -105,56 +106,72 @@ analog system and digital control.
 
     The analog system is parameterized as:
     A =
-    [[ -62.5    0.     0.     0.     0.     0. ]
-     [6250.   -62.5    0.     0.     0.     0. ]
-     [   0.  6250.   -62.5    0.     0.     0. ]
-     [   0.     0.  6250.   -62.5    0.     0. ]
-     [   0.     0.     0.  6250.   -62.5    0. ]
-     [   0.     0.     0.     0.  6250.   -62.5]],
+    [[-6.25e+01  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 6.25e+03 -6.25e+01  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  6.25e+03 -6.25e+01  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  6.25e+03 -6.25e+01  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  6.25e+03 -6.25e+01  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  6.25e+03 -6.25e+01]],
     B =
-    [[6250.]
-     [   0.]
-     [   0.]
-     [   0.]
-     [   0.]
-     [   0.]],
+    [[ 6.25e+03]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]],
+<<<<<<< HEAD
     CT = 
-    [[1. 0. 0. 0. 0. 0.]
-     [0. 1. 0. 0. 0. 0.]
-     [0. 0. 1. 0. 0. 0.]
-     [0. 0. 0. 1. 0. 0.]
-     [0. 0. 0. 0. 1. 0.]
-     [0. 0. 0. 0. 0. 1.]],
+=======
+    CT =
+>>>>>>> origin/develop
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  1.00e+00]],
     Gamma =
-    [[-6250.     0.     0.     0.     0.     0.]
-     [    0. -6250.     0.     0.     0.     0.]
-     [    0.     0. -6250.     0.     0.     0.]
-     [    0.     0.     0. -6250.     0.     0.]
-     [    0.     0.     0.     0. -6250.     0.]
-     [    0.     0.     0.     0.     0. -6250.]],
+    [[-6.25e+03  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00 -6.25e+03  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00 -6.25e+03  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00 -6.25e+03  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -6.25e+03  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00 -6.25e+03]],
     Gamma_tildeT =
-    [[1. 0. 0. 0. 0. 0.]
-     [0. 1. 0. 0. 0. 0.]
-     [0. 0. 1. 0. 0. 0.]
-     [0. 0. 0. 1. 0. 0.]
-     [0. 0. 0. 0. 1. 0.]
-     [0. 0. 0. 0. 0. 1.]], and D=[[0.]
-     [0.]
-     [0.]
-     [0.]
-     [0.]
-     [0.]] 
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  1.00e+00]], and D=[[ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+<<<<<<< HEAD
+     [ 0.00e+00]] 
+=======
+     [ 0.00e+00]]
+>>>>>>> origin/develop
+
+    ================================================================================
 
     The Digital Control is parameterized as:
-    T = 8e-05,
-    M = 6,
-    and next update at
-    t = 8e-05
+
+    --------------------------------------------------------------------------------
+
+    clock:
+    Analog signal returns constant 0, i.e., maps t |-> 0.
+
+    M:
+    6
+    ================================================================================
+        
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 61-68
+.. GENERATED FROM PYTHON SOURCE LINES 62-69
 
 Creating a Placehold Control Signal
 -----------------------------------
@@ -164,7 +181,7 @@ for a given analog signal. However, this might not always be the use case;
 instead, imagine we have acquired such a control signal from a previous
 simulation or possibly obtained it from a hardware implementation.
 
-.. GENERATED FROM PYTHON SOURCE LINES 68-96
+.. GENERATED FROM PYTHON SOURCE LINES 69-97
 
 .. code-block:: default
 
@@ -203,18 +220,18 @@ simulation or possibly obtained it from a hardware implementation.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 97-105
+.. GENERATED FROM PYTHON SOURCE LINES 98-106
 
 Setting up the Filter
 ------------------------------------
 
 To produce estimates we need to compute the filter coefficients of the
 digital estimator. This is part of the instantiation process of the
-DigitalEstimator class. However, these computations require us to
+BatchEstimator class. However, these computations require us to
 specify both the analog system, the digital control and the filter parameters
 such as eta2, the batch size K1, and possible the lookahead K2.
 
-.. GENERATED FROM PYTHON SOURCE LINES 105-126
+.. GENERATED FROM PYTHON SOURCE LINES 106-127
 
 .. code-block:: default
 
@@ -230,7 +247,7 @@ such as eta2, the batch size K1, and possible the lookahead K2.
     # Instantiate the digital estimator (this is where the filter coefficients are
     # computed).
 
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1
     )
 
@@ -261,78 +278,78 @@ such as eta2, the batch size K1, and possible the lookahead K2.
     number_of_iterations = 9223372036854775808
         
     Resulting in the filter coefficients
+<<<<<<< HEAD
     Af = 
-    [[ 9.95009873e-01 -1.07214558e-05 -3.29769511e-05 -7.22193743e-05
-      -9.99838614e-05 -6.08602482e-05]
-     [ 4.97480948e-01  9.94895332e-01 -3.94810856e-04 -9.35645249e-04
-      -1.40157552e-03 -9.46223367e-04]
-     [ 1.24240233e-01  4.96834695e-01  9.92598214e-01 -6.11667095e-03
-      -9.88175184e-03 -7.42125776e-03]
-     [ 2.02574876e-02  1.21940699e-01  4.88233723e-01  9.69889327e-01
-      -4.41464933e-02 -3.76124321e-02]
-     [ 1.56648671e-03  1.51890153e-02  1.01921548e-01  4.31504641e-01
-       8.65342522e-01 -1.31863329e-01]
-     [-8.48190802e-04 -3.79206318e-03 -7.66097787e-03  2.91476932e-02
-       2.70050483e-01  6.77163594e-01]],
+=======
+    Af =
+>>>>>>> origin/develop
+    [[ 9.95e-01 -1.07e-05 -3.30e-05 -7.22e-05 -1.00e-04 -6.09e-05]
+     [ 4.97e-01  9.95e-01 -3.95e-04 -9.36e-04 -1.40e-03 -9.46e-04]
+     [ 1.24e-01  4.97e-01  9.93e-01 -6.12e-03 -9.88e-03 -7.42e-03]
+     [ 2.03e-02  1.22e-01  4.88e-01  9.70e-01 -4.41e-02 -3.76e-02]
+     [ 1.57e-03  1.52e-02  1.02e-01  4.32e-01  8.65e-01 -1.32e-01]
+     [-8.48e-04 -3.79e-03 -7.66e-03  2.91e-02  2.70e-01  6.77e-01]],
+<<<<<<< HEAD
         
     Ab = 
-    [[ 1.00500883e+00  1.54861694e-05 -4.74794350e-05  1.01153964e-04
-      -1.31857374e-04  7.07416177e-05]
-     [-5.02468993e-01  1.00483987e+00  5.74426547e-04 -1.31763025e-03
-       1.85555402e-03 -1.11093774e-03]
-     [ 1.25425546e-01 -5.01522275e-01  1.00153543e+00  8.50959779e-03
-      -1.29342792e-02  8.68475153e-03]
-     [-2.02614680e-02  1.22167377e-01 -4.89583646e-01  9.71177642e-01
-       5.61398373e-02 -4.32879422e-02]
-     [ 1.23757454e-03 -1.35504621e-02  9.62247113e-02 -4.18716306e-01
-       8.48271033e-01  1.47273048e-01]
-     [ 1.06969462e-03 -4.99244970e-03  1.24120658e-02  1.62939979e-02
-      -2.49365903e-01  6.64066057e-01]],
+=======
+
+    Ab =
+>>>>>>> origin/develop
+    [[ 1.01e+00  1.55e-05 -4.75e-05  1.01e-04 -1.32e-04  7.07e-05]
+     [-5.02e-01  1.00e+00  5.74e-04 -1.32e-03  1.86e-03 -1.11e-03]
+     [ 1.25e-01 -5.02e-01  1.00e+00  8.51e-03 -1.29e-02  8.68e-03]
+     [-2.03e-02  1.22e-01 -4.90e-01  9.71e-01  5.61e-02 -4.33e-02]
+     [ 1.24e-03 -1.36e-02  9.62e-02 -4.19e-01  8.48e-01  1.47e-01]
+     [ 1.07e-03 -4.99e-03  1.24e-02  1.63e-02 -2.49e-01  6.64e-01]],
+<<<<<<< HEAD
         
     Bf = 
-    [[-4.98751645e-01  2.01435011e-06  6.82590295e-06  1.63194985e-05
-       2.47281476e-05  1.69487071e-05]
-     [-1.24580150e-01 -4.98730814e-01  8.00612785e-05  2.08594140e-04
-       3.43169808e-04  2.60386347e-04]
-     [-2.07347413e-02 -1.24465299e-01 -4.98271350e-01  1.34555417e-03
-       2.39438164e-03  2.01951875e-03]
-     [-2.52435229e-03 -2.03346523e-02 -1.22773188e-01 -4.93311312e-01
-       1.05608518e-02  1.01139883e-02]
-     [-1.12872327e-04 -1.66317069e-03 -1.64790291e-02 -1.10609043e-01
-      -4.68327424e-01  3.49448581e-02]
-     [ 1.30405025e-04  7.66632154e-04  2.57282644e-03 -1.49723174e-03
-      -7.33995907e-02 -4.16260014e-01]],
+=======
+
+    Bf =
+>>>>>>> origin/develop
+    [[-4.99e-01  2.01e-06  6.83e-06  1.63e-05  2.47e-05  1.69e-05]
+     [-1.25e-01 -4.99e-01  8.01e-05  2.09e-04  3.43e-04  2.60e-04]
+     [-2.07e-02 -1.24e-01 -4.98e-01  1.35e-03  2.39e-03  2.02e-03]
+     [-2.52e-03 -2.03e-02 -1.23e-01 -4.93e-01  1.06e-02  1.01e-02]
+     [-1.13e-04 -1.66e-03 -1.65e-02 -1.11e-01 -4.68e-01  3.49e-02]
+     [ 1.30e-04  7.67e-04  2.57e-03 -1.50e-03 -7.34e-02 -4.16e-01]],
+<<<<<<< HEAD
         
     Bb = 
-    [[ 5.01251476e-01  2.90629180e-06 -9.87489414e-06  2.30342675e-05
-      -3.29086754e-05  2.00065004e-05]
-     [-1.25411625e-01  5.01220654e-01  1.17271246e-04 -2.96315348e-04
-       4.58582587e-04 -3.09815586e-04]
-     [ 2.08811767e-02 -1.25242491e-01  5.00554230e-01  1.88944089e-03
-      -3.16355021e-03  2.39004868e-03]
-     [-2.51484999e-03  2.03105319e-02 -1.22872140e-01  4.93854504e-01
-       1.35533096e-02 -1.17435470e-02]
-     [ 6.36212541e-05 -1.36595554e-03  1.52653250e-02 -1.07513725e-01
-       4.64169939e-01  3.92569729e-02]
-     [ 1.61551740e-04 -9.68267461e-04  3.49710767e-03 -1.35278958e-03
-      -6.81691898e-02  4.12601756e-01]],
+=======
+
+    Bb =
+>>>>>>> origin/develop
+    [[ 5.01e-01  2.91e-06 -9.87e-06  2.30e-05 -3.29e-05  2.00e-05]
+     [-1.25e-01  5.01e-01  1.17e-04 -2.96e-04  4.59e-04 -3.10e-04]
+     [ 2.09e-02 -1.25e-01  5.01e-01  1.89e-03 -3.16e-03  2.39e-03]
+     [-2.51e-03  2.03e-02 -1.23e-01  4.94e-01  1.36e-02 -1.17e-02]
+     [ 6.36e-05 -1.37e-03  1.53e-02 -1.08e-01  4.64e-01  3.93e-02]
+     [ 1.62e-04 -9.68e-04  3.50e-03 -1.35e-03 -6.82e-02  4.13e-01]],
+<<<<<<< HEAD
         
     and WT = 
-    [[ 8.45373598e-02  8.45372372e-04 -2.13025722e-03 -6.40572458e-05
-       1.06842223e-04  5.03895749e-06]]. 
+    [[ 8.45e-02  8.45e-04 -2.13e-03 -6.41e-05  1.07e-04  5.04e-06]]. 
+=======
+
+    and WT =
+    [[ 8.45e-02  8.45e-04 -2.13e-03 -6.41e-05  1.07e-04  5.04e-06]].
+>>>>>>> origin/develop
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 127-131
+.. GENERATED FROM PYTHON SOURCE LINES 128-132
 
 Producing Estimates
 -------------------
 
 At this point, we can produce estimates by simply calling the iterator
 
-.. GENERATED FROM PYTHON SOURCE LINES 131-136
+.. GENERATED FROM PYTHON SOURCE LINES 132-137
 
 .. code-block:: default
 
@@ -351,28 +368,28 @@ At this point, we can produce estimates by simply calling the iterator
 
  .. code-block:: none
 
-    [-0.19527123]
-    [-0.19322569]
-    [-0.18982144]
-    [-0.18509899]
-    [-0.17911667]
-    [-0.17194968]
-    [-0.16368875]
-    [-0.15443858]
-    [-0.144316]
-    [-0.13344799]
+    [-1.95e-01]
+    [-1.93e-01]
+    [-1.90e-01]
+    [-1.85e-01]
+    [-1.79e-01]
+    [-1.72e-01]
+    [-1.64e-01]
+    [-1.54e-01]
+    [-1.44e-01]
+    [-1.33e-01]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 137-141
+.. GENERATED FROM PYTHON SOURCE LINES 138-142
 
 Batch Size and Lookahead
 ------------------------
 
 Note that batch and lookahead sizes are automatically handled such that for
 
-.. GENERATED FROM PYTHON SOURCE LINES 141-160
+.. GENERATED FROM PYTHON SOURCE LINES 142-161
 
 .. code-block:: default
 
@@ -382,7 +399,7 @@ Note that batch and lookahead sizes are automatically handled such that for
     control_signal_sequences = cbadc.utilities.random_control_signal(
         M, stop_after_number_of_iterations=sequence_length, random_seed=42
     )
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1, K2
     )
 
@@ -405,21 +422,21 @@ Note that batch and lookahead sizes are automatically handled such that for
 
  .. code-block:: none
 
-    [-0.24974734]
-    [-0.25252069]
-    [-0.25370925]
-    [-0.25329868]
-    [-0.25129497]
-    [-0.1377449]
-    [-0.12783698]
-    [-0.11712884]
-    [-0.10575524]
-    [-0.09385866]
+    [-2.50e-01]
+    [-2.53e-01]
+    [-2.54e-01]
+    [-2.53e-01]
+    [-2.51e-01]
+    [-1.38e-01]
+    [-1.28e-01]
+    [-1.17e-01]
+    [-1.06e-01]
+    [-9.39e-02]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 161-172
+.. GENERATED FROM PYTHON SOURCE LINES 162-173
 
 Loading Control Signal from File
 --------------------------------
@@ -433,16 +450,13 @@ The control signal file is encoded as raw binary data so to unpack it
 correctly we will use the :func:`cbadc.utilities.read_byte_stream_from_file`
 and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 172-180
+.. GENERATED FROM PYTHON SOURCE LINES 173-177
 
 .. code-block:: default
 
 
-    byte_stream = cbadc.utilities.read_byte_stream_from_file(
-        "sinusoidal_simulation.dat", M
-    )
-    control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(
-        byte_stream, M)
+    byte_stream = cbadc.utilities.read_byte_stream_from_file("sinusoidal_simulation.dat", M)
+    control_signal_sequences = cbadc.utilities.byte_stream_2_control_signal(byte_stream, M)
 
 
 
@@ -451,8 +465,7 @@ and :func:`cbadc.utilities.byte_stream_2_control_signal` functions.
 
 
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 181-187
+.. GENERATED FROM PYTHON SOURCE LINES 178-184
 
 Estimating the input
 --------------------
@@ -461,7 +474,7 @@ Fortunately, we used the same
 analog system and digital controls as in this example so
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 187-215
+.. GENERATED FROM PYTHON SOURCE LINES 184-212
 
 .. code-block:: default
 
@@ -470,7 +483,7 @@ analog system and digital controls as in this example so
     u_hat = np.zeros(stop_after_number_of_iterations)
     K1 = 1 << 10
     K2 = 1 << 11
-    digital_estimator = cbadc.digital_estimator.DigitalEstimator(
+    digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system,
         digital_control,
         eta2,
@@ -505,7 +518,7 @@ analog system and digital controls as in this example so
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 216-221
+.. GENERATED FROM PYTHON SOURCE LINES 213-218
 
 Plotting the PSD
 ----------------
@@ -513,7 +526,7 @@ Plotting the PSD
 As is typical for delta-sigma modulators, we often visualize the performance
 of the estimate by plotting the power spectral density (PSD).
 
-.. GENERATED FROM PYTHON SOURCE LINES 221-230
+.. GENERATED FROM PYTHON SOURCE LINES 218-226
 
 .. code-block:: default
 
@@ -525,7 +538,6 @@ of the estimate by plotting the power spectral density (PSD).
     plt.ylabel("$ \mathrm{V}^2 \, / \, \mathrm{Hz}$")
     plt.xlim((f[1], f[-1]))
     plt.grid(which="both")
-
 
 
 
@@ -541,7 +553,11 @@ of the estimate by plotting the power spectral density (PSD).
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  16.449 seconds)
+<<<<<<< HEAD
+   **Total running time of the script:** ( 0 minutes  23.511 seconds)
+=======
+   **Total running time of the script:** ( 0 minutes  22.805 seconds)
+>>>>>>> origin/develop
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_c_digital_estimator.py:

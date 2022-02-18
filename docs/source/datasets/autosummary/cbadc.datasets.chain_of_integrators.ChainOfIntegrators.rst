@@ -4,9 +4,9 @@ cbadc.datasets.chain\_of\_integrators.ChainOfIntegrators
 .. currentmodule:: cbadc.datasets.chain_of_integrators
 
 .. autoclass:: ChainOfIntegrators
-   :members:                                    
-   :show-inheritance:                           
-   :inherited-members:     
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
    
 

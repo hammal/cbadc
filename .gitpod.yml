@@ -27,4 +27,3 @@ vscode:
 tasks:
   - name: Install cbadc
     init: python -m pip install . && python -m pip install -r docs/requirements.txt && python -m pip install -r requirements.txt
-    

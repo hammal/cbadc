@@ -4,9 +4,9 @@ cbadc.datasets.hadamard.HadamardPCB
 .. currentmodule:: cbadc.datasets.hadamard
 
 .. autoclass:: HadamardPCB
-   :members:                                    
-   :show-inheritance:                           
-   :inherited-members:     
+   :members:
+   :show-inheritance:
+   :inherited-members:
 
    
 

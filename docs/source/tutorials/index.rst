@@ -10,6 +10,7 @@ Tutorials
 
 Here we demonstrate common use cases for the cbadc package.
 
+
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
@@ -100,14 +101,12 @@ Next follows three basic examples demonstrating how to
 
 
 
-.. _sphx_glr_tutorials_b_general:
+.. _sphx_glr_tutorials_b_high_level_simulation:
 
-----------------
-General Examples
-----------------
+----------------------
+High Level Simulations
+----------------------
 
-Next we highlight various features of the cbadc package. 
-  
 
 
 .. raw:: html
@@ -116,10 +115,10 @@ Next we highlight various features of the cbadc package.
 
 .. only:: html
 
- .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_a_compare_estimator_thumb.png
      :alt: Compare Estimators
 
-     :ref:`sphx_glr_tutorials_b_general_plot_a_compare_estimator.py`
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_a_compare_estimator.py`
 
 .. raw:: html
 
@@ -129,7 +128,7 @@ Next we highlight various features of the cbadc package.
 .. toctree::
    :hidden:
 
-   /tutorials/b_general/plot_a_compare_estimator
+   /tutorials/b_high_level_simulation/plot_a_compare_estimator
 
 .. raw:: html
 
@@ -137,10 +136,10 @@ Next we highlight various features of the cbadc package.
 
 .. only:: html
 
- .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
-     :alt: Digital Estimator as FIR Filter
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
+     :alt: Digital Estimator as a FIR Filter
 
-     :ref:`sphx_glr_tutorials_b_general_plot_b_FIR_Filtering.py`
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_b_FIR_Filtering.py`
 
 .. raw:: html
 
@@ -150,7 +149,7 @@ Next we highlight various features of the cbadc package.
 .. toctree::
    :hidden:
 
-   /tutorials/b_general/plot_b_FIR_Filtering
+   /tutorials/b_high_level_simulation/plot_b_FIR_Filtering
 
 .. raw:: html
 
@@ -158,10 +157,10 @@ Next we highlight various features of the cbadc package.
 
 .. only:: html
 
- .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_c_downsample_thumb.png
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_c_downsample_thumb.png
      :alt: Downsampling
 
-     :ref:`sphx_glr_tutorials_b_general_plot_c_downsample.py`
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_c_downsample.py`
 
 .. raw:: html
 
@@ -171,7 +170,7 @@ Next we highlight various features of the cbadc package.
 .. toctree::
    :hidden:
 
-   /tutorials/b_general/plot_c_downsample
+   /tutorials/b_high_level_simulation/plot_c_downsample
 
 .. raw:: html
 
@@ -179,10 +178,10 @@ Next we highlight various features of the cbadc package.
 
 .. only:: html
 
- .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_d_fixed_point_aritmetics_thumb.png
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_d_fixed_point_aritmetics_thumb.png
      :alt: Fixed-Point Arithmetics
 
-     :ref:`sphx_glr_tutorials_b_general_plot_d_fixed_point_aritmetics.py`
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_d_fixed_point_aritmetics.py`
 
 .. raw:: html
 
@@ -192,7 +191,7 @@ Next we highlight various features of the cbadc package.
 .. toctree::
    :hidden:
 
-   /tutorials/b_general/plot_d_fixed_point_aritmetics
+   /tutorials/b_high_level_simulation/plot_d_fixed_point_aritmetics
 
 .. raw:: html
 
@@ -200,10 +199,10 @@ Next we highlight various features of the cbadc package.
 
 .. only:: html
 
- .. figure:: /tutorials/b_general/images/thumb/sphx_glr_plot_e_switched_capacitor_digital_control_thumb.png
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_e_switched_capacitor_digital_control_thumb.png
      :alt: Switched-Capacitor Digital Control
 
-     :ref:`sphx_glr_tutorials_b_general_plot_e_switched_capacitor_digital_control.py`
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_e_switched_capacitor_digital_control.py`
 
 .. raw:: html
 
@@ -213,21 +212,118 @@ Next we highlight various features of the cbadc package.
 .. toctree::
    :hidden:
 
-   /tutorials/b_general/plot_e_switched_capacitor_digital_control
+   /tutorials/b_high_level_simulation/plot_e_switched_capacitor_digital_control
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the :py:func:`cbadc.specification.get_chain_of_integrator` and ...">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_f_designing_a_leap_frog_to_specifications_thumb.png
+     :alt: Designing for a Target Specification
+
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_f_designing_a_leap_frog_to_specifications.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
 
 
 
-.. _sphx_glr_tutorials_c_further:
+.. _sphx_glr_tutorials_c_circuit_level:
+
+-------------------------
+Circuit Level Simulations
+-------------------------
+
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="We demonstrate how an analog system can be transformed into a boilerplate verilog-ams circuit m...">
+
+.. only:: html
+
+ .. figure:: /tutorials/c_circuit_level/images/thumb/sphx_glr_plot_a_analog_system_thumb.png
+     :alt: Analog System
+
+     :ref:`sphx_glr_tutorials_c_circuit_level_plot_a_analog_system.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/c_circuit_level/plot_a_analog_system
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we will combine analog systems and digital controls to which we refer to as an...">
+
+.. only:: html
+
+ .. figure:: /tutorials/c_circuit_level/images/thumb/sphx_glr_plot_b_analog_frontend_thumb.png
+     :alt: Analog Frontend
+
+     :ref:`sphx_glr_tutorials_c_circuit_level_plot_b_analog_frontend.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/c_circuit_level/plot_b_analog_frontend
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we expand on the ./plot_b_analog_frontend tutorial by adding a clock and input...">
+
+.. only:: html
+
+ .. figure:: /tutorials/c_circuit_level/images/thumb/sphx_glr_plot_c_testbench_thumb.png
+     :alt: Testbench
+
+     :ref:`sphx_glr_tutorials_c_circuit_level_plot_c_testbench.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/c_circuit_level/plot_c_testbench
+.. raw:: html
+
+    <div class="sphx-glr-clear"></div>
+
+
+
+.. _sphx_glr_tutorials_d_further:
 
 ----------------
 Further Examples
 ----------------
 
-These are further examples showcasing the cbadc package.
-  
+These are fun and otherwise useful examples showcasing the cbadc package.
+
 
 
 .. raw:: html
@@ -236,10 +332,10 @@ These are further examples showcasing the cbadc package.
 
 .. only:: html
 
- .. figure:: /tutorials/c_further/images/thumb/sphx_glr_plot_a_Murmann_ADC_survey_thumb.png
+ .. figure:: /tutorials/d_further/images/thumb/sphx_glr_plot_a_Murmann_ADC_survey_thumb.png
      :alt: The Murmann ADC Survey
 
-     :ref:`sphx_glr_tutorials_c_further_plot_a_Murmann_ADC_survey.py`
+     :ref:`sphx_glr_tutorials_d_further_plot_a_Murmann_ADC_survey.py`
 
 .. raw:: html
 
@@ -249,18 +345,18 @@ These are further examples showcasing the cbadc package.
 .. toctree::
    :hidden:
 
-   /tutorials/c_further/plot_a_Murmann_ADC_survey
+   /tutorials/d_further/plot_a_Murmann_ADC_survey
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="This notebook shows examples of artsy plots made from data generated with the  control-bounded ...">
+    <div class="sphx-glr-thumbcontainer" tooltip="This notebook shows examples of artsy plots made from data generated with the control-bounded c...">
 
 .. only:: html
 
- .. figure:: /tutorials/c_further/images/thumb/sphx_glr_plot_z_artsy_sine_thumb.png
+ .. figure:: /tutorials/d_further/images/thumb/sphx_glr_plot_z_artsy_sine_thumb.png
      :alt: Creating Artsy Plots
 
-     :ref:`sphx_glr_tutorials_c_further_plot_z_artsy_sine.py`
+     :ref:`sphx_glr_tutorials_d_further_plot_z_artsy_sine.py`
 
 .. raw:: html
 
@@ -270,7 +366,7 @@ These are further examples showcasing the cbadc package.
 .. toctree::
    :hidden:
 
-   /tutorials/c_further/plot_z_artsy_sine
+   /tutorials/d_further/plot_z_artsy_sine
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
