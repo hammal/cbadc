@@ -218,7 +218,7 @@ cbadc.utilities.write_byte_stream_to_file(
 # the control signals at multiples of :math:`T`.
 #
 
-# Set sampling time three orders of magnitude smaller than the control period
+# Set sampling time two orders of magnitude smaller than the control period
 Ts = T / 100.0
 # Instantiate a corresponding clock
 observation_clock = cbadc.analog_signal.Clock(Ts)
