@@ -55,7 +55,7 @@ Specifically,
     - [pre-computed simulator](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.simulator.numerical_simulator.PreComputedControlSignalsSimulator.html) same as Full simulator with the distinction that the control contributions are pre-computed.
   - The previous default [StateSpaceSimulator class](https://cbadc.readthedocs.io/en/v0.1.0/api/autosummary/cbadc.simulator.StateSpaceSimulator.html#cbadc.simulator.StateSpaceSimulator) has been replaced by the [`get_simulator`](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.simulator.wrapper.get_simulator.html#cbadc.simulator.wrapper.get_simulator) function. The simulation backend is chosen by passing an instance of [SimulatorType]().
   - The simulation clock period Ts is replaced by the [digital clock]() object and thus all simulator classes and the factory function `get_simulation(..., clock, ...)` is now instantiated with a clock determining the sample times.
-- [Digital Estimator](https://cbadc.readthedocs.io/en/v0.1.0/api/autosummary/cbadc.digital_estimator.DigitalEstimator.html#cbadc.digital_estimator.DigitalEstimator)
+- [DigitalEstimator](https://cbadc.readthedocs.io/en/v0.1.0/api/autosummary/cbadc.digital_estimator.DigitalEstimator.html#cbadc.digital_estimator.DigitalEstimator)
   - The default DigitalEstimator changes it's name to [BatchEstimator](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.digital_estimator.batch_estimator.BatchEstimator.html#cbadc.digital_estimator.batch_estimator.BatchEstimator)
   - an additional filter computation backend implemented with [mpmath](https://mpmath.org)
 - Improved care implementation using [SymPy](https://www.sympy.org/en/index.html) instead of [SciPy](https://scipy.org).
