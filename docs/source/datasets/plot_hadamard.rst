@@ -133,14 +133,22 @@ Configure a Digital Estimator
     and
     number_of_iterations = 9223372036854775808.
     Resulting in the filter coefficients
+<<<<<<< HEAD
     h = 
+=======
+    h =
+>>>>>>> origin/develop
     [[[-1.79e-11  3.60e-12  6.75e-13 ...  5.09e-12  3.63e-12  5.64e-12]
       [-1.85e-11  3.47e-12  7.56e-13 ...  5.20e-12  3.84e-12  5.79e-12]
       [-1.91e-11  3.33e-12  8.38e-13 ...  5.30e-12  4.05e-12  5.93e-12]
       ...
       [-1.91e-11 -3.33e-12  8.38e-13 ...  3.84e-12  5.93e-12  4.05e-12]
       [-1.85e-11 -3.47e-12  7.56e-13 ...  3.68e-12  5.79e-12  3.84e-12]
+<<<<<<< HEAD
       [-1.79e-11 -3.60e-12  6.75e-13 ...  3.50e-12  5.64e-12  3.63e-12]]]. 
+=======
+      [-1.79e-11 -3.60e-12  6.75e-13 ...  3.50e-12  5.64e-12  3.63e-12]]].
+>>>>>>> origin/develop
 
 
 
@@ -195,7 +203,11 @@ Filtering Estimate
 
  .. code-block:: none
 
+<<<<<<< HEAD
       0%|          | 0/128 [00:00<?, ?it/s]      1%|          | 1/128 [00:00<01:06,  1.90it/s]    100%|##########| 128/128 [00:00<00:00, 219.24it/s]
+=======
+      0%|          | 0/128 [00:00<?, ?it/s]      1%|          | 1/128 [00:00<01:09,  1.84it/s]    100%|##########| 128/128 [00:00<00:00, 224.93it/s]
+>>>>>>> origin/develop
 
 
 
@@ -273,7 +285,11 @@ Visualize Estimate Spectrum
 
 .. rst-class:: sphx-glr-timing
 
+<<<<<<< HEAD
    **Total running time of the script:** ( 0 minutes  3.647 seconds)
+=======
+   **Total running time of the script:** ( 0 minutes  3.571 seconds)
+>>>>>>> origin/develop
 
 
 .. _sphx_glr_download_datasets_plot_hadamard.py:

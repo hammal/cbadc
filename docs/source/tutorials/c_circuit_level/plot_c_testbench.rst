@@ -425,7 +425,7 @@ Simulation and Verification
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  6.348 seconds)
+   **Total running time of the script:** ( 2 minutes  3.176 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_c_testbench.py:

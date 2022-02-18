@@ -120,7 +120,11 @@ derives from the main analog system class
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]],
+<<<<<<< HEAD
     CT = 
+=======
+    CT =
+>>>>>>> origin/develop
     [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
@@ -378,7 +382,11 @@ Finally, we will investigate the effect of eta2 on the STF and NTF.
 
 .. rst-class:: sphx-glr-timing
 
+<<<<<<< HEAD
    **Total running time of the script:** ( 0 minutes  46.872 seconds)
+=======
+   **Total running time of the script:** ( 0 minutes  45.984 seconds)
+>>>>>>> origin/develop
 
 
 .. _sphx_glr_download_tutorials_a_getting_started_plot_d_transfer_function.py:

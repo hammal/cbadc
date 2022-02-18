@@ -357,7 +357,7 @@ Performance Validation Leap-Frog
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 5 minutes  2.315 seconds)
+   **Total running time of the script:** ( 4 minutes  44.729 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_f_designing_a_leap_frog_to_specifications.py:

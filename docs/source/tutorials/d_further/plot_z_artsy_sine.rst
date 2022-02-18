@@ -467,7 +467,7 @@ your favourite image
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.782 seconds)
+   **Total running time of the script:** ( 0 minutes  0.768 seconds)
 
 
 .. _sphx_glr_download_tutorials_d_further_plot_z_artsy_sine.py:

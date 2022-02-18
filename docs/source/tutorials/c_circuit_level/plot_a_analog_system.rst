@@ -1033,7 +1033,7 @@ functions of the analog systems we covered previously.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  3.058 seconds)
+   **Total running time of the script:** ( 0 minutes  2.888 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_a_analog_system.py:

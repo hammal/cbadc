@@ -534,7 +534,7 @@ Resulting Estimate Precision
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  12.769 seconds)
+   **Total running time of the script:** ( 1 minutes  11.343 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_d_fixed_point_aritmetics.py:
