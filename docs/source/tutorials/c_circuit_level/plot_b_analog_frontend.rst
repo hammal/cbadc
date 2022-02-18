@@ -94,22 +94,7 @@ Analog System
 
 
 
-.. rst-class:: sphx-glr-script-out
 
-.. code-block:: pytb
-
-    Traceback (most recent call last):
-      File "/Users/hammal/Projects/cbadc/docs/code_examples/c_circuit_level/plot_b_analog_frontend.py", line 37, in <module>
-        verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/state_space_equations.py", line 216, in __init__
-        super().__init__(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/module.py", line 324, in __init__
-        super().__init__(
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/module.py", line 119, in __init__
-        loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
-      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/jinja2/loaders.py", line 319, in __init__
-        raise ValueError(
-    ValueError: The 'cbadc' package was not installed in a way that PackageLoader understands.
 
 
 
@@ -129,6 +114,12 @@ as
 
 
     verilog_digital_control = cbadc.circuit_level.DigitalControl(target_digital_control)
+
+
+
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 70-75
@@ -161,6 +152,12 @@ class as
     )
 
 
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 93-98
 
 Verilog Modules
@@ -185,6 +182,21 @@ modules as
     first_order_pole_op_amp_analog_frontend.to_file(
         filename="first_order_pole_op_amp_analog_frontend.vams"
     )
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
+      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 112-117
@@ -228,10 +240,10 @@ K2 value.
         'verilog_ideal': verilog_analog_frontend.get_estimator(
             *digital_estimator_parameters
         ),
-        f'finite_gain op-amp': finite_gain_op_amp_analog_frontend.get_estimator(
+        'finite_gain op-amp': finite_gain_op_amp_analog_frontend.get_estimator(
             *digital_estimator_parameters
         ),
-        f'single_pole op-amp': first_order_pole_op_amp_analog_frontend.get_estimator(
+        'single_pole op-amp': first_order_pole_op_amp_analog_frontend.get_estimator(
             *digital_estimator_parameters
         ),
     }
@@ -268,6 +280,17 @@ K2 value.
     plt.ylabel("dB")
     plt.xlim((frequencies[0], frequencies[-1]))
     plt.gcf().tight_layout()
+
+
+
+
+.. image-sg:: /tutorials/c_circuit_level/images/sphx_glr_plot_b_analog_frontend_001.png
+   :alt: Signal and noise transfer functions
+   :srcset: /tutorials/c_circuit_level/images/sphx_glr_plot_b_analog_frontend_001.png
+   :class: sphx-glr-single-img
+
+
+
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 188-192
@@ -309,9 +332,32 @@ We also compare the resulting filters impulse responses
 
 
 
+
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image-sg:: /tutorials/c_circuit_level/images/sphx_glr_plot_b_analog_frontend_002.png
+         :alt: plot b analog frontend
+         :srcset: /tutorials/c_circuit_level/images/sphx_glr_plot_b_analog_frontend_002.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/c_circuit_level/images/sphx_glr_plot_b_analog_frontend_003.png
+         :alt: plot b analog frontend
+         :srcset: /tutorials/c_circuit_level/images/sphx_glr_plot_b_analog_frontend_003.png
+         :class: sphx-glr-multi-img
+
+
+
+
+
+
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.002 seconds)
+   **Total running time of the script:** ( 0 minutes  22.665 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_b_analog_frontend.py:

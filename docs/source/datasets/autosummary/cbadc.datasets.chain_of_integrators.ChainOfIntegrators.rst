@@ -8,23 +8,23 @@ cbadc.datasets.chain\_of\_integrators.ChainOfIntegrators
    :show-inheritance:
    :inherited-members:
 
+   
 
 
-
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~ChainOfIntegrators.__init__
       ~ChainOfIntegrators.ramp
       ~ChainOfIntegrators.sin
+   
+   
 
-
-
-
-
-
+   
+   
+   
 
 .. _sphx_glr_backref_cbadc.datasets.chain_of_integrators.ChainOfIntegrators:
 
