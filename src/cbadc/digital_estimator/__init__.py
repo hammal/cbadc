@@ -7,6 +7,7 @@ from .parallel_digital_estimator import ParallelEstimator
 from .nuv_estimator import NUVEstimator
 from ._filter_coefficients import FilterComputationBackend
 from typing import Union
+from .adaptive_filter import AdaptiveFilter
 
 _Estimators = Union[
     BatchEstimator, FIRFilter, IIRFilter, ParallelEstimator, NUVEstimator

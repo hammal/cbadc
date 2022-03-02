@@ -13,6 +13,7 @@ from typing import Union
 from .numerical_simulator import FullSimulator, PreComputedControlSignalsSimulator
 from .analytical_simulator import AnalyticalSimulator
 from .mp_simulator import MPSimulator
+from .numpy_simulator import NumpySimulator
 from .utilities import extended_simulation_result
 from .wrapper import get_simulator, SimulatorType
 

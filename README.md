@@ -40,6 +40,9 @@ Please report problems at [https://github.com/hammal/cbadc/issues](https://githu
 
 # Changelog
 
+## 0.2.1
+
+Added first calibration tools.
 ## 0.2.0
 
 Major structural changes. Mainly motivated by improving simulators and filter coefficient computations to support switch-cap digital control simulations.

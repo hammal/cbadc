@@ -96,8 +96,10 @@ class DigitalControl:
         s_tilde : `array_like`, shape=(M_tilde,)
             state vector evaluated at time t
         """
+        # print(f"check closeness ({t}, {self._t_next})")
         # Check if time t has passed the next control update
-        if np.allclose(t, self._t_next, atol=self.clock._tt_2):
+        if np.allclose(t, self._t_next, atol=self.clock._tt_2) or t > self._t_next:
+            # print("close")
             # if so update the control signal state
             # print(f"digital_control set for {t} and {s_tilde}")
             self._s = s_tilde >= 0
