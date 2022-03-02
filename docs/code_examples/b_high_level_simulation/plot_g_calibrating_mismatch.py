@@ -158,7 +158,12 @@ calibrator = cbadc.digital_calibration.Calibration(
 # this step could potentially be repeated many times
 #
 epochs = 1 << 16
-step_size = lambda x: 1e-1 / ((1 + x ** (0.01)))
+
+
+def step_size(x):
+    return 1e-1 / ((1 + x ** (0.01)))
+
+
 batch_size = 1 << 6
 
 calibrator.compute_step_size_template()
