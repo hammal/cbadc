@@ -1,10 +1,10 @@
 """digital estimator calibration.
 """
-from typing import Union
+from typing import Callable, Union
 
 import numpy as np
 import logging
-from collections.abc import Callable
+
 import matplotlib.pyplot as plt
 from .digital_estimator import AdaptiveFilter
 
