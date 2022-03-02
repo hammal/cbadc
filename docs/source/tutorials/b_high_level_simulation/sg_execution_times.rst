@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**01:51.789** total execution time for **tutorials_b_high_level_simulation** files:
+**01:51.673** total execution time for **tutorials_b_high_level_simulation** files:
 
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_h_calibrating_from_numpy_simulator.py` (``plot_h_calibrating_from_numpy_simulator.py``)               | 01:51.789 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_h_calibrating_from_numpy_simulator.py` (``plot_h_calibrating_from_numpy_simulator.py``)               | 01:51.673 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``)                                             | 00:00.000 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
