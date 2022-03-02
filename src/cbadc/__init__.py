@@ -11,6 +11,7 @@ from . import simulator
 from . import utilities
 from . import circuit_level
 from . import specification
+from . import digital_calibration
 
 # Set logging level
 logging.basicConfig(level=logging.INFO)

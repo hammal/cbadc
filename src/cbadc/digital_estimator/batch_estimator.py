@@ -198,15 +198,25 @@ class BatchEstimator(Iterator[np.ndarray]):
         """
         return self._filter_lag
 
-    def warm_up(self):
+    def warm_up(self, samples=0):
         """Warm up filter by population control signals.
 
         Effectively removes the filter lag.
+
+        Parameters
+        ----------
+        samples: `int`, `optional`
+            number of warmup samples, defaults to filter_lag
         """
         logger.debug("Warming up estimator.")
-        while self._filter_lag > 0:
-            _ = self.__next__()
-            self._filter_lag -= 1
+
+        if samples > 0:
+            for _ in range(samples):
+                self.__next__()
+        else:
+            while self._filter_lag > 0:
+                _ = self.__next__()
+                self._filter_lag -= 1
 
     def set_iterator(self, control_signal_sequence: Iterator[np.ndarray]):
         """Set iterator of control signals

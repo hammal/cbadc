@@ -22,3 +22,4 @@ Root Modules
     cbadc.utilities
     cbadc.fom
     cbadc.specification
+    cbadc.digital_calibration
