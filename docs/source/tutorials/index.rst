@@ -234,6 +234,48 @@ High Level Simulations
    :hidden:
 
    /tutorials/b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Calibrating Digital Estimator for Mismatch">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_g_calibrating_mismatch_thumb.png
+     :alt: Calibrating Digital Estimator for Mismatch
+
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_g_calibrating_mismatch.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/b_high_level_simulation/plot_g_calibrating_mismatch
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Calibrating an Unknown Op-Amp Pole from Data">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_h_calibrating_from_numpy_simulator_thumb.png
+     :alt: Calibrating an Unknown Op-Amp Pole from Data
+
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_h_calibrating_from_numpy_simulator.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/b_high_level_simulation/plot_h_calibrating_from_numpy_simulator
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
