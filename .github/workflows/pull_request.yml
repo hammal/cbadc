@@ -62,8 +62,7 @@ jobs:
     runs-on: [self-hosted]
     strategy:
       matrix:
-        tutorial:
-          [
+        tutorial: [
             "a_getting_started/plot_b_simulate_a_control_bounded_adc.py",
             "a_getting_started/plot_c_digital_estimator.py",
             "a_getting_started/plot_d_transfer_function.py",
@@ -73,7 +72,7 @@ jobs:
             "b_high_level_simulation/plot_e_switched_capacitor_digital_control.py",
             "b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications.py",
             "b_high_level_simulation/plot_g_calibrating_mismatch.py",
-            "b_high_level_simulation/plot_h_calibrating_from_numpy_simulator.py",
+            # "b_high_level_simulation/plot_h_calibrating_from_numpy_simulator.py",
             "c_circuit_level/plot_a_analog_system.py",
             "c_circuit_level/plot_b_analog_frontend.py",
             "c_circuit_level/plot_c_testbench.py",
