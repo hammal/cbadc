@@ -81,7 +81,7 @@ while frequency > BW:
     frequency /= 2
 input_signal_ref = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
 
-## A version for uncalibrated
+# A version for uncalibrated
 uncalibrated_control = cbadc.digital_control.DitherControl(
     1, cbadc.digital_control.DigitalControl(digital_control.clock, N)
 )
@@ -95,7 +95,7 @@ uncalibrated_filter = cbadc.digital_estimator.FIRFilter(
 )
 uncalibrated_filter(uncalibrated_sim)
 
-## A version assuming perfect system knowledge
+# A version assuming perfect system knowledge
 simulator_ver_ref = cbadc.simulator.get_simulator(
     analog_system_ref,
     digital_control_ref,
