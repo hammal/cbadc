@@ -44,7 +44,11 @@ def test_analog_system():
     CT[-1] = 1.0
     Gamma_tildeT = np.eye(N)
     Gamma = Gamma_tildeT * (-beta)
-    pickle_unpickle(cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT))
+    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    for item in analog_system.__dict__:
+        print(item)
+        pickle_unpickle(item)
+    pickle_unpickle(analog_system)
 
 
 def test_digital_control():
