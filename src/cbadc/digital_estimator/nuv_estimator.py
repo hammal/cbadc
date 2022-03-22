@@ -104,11 +104,11 @@ class NUVEstimator:
         self.analog_system = analog_system
         self.covU = covU
         self.bound_y = bound_y
-        if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
-            raise Exception(
-                """Can't compute filter coefficients for system with non-zero
-                D matrix. Consider chaining for removing D"""
-            )
+        # if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+        #     raise Exception(
+        #         """Can't compute filter coefficients for system with non-zero
+        #         D matrix. Consider chaining for removing D"""
+        #     )
 
         self.digital_control = digital_control
         if Ts:

@@ -105,6 +105,11 @@ class AnalyticalSimulator(_BaseSimulator):
 
         self.Gamma_tildeT = mp.matrix(self.analog_system.Gamma_tildeT)
 
+        if not np.allclose(analog_system.D_tilde, np.zeros_like(analog_system.D_tilde)):
+            raise NotImplementedError(
+                "Simulating with D_tilde not implemented for this simulator"
+            )
+
         for n in range(self.analog_system.N):
             for l in range(self.analog_system.L):
                 self.Bf[n][l] = sp.lambdify(
