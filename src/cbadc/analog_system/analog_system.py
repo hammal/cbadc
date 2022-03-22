@@ -36,12 +36,14 @@ class AnalogSystem:
     The analog system also has two (possibly vector valued) outputs namely:
 
     * The control observation
-      :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
-    * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{C} \mathbf{u}(t)`
+      :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t) + \\tilde{\mathbf{D}} \mathbf{u}(t)` and
+    * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{D} \mathbf{u}(t)`
 
     where
     :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}`
-    is the control observation matrix and
+    is the control observation matrix,
+    :math:`\\tilde{\mathbf{D}}\in\mathbb{R}^{\\tilde{M} \\times L}`
+    is the direct control observation matrix, and
     :math:`\mathbf{C}^\mathsf{T}\in\mathbb{R}^{\\tilde{N} \\times N}` is the
     signal observation matrix.
 
@@ -115,6 +117,7 @@ class AnalogSystem:
         Gamma: Union[np.ndarray, None],
         Gamma_tildeT: Union[np.ndarray, None],
         D: Union[np.ndarray, None] = None,
+        D_tilde: Union[np.ndarray, None] = None,
     ):
         """Create an analog system.
 
@@ -208,6 +211,26 @@ class AnalogSystem:
             raise InvalidAnalogSystemError(
                 self, "D matrix has wrong dimensions. Should be N_tilde x L"
             )
+        if D_tilde is not None:
+            self.D_tilde = np.array(D_tilde, dtype=np.double)
+        else:
+            self.D_tilde = np.zeros((self.M_tilde, self.L))
+        self._D_tilde_s = sp.Matrix(self.D_tilde)
+
+        if self.D is not None and (
+            self.D.shape[0] != self.N_tilde or self.D.shape[1] != self.L
+        ):
+            raise InvalidAnalogSystemError(
+                self, "D matrix has wrong dimensions. Should be N_tilde x L"
+            )
+
+        if self.D_tilde is not None and (
+            self.D_tilde.shape[0] != self.M_tilde or self.D_tilde.shape[1] != self.L
+        ):
+            raise InvalidAnalogSystemError(
+                self, "D_tilde matrix has wrong dimensions. Should be M_tilde x L"
+            )
+
         self.t = sp.Symbol('t', real=True)
         self.x = [sp.Function(f'x_{i+1}')(self.t) for i in range(self.N)]
         self.omega = sp.Symbol('omega')
@@ -318,7 +341,7 @@ class AnalogSystem:
         """
         return np.dot(self.CT, x)
 
-    def control_observation(self, x: np.ndarray) -> np.ndarray:
+    def control_observation(self, x: np.ndarray, u: np.ndarray = None) -> np.ndarray:
         """Computes the control observation for a given state vector :math:`\mathbf{x}(t)`
         evaluated at time :math:`t`.
 
@@ -330,14 +353,17 @@ class AnalogSystem:
         ----------
         x : `array_like`, shape=(N,)
             the state vector.
-
+        u : `array_like`, shape=(L,)
+            the input vector
         Returns
         -------
         `array_like`, shape=(M_tilde,)
             the control observation.
 
         """
-        return np.dot(self.Gamma_tildeT, x)
+        if u is None:
+            return np.dot(self.Gamma_tildeT, x)
+        return np.dot(self.Gamma_tildeT, x) + np.dot(self.D_tilde, u)
 
     def _lazy_initialize_ATF(self):
         logger.info("computing analytical transfer function matrix")

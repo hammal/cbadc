@@ -65,11 +65,11 @@ class _BaseSimulator(Iterator[np.ndarray]):
                 """The analog system does not have as many inputs as in input
             list"""
             )
-        if not np.allclose(analog_system.D, np.zeros_like(analog_system.D)):
-            raise Exception(
-                """Can't simulate system with non-zero
-                D matrix. Consider chaining systems to remove D."""
-            )
+        # if not np.allclose(analog_system.D, np.zeros_like(analog_system.D)):
+        #     raise Exception(
+        #         """Can't simulate system with non-zero
+        #         D matrix. Consider chaining systems to remove D."""
+        #     )
         self.analog_system = analog_system
         self.digital_control = digital_control
         self.input_signals = input_signal

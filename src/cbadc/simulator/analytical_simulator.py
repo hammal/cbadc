@@ -53,7 +53,7 @@ class AnalyticalSimulator(_BaseSimulator):
 
     Yields
     ------
-    `array_like`, shape=(M,), dtype=numpy.int8
+    `array_like`, shape=(M,)
     """
 
     def __init__(
@@ -104,6 +104,11 @@ class AnalyticalSimulator(_BaseSimulator):
         self.Gamma = mp.matrix(self.analog_system.N, self.analog_system.M)
 
         self.Gamma_tildeT = mp.matrix(self.analog_system.Gamma_tildeT)
+
+        if not np.allclose(analog_system.D_tilde, np.zeros_like(analog_system.D_tilde)):
+            raise NotImplemented(
+                "Simulating with D_tilde not implemented for this simulator"
+            )
 
         for n in range(self.analog_system.N):
             for l in range(self.analog_system.L):

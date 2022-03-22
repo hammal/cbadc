@@ -104,11 +104,11 @@ class NUVEstimator:
         self.analog_system = analog_system
         self.covU = covU
         self.bound_y = bound_y
-        if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
-            raise Exception(
-                """Can't compute filter coefficients for system with non-zero
-                D matrix. Consider chaining for removing D"""
-            )
+        # if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+        #     raise Exception(
+        #         """Can't compute filter coefficients for system with non-zero
+        #         D matrix. Consider chaining for removing D"""
+        #     )
 
         self.digital_control = digital_control
         if Ts:
@@ -287,7 +287,7 @@ class NUVEstimator:
             scipy.integrate.solve_ivp(
                 _derivative_input,
                 (0, self.Ts),
-                np.zeros(self.analog_system.N ** 2),
+                np.zeros(self.analog_system.N**2),
                 atol=atol,
                 rtol=rtol,
                 max_step=max_step,
@@ -360,20 +360,17 @@ class NUVEstimator:
             )
 
             if k < temp_K3:
-                self._forward_mean[k + 1, :] = (
-                    np.dot(
-                        self.Af,
-                        np.dot(self._F[k, :, :], self._forward_mean[k, :])
-                        + np.dot(
-                            self._forward_CoVariance[k, :, :],
-                            np.dot(
-                                self.analog_system.CT.transpose(),
-                                np.dot(self._G[k, :, :], self._y_mean[k, :]),
-                            ),
+                self._forward_mean[k + 1, :] = np.dot(
+                    self.Af,
+                    np.dot(self._F[k, :, :], self._forward_mean[k, :])
+                    + np.dot(
+                        self._forward_CoVariance[k, :, :],
+                        np.dot(
+                            self.analog_system.CT.transpose(),
+                            np.dot(self._G[k, :, :], self._y_mean[k, :]),
                         ),
-                    )
-                    + np.dot(self.Bf, self._control_signal[k, :])
-                )
+                    ),
+                ) + np.dot(self.Bf, self._control_signal[k, :])
 
                 self._forward_CoVariance[k + 1, :, :] = (
                     np.dot(
