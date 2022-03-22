@@ -57,7 +57,7 @@ class MPSimulator(_BaseSimulator):
 
     Yields
     ------
-    `array_like`, shape=(M,), dtype=numpy.int8
+    `array_like`, shape=(M,)
     """
 
     def __init__(

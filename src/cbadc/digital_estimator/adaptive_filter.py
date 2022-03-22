@@ -41,14 +41,10 @@ class AdaptiveFilter(FIRFilter):
         self.Ts = initial_filter.Ts
         self.mid_point = initial_filter.mid_point
         self.downsample = int(initial_filter.downsample)
-        self._temp_controls = np.zeros(
-            (self.downsample, self.analog_system.M), dtype=np.int8
-        )
+        self._temp_controls = np.zeros((self.downsample, self.analog_system.M))
         self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
         self.h = initial_filter.h[:, :, :]
-        self._control_signal_valued = np.zeros(
-            (self.K3, self.analog_system.M), dtype=np.int8
-        )
+        self._control_signal_valued = np.zeros((self.K3, self.analog_system.M))
         self.offset = initial_filter.offset
         self.fixed_point = False
         self.ref_id = reference_control_id
