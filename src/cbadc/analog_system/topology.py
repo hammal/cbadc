@@ -6,6 +6,7 @@ from cbadc.digital_control import MultiLevelDigitalControl
 from cbadc.analog_signal.clock import Clock
 import json
 
+
 def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by chaining several analog systems.
 
@@ -206,7 +207,7 @@ def zpk2abcd(z, p, k):
         if index + 1 < len(p):
             # Two poles
             A = np.zeros((2, 2))
-            B = k_per_state ** 2 * np.array([[1.0], [0.0]])
+            B = k_per_state**2 * np.array([[1.0], [0.0]])
             CT = np.zeros((1, 2))
             D = np.array([[0.0]])
 
@@ -236,7 +237,7 @@ def zpk2abcd(z, p, k):
                         raise Exception("Can't have non-conjugate complex zeros")
                     M = np.array([[-1.0, 0], [-A[1, 1], A[1, 0]]])
                     sol = np.linalg.solve(M, np.real(y))
-                    D = k_per_state ** 2 * np.array([[1.0]])
+                    D = k_per_state**2 * np.array([[1.0]])
                     CT = np.array([[sol[0, 0], sol[1, 0]]])
                 else:
                     # Single zero
@@ -402,13 +403,14 @@ def tf2abcd(
     D[0, 0] = b[0]
     return A, B, CT, D
 
+
 def ctsd2abc(ctsd_dict: Dict, T):
-    """ Build A, B, C matrices from a dictionary describing a continuous-time delta-sigma modulator.
+    """Build A, B, C matrices from a dictionary describing a continuous-time delta-sigma modulator.
 
     Parameters
     ----------
     path: Dict
-        Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from www.sigma-delta.de. The coefficients are assumed to be normalized to the sampling frequency, and will be scaled accoring to the specified control period T.
+        Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from `www.sigma-delta.de <www.sigma-delta.de>`_ . The coefficients are assumed to be normalized to the sampling frequency, and will be scaled according to the specified control period T.
     T: float
         Desired control period, used for scaling the coefficients of the system.
 
@@ -431,7 +433,7 @@ def ctsd2abc(ctsd_dict: Dict, T):
         if f'b{n1+1}' in coefficients:
             B[n1, 0] = coefficients[f'b{n1+1}']['fixedValue'] * fs
         if f'c{n1}' in coefficients:
-            A[n1, n1-1] = coefficients[f'c{n1}']['fixedValue'] * fs
+            A[n1, n1 - 1] = coefficients[f'c{n1}']['fixedValue'] * fs
         for n2 in range(N):
             if f'e{n2+1}{n1+1}' in coefficients:
                 A[n1, n2] = coefficients[f'e{n2+1}{n1+1}']['fixedValue'] * fs
@@ -439,23 +441,24 @@ def ctsd2abc(ctsd_dict: Dict, T):
                 A[n1, n2] = coefficients[f'd{n2+1}{n1+1}']['fixedValue'] * fs
     return A, B, CT
 
+
 def ctsd2af(ctsd_dict: Dict, T, dac_scale):
-    """ Construct an analog system and a digital control based on a dictionary describing a continuous-time delta-sigma modulator.
+    """Construct an analog system and a digital control based on a dictionary describing a continuous-time delta-sigma modulator.
+    .
+        Parameters
+        ----------
+        path: Dict
+            Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from `www.sigma-delta.de <www.sigma-delta.de>`_  The coefficients are assumed to be normalized to the sampling frequency, and will be scaled according to the specified control period T.
+        T: float
+            Desired control period, used for scaling the coefficients of the system.
+        dac_scale: float
+            Additional scaling to apply to the DAC coefficients.
 
-    Parameters
-    ----------
-    path: Dict
-        Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from www.sigma-delta.de. The coefficients are assumed to be normalized to the sampling frequency, and will be scaled accoring to the specified control period T.
-    T: float
-        Desired control period, used for scaling the coefficients of the system.
-    dac_scale: float
-        Additional scaling to apply to the DAC coefficients.
-
-    Returns
-    analog_system: :py:class:`cbadc.analog_system.analog_system.AnalogSystem`
-        Analog System
-    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
-        Digital Control
+        Returns
+        analog_system: :py:class:`cbadc.analog_system.analog_system.AnalogSystem`
+            Analog System
+        digital_control: :py:class:`cbadc.digital_control.DigitalControl`
+            Digital Control
     """
     N = ctsd_dict['systemOptions']['systemOrder']
     M = 1
