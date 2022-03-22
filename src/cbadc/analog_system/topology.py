@@ -1,8 +1,10 @@
 """Tools to construct analog systems by means of combining other analog systems."""
 import numpy as np
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 from .analog_system import AnalogSystem
-
+from cbadc.digital_control.digital_control import DigitalControl
+from cbadc.analog_signal.clock import Clock
+import json
 
 def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by chaining several analog systems.
@@ -399,3 +401,84 @@ def tf2abcd(
     CT[0, :] = (b[1::] - b[0] * a[::])[::-1]
     D[0, 0] = b[0]
     return A, B, CT, D
+
+def ctsd2abc(ctsd_dict: Dict, T):
+    """ Build A, B, C matrices from a dictionary describing a continuous-time delta-sigma modulator.
+
+    Parameters
+    ----------
+    path: Dict
+        Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from www.sigma-delta.de. The coefficients are assumed to be normalized to the sampling frequency, and will be scaled accoring to the specified control period T.
+    T: float
+        Desired control period, used for scaling the coefficients of the system.
+
+    Returns
+    A: numpy.ndarray, shape=(L, L)
+        state transition matrix.
+    B: numpy.ndarray, shape=(L, 1)
+        input matrix.
+    CT: numpy.ndarray, shape=(1,L)
+        signal observation matrix.
+    """
+    N = ctsd_dict['systemOptions']['systemOrder']
+    coefficients = ctsd_dict['coefficient']
+    fs = 1 / T
+    A = np.zeros((N, N))
+    B = np.zeros((N, 1))
+    CT = np.eye(N)
+    # Build A, B. Multiply by fs
+    for n1 in range(N):
+        if f'b{n1+1}' in coefficients:
+            B[n1, 0] = coefficients[f'b{n1+1}']['fixedValue'] * fs
+        if f'c{n1}' in coefficients:
+            A[n1, n1-1] = coefficients[f'c{n1}']['fixedValue'] * fs
+        for n2 in range(N):
+            if f'e{n2+1}{n1+1}' in coefficients:
+                A[n1, n2] = coefficients[f'e{n2+1}{n1+1}']['fixedValue'] * fs
+            if f'd{n2+1}{n1+1}' in coefficients:
+                A[n1, n2] = coefficients[f'd{n2+1}{n1+1}']['fixedValue'] * fs
+    return A, B, CT
+
+def ctsd2af(ctsd_dict: Dict, T, dac_scale):
+    """ Construct an analog system and a digital control based on a dictionary describing a continuous-time delta-sigma modulator.
+
+    Parameters
+    ----------
+    path: Dict
+        Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from www.sigma-delta.de. The coefficients are assumed to be normalized to the sampling frequency, and will be scaled accoring to the specified control period T.
+    T: float
+        Desired control period, used for scaling the coefficients of the system.
+    dac_scale: float
+        Additional scaling to apply to the DAC coefficients.
+
+    Returns
+    analog_system: :py:class:`cbadc.analog_system.analog_system.AnalogSystem`
+        Analog System
+    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
+        Digital Control
+    """
+    N = ctsd_dict['systemOptions']['systemOrder']
+    M = 1
+    fs = 1 / T
+
+    A, B, CT = ctsd2abc(ctsd_dict, T)
+    Gamma_tildeT = np.zeros((M, N))
+    Gamma = np.zeros((N, M))
+    coefficients = ctsd_dict['coefficient']
+    # Build Gamma, multiply by fs and dac_scale
+    for n1 in range(N):
+        if f'a{n1+1}' in coefficients:
+            Gamma[n1, 0] = coefficients[f'a{n1+1}']['fixedValue'] * fs * dac_scale
+
+    # Try to pick last c value for gamma tilde
+    # Gamma_tilde is a pure scale factor, no integration
+    if f'c{N}' in coefficients:
+        Gamma_tildeT[0, -1] = coefficients[f'c{N}']['fixedValue']
+    else:
+        Gamma_tildeT[0, -1] = 1
+
+    # Init AS
+    AS = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    # Init DC
+    DC = DigitalControl(Clock(T), M)
+    return AS, DC
