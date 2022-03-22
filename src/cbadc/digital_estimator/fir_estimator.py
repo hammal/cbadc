@@ -147,9 +147,7 @@ class FIRFilter(BatchEstimator):
             raise NotImplementedError("Planned for v.0.1.0")
         self.mid_point = mid_point
         self.downsample = int(downsample)
-        self._temp_controls = np.zeros(
-            (self.downsample, self.analog_system.M), dtype=np.int8
-        )
+        self._temp_controls = np.zeros((self.downsample, self.analog_system.M))
 
         if offset is not None:
             self.offset = np.array(offset, dtype=np.float64)
@@ -198,9 +196,7 @@ class FIRFilter(BatchEstimator):
             else:
                 self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
-        self._control_signal_valued = np.zeros(
-            (self.K3, self.analog_system.M), dtype=np.int8
-        )
+        self._control_signal_valued = np.zeros((self.K3, self.analog_system.M))
 
     def __iter__(self):
         return self

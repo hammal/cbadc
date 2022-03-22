@@ -47,7 +47,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
 
     Yields
     ------
-    `array_like`, shape=(M,), dtype=numpy.int8
+    `array_like`, shape=(M,)
 
     """
 
