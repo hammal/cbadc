@@ -4,6 +4,8 @@ import cbadc.digital_control
 import cbadc.analog_signal
 import numpy as np
 import math
+import scipy.integrate
+import scipy.linalg
 from typing import Iterator, List
 
 logger = logging.getLogger(__name__)
@@ -59,6 +61,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
         clock: cbadc.analog_signal._valid_clock_types = None,
         t_stop: float = math.inf,
         initial_state_vector=None,
+        cov_x: np.ndarray = None,
     ):
         if analog_system.L != len(input_signal):
             raise Exception(
@@ -100,6 +103,35 @@ class _BaseSimulator(Iterator[np.ndarray]):
         else:
             self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
         self._res = np.zeros(self.analog_system.N, dtype=np.double)
+        self.noise = False
+        if not (cov_x is None):
+            self._compute_noise_covariance(cov_x)
+            self.noise = True
+
+    def _compute_noise_covariance(self, cov_x):
+        noise_covariance_per_unit_time = cov_x  # / self.digital_control.clock.T
+
+        def derivative(t: float, y: np.ndarray):
+            A_exp = np.asarray(scipy.linalg.expm(np.asarray(self.analog_system.A) * t))
+            return np.dot(
+                A_exp, np.dot(noise_covariance_per_unit_time, A_exp.transpose())
+            ).flatten(order="C")
+
+        sol = scipy.integrate.solve_ivp(
+            derivative,
+            (0, self.digital_control.clock.T),
+            np.zeros(self.analog_system.N**2),
+        )
+        self.covariance_matrix = np.array(sol.y[:, -1]).reshape(
+            (self.analog_system.N, self.analog_system.N), order="C"
+        )
+        self._cholesky_covariance_matrix = np.linalg.cholesky(self.covariance_matrix)
+
+    def _noise_sample(self):
+        return np.dot(
+            self._cholesky_covariance_matrix,
+            np.random.normal(size=(self.analog_system.N)),
+        )
 
     def reset(self, t: float = 0.0):
         """reset initial time of simulator and digital control"""

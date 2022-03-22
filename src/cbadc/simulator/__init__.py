@@ -10,7 +10,11 @@ These are mainly intended to produce control signals
 """
 
 from typing import Union
-from .numerical_simulator import FullSimulator, PreComputedControlSignalsSimulator
+from .numerical_simulator import (
+    FullSimulator,
+    PreComputedControlSignalsSimulator,
+    NonLinearSimulator,
+)
 from .analytical_simulator import AnalyticalSimulator
 from .mp_simulator import MPSimulator
 from .numpy_simulator import NumpySimulator

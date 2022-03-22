@@ -1,12 +1,15 @@
 """The digital batch estimator
 """
 from typing import Iterator
+
+from scipy.misc import derivative
 import cbadc
 from cbadc.digital_estimator._filter_coefficients import (
     compute_filter_coefficients,
     FilterComputationBackend,
 )
 import cbadc.utilities
+import scipy.integrate
 import numpy as np
 import sympy as sp
 import logging
@@ -507,6 +510,73 @@ class BatchEstimator(Iterator[np.ndarray]):
                 np.dot(GH, np.dot(np.linalg.inv(GGH + self.eta2Matrix), G_bar))
             )
         return result
+
+    def general_transfer_function(self, omega: np.ndarray):
+        """Compute the general transfer functions from additive sources into each state varible
+         to the estimates.
+
+        Parameters
+        ----------
+        omega: `array_like`, shape=(K,)
+            an array_like object containing the angular frequencies for
+            evaluation.
+
+        Returns
+        -------
+        `array_like`, shape=(L, N, K)
+            return transfer function from each state N to each input estimate L for each frequency K.
+        """
+        #  shape=(N_tilde, N, K)
+        stf_array = self.analog_system.transfer_function_matrix(omega, general=True)
+        # shape=(L, N_tilde, K)
+        ntf_array = self.noise_transfer_function(omega)
+        return np.einsum('lnk,nxk->lxk', ntf_array, stf_array)
+
+    def thermal_noise_estimate(self, noise_variances: np.ndarray, BW: np.ndarray):
+        if len(noise_variances.shape) > 1:
+            raise Exception("noise_variances must be a 1 dimensional vector")
+        if any(noise_variances < 0):
+            raise Exception("noise variance must be non-negative numbers.")
+        if noise_variances.size != self.analog_system.N:
+            raise Exception(
+                f"N={self.analog_system.N} noise variances must be specified."
+            )
+
+        def _derivative(omega, x):
+            _omega = np.array([omega])
+            return (
+                np.abs(self.general_transfer_function(_omega)).flatten(order="C") ** 2
+            )
+
+        integrated_tf = (
+            scipy.integrate.solve_ivp(
+                _derivative,
+                (BW[0], BW[-1]),
+                np.zeros(self.analog_system.L * self.analog_system.N),
+            )
+            .y[:, -1]
+            .reshape((self.analog_system.L, self.analog_system.N), order="C")
+        )
+        for n, sigma_z_2 in enumerate(noise_variances):
+            integrated_tf[:, n] *= sigma_z_2
+        return integrated_tf
+
+    def max_harmonic_estimate(self, BW: np.ndarray, SFDR: float):
+
+        sfdr = cbadc.fom.snr_from_dB(SFDR)
+
+        num = 1000
+        _omega = np.logspace(np.log(BW[0]), np.log(BW[-1]), num)
+        tfs = np.abs(self.general_transfer_function(_omega))
+
+        max_input = np.max(tfs)
+        # value =
+
+        temp = np.max(tfs, axis=2) / max_input
+        # this could probably be normalized by somethings like np.linalg.norm(temp)
+        local_harmonics = 1.0 / temp
+        local_harmonics /= np.linalg.norm(local_harmonics, ord=1)
+        return local_harmonics / sfdr
 
     def __str__(self):
         return f"""Digital estimator is parameterized as

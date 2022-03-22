@@ -1,12 +1,16 @@
 """Initialize analog systems and digital control from specifications.
 """
+from typing import Tuple
 from .fom import snr_from_dB, enob_to_snr
 from .analog_system.chain_of_integrators import ChainOfIntegrators
 from .analog_system.leap_frog import LeapFrog
+from .digital_estimator import BatchEstimator
 from .digital_control.digital_control import DigitalControl
 from .analog_signal.impulse_responses import RCImpulseResponse, StepResponse
 from .analog_signal.clock import Clock
+import cbadc.fom
 import numpy as np
+import scipy.integrate
 
 
 def get_chain_of_integrator(**kwargs):
@@ -54,7 +58,10 @@ def get_chain_of_integrator(**kwargs):
         xi = 5e-3 / np.pi
         if 'xi' in kwargs:
             xi = kwargs['xi']
-        gamma = (xi * snr) ** (1.0 / (2.0 * N))
+        gi = 2 * N + 1
+        if 'gi' in kwargs:
+            gi = kwargs['gi']
+        gamma = (xi / gi * snr) ** (1.0 / (2.0 * N))
         beta = -gamma * omega_3dB
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -omega_3dB / gamma
@@ -154,7 +161,10 @@ def get_leap_frog(**kwargs):
         xi = 7e-2 / np.pi
         if 'xi' in kwargs:
             xi = kwargs['xi']
-        gamma = (xi * snr) ** (1.0 / (2.0 * N))
+        gi = 2 ** (2 * N - 1)
+        if 'gi' in kwargs:
+            gi = kwargs['gi']
+        gamma = (xi / gi * snr) ** (1.0 / (2.0 * N))
         beta = -(omega_BW / 2.0) * gamma
         alpha = (omega_BW / 2.0) / gamma
         rho = 0
@@ -190,3 +200,121 @@ def get_leap_frog(**kwargs):
         return (analog_system, digital_control)
 
     raise NotImplementedError
+
+
+def get_white_noise(
+    digital_estimator: BatchEstimator,
+    BW: Tuple[float, float],
+    target_SNR: float,
+    Pu: float = 1.0,
+):
+    """Compute white noise components
+
+    Specifically, determine the largest allowed
+    white noise disturbance into each state such
+    that a given target SNR is mantained for a given
+    input signal power.
+
+    Parameters
+    ----------
+    digital_estimator: :py:class:`cbadc.digital_estimator.BatchEstimator`
+        a digital estimator from which to determined the allowed noise.
+    BW: [`float`, `float`]
+        the bandwidth of interest where BW[0] < BW[1].
+    target_SNR: `float`
+        the target SNR expressed in dB.
+    Pu: `float`, `optional`
+        the in-band signal power, defaults to 1.
+
+    Returns
+    -------
+    : array_like, shape=(L, N)
+        upper bound of the largest RMS valued white noise terms entering
+        into each corresponding state specified in rms / sqrt(Hz).
+    """
+    if BW[0] >= BW[1]:
+        raise Exception("Bandwith must be specified as interval were BW[1] > BW[0].")
+
+    ntf = digital_estimator.noise_transfer_function
+    stf = digital_estimator.analog_system.transfer_function_matrix
+
+    noise_power = np.zeros(
+        (digital_estimator.analog_system.L, digital_estimator.analog_system.N)
+    )
+
+    signal_power = np.zeros(digital_estimator.analog_system.L)
+    noise_local_scale = np.zeros_like(noise_power)
+
+    def derivative(omega, x):
+        _omega = np.array([omega])
+        return (
+            np.abs(
+                np.tensordot(
+                    ntf(_omega),
+                    stf(_omega, general=False),
+                    axes=((1, 2), (0, 2)),
+                )
+            )
+            ** 2
+        )
+
+    signal_power = (
+        scipy.integrate.solve_ivp(
+            derivative,
+            (BW[0], BW[1]),
+            # (digital_control._impulse_response[m].t0, Ts),
+            np.zeros(digital_estimator.analog_system.L),
+            # atol=atol,
+            # rtol=rtol,
+            # max_step=max_step,
+            # method="Radau",
+            # jacobian=tempAf,
+            # events=(impulse_start,),
+        ).y[:, -1]
+        * Pu
+        / (BW[1] - BW[0])
+    )
+
+    for n in range(digital_estimator.analog_system.N):
+
+        def derivative(omega, x):
+            _omega = np.array([omega])
+            return (
+                np.abs(
+                    # np.tensordot(
+                    #     ntf(_omega),
+                    #     stf(_omega, general=True)[:, n, :],
+                    #     axes=((1, 2), (0, 1)),
+                    # )
+                    np.einsum(
+                        'ijk,jk->i', ntf(_omega), stf(_omega, general=True)[:, n, :]
+                    )
+                )
+                ** 2
+            )
+
+        noise_power[:, n] = scipy.integrate.solve_ivp(
+            derivative,
+            (BW[0], BW[1]),
+            # (digital_control._impulse_response[m].t0, Ts),
+            np.zeros(digital_estimator.analog_system.L),
+            # atol=atol,
+            # rtol=rtol,
+            # max_step=max_step,
+            # method="Radau",
+            # jacobian=tempAf,
+            # events=(impulse_start,),
+        ).y[:, -1]
+
+        noise_local_scale[:, n] = (
+            1.0 / noise_power[:, n] / digital_estimator.analog_system.N
+        )
+
+    global_scale = np.sum(signal_power) / (cbadc.fom.snr_from_dB(target_SNR) ** 2)
+
+    input_referred_noise_power = global_scale * noise_local_scale
+    print(
+        f"noise_power ={noise_power}, noise_local_scale={noise_local_scale}, global_scale={global_scale}"
+    )
+    # return np.sqrt(input_referred_noise_power)
+    return input_referred_noise_power

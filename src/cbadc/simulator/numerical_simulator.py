@@ -69,6 +69,7 @@ class FullSimulator(_BaseSimulator):
         initial_state_vector=None,
         atol: float = 1e-20,
         rtol: float = 1e-12,
+        cov_x: np.ndarray = None,
     ):
         super().__init__(
             analog_system,
@@ -77,6 +78,7 @@ class FullSimulator(_BaseSimulator):
             clock,
             t_stop,
             initial_state_vector,
+            cov_x,
         )
         self.atol = atol
         self.rtol = rtol
@@ -158,6 +160,8 @@ class FullSimulator(_BaseSimulator):
             # In case of control update event
             t = res.t[-1]
             y_new = res.y[:, -1]
+            if self.noise:
+                y_new += self._noise_sample()
             if res.status == 1 or t == t_span[1]:
                 self.digital_control.control_update(
                     t, np.dot(self.analog_system.Gamma_tildeT, y_new)
@@ -234,6 +238,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         initial_state_vector=None,
         atol: float = 1e-12,
         rtol: float = 1e-8,
+        cov_x: np.ndarray = None,
     ):
         _BaseSimulator.__init__(
             self,
@@ -243,6 +248,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             clock,
             t_stop,
             initial_state_vector,
+            cov_x,
         )
 
         self._temp_state_vector = np.zeros(self.analog_system.N, dtype=np.double)
@@ -383,6 +389,9 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
         self._temp_state_vector = sol.y[:, -1]
 
+        if self.noise:
+            self._temp_state_vector += self._noise_sample()
+
         self._temp_state_vector += np.dot(
             self._pre_computed_state_transition_matrix, self._state_vector
         ).flatten()
@@ -413,4 +422,177 @@ Pre computed transition matrix:
 Pre-computed control matrix
 {self._pre_computed_control_matrix}
 
+        """
+
+
+class NonLinearSimulator(FullSimulator):
+    """Simulate the analog system and digital control interactions
+    in the presence on analog signals.
+
+    Parameters
+    ----------
+    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+        the analog system
+    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
+        the digital control
+    input_signals : [:py:class:`cbadc.analog_signal.AnalogSignal`]
+        a python list of analog signals (or a derived class)
+    clock: :py:class:`cbadc.simulator.clock`, `optional`
+        a clock to syncronize simulator output against, defaults to
+        a phase delayed version of the digital_control clock.
+    t_stop : `float`, optional
+        determines a stop time, defaults to :py:obj:`math.inf`
+    initial_state_vector: `array_like`, shape=(N), `optional`
+        initial state vector.
+    harmonic_gains: np.ndarray, shape=(N, number_of_harmonics), optional
+        harmonic gains for each amplifier.
+
+    Attributes
+    ----------
+    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+        the analog system being simulated.
+    digital_control : :py:class:`cbadc.digital_control.DigitalControl`
+        the digital control being simulated.
+    t : `float`
+        current time of simulator.
+    clock: `float`
+        a clock to which the outputs of the simulator are synchronized.
+    t_stop : `float`
+        end time at which the generator raises :py:class:`StopIteration`.
+    rtol, atol : `float`, `optional`
+        Relative and absolute tolerances. The solver keeps the local error estimates less
+        than atol + rtol * abs(y). Effects the underlying solver as described in
+        :py:func:`scipy.integrate.solve_ivp`. Default to 1e-3 for rtol and 1e-6 for atol.
+    initial_state_vector: `array_like`, shape=(N), `optional`
+        initial state vector.
+
+
+    Yields
+    ------
+    `array_like`, shape=(M,), dtype=numpy.int8
+    """
+
+    def __init__(
+        self,
+        analog_system: cbadc.analog_system._valid_analog_system_types,
+        digital_control: cbadc.digital_control._valid_digital_control_types,
+        input_signal: List[cbadc.analog_signal._AnalogSignal],
+        clock: cbadc.analog_signal._valid_clock_types = None,
+        t_stop: float = math.inf,
+        initial_state_vector=None,
+        harmonic_gains: np.ndarray = None,
+        atol: float = 1e-20,
+        rtol: float = 1e-12,
+        cov_x: np.ndarray = None,
+    ):
+        super().__init__(
+            analog_system,
+            digital_control,
+            input_signal,
+            clock,
+            t_stop,
+            initial_state_vector,
+            cov_x,
+        )
+        self.atol = atol
+        self.rtol = rtol
+        if harmonic_gains is None:
+            raise Exception("Must specify a (N times #NumberOfHarmonics) gain matrix")
+        if harmonic_gains.shape[0] != analog_system.N:
+            raise Exception("Must have a harmonics specification for each N")
+        self._number_of_harmonics = harmonic_gains.shape[1]
+        self._harmonic_weights = harmonic_gains
+
+    def _non_linearity(self, input_array: np.ndarray):
+        res = input_array[:]
+        for harmonic in range(self._number_of_harmonics):
+            temp = np.dot(
+                np.diag(self._harmonic_weights[:, harmonic]),
+                input_array ** (harmonic + 2),
+            )
+            res += temp
+            # print(f"Harmonic, res: {temp}, {res}")
+        return res
+
+    def _full_ordinary_differential_solution(self, t_span: np.ndarray) -> np.ndarray:
+        def f(t: float, y: np.ndarray):
+            """Solve the differential computational problem
+            of the analog system and digital control interaction
+
+            Parameters
+            ----------
+            t : `float`
+                the time for evaluation
+            y : array_lik, shape=(N,)
+                state vector
+
+            Returns
+            -------
+            array_like, shape=(N,)
+                vector of derivatives evaluated at time t.
+            """
+            input_vector = np.zeros(self.analog_system.L)
+            for _l in range(self.analog_system.L):
+                input_vector[_l] = self.input_signals[_l].evaluate(t)
+
+            control_vector = self.digital_control.control_contribution(t)
+
+            # np.dot(self.A, x) + np.dot(self.B, u) + np.dot(self.Gamma, s)
+
+            delta = self.analog_system.derivative(y, t, input_vector, control_vector)
+            return self._non_linearity(delta)
+
+        # terminate in case of control update
+        def control_update(t, x):
+            return t - self.digital_control._t_next
+
+        control_update.terminal = True
+        control_update.direction = 1.0
+        t0_impulse_response = [
+            lambda t, x: t
+            - self.digital_control._t_last_update[m]
+            - self.digital_control._impulse_response[m].t0
+            for m in range(self.digital_control.M)
+        ]
+        for i_resp in t0_impulse_response:
+            i_resp.direction = 1.0
+
+        # Default Case
+        t = t_span[0]
+        y_new = self._state_vector[:]
+        atol_clock = self.digital_control.clock.T * 1e-4
+        while not np.allclose(t, t_span[1], atol=atol_clock):
+            res = scipy.integrate.solve_ivp(
+                f,
+                (t, t_span[1]),
+                y_new,
+                atol=self.atol,
+                rtol=self.rtol,
+                # method="Radau",
+                # jac=self.analog_system.A,
+                # method="DOP853",
+                events=(control_update, *t0_impulse_response),
+            )
+            if res.status == -1:
+                logger.critical(f"IVP solver failed, See:\n\n{res}")
+            # In case of control update event
+            t = res.t[-1]
+            y_new = res.y[:, -1]
+            if self.noise:
+                y_new += self._noise_sample()
+            if res.status == 1 or t == t_span[1]:
+                self.digital_control.control_update(
+                    t, np.dot(self.analog_system.Gamma_tildeT, y_new)
+                )
+        return y_new
+
+    def __str__(self):
+        return f"""{super().__str__()}
+
+{80 * '-'}
+
+atol, rtol:
+{self.atol}, {self.rtol}
+
+{80 * '='}
         """

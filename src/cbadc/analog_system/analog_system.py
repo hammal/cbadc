@@ -346,9 +346,11 @@ class AnalogSystem:
         #     (sp.I * self.omega * self._A_s_P_inv * self._A_s_P -
         #      self._A_s_D).inv() * self._A_s_P_inv * self._B_s
         # )
-        self._atf_s_matrix = sp.simplify(
-            (sp.I * self.omega * sp.eye(self.N) - self._A_s).inv() * self._B_s
+        self._general_atf_s_matrix = sp.simplify(
+            (sp.I * self.omega * sp.eye(self.N) - self._A_s).inv()
         )
+        self._atf_s_matrix = sp.simplify(self._general_atf_s_matrix * self._B_s)
+        self._general_atf_lambda = sp.lambdify((self.omega), self._general_atf_s_matrix)
         self._atf_lambda = sp.lambdify((self.omega), self._atf_s_matrix)
 
     def _atf_symbolic(self, _omega: float) -> np.ndarray:
@@ -361,6 +363,15 @@ class AnalogSystem:
             np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
             self.B,
         )
+        return tf
+
+    def _general_atf_symbolic(self, _omega: float) -> np.ndarray:
+        if self._atf_lambda is None:
+            self._lazy_initialize_ATF()
+        return np.array(self._general_atf_lambda(_omega)).astype(np.complex128)
+
+    def _general_atf(self, _omega: float) -> np.ndarray:
+        tf = np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300)
         return tf
 
     def _lazy_initialize_CTF(self):
@@ -417,7 +428,10 @@ class AnalogSystem:
         return np.asarray(resp)
 
     def transfer_function_matrix(
-        self, omega: np.ndarray, symbolic: bool = True
+        self,
+        omega: np.ndarray,
+        symbolic: bool = True,
+        general=False,
     ) -> np.ndarray:
         """Evaluate the analog signal transfer function at the angular
         frequencies of the omega array.
@@ -437,6 +451,8 @@ class AnalogSystem:
             evaluation.
         symbolic: `bool`, `optional`
             solve using symbolic methods, defaults to True.
+        general: `bool`, `optional`
+            to return general transfer function or not, defaults to False.
 
         Returns
         -------
@@ -445,11 +461,22 @@ class AnalogSystem:
             frequencies.
         """
         size: int = omega.size
-        result = np.zeros((self.N, self.L, size), dtype=complex)
-        resp = np.zeros((self.N_tilde, self.L, size))
+        if not general:
+            resp = np.zeros((self.N_tilde, self.L, size))
+            result = np.zeros((self.N, self.L, size), dtype=complex)
+        else:
+            resp = np.zeros((self.N_tilde, self.N, size))
+            result = np.zeros((self.N, self.N, size), dtype=complex)
+
         for index in range(size):
-            if symbolic:
+            if not general:
+                resp[:, :, index] = self.D
+            if symbolic and not general:
                 result[:, :, index] = self._atf_symbolic(omega[index])
+            elif symbolic and general:
+                result[:, :, index] = self._general_atf_symbolic(omega[index])
+            elif not symbolic and general:
+                result[:, :, index] = self._general_atf(omega[index])
             else:
                 result[:, :, index] = self._atf(omega[index])
             resp[:, :, index] = self.D
