@@ -322,6 +322,7 @@ def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.nd
         biquad equations
 
     Returns
+    -------
     A: numpy.ndarray, shape=(2 * L, 2 * L)
         a joint state transition matrix.
     B: numpy.ndarray, shape=(2 * L, 1)
@@ -380,6 +381,7 @@ def tf2abcd(
         transferfunction denominator :math:`\\begin{pmatrix}a_{L-1}, & \\dots, & a_{0}\\end{pmatrix}`.
 
     Returns
+    -------
     A: numpy.ndarray, shape=(L, L)
         a joint state transition matrix.
     B: numpy.ndarray, shape=(L, 1)
@@ -415,7 +417,12 @@ def ctsd2abc(ctsd_dict: Dict, T):
         Desired control period, used for scaling the coefficients of the system.
 
     Returns
+<<<<<<< HEAD
     A: numpy.ndarray, shape=(N, N)
+=======
+    -------
+    A: numpy.ndarray, shape=(L, L)
+>>>>>>> c6a5380f5f13a3bb41ae5aa30dfbd9adfd56279c
         state transition matrix.
     B: numpy.ndarray, shape=(N, 1)
         input matrix.
@@ -501,6 +508,7 @@ def _get_coeff_value(coefficients: Dict, coeff_name: str, default: float=0):
 
 def ctsd2af(ctsd_dict: Dict, T, dac_scale, local_control=False, qlev=None):
     """Construct an analog system and a digital control based on a dictionary describing a continuous-time delta-sigma modulator.
+<<<<<<< HEAD
     .
         Parameters
         ----------
@@ -520,6 +528,24 @@ def ctsd2af(ctsd_dict: Dict, T, dac_scale, local_control=False, qlev=None):
             Analog System
         digital_control: :py:class:`cbadc.digital_control.DigitalControl`
             Digital Control
+=======
+
+    Parameters
+    ----------
+    path: Dict
+        Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from `www.sigma-delta.de <www.sigma-delta.de>`_  The coefficients are assumed to be normalized to the sampling frequency, and will be scaled according to the specified control period T.
+    T: float
+        Desired control period, used for scaling the coefficients of the system.
+    dac_scale: float
+        Additional scaling to apply to the DAC coefficients.
+
+    Returns
+    -------
+    analog_system: :py:class:`cbadc.analog_system.analog_system.AnalogSystem`
+        Analog System
+    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
+        Digital Control
+>>>>>>> c6a5380f5f13a3bb41ae5aa30dfbd9adfd56279c
     """
     # Parse matrices
     A, B, CT = ctsd2abc(ctsd_dict, T)

@@ -59,7 +59,10 @@ class AnalogSystem:
         control input matrix.
     Gamma_tildeT : `array_like`, shape=(M_tilde, N)
         control observation matrix.
-
+    D : `array_like`, shape=(N_tilde, L), optional
+        the direct matrix, defaults to None
+    D_tilde : `array_like`, shape=(M_tilde, L), optional
+        the direct control observation matrix, defaults to None
 
     Attributes
     ----------
@@ -135,6 +138,8 @@ class AnalogSystem:
             control observation matrix.
         D : `array_like`, shape=(N_tilde, L), optional
             the direct matrix, defaults to None
+        D_tilde : `array_like`, shape=(M_tilde, L), optional
+            the direct control observation matrix, defaults to None
         """
 
         self.A = np.array(A, dtype=np.double)
@@ -347,7 +352,7 @@ class AnalogSystem:
 
         Specifically, returns
 
-        :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
+        :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t) + \\tilde{\mathbf{D}} \mathbf{u}(t)`
 
         Parameters
         ----------
