@@ -2,7 +2,7 @@
 import numpy as np
 from typing import Dict, List, Tuple
 from .analog_system import AnalogSystem
-from cbadc.digital_control.digital_control import DigitalControl
+from cbadc.digital_control import MultiLevelDigitalControl
 from cbadc.analog_signal.clock import Clock
 import json
 
@@ -460,6 +460,7 @@ def ctsd2af(ctsd_dict: Dict, T, dac_scale):
     N = ctsd_dict['systemOptions']['systemOrder']
     M = 1
     fs = 1 / T
+    Qlev = ctsd_dict['quantizer']['level']
 
     A, B, CT = ctsd2abc(ctsd_dict, T)
     Gamma_tildeT = np.zeros((M, N))
@@ -480,5 +481,5 @@ def ctsd2af(ctsd_dict: Dict, T, dac_scale):
     # Init AS
     AS = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     # Init DC
-    DC = DigitalControl(Clock(T), M)
+    DC = MultiLevelDigitalControl(Clock(T), M, [Qlev])
     return AS, DC
