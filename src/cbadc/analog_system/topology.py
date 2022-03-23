@@ -4,8 +4,7 @@ from typing import Dict, List, Tuple
 from .analog_system import AnalogSystem
 from cbadc.digital_control import MultiLevelDigitalControl
 from cbadc.analog_signal.clock import Clock
-import json
-
+import pandas as pd
 
 def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by chaining several analog systems.
@@ -417,12 +416,7 @@ def ctsd2abc(ctsd_dict: Dict, T):
         Desired control period, used for scaling the coefficients of the system.
 
     Returns
-<<<<<<< HEAD
     A: numpy.ndarray, shape=(N, N)
-=======
-    -------
-    A: numpy.ndarray, shape=(L, L)
->>>>>>> c6a5380f5f13a3bb41ae5aa30dfbd9adfd56279c
         state transition matrix.
     B: numpy.ndarray, shape=(N, 1)
         input matrix.
@@ -506,29 +500,8 @@ def _get_coeff_value(coefficients: Dict, coeff_name: str, default: float=0):
         return default
 
 
-def ctsd2af(ctsd_dict: Dict, T, dac_scale, local_control=False, qlev=None):
+def ctsd_dict2af(ctsd_dict: Dict, T, dac_scale, local_control=False, qlev=None):
     """Construct an analog system and a digital control based on a dictionary describing a continuous-time delta-sigma modulator.
-<<<<<<< HEAD
-    .
-        Parameters
-        ----------
-        path: Dict
-            Dictionary describing the continuous-time delta-sigma modulator. The dictionary is assumed to have the same format as the json files exported from `www.sigma-delta.de <www.sigma-delta.de>`_  The coefficients are assumed to be normalized to the sampling frequency, and will be scaled according to the specified control period T.
-        T: float
-            Desired control period, used for scaling the coefficients of the system.
-        dac_scale: float
-            Additional scaling to apply to the DAC coefficients.
-        local_control: Bool
-            Whether or not to use local control. Default: False
-        qlev: Int
-            Number of quantizer levels. If None, use the number of levels from the ctsd dictionary. Default: None
-
-        Returns
-        analog_system: :py:class:`cbadc.analog_system.analog_system.AnalogSystem`
-            Analog System
-        digital_control: :py:class:`cbadc.digital_control.DigitalControl`
-            Digital Control
-=======
 
     Parameters
     ----------
@@ -538,14 +511,16 @@ def ctsd2af(ctsd_dict: Dict, T, dac_scale, local_control=False, qlev=None):
         Desired control period, used for scaling the coefficients of the system.
     dac_scale: float
         Additional scaling to apply to the DAC coefficients.
+    local_control: Bool
+        Whether or not to use local control. Default: False
+    qlev: Int
+        Number of quantizer levels. If None, use the number of levels from the ctsd dictionary. Default: None
 
     Returns
-    -------
     analog_system: :py:class:`cbadc.analog_system.analog_system.AnalogSystem`
         Analog System
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         Digital Control
->>>>>>> c6a5380f5f13a3bb41ae5aa30dfbd9adfd56279c
     """
     # Parse matrices
     A, B, CT = ctsd2abc(ctsd_dict, T)
@@ -560,3 +535,80 @@ def ctsd2af(ctsd_dict: Dict, T, dac_scale, local_control=False, qlev=None):
     DC = MultiLevelDigitalControl(Clock(T), M, number_of_levels=number_of_levels)
     return AS, DC
 
+
+def ctsd_abcd2af(abcd, T, qlev, dac_scale, local_control=False):
+    """Construct an analog system and a digital control from an ABCD state-space matrix. The format of the matrix must follow the conventions of the Richard Schreier's delta-sigma MATLAB Toolbox.
+    Parameters
+    ----------
+    abcd: np.ndarray, shape=(N+1,N+2)
+        ABCD state-space matrix describing the continuous-time modulator
+    T: float
+        Desired control period, used for scaling the coefficients of the system.
+    qlev: Int
+        Number of quantizer levels. If None, use the number of levels from the ctsd dictionary. Default: None
+    dac_scale: float
+        Additional scaling to apply to the DAC coefficients.
+    local_control: Bool
+        Whether or not to use local control. Default: False
+
+    Returns
+    analog_system: :py:class:`cbadc.analog_system.analog_system.AnalogSystem`
+        Analog System
+    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
+        Digital Control
+    """
+    ctsd_dict = _schreier_abcd_to_ulm_dict(abcd, qlev)
+    return ulm_dict2af(ctsd_dict, T, dac_scale, local_control, qlev)
+
+def _schreier_abcd_to_ulm_dict(ABCD, qlev):
+    """ Convert ABCD matrix from schreier MATLAB toolbox to a dictionary with the format of the ULM www.sigma-delta.de """
+    N = ABCD.shape[0] - 1
+    ctsd_dict = {}
+    ctsd_dict['systemOptions'] = {}
+    ctsd_dict['systemOptions']['systemOrder'] = N
+    ctsd_dict['quantizer'] = {}
+    ctsd_dict['quantizer']['level'] = qlev
+
+    coefficients = {}
+    min_val = 1e-8 # Ignore smaller values
+    B = ABCD[:, N] # Input
+    A = ABCD[:, N+1] # Feedback
+    C = ABCD[:, 0:N] # State evolution
+
+    # Input and feedback
+    for n in range(N+1):
+        valB = B[n]
+        if np.abs(valB) > min_val:
+            name = f'b{n+1}'
+            coefficients[name] = {}
+            coefficients[name]['fixedValue'] = valB
+            coefficients[name]['active'] = True
+        valA = A[n]
+        if np.abs(valA) > min_val:
+            name = f'a{n+1}'
+            coefficients[name] = {}
+            coefficients[name]['fixedValue'] = valA
+            coefficients[name]['active'] = True
+    # States
+    for m in range(N+1):
+        for n in range(N):
+            val = C[m, n]
+            if np.abs(val) > min_val:
+                # Forward
+                if (m-n) == 1:
+                    name = f'c{n+1}'
+                    coefficients[name] = {}
+                    coefficients[name]['fixedValue'] = val
+                    coefficients[name]['active'] = True
+                elif (m-n) > 1:
+                    name = f'd{n+1}{m+1}'
+                    coefficients[name] = {}
+                    coefficients[name]['fixedValue'] = val
+                    coefficients[name]['active'] = True
+                elif (m-n) < 0:
+                    name = f'e{n+1}{m+1}'
+                    coefficients[name] = {}
+                    coefficients[name]['fixedValue'] = val
+                    coefficients[name]['active'] = True
+    ctsd_dict['coefficient'] = coefficients
+    return ctsd_dict
