@@ -22,12 +22,12 @@ BW = 1e6
 random_control_scale = 1e-1
 
 # Instantiate leap-frog analog system is created as
-analog_system, digital_control = cbadc.specification.get_leap_frog(
-    ENOB=ENOB, N=N, BW=BW
-)
-analog_system_ref, digital_control_ref = cbadc.specification.get_leap_frog(
-    ENOB=ENOB, N=N, BW=BW
-)
+analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+analog_system = analog_frontend.analog_system
+digital_control = analog_frontend.digital_control
+analog_frontend_ref = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+analog_system_ref = analog_frontend_ref.analog_system
+digital_control_ref = analog_frontend_ref.digital_control
 
 ref_vector = np.zeros((N, 1))
 ref_vector[0] = analog_system.Gamma[0, 0] * random_control_scale

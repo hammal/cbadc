@@ -30,9 +30,9 @@ N = 4
 BW = 1e6
 
 # Instantiate leap-frog analog system is created as
-target_analog_system, target_digital_control = cbadc.specification.get_leap_frog(
-    ENOB=ENOB, N=N, BW=BW
-)
+analog_frontend_target = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+target_analog_system = analog_frontend_target.analog_system
+target_digital_control = analog_frontend_target.digital_control
 
 verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
     target_analog_system
