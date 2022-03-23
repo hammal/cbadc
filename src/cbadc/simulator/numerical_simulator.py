@@ -506,10 +506,7 @@ class NonLinearSimulator(FullSimulator):
     def _non_linearity(self, input_array: np.ndarray):
         res = input_array[:]
         for harmonic in range(self._number_of_harmonics):
-            temp = np.dot(
-                np.diag(self._harmonic_weights[:, harmonic]),
-                input_array ** (harmonic + 2),
-            )
+            temp = self._harmonic_weights[:, harmonic] * (input_array ** (harmonic + 2))
             res += temp
             # print(f"Harmonic, res: {temp}, {res}")
         return res
