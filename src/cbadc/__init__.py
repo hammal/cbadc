@@ -10,9 +10,10 @@ from . import digital_estimator
 from . import simulator
 from . import utilities
 from . import circuit_level
-from . import specification
 from . import digital_calibration
 from . import fom
+from . import synthesis
+from . import analog_frontend
 
 # Set logging level
 logging.basicConfig(level=logging.INFO)

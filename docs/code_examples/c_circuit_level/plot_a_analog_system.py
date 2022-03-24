@@ -28,7 +28,8 @@ N = 4
 BW = 1e6
 
 # Instantiate leap-frog analog system is created as
-analog_system, _ = cbadc.specification.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+analog_system = analog_frontend.analog_system
 
 # Visualize the analog system's transfer functions
 BW_log = np.log10(BW)

@@ -29,7 +29,7 @@ class MultiLevelDigitalControl(DigitalControl):
             self._levels.append(
                 np.linspace(-1 + smallest_step, 1 - smallest_step, number_of_levels[m])
             )
-            self._references.append(np.linspace(-1, 1, number_of_levels[m] + 1))
+            self._references.append(np.linspace(0, 1, number_of_levels[m] + 1))
         super().__init__(clock, M, t0, impulse_response)
         self._s = np.zeros(self.M, dtype=np.double)
 
@@ -52,6 +52,7 @@ class MultiLevelDigitalControl(DigitalControl):
                         break
                     elif level == (self.number_of_levels[m_tilde] - 1):
                         self._s[m_tilde] = self._references[m_tilde][-1]
+
             self._t_last_update[:] = t
             self._t_next += self.clock.T
-            self._control_descisions = np.asarray(self._s, dtype=np.double)
+            self._control_descisions = np.asarray(2.0 * self._s - 1.0, dtype=np.double)
