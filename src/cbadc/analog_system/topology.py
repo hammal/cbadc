@@ -470,24 +470,26 @@ def ctsd2gamma(ctsd_dict: Dict, T, dac_scale, local_control=True):
 
 
     coefficients = ctsd_dict['coefficient']
-    # Build Gamma, multiply by fs and dac_scale
     Gamma = np.zeros((N, M))
+    Gamma_tildeT = np.zeros((M_tilde, N))
     for n1 in range(N):
         n2 = n1 if local_control else 0
         Gamma[n1, n2] = _get_coeff_value(coefficients, f'a{n1+1}') * fs * dac_scale
+
+        # Gamma_tilde is a pure scale factor, no integration
+        Gamma_tildeT[0, n1] = _get_coeff_value(coefficients, f'd{n1+1}{N+1}')
+
     # Build Gamma_tildeT and D_tilde
+    # Try to pick last c value for gamma tilde, use 1 as default
+    Gamma_tildeT[0, -1] = _get_coeff_value(coefficients, f'c{N}', default=1)
+    # Build D_tilde
+    D_tilde = np.zeros((M_tilde, 1))
+    D_tilde[-1, 0] = _get_coeff_value(coefficients, f'b{N+1}')
+
     if local_control:
         # Ignore observation from ctsd dict if local control
         D_tilde = np.zeros((M_tilde, 1))
         Gamma_tildeT = np.eye(M)
-    else:
-        # Try to pick last c value for gamma tilde, use 1 as default
-        # Gamma_tilde is a pure scale factor, no integration
-        Gamma_tildeT = np.zeros((M_tilde, N))
-        Gamma_tildeT[0, -1] = _get_coeff_value(coefficients, f'c{N}', default=1)
-        # Build D_tilde
-        D_tilde = np.zeros((M_tilde, 1))
-        D_tilde[-1, 0] = _get_coeff_value(coefficients, f'b{N+1}')
 
     return Gamma, Gamma_tildeT, D_tilde
 
