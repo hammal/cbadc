@@ -32,6 +32,8 @@ class MultiLevelDigitalControl(DigitalControl):
             self._references.append(np.linspace(0, 1, number_of_levels[m] + 1))
         super().__init__(clock, M, t0, impulse_response)
         self._s = np.zeros(self.M, dtype=np.double)
+        self.control_update(self._t_next, np.zeros(self.M))
+        print("initial digital control", self._s, self.control_contribution(0))
 
     def control_update(self, t: float, s_tilde: np.ndarray):
         """Updates the control at time t if valid.

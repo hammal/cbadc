@@ -11,8 +11,6 @@ import cbadc
 import numpy as np
 import matplotlib.pyplot as plt
 
-from cbadc import analog_frontend
-
 ###############################################################################
 # Setting up an Analog System
 # -----------------------------

@@ -87,5 +87,28 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
             kappa * np.eye(N),
         )
         return AnalogFrontend(analog_system, digital_control)
-
+    elif all(param in kwargs for param in ('OSR', 'N', 'BW')):
+        N = kwargs['N']
+        BW = kwargs['BW']
+        OSR = kwargs['OSR']
+        T = 1.0 / (2 * OSR * BW)
+        omega_BW = 2.0 * np.pi * BW
+        beta = 1 / (2 * T)
+        alpha = -((omega_BW / 2) ** 2) / beta
+        kappa = beta
+        rho = 0
+        analog_system = LeapFrog(
+            beta * np.ones(N),
+            alpha * np.ones(N - 1),
+            rho * np.ones(N),
+            kappa * np.eye(N),
+        )
+        digital_control = DigitalControl(Clock(T), N)
+        return AnalogFrontend(analog_system, digital_control)
+    elif all(param in kwargs for param in ('OSR', 'N', 'T')):
+        N = kwargs['N']
+        T = kwargs['T']
+        OSR = kwargs['OSR']
+        BW = 1.0 / (2 * OSR * T)
+        return get_leap_frog(N=N, OSR=OSR, BW=BW)
     raise NotImplementedError

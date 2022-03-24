@@ -32,9 +32,10 @@ def test_evaluate_2_levels():
     t = 0.1
     digitalControl.control_update(t, x)
     res = digitalControl.control_contribution(t)
-    print(res)
-    for value in res:
-        assert value == -1 or value == 0 or value == 1
+    bits = digitalControl.control_signal()
+    for index in range(M):
+        print(res[index], bits[index])
+    assert False
 
 
 def test_evaluate_3_levels():
