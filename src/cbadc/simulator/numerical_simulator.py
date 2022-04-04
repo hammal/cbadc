@@ -56,7 +56,7 @@ class FullSimulator(_BaseSimulator):
 
     Yields
     ------
-    `array_like`, shape=(M,), dtype=numpy.int8
+    `array_like`, shape=(M,)
     """
 
     def __init__(
@@ -162,9 +162,14 @@ class FullSimulator(_BaseSimulator):
             y_new = res.y[:, -1]
             if self.noise:
                 y_new += self._noise_sample()
+            u = np.zeros(self.analog_system.L)
+            for l in range(self.analog_system.L):
+                u[l] = self.input_signals[l].evaluate(t)
             if res.status == 1 or t == t_span[1]:
                 self.digital_control.control_update(
-                    t, np.dot(self.analog_system.Gamma_tildeT, y_new)
+                    t,
+                    np.dot(self.analog_system.Gamma_tildeT, y_new)
+                    + np.dot(self.analog_system.D_tilde, u),
                 )
         return y_new
 
@@ -224,7 +229,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
     Yields
     ------
-    `array_like`, shape=(M,), dtype=numpy.int8
+    `array_like`, shape=(M,)
 
     """
 
@@ -401,9 +406,15 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             np.asarray(2 * self.digital_control._s - 1, dtype=np.double),
         ).flatten()
 
+        u = np.zeros(self.analog_system.L)
+        for l in range(self.analog_system.L):
+            u[l] = self.input_signals[l].evaluate(t_span[1])
+
         # Update controls for next period if necessary
         self.digital_control.control_update(
-            t_span[1], np.dot(self.analog_system.Gamma_tildeT, self._temp_state_vector)
+            t_span[1],
+            np.dot(self.analog_system.Gamma_tildeT, self._temp_state_vector)
+            + np.dot(self.analog_system.D_tilde, u),
         )
 
         return self._temp_state_vector

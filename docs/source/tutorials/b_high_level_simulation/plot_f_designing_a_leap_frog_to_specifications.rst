@@ -22,8 +22,8 @@ Designing for a Target Specification
 ====================================
 
 In this tutorial we investigate the
-:py:func:`cbadc.specification.get_chain_of_integrator` and
-:py:func:`cbadc.specification.get_leap_frog` convenience function
+:py:func:`cbadc.synthesis.get_chain_of_integrator` and
+:py:func:`cbadc.synthesis.get_leap_frog` convenience function
 to quickly get initalized analog systems and digital control
 for a given target specification.
 
@@ -50,7 +50,7 @@ Specifying a Target Performance
 Our target specification requires three things to be specified
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 21-68
+.. GENERATED FROM PYTHON SOURCE LINES 21-70
 
 .. code-block:: default
 
@@ -60,15 +60,17 @@ Our target specification requires three things to be specified
     BW = 1e6
 
     # Then a corresponding chain-of-integrators system is created as
-    as_coi, digital_control = cbadc.specification.get_chain_of_integrator(
+    analog_frontend_coix = cbadc.synthesis.get_chain_of_integrator(
         ENOB=ENOB, N=N, BW=BW, xi=2e-3 / np.pi
     )
+    as_coi = analog_frontend_coix.analog_system
+    digital_control = analog_frontend_coix.digital_control
     # where xi is a tuning parameter.
 
     # Similarly, the leap-frog analog system is created as
-    analog_system, digital_control = cbadc.specification.get_leap_frog(
-        ENOB=ENOB, N=N, BW=BW, xi=7e-2 / np.pi
-    )
+    analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW, xi=7e-2 / np.pi)
+    analog_system = analog_frontend.analog_system
+    digital_control = analog_frontend.digital_control
 
     # Comparing the transfer functions
     BW_log = np.log10(BW)
@@ -113,7 +115,7 @@ Our target specification requires three things to be specified
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 69-75
+.. GENERATED FROM PYTHON SOURCE LINES 71-77
 
 -------------------------
 Comparing System Orders
@@ -122,7 +124,7 @@ Comparing System Orders
 We demonstrate how the filters evolve for different filter orders N
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 75-101
+.. GENERATED FROM PYTHON SOURCE LINES 77-105
 
 .. code-block:: default
 
@@ -133,9 +135,11 @@ We demonstrate how the filters evolve for different filter orders N
     # Chain-of-integrators
     plt.figure()
     for n in N:
-        analog_system, digital_control = cbadc.specification.get_chain_of_integrator(
+        analog_frontend = cbadc.synthesis.get_chain_of_integrator(
             ENOB=ENOB, N=n, BW=BW, xi=2e-3 / np.pi
         )
+        analog_system = analog_frontend.analog_system
+        digital_control = analog_frontend.digital_control
         transfer_function = analog_system.transfer_function_matrix(omegas)
 
         plt.semilogx(
@@ -164,7 +168,7 @@ We demonstrate how the filters evolve for different filter orders N
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 102-108
+.. GENERATED FROM PYTHON SOURCE LINES 106-112
 
 --------------------------------------------
 Performance Validation Chain-of-Integrators
@@ -173,7 +177,7 @@ Performance Validation Chain-of-Integrators
 We confirm the results above by full system simulations
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 108-167
+.. GENERATED FROM PYTHON SOURCE LINES 112-173
 
 .. code-block:: default
 
@@ -192,9 +196,11 @@ We confirm the results above by full system simulations
 
     plt.figure()
     for n in N[1:][::-1]:
-        analog_system, digital_control = cbadc.specification.get_chain_of_integrator(
+        analog_frontend = cbadc.synthesis.get_chain_of_integrator(
             ENOB=ENOB, N=n, BW=BW, xi=2e-3 / np.pi
         )
+        analog_system = analog_frontend.analog_system
+        digital_control = analog_frontend.digital_control
         digital_estimator = cbadc.digital_estimator.BatchEstimator(
             analog_system, digital_control, eta2, K1, K2
         )
@@ -248,14 +254,14 @@ We confirm the results above by full system simulations
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 168-172
+.. GENERATED FROM PYTHON SOURCE LINES 174-178
 
 --------------------------------------------
 Performance Validation Leap-Frog
 --------------------------------------------
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 172-243
+.. GENERATED FROM PYTHON SOURCE LINES 178-251
 
 .. code-block:: default
 
@@ -263,9 +269,11 @@ Performance Validation Leap-Frog
     # Leap-frog
     plt.figure()
     for n in N:
-        analog_system, digital_control = cbadc.specification.get_leap_frog(
+        analog_frontend = cbadc.synthesis.get_leap_frog(
             ENOB=ENOB, N=n, BW=BW, xi=7e-2 / np.pi
         )
+        analog_system = analog_frontend.analog_system
+        digital_control = analog_frontend.digital_control
         transfer_function = analog_system.transfer_function_matrix(omegas)
 
         plt.semilogx(
@@ -286,9 +294,9 @@ Performance Validation Leap-Frog
 
     plt.figure()
     for n in N[1:][::-1]:
-        analog_system, digital_control = cbadc.specification.get_leap_frog(
-            ENOB=ENOB, N=n, BW=BW
-        )
+        analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=n, BW=BW)
+        analog_system = analog_frontend.analog_system
+        digital_control = analog_frontend.digital_control
         digital_estimator = cbadc.digital_estimator.BatchEstimator(
             analog_system, digital_control, eta2, K1, K2
         )
@@ -357,7 +365,7 @@ Performance Validation Leap-Frog
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 4 minutes  44.729 seconds)
+   **Total running time of the script:** ( 5 minutes  6.219 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_f_designing_a_leap_frog_to_specifications.py:

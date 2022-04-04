@@ -143,11 +143,11 @@ class BatchEstimator(Iterator[np.ndarray]):
         self._filter_lag = -1
         self.analog_system = analog_system
 
-        if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
-            raise Exception(
-                """Can't compute filter coefficients for system with non-zero
-                D matrix. Consider chaining for removing D"""
-            )
+        # if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+        #     raise Exception(
+        #         """Can't compute filter coefficients for system with non-zero
+        #         D matrix. Consider chaining for removing D"""
+        # )
 
         self.digital_control = digital_control
         if eta2 < 0:
@@ -266,7 +266,7 @@ class BatchEstimator(Iterator[np.ndarray]):
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M), dtype=np.int8)
+        self._control_signal = np.zeros((self.K3, self.analog_system.M))
         self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
         self._control_signal_in_buffer = 0
         self._mean = np.zeros((self.K1 + 1, self.analog_system.N), dtype=np.double)
@@ -319,7 +319,7 @@ class BatchEstimator(Iterator[np.ndarray]):
             )
         for m in range(self.analog_system.M):
             self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
-                2 * s - 1, dtype=np.int8
+                2 * s - 1
             )
         self._control_signal_in_buffer += 1
         return self._control_signal_in_buffer > (self.K3 - 1)
@@ -360,7 +360,7 @@ class BatchEstimator(Iterator[np.ndarray]):
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
+                control_signal_sample = np.zeros((self.analog_system.M))
             full = self._input(control_signal_sample)
 
         # Compute new batch of K1 estimates

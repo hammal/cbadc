@@ -3,8 +3,8 @@ Designing for a Target Specification
 ====================================
 
 In this tutorial we investigate the
-:py:func:`cbadc.specification.get_chain_of_integrator` and
-:py:func:`cbadc.specification.get_leap_frog` convenience function
+:py:func:`cbadc.synthesis.get_chain_of_integrator` and
+:py:func:`cbadc.synthesis.get_leap_frog` convenience function
 to quickly get initalized analog systems and digital control
 for a given target specification.
 """
@@ -24,15 +24,17 @@ N = 4
 BW = 1e6
 
 # Then a corresponding chain-of-integrators system is created as
-as_coi, digital_control = cbadc.specification.get_chain_of_integrator(
+analog_frontend_coix = cbadc.synthesis.get_chain_of_integrator(
     ENOB=ENOB, N=N, BW=BW, xi=2e-3 / np.pi
 )
+as_coi = analog_frontend_coix.analog_system
+digital_control = analog_frontend_coix.digital_control
 # where xi is a tuning parameter.
 
 # Similarly, the leap-frog analog system is created as
-analog_system, digital_control = cbadc.specification.get_leap_frog(
-    ENOB=ENOB, N=N, BW=BW, xi=7e-2 / np.pi
-)
+analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW, xi=7e-2 / np.pi)
+analog_system = analog_frontend.analog_system
+digital_control = analog_frontend.digital_control
 
 # Comparing the transfer functions
 BW_log = np.log10(BW)
@@ -79,9 +81,11 @@ N = [2, 4, 8, 10, 12]
 # Chain-of-integrators
 plt.figure()
 for n in N:
-    analog_system, digital_control = cbadc.specification.get_chain_of_integrator(
+    analog_frontend = cbadc.synthesis.get_chain_of_integrator(
         ENOB=ENOB, N=n, BW=BW, xi=2e-3 / np.pi
     )
+    analog_system = analog_frontend.analog_system
+    digital_control = analog_frontend.digital_control
     transfer_function = analog_system.transfer_function_matrix(omegas)
 
     plt.semilogx(
@@ -120,9 +124,11 @@ u_hat = np.zeros(size)
 
 plt.figure()
 for n in N[1:][::-1]:
-    analog_system, digital_control = cbadc.specification.get_chain_of_integrator(
+    analog_frontend = cbadc.synthesis.get_chain_of_integrator(
         ENOB=ENOB, N=n, BW=BW, xi=2e-3 / np.pi
     )
+    analog_system = analog_frontend.analog_system
+    digital_control = analog_frontend.digital_control
     digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1, K2
     )
@@ -173,9 +179,11 @@ plt.gcf().tight_layout()
 # Leap-frog
 plt.figure()
 for n in N:
-    analog_system, digital_control = cbadc.specification.get_leap_frog(
+    analog_frontend = cbadc.synthesis.get_leap_frog(
         ENOB=ENOB, N=n, BW=BW, xi=7e-2 / np.pi
     )
+    analog_system = analog_frontend.analog_system
+    digital_control = analog_frontend.digital_control
     transfer_function = analog_system.transfer_function_matrix(omegas)
 
     plt.semilogx(
@@ -196,9 +204,9 @@ plt.gcf().tight_layout()
 
 plt.figure()
 for n in N[1:][::-1]:
-    analog_system, digital_control = cbadc.specification.get_leap_frog(
-        ENOB=ENOB, N=n, BW=BW
-    )
+    analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=n, BW=BW)
+    analog_system = analog_frontend.analog_system
+    digital_control = analog_frontend.digital_control
     digital_estimator = cbadc.digital_estimator.BatchEstimator(
         analog_system, digital_control, eta2, K1, K2
     )

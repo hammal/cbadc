@@ -22,12 +22,12 @@ BW = 1e6
 random_control_scale = 1e-1
 
 # Instantiate leap-frog analog system is created as
-analog_system, digital_control = cbadc.specification.get_leap_frog(
-    ENOB=ENOB, N=N, BW=BW
-)
-analog_system_ref, digital_control_ref = cbadc.specification.get_leap_frog(
-    ENOB=ENOB, N=N, BW=BW
-)
+analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+analog_system = analog_frontend.analog_system
+digital_control = analog_frontend.digital_control
+analog_frontend_ref = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+analog_system_ref = analog_frontend_ref.analog_system
+digital_control_ref = analog_frontend_ref.digital_control
 
 ref_vector = np.zeros((N, 1))
 ref_vector[0] = analog_system.Gamma[0, 0] * random_control_scale
@@ -81,7 +81,7 @@ while frequency > BW:
     frequency /= 2
 input_signal_ref = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
 
-## A version for uncalibrated
+# A version for uncalibrated
 uncalibrated_control = cbadc.digital_control.DitherControl(
     1, cbadc.digital_control.DigitalControl(digital_control.clock, N)
 )
@@ -95,7 +95,7 @@ uncalibrated_filter = cbadc.digital_estimator.FIRFilter(
 )
 uncalibrated_filter(uncalibrated_sim)
 
-## A version assuming perfect system knowledge
+# A version assuming perfect system knowledge
 simulator_ver_ref = cbadc.simulator.get_simulator(
     analog_system_ref,
     digital_control_ref,
@@ -158,7 +158,12 @@ calibrator = cbadc.digital_calibration.Calibration(
 # this step could potentially be repeated many times
 #
 epochs = 1 << 16
-step_size = lambda x: 1e-1 / ((1 + x ** (0.01)))
+
+
+def step_size(x):
+    return 1e-1 / ((1 + x ** (0.01)))
+
+
 batch_size = 1 << 6
 
 calibrator.compute_step_size_template()
