@@ -25,7 +25,7 @@ Analog System
 We demonstrate how an analog system can be transformed into a boilerplate
 verilog-ams circuit model.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-16
+.. GENERATED FROM PYTHON SOURCE LINES 9-14
 
 .. code-block:: default
 
@@ -34,7 +34,6 @@ verilog-ams circuit model.
     import numpy as np
     import matplotlib.pyplot as plt
 
-    from cbadc import analog_frontend
 
 
 
@@ -42,8 +41,7 @@ verilog-ams circuit model.
 
 
 
-
-.. GENERATED FROM PYTHON SOURCE LINES 17-24
+.. GENERATED FROM PYTHON SOURCE LINES 15-22
 
 Setting up an Analog System
 -----------------------------
@@ -53,7 +51,7 @@ high level utilities functions from the :py:mod:`cbadc.specification`
 module.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 24-57
+.. GENERATED FROM PYTHON SOURCE LINES 22-55
 
 .. code-block:: default
 
@@ -102,7 +100,7 @@ module.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 58-69
+.. GENERATED FROM PYTHON SOURCE LINES 56-67
 
 Instantiating a Circuit Level Model
 -----------------------------------
@@ -116,7 +114,7 @@ be done using the class :py:class:`cbadc.circuit_level.AnalogSystemStateSpaceEqu
 as
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 69-81
+.. GENERATED FROM PYTHON SOURCE LINES 67-79
 
 .. code-block:: default
 
@@ -222,12 +220,12 @@ as
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 82-84
+.. GENERATED FROM PYTHON SOURCE LINES 80-82
 
 :download:`verilog_analog_system.vams <verilog_analog_system.vams>`
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 87-93
+.. GENERATED FROM PYTHON SOURCE LINES 85-91
 
 Ideal Op-amp Implementation
 ----------------------------
@@ -236,7 +234,7 @@ Next we realize the same analog system using an ideal op-amp configuration
 with capacitive feedback.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 93-105
+.. GENERATED FROM PYTHON SOURCE LINES 91-103
 
 .. code-block:: default
 
@@ -773,17 +771,17 @@ with capacitive feedback.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 106-108
+.. GENERATED FROM PYTHON SOURCE LINES 104-106
 
 :download:`ideal_op_amp_analog_system.vams <ideal_op_amp_analog_system.vams>`
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 110-112
+.. GENERATED FROM PYTHON SOURCE LINES 108-110
 
 Similarly, we can instantiate op-amp realizations that account for
 imperfections such as finite gain and first order pole.
 
-.. GENERATED FROM PYTHON SOURCE LINES 113-126
+.. GENERATED FROM PYTHON SOURCE LINES 111-124
 
 .. code-block:: default
 
@@ -807,7 +805,7 @@ imperfections such as finite gain and first order pole.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 127-134
+.. GENERATED FROM PYTHON SOURCE LINES 125-132
 
 again the corresponding verilog files can be found below
 
@@ -817,7 +815,7 @@ again the corresponding verilog files can be found below
 and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp.to_file`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 135-144
+.. GENERATED FROM PYTHON SOURCE LINES 133-142
 
 .. code-block:: default
 
@@ -846,7 +844,7 @@ and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrder
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 145-162
+.. GENERATED FROM PYTHON SOURCE LINES 143-160
 
 Reference Simulation
 ---------------------
@@ -866,7 +864,7 @@ Tom demonstarte this second use case we will next compare the transfer
 functions of the analog systems we covered previously.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-191
+.. GENERATED FROM PYTHON SOURCE LINES 160-189
 
 .. code-block:: default
 
@@ -1036,7 +1034,7 @@ functions of the analog systems we covered previously.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  3.771 seconds)
+   **Total running time of the script:** ( 0 minutes  3.615 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_a_analog_system.py:

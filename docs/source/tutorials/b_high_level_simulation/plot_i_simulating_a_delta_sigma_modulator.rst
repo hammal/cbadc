@@ -21,7 +21,7 @@
 Simulating a Continuous-Time Delta-Sigma Modulator
 ==================================================
 
-.. GENERATED FROM PYTHON SOURCE LINES 5-10
+.. GENERATED FROM PYTHON SOURCE LINES 5-17
 
 .. code-block:: default
 
@@ -30,6 +30,12 @@ Simulating a Continuous-Time Delta-Sigma Modulator
     import matplotlib.pyplot as plt
     import json
 
+    T = 0.1e-8
+    N = 5
+    K1 = 1 << 9
+    K2 = K1
+    OSR = 16
+    BW = 1 / (2 * T * OSR)
 
 
 
@@ -37,7 +43,8 @@ Simulating a Continuous-Time Delta-Sigma Modulator
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 11-17
+
+.. GENERATED FROM PYTHON SOURCE LINES 18-24
 
 Instantiating the Analog System and Digital Control
 ---------------------------------------------------
@@ -46,17 +53,33 @@ We start by loading a delta sigma modulator constructed
 using [www.sigma-delta.de](www.sigma-delta.de) framework.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 17-24
+.. GENERATED FROM PYTHON SOURCE LINES 24-47
 
 .. code-block:: default
 
 
-    T = 0.5e-8
-    with open('CTSD_N3_OSR40_Q8_CRFB.json') as f:
-        analog_frontend = cbadc.synthesis.ctsd_dict2af(json.load(f), T, 1.0)
+    with open('CTSD_N5_OSR16_Q32_CRFF_OPT1_HINF600.json') as f:
+        analog_frontend_ctsd = cbadc.synthesis.ctsd_dict2af(json.load(f), T)
 
-    print(analog_frontend.analog_system)
-    print(analog_frontend.digital_control)
+    eta2_ctsd = (
+        np.linalg.norm(
+            analog_frontend_ctsd.analog_system.transfer_function_matrix(
+                np.array([2 * np.pi * BW])
+            )
+        )
+        ** 2
+    )
+
+    digital_estimator_ctsd = cbadc.digital_estimator.BatchEstimator(
+        analog_frontend_ctsd.analog_system,
+        analog_frontend_ctsd.digital_control,
+        eta2_ctsd,
+        K1,
+        K2,
+    )
+
+    print(analog_frontend_ctsd.analog_system)
+
 
 
 
@@ -67,40 +90,584 @@ using [www.sigma-delta.de](www.sigma-delta.de) framework.
 
  .. code-block:: none
 
+    initial digital control [0.5] [0.]
     The analog system is parameterized as:
     A =
-    [[ 0.00e+00  2.00e+08  2.00e+08]
-     [ 6.02e+07  0.00e+00 -1.08e+06]
-     [ 2.00e+08  1.24e+08  0.00e+00]],
+    [[ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 1.95e+09  0.00e+00 -1.03e+07  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.09e+09  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  9.63e+08  0.00e+00 -5.34e+07]
+     [ 0.00e+00  0.00e+00  0.00e+00  5.93e+08  0.00e+00]],
     B =
-    [[ 3.88e+07]
-     [ 2.00e+08]
-     [ 2.00e+08]],
+    [[ 1.69e+08]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]],
     CT = 
-    [[ 1.00e+00  0.00e+00  0.00e+00]
-     [ 0.00e+00  1.00e+00  0.00e+00]
-     [ 0.00e+00  0.00e+00  1.00e+00]],
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  1.00e+00]],
     Gamma =
-    [[-3.88e+07]
-     [-5.15e+07]
-     [-1.16e+08]],
+    [[-1.69e+08]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]],
     Gamma_tildeT =
-    [[ 0.00e+00  0.00e+00  1.00e+00]], and D=[[ 0.00e+00]
+    [[ 1.07e+01  6.74e+00  5.08e+00  2.69e+00  9.61e-01]], and D=[[ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]]
-    ================================================================================
 
-    The Digital Control is parameterized as:
 
-    --------------------------------------------------------------------------------
 
-    clock:
-    Analog signal returns constant 0, i.e., maps t |-> 0.
 
-    M:
-    1
-    ================================================================================
-        
+.. GENERATED FROM PYTHON SOURCE LINES 48-51
+
+Leap Frog
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 51-93
+
+.. code-block:: default
+
+
+    analog_frontend_leap_frog = cbadc.synthesis.get_leap_frog(
+        OSR=OSR, N=N, BW=BW, opt=False
+    )
+
+    analog_frontend_leap_frog.digital_control = (
+        cbadc.digital_control.MultiLevelDigitalControl(
+            analog_frontend_leap_frog.digital_control.clock, N, [1] * N
+        )
+    )
+
+    # Scale B
+    # analog_frontend_leap_frog.analog_system.B = (
+    #     2 * analog_frontend_leap_frog.analog_system.B
+    # )
+
+
+    # Scale Gamma
+    # analog_frontend_leap_frog.analog_system.Gamma = np.dot(
+    #     np.diag(np.array([0.5 ** (x + 1) for x in range(N)])),
+    #     analog_frontend_leap_frog.analog_system.Gamma,
+    # )
+
+    eta2_leap_frog = (
+        np.linalg.norm(
+            analog_frontend_leap_frog.analog_system.transfer_function_matrix(
+                np.array([2 * np.pi * BW])
+            )
+        )
+        ** 2
+    )
+
+    digital_estimator_leap_frog = cbadc.digital_estimator.BatchEstimator(
+        analog_frontend_leap_frog.analog_system,
+        analog_frontend_leap_frog.digital_control,
+        eta2_leap_frog,
+        K1,
+        K2,
+    )
+
+    print(analog_frontend_leap_frog.analog_system)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    initial digital control [ 1.00e+00  1.00e+00  1.00e+00  1.00e+00  1.00e+00] [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+    The analog system is parameterized as:
+    A =
+    [[ 0.00e+00 -1.93e+07  0.00e+00  0.00e+00  0.00e+00]
+     [ 5.00e+08  0.00e+00 -1.93e+07  0.00e+00  0.00e+00]
+     [ 0.00e+00  5.00e+08  0.00e+00 -1.93e+07  0.00e+00]
+     [ 0.00e+00  0.00e+00  5.00e+08  0.00e+00 -1.93e+07]
+     [ 0.00e+00  0.00e+00  0.00e+00  5.00e+08  0.00e+00]],
+    B =
+    [[ 5.00e+08]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]],
+    CT = 
+    [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  1.00e+00]],
+    Gamma =
+    [[ 5.00e+08  0.00e+00  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  5.00e+08  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  5.00e+08  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  5.00e+08  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00  5.00e+08]],
+    Gamma_tildeT =
+    [[-1.00e+00 -0.00e+00 -0.00e+00 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -1.00e+00 -0.00e+00 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -1.00e+00 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -1.00e+00 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -0.00e+00 -1.00e+00]], and D=[[ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]
+     [ 0.00e+00]]
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 94-97
+
+Input Signal
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 97-107
+
+.. code-block:: default
+
+    amplitude = 0.0e-0
+    phase = 0.0
+    offset = 0.0
+    frequency = 1.0 / analog_frontend_ctsd.digital_control.clock.T
+
+    while frequency > BW:
+        frequency /= 2
+    # input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
+    input_signal = cbadc.analog_signal.ConstantSignal(amplitude)
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 108-111
+
+Transfer Functions
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 111-176
+
+.. code-block:: default
+
+
+    # Logspace frequencies
+    frequencies = np.logspace(3, 8, 1000)
+    omega = 2 * np.pi * frequencies
+
+    # Compute transfer functions for each frequency in frequencies
+    transfer_function_ctsd = analog_frontend_ctsd.analog_system.transfer_function_matrix(
+        omega
+    )
+    transfer_function_ctsd_dB = 20 * np.log10(np.abs(transfer_function_ctsd))
+
+    transfer_function_leap_frog = (
+        analog_frontend_leap_frog.analog_system.transfer_function_matrix(omega)
+    )
+    transfer_function_leap_frog_dB = 20 * np.log10(np.abs(transfer_function_leap_frog))
+
+    G_omega = 20 * np.log10(np.linalg.norm(transfer_function_ctsd[:, 0, :], axis=0))
+
+    plt.semilogx([BW, BW], [np.min(G_omega), np.max(G_omega)], '--', label="BW")
+
+    # Add the norm ||G(omega)||_2
+    plt.semilogx(
+        frequencies,
+        20 * np.log10(np.linalg.norm(transfer_function_leap_frog[:, 0, :], axis=0)),
+        label="LF $ ||\mathbf{G}(\omega)||_2 $",
+    )
+    plt.semilogx(
+        frequencies,
+        G_omega,
+        label="CTSD $ ||\mathbf{G}(\omega)||_2 $",
+    )
+
+
+    # Add labels and legends to figure
+    plt.legend()
+    plt.grid(which="both")
+    plt.xlabel("$f$ [Hz]")
+    plt.ylabel("dB")
+    plt.xlim((frequencies[0], frequencies[-1]))
+    plt.gcf().tight_layout()
+
+
+    for n in range(N):
+        plt.figure()
+        #     color = next(plt.gca()._get_lines.prop_cycler)["color"]
+        plt.semilogx(
+            frequencies,
+            transfer_function_leap_frog_dB[n, 0, :],
+            label="LF $G_" + f"{n+1}" + "(f)$",
+            # color = color
+        )
+        plt.semilogx(
+            frequencies,
+            transfer_function_ctsd_dB[n, 0, :],
+            '--',
+            label="CTSD $G_" + f"{n+1}" + "(f)$",
+            #     # color = color
+        )
+        plt.legend()
+        plt.grid(which="both")
+        plt.xlabel("$f$ [Hz]")
+        plt.ylabel("dB")
+        plt.xlim((frequencies[0], frequencies[-1]))
+        plt.gcf().tight_layout()
+
+
+
+
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_001.png
+         :alt: plot i simulating a delta sigma modulator
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_001.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_002.png
+         :alt: plot i simulating a delta sigma modulator
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_002.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_003.png
+         :alt: plot i simulating a delta sigma modulator
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_003.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_004.png
+         :alt: plot i simulating a delta sigma modulator
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_004.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_005.png
+         :alt: plot i simulating a delta sigma modulator
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_005.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_006.png
+         :alt: plot i simulating a delta sigma modulator
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_006.png
+         :class: sphx-glr-multi-img
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 177-180
+
+Simulation Setup
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 180-196
+
+.. code-block:: default
+
+
+    simulator_ctsd = cbadc.simulator.get_simulator(
+        analog_frontend_ctsd.analog_system,
+        analog_frontend_ctsd.digital_control,
+        [input_signal],
+    )
+    digital_estimator_ctsd(simulator_ctsd)
+
+    simulator_leap_frog = cbadc.simulator.get_simulator(
+        analog_frontend_leap_frog.analog_system,
+        analog_frontend_leap_frog.digital_control,
+        [input_signal],
+    )
+    digital_estimator_leap_frog(simulator_leap_frog)
+
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 197-200
+
+Simulate State Trajectories
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 200-261
+
+.. code-block:: default
+
+
+    # Simulate for 65536 control cycles.
+    size = 1 << 14
+
+    time_vector = np.arange(size)
+    states = np.zeros((N, size, 2))
+    control_signals = np.zeros((N, size, 2), dtype=np.double)
+
+    # Iterate through and store states and control_signals.
+    simulator_ctsd = cbadc.simulator.extended_simulation_result(simulator_ctsd)
+    simulator_leap_frog = cbadc.simulator.extended_simulation_result(simulator_leap_frog)
+    for index in cbadc.utilities.show_status(range(size)):
+        res_ctsd = next(simulator_ctsd)
+        states[:, index, 0] = res_ctsd["analog_state"]
+        control_signals[:, index, 0] = res_ctsd["control_signal"]
+        res_leap_frog = next(simulator_leap_frog)
+        states[:, index, 1] = res_leap_frog["analog_state"]
+        control_signals[:, index, 1] = res_leap_frog["control_signal"]
+
+    xlim = 1 << 12
+    # Plot all analog state evolutions.
+    plt.figure()
+    plt.title("Analog state vectors")
+    for index in range(N):
+        plt.plot(time_vector, states[index, :, 1], label=f"LF $x_{index + 1}(t)$")
+        plt.plot(time_vector, states[index, :, 0], label=f"CTSD $x_{index + 1}(t)$")
+    plt.grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+    plt.xlabel("$t/T$")
+    plt.xlim((0, xlim))
+    plt.legend()
+
+
+    # reset figure size and plot individual results.
+    plt.rcParams["figure.figsize"] = [6.40, 6.40 * 2]
+    fig, ax = plt.subplots(N, 2)
+    for index in range(N):
+        color = next(ax[0, 0]._get_lines.prop_cycler)["color"]
+        color2 = next(ax[0, 0]._get_lines.prop_cycler)["color"]
+        ax[index, 0].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+        ax[index, 1].grid(visible=True, which="major", color="gray", alpha=0.6, lw=1.5)
+        ax[index, 0].plot(time_vector, states[index, :, 1], color=color2, label="LF")
+        ax[index, 0].plot(time_vector, states[index, :, 0], color=color, label="CTSD")
+        ax[index, 1].plot(
+            time_vector, control_signals[0, :, 1], "--", color=color2, label="LF"
+        )
+        if index == (N - 1):
+            ax[index, 1].plot(
+                time_vector, control_signals[0, :, 0], "--", color=color, label="CTSD"
+            )
+        ax[index, 0].set_ylabel(f"$x_{index + 1}(t)$")
+        ax[index, 1].set_ylabel(f"$s_{index + 1}(t)$")
+        ax[index, 0].set_xlim((0, xlim))
+        ax[index, 1].set_xlim((0, xlim))
+        ax[index, 0].set_ylim((-1, 1))
+        ax[index, 0].legend()
+    fig.suptitle("Analog state and control contribution evolution")
+    ax[-1, 0].set_xlabel("$t / T$")
+    ax[-1, 1].set_xlabel("$t / T$")
+    fig.tight_layout()
+
+
+
+
+
+.. rst-class:: sphx-glr-horizontal
+
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_007.png
+         :alt: Analog state vectors
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_007.png
+         :class: sphx-glr-multi-img
+
+    *
+
+      .. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_008.png
+         :alt: Analog state and control contribution evolution
+         :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_008.png
+         :class: sphx-glr-multi-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+      0%|          | 0/16384 [00:00<?, ?it/s]      3%|2         | 462/16384 [00:00<00:03, 4617.36it/s]      6%|5         | 969/16384 [00:00<00:03, 4878.57it/s]      9%|9         | 1477/16384 [00:00<00:03, 4968.24it/s]     12%|#2        | 1989/16384 [00:00<00:02, 5025.79it/s]     15%|#5        | 2503/16384 [00:00<00:02, 5064.57it/s]     18%|#8        | 3017/16384 [00:00<00:02, 5089.56it/s]     22%|##1       | 3527/16384 [00:00<00:02, 5092.14it/s]     25%|##4       | 4037/16384 [00:00<00:02, 5091.01it/s]     28%|##7       | 4553/16384 [00:00<00:02, 5109.88it/s]     31%|###       | 5064/16384 [00:01<00:02, 5101.99it/s]     34%|###4      | 5575/16384 [00:01<00:02, 5070.04it/s]     37%|###7      | 6083/16384 [00:01<00:02, 5061.17it/s]     40%|####      | 6590/16384 [00:01<00:01, 5062.66it/s]     43%|####3     | 7098/16384 [00:01<00:01, 5067.59it/s]     46%|####6     | 7605/16384 [00:01<00:01, 5063.53it/s]     50%|####9     | 8120/16384 [00:01<00:01, 5087.57it/s]     53%|#####2    | 8629/16384 [00:01<00:01, 5088.10it/s]     56%|#####5    | 9143/16384 [00:01<00:01, 5100.37it/s]     59%|#####8    | 9654/16384 [00:01<00:01, 5099.97it/s]     62%|######2   | 10165/16384 [00:02<00:01, 5099.20it/s]     65%|######5   | 10676/16384 [00:02<00:01, 5101.37it/s]     68%|######8   | 11193/16384 [00:02<00:01, 5121.88it/s]     71%|#######1  | 11710/16384 [00:02<00:00, 5133.29it/s]     75%|#######4  | 12228/16384 [00:02<00:00, 5145.76it/s]     78%|#######7  | 12743/16384 [00:02<00:00, 5131.80it/s]     81%|########  | 13258/16384 [00:02<00:00, 5134.34it/s]     84%|########4 | 13772/16384 [00:02<00:00, 5124.47it/s]     87%|########7 | 14285/16384 [00:02<00:00, 5120.55it/s]     90%|######### | 14798/16384 [00:02<00:00, 5117.45it/s]     93%|#########3| 15310/16384 [00:03<00:00, 5090.79it/s]     97%|#########6| 15820/16384 [00:03<00:00, 5085.60it/s]    100%|#########9| 16337/16384 [00:03<00:00, 5110.24it/s]    100%|##########| 16384/16384 [00:03<00:00, 5087.24it/s]
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 262-265
+
+Simulation
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 265-277
+
+.. code-block:: default
+
+
+    size = 1 << 14
+    u_hat_ctsd = np.zeros(size)
+    u_hat_leap_frog = np.zeros(size)
+
+    for index in range(size):
+        u_hat_ctsd[index] = next(digital_estimator_ctsd)
+        u_hat_leap_frog[index] = next(digital_estimator_leap_frog)
+
+    u_hat_ctsd = u_hat_ctsd[K1 + K2 :]
+    u_hat_leap_frog = u_hat_leap_frog[K1 + K2 :]
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 278-281
+
+Visualize Results
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 281-334
+
+.. code-block:: default
+
+
+    plt.rcParams["figure.figsize"] = [6.40 * 1.34, 6.40]
+
+    f, psd = cbadc.utilities.compute_power_spectral_density(
+        u_hat_ctsd[:],
+        fs=1 / analog_frontend_ctsd.digital_control.clock.T,
+        nperseg=u_hat_ctsd.size,
+    )
+    signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
+    noise_index = np.ones(psd.size, dtype=bool)
+    noise_index[signal_index] = False
+    noise_index[f < (BW * 1e-2)] = False
+    noise_index[f > BW] = False
+    fom = cbadc.utilities.snr_spectrum_computation_extended(
+        psd, signal_index, noise_index, fs=1 / analog_frontend_ctsd.digital_control.clock.T
+    )
+    est_SNR = cbadc.fom.snr_to_dB(fom['snr'])
+    est_ENOB = cbadc.fom.snr_to_enob(est_SNR)
+    plt.semilogx(
+        f,
+        10 * np.log10(np.abs(psd)),
+        label=f"CTSD, OSR={1/(2 * analog_frontend_ctsd.digital_control.clock.T * BW):.0f}, est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB",
+    )
+
+    f, psd = cbadc.utilities.compute_power_spectral_density(
+        u_hat_leap_frog[:],
+        fs=1 / analog_frontend_ctsd.digital_control.clock.T,
+        nperseg=u_hat_leap_frog.size,
+    )
+    signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
+    noise_index = np.ones(psd.size, dtype=bool)
+    noise_index[signal_index] = False
+    noise_index[f < (BW * 1e-2)] = False
+    noise_index[f > BW] = False
+    fom = cbadc.utilities.snr_spectrum_computation_extended(
+        psd, signal_index, noise_index, fs=1 / analog_frontend_ctsd.digital_control.clock.T
+    )
+    est_SNR = cbadc.fom.snr_to_dB(fom['snr'])
+    est_ENOB = cbadc.fom.snr_to_enob(est_SNR)
+    plt.semilogx(
+        f,
+        10 * np.log10(np.abs(psd)),
+        label=f"LF, OSR={1/(2 * analog_frontend_ctsd.digital_control.clock.T * BW):.0f}, est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB",
+    )
+
+    plt.title("Power spectral density of input estimate")
+    plt.xlabel('Hz')
+    plt.ylabel('$V^2$ / Hz dB')
+    plt.legend()
+    plt.grid(which="both")
+    plt.gcf().tight_layout()
+
+
+
+
+
+.. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_009.png
+   :alt: Power spectral density of input estimate
+   :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_009.png
+   :class: sphx-glr-single-img
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/utilities.py:436: RuntimeWarning: invalid value encountered in double_scalars
+      snr = signal / noise
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/utilities.py:437: RuntimeWarning: invalid value encountered in double_scalars
+      sinad = (signal + noise + harmonics) / (noise + harmonics)
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/utilities.py:438: RuntimeWarning: invalid value encountered in double_scalars
+      thd = np.sqrt(harmonics / signal)
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/utilities.py:439: RuntimeWarning: invalid value encountered in double_scalars
+      thd_n = np.sqrt((harmonics + noise) / signal)
+    /Users/hammal/Projects/cbadc/docs/code_examples/b_high_level_simulation/plot_i_simulating_a_delta_sigma_modulator.py:301: RuntimeWarning: divide by zero encountered in log10
+      10 * np.log10(np.abs(psd)),
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 335-338
+
+Time
+---------------------------------------------------
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 338-349
+
+.. code-block:: default
+
+
+    t = np.arange(u_hat_ctsd.size)
+    plt.plot(t, u_hat_ctsd, label="CTSD")
+    plt.plot(t, u_hat_leap_frog, label="LF")
+    plt.xlabel("$t / T$")
+    plt.ylabel("$\hat{u}(t)$")
+    plt.title("Estimated input signal")
+    plt.grid()
+    plt.xlim((0, 1500))
+    plt.ylim((-1, 1))
+    plt.tight_layout()
+
+
+
+.. image-sg:: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_010.png
+   :alt: Estimated input signal
+   :srcset: /tutorials/b_high_level_simulation/images/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_010.png
+   :class: sphx-glr-single-img
+
 
 
 
@@ -108,7 +675,7 @@ using [www.sigma-delta.de](www.sigma-delta.de) framework.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.011 seconds)
+   **Total running time of the script:** ( 0 minutes  16.844 seconds)
 
 
 .. _sphx_glr_download_tutorials_b_high_level_simulation_plot_i_simulating_a_delta_sigma_modulator.py:

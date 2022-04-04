@@ -70,7 +70,6 @@ def ctsd2gamma(ctsd_dict: Dict, T, dac_scale, local_control=True):
     M_tilde = M
     fs = 1 / T
 
-
     coefficients = ctsd_dict['coefficient']
     Gamma = np.zeros((N, M))
     Gamma_tildeT = np.zeros((M_tilde, N))
