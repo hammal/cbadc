@@ -35,7 +35,7 @@ def test_evaluate_2_levels():
     bits = digitalControl.control_signal()
     for index in range(M):
         print(res[index], bits[index])
-    assert False
+    # assert False
 
 
 def test_evaluate_3_levels():

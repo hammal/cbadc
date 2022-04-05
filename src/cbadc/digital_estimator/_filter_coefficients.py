@@ -94,6 +94,7 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
     V = np.zeros_like(A)
 
     try:
+        logger.info("Computing CARE analytically")
         V = _analytical_care(A, B, Q, R)
     except (sp.PrecisionExhausted, TypeError):
         logger.warning(
@@ -107,7 +108,7 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
             Starting brute force"""
             )
             V = bruteForceCare(A, B, Q, R)
-    return np.array((V + V.transpose()) / 2, dtype=np.double)
+    return np.array((V + V.transpose()) / 2.0, dtype=np.double)
 
 
 def _analytical_care(
@@ -183,6 +184,7 @@ def compute_filter_coefficients(
     # Solve care
     Vf = care(A, B, Q, R)
     Vb = care(-A, B, Q, R)
+    print("Vb\n", Vb)
 
     if solver_type == FilterComputationBackend.sympy:
         return _analytical_solver(
