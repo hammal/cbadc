@@ -93,10 +93,10 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         N = kwargs['N']
         BW = kwargs['BW']
         OSR = kwargs['OSR']
-        T = OSR / (2 * BW)
+        T = 1.0 / (2 * BW * OSR)
         beta = 1 / (2 * T)
         kappa = beta
-        rho = 0
+        rho = kwargs.get('rho', 0.0)
         analog_system = ChainOfIntegrators(
             beta * np.ones(N),
             rho * np.ones(N),
@@ -108,8 +108,9 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         N = kwargs['N']
         T = kwargs['T']
         OSR = kwargs['OSR']
-        BW = OSR / (2 * T)
-        return get_chain_of_integrator(N=N, OSR=OSR, BW=BW)
+        BW = 1.0 / (2 * T * OSR)
+        rho = kwargs.get('rho', 0.0)
+        return get_chain_of_integrator(N=N, OSR=OSR, BW=BW, rho=rho)
     # if all(param in kwargs for param in ('ENOB', 'beta', 'BW')):
     #     snr = snr_from_dB(enob_to_snr(kwargs['ENOB']))
     #     omega_3dB = 2.0 * np.pi * kwargs['BW']
