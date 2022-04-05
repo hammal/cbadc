@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**00:16.844** total execution time for **tutorials_b_high_level_simulation** files:
+**00:39.405** total execution time for **tutorials_b_high_level_simulation** files:
 
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_i_simulating_a_delta_sigma_modulator.py` (``plot_i_simulating_a_delta_sigma_modulator.py``)           | 00:16.844 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_i_simulating_a_delta_sigma_modulator.py` (``plot_i_simulating_a_delta_sigma_modulator.py``)           | 00:39.405 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_a_compare_estimator.py` (``plot_a_compare_estimator.py``)                                             | 00:00.000 | 0.0 MB |
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
