@@ -33,10 +33,6 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
     excess_delay: `float`, `optional`
         delay control actions by an excess delay, defaults to 0.
 
-    Examples
-    --------
-    >>> import cbadc.specification
-    >>> analog_system, digital_control = cbadc.synthesis.get_chain_of_integrator(ENOB=12, N=5, BW=1e7, excess_delay=0.0)
 
     Returns
     -------
