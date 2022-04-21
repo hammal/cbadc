@@ -32,7 +32,7 @@ def g_i(N: int):
     H2 = sp.Abs(H) ** 2
     LF_int = sp.integrate(H2, (omega, 0, omega_p))
     g_i = sp.simplify(omega_p / (LF_int * gamma ** (2 * N)))
-    return g_i.subs(omega_p, 1e0).evalf()
+    return np.float64(g_i.subs(omega_p, 1e0).evalf())
 
 
 def get_leap_frog(**kwargs) -> AnalogFrontend:
@@ -72,12 +72,12 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
         snr = snr_from_dB(SNR)
         N = kwargs['N']
         omega_BW = 2.0 * np.pi * kwargs['BW']
-        xi = 7e-2 / np.pi
+        xi = 8e-3
         if 'xi' in kwargs:
             xi = kwargs['xi']
-        gamma = (xi * snr) ** (1.0 / (2.0 * N))
-        beta = -(omega_BW / 2.0) * gamma
-        alpha = (omega_BW / 2.0) / gamma
+        gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
+        beta = -(omega_BW / 2.0) * (2 * gamma)
+        alpha = (omega_BW / 2.0) / (2 * gamma)
         rho = 0
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -(omega_BW / 2.0) / gamma * 1e-2 * 0

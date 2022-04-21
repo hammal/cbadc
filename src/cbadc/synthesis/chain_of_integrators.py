@@ -46,10 +46,11 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         N = kwargs['N']
         omega_3dB = 2.0 * np.pi * kwargs['BW']
         # xi = 1e-1 / (np.pi * (2 * N * 0 + 1))
-        xi = 5e-3 / np.pi
+        xi = 5e-3
         if 'xi' in kwargs:
             xi = kwargs['xi']
-        gamma = (xi * snr) ** (1.0 / (2.0 * N))
+        g_i = 2.0 * N + 1.0
+        gamma = (xi / g_i * snr) ** (1.0 / (2.0 * N))
         beta = -gamma * omega_3dB
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -omega_3dB / gamma
