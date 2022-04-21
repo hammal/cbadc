@@ -7,7 +7,32 @@ from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepRespons
 from cbadc.analog_signal import Clock, ConstantSignal
 from cbadc.analog_frontend import AnalogFrontend
 from cbadc.simulator import PreComputedControlSignalsSimulator
+import sympy as sp
 import numpy as np
+
+
+def g_i(N: int):
+    """Compute the integration factor g_i
+
+    Parameters
+    ----------
+    N: `int`
+        the system order
+    Returns
+    -------
+    :  `float`
+        the computed integration factor.
+    """
+    omega, omega_p, gamma = sp.symbols('w w_p, g', real=True, positive=True)
+    n = sp.symbols('n', integer=True, positive=True)
+    determinant = sp.Product(
+        sp.I * (omega + omega_p * sp.cos(n * sp.pi / (N + 1))), (n, 1, N)
+    )
+    H = determinant / ((gamma * omega_p) ** N)
+    H2 = sp.Abs(H) ** 2
+    LF_int = sp.integrate(H2, (omega, 0, omega_p))
+    g_i = sp.simplify(omega_p / (LF_int * gamma ** (2 * N)))
+    return g_i.subs(omega_p, 1e0).evalf()
 
 
 def get_leap_frog(**kwargs) -> AnalogFrontend:
