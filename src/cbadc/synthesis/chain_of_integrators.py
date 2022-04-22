@@ -8,6 +8,21 @@ from cbadc.analog_frontend import AnalogFrontend
 import numpy as np
 
 
+def g_i(N: int):
+    """Compute the integration factor g_i
+
+    Parameters
+    ----------
+    N: `int`
+        the system order
+    Returns
+    -------
+    :  `float`
+        the computed integration factor.
+    """
+    return 2.0 * N + 1.0
+
+
 def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
     """Quick parameterize a chain-of-integrator ADC
 
@@ -49,8 +64,7 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         xi = 5e-3
         if 'xi' in kwargs:
             xi = kwargs['xi']
-        g_i = 2.0 * N + 1.0
-        gamma = (xi / g_i * snr) ** (1.0 / (2.0 * N))
+        gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
         beta = -gamma * omega_3dB
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -omega_3dB / gamma
