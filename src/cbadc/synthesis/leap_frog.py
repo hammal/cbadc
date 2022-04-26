@@ -1,6 +1,6 @@
 """Synthesise functions for leap-frog control-bounded ADCs.
 """
-from cbadc.fom import snr_from_dB, enob_to_snr
+from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_enob
 from cbadc.analog_system.leap_frog import LeapFrog
 from cbadc.digital_control.digital_control import DigitalControl
 from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepResponse
@@ -72,20 +72,18 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
         snr = snr_from_dB(SNR)
         N = kwargs['N']
         omega_BW = 2.0 * np.pi * kwargs['BW']
-        xi = 8e-3
-        if 'xi' in kwargs:
-            xi = kwargs['xi']
+        xi = kwargs.get('xi', 4e-3)
         gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
-        beta = -(omega_BW / 2.0) * (2 * gamma)
-        alpha = (omega_BW / 2.0) / (2 * gamma)
+        omega_p = omega_BW / 2.0
+        # omega_p /= np.cos(N * np.pi / (N + 1.0))
+        beta = -omega_p * (2.0 * gamma)
+        alpha = omega_p / (2.0 * gamma)
         rho = 0
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -(omega_BW / 2.0) / gamma * 1e-2 * 0
         T = 1.0 / np.abs(2.0 * beta)
         kappa = beta
-        t0 = 0.0
-        if 'excess_delay' in kwargs:
-            t0 = kwargs['excess_delay'] * T
+        t0 = T * kwargs.get('excess_delay', 0.0)
         if kwargs.get('digital_control') == 'switch-cap':
             scale = 5e1
             tau = 1.0 / (np.abs(beta) * scale)
@@ -117,6 +115,8 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
                 kappa * np.eye(N),
             )
         return AnalogFrontend(analog_system, digital_control)
+    elif all(param in kwargs for param in ('SNR', 'N', 'BW')):
+        return get_leap_frog(ENOB=snr_to_enob(kwargs['SNR']), **kwargs)
     elif all(param in kwargs for param in ('OSR', 'N', 'BW')):
         N = kwargs['N']
         BW = kwargs['BW']

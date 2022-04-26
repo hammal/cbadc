@@ -13,6 +13,7 @@ def setup_filter(
             digital_control=digital_control,
             excess_delay=excess_delay,
             local_feedback=local_feedback,
+            xi=5e-3,
         )
         analog_system = analog_frontend.analog_system
         digital_control = analog_frontend.digital_control
@@ -26,6 +27,7 @@ def setup_filter(
             digital_control=digital_control,
             excess_delay=excess_delay,
             local_feedback=local_feedback,
+            xi=8e-3,
         )
         analog_system = analog_frontend.analog_system
         digital_control = analog_frontend.digital_control
