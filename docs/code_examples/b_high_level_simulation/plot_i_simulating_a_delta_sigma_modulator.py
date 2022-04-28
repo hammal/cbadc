@@ -101,8 +101,8 @@ frequency = 1.0 / analog_frontend_ctsd.digital_control.clock.T
 
 while frequency > BW:
     frequency /= 2
-# input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
-input_signal = cbadc.analog_signal.ConstantSignal(amplitude)
+input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
+# input_signal = cbadc.analog_signal.ConstantSignal(amplitude)
 
 ###############################################################################
 #  Transfer Functions

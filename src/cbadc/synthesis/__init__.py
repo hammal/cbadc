@@ -6,3 +6,6 @@ from .continuous_time_sigma_delta import (
 )
 from .chain_of_integrators import get_chain_of_integrator
 from .leap_frog import get_leap_frog
+
+from . import leap_frog
+from . import chain_of_integrators

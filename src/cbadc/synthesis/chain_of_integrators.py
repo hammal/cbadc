@@ -1,5 +1,5 @@
 """Synthesise functions for chain-of-integrators control-bounded ADCs."""
-from cbadc.fom import snr_from_dB, enob_to_snr
+from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_enob
 from cbadc.analog_system.chain_of_integrators import ChainOfIntegrators
 from cbadc.digital_control.digital_control import DigitalControl
 from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepResponse
@@ -7,6 +7,21 @@ from cbadc.analog_signal.clock import Clock
 from cbadc.analog_frontend import AnalogFrontend
 import numpy as np
 import scipy.integrate
+
+
+def g_i(N: int):
+    """Compute the integration factor g_i
+
+    Parameters
+    ----------
+    N: `int`
+        the system order
+    Returns
+    -------
+    :  `float`
+        the computed integration factor.
+    """
+    return 2.0 * N + 1.0
 
 
 def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
@@ -34,10 +49,6 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
     excess_delay: `float`, `optional`
         delay control actions by an excess delay, defaults to 0.
 
-    Examples
-    --------
-    >>> import cbadc.specification
-    >>> analog_system, digital_control = cbadc.synthesis.get_chain_of_integrator(ENOB=12, N=5, BW=1e7, excess_delay=0.0)
 
     Returns
     -------
@@ -51,13 +62,8 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         N = kwargs['N']
         omega_3dB = 2.0 * np.pi * kwargs['BW']
         # xi = 1e-1 / (np.pi * (2 * N * 0 + 1))
-        xi = 5e-3 / np.pi
-        if 'xi' in kwargs:
-            xi = kwargs['xi']
-        gi = 2 * N + 1
-        if 'gi' in kwargs:
-            gi = kwargs['gi']
-        gamma = (xi / gi * snr) ** (1.0 / (2.0 * N))
+        xi = kwargs.get('xi', 2.3e-3)
+        gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
         beta = -gamma * omega_3dB
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -omega_3dB / gamma
@@ -69,9 +75,7 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         analog_system = ChainOfIntegrators(
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
-        t0 = 0.0
-        if 'excess_delay' in kwargs:
-            t0 = kwargs['excess_delay'] * T
+        t0 = T * kwargs.get('excess_delay', 0.0)
         if kwargs.get('digital_control') == 'switch_cap':
             scale = 5e1
             tau = 1.0 / (np.abs(beta) * scale)
@@ -93,11 +97,13 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
         return AnalogFrontend(analog_system, digital_control)
+    elif all(param in kwargs for param in ('SNR', 'N', 'BW')):
+        return get_chain_of_integrator(ENOB=snr_to_enob(kwargs['SNR']), **kwargs)
     elif all(param in kwargs for param in ('OSR', 'N', 'BW')):
         N = kwargs['N']
         BW = kwargs['BW']
         OSR = kwargs['OSR']
-        T = 1.0 / (2 * OSR * BW)
+        T = 1.0 / (2 * BW * OSR)
         beta = 1 / (2 * T)
         kappa = beta
         rho = kwargs.get('rho', 0.0)

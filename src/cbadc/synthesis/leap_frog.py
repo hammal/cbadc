@@ -1,13 +1,38 @@
 """Synthesise functions for leap-frog control-bounded ADCs.
 """
-from cbadc.fom import snr_from_dB, enob_to_snr
+from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_enob
 from cbadc.analog_system.leap_frog import LeapFrog
 from cbadc.digital_control.digital_control import DigitalControl
 from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepResponse
 from cbadc.analog_signal import Clock, ConstantSignal
 from cbadc.analog_frontend import AnalogFrontend
 from cbadc.simulator import PreComputedControlSignalsSimulator
+import sympy as sp
 import numpy as np
+
+
+def g_i(N: int):
+    """Compute the integration factor g_i
+
+    Parameters
+    ----------
+    N: `int`
+        the system order
+    Returns
+    -------
+    :  `float`
+        the computed integration factor.
+    """
+    omega, omega_p, gamma = sp.symbols('w w_p, g', real=True, positive=True)
+    n = sp.symbols('n', integer=True, positive=True)
+    determinant = sp.Product(
+        sp.I * (omega + omega_p * sp.cos(n * sp.pi / (N + 1))), (n, 1, N)
+    )
+    H = determinant / ((gamma * omega_p) ** N)
+    H2 = sp.Abs(H) ** 2
+    LF_int = sp.integrate(H2, (omega, 0, omega_p))
+    g_i = sp.simplify(omega_p / (LF_int * gamma ** (2 * N)))
+    return np.float64(g_i.subs(omega_p, 1e0).evalf())
 
 
 def get_leap_frog(**kwargs) -> AnalogFrontend:
@@ -35,10 +60,6 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
     excess_delay: `float`, `optional`
         delay control actions by an excess delay, defaults to 0.
 
-    Examples
-    --------
-    >>> import cbadc.specification
-    >>> analog_system, digital_control = cbadc.synthesis.get_leap_frog(ENOB=12, N=5, BW=1e7, excess_delay=0.0)
 
     Returns
     -------
@@ -51,20 +72,18 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
         snr = snr_from_dB(SNR)
         N = kwargs['N']
         omega_BW = 2.0 * np.pi * kwargs['BW']
-        xi = 7e-2 / np.pi
-        if 'xi' in kwargs:
-            xi = kwargs['xi']
-        gamma = (xi * snr) ** (1.0 / (2.0 * N))
-        beta = -(omega_BW / 2.0) * gamma
-        alpha = (omega_BW / 2.0) / gamma
+        xi = kwargs.get('xi', 4e-3)
+        gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
+        omega_p = omega_BW / 2.0
+        # omega_p /= np.cos(N * np.pi / (N + 1.0))
+        beta = -omega_p * (2.0 * gamma)
+        alpha = omega_p / (2.0 * gamma)
         rho = 0
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -(omega_BW / 2.0) / gamma * 1e-2 * 0
         T = 1.0 / np.abs(2.0 * beta)
         kappa = beta
-        t0 = 0.0
-        if 'excess_delay' in kwargs:
-            t0 = kwargs['excess_delay'] * T
+        t0 = T * kwargs.get('excess_delay', 0.0)
         if kwargs.get('digital_control') == 'switch-cap':
             scale = 5e1
             tau = 1.0 / (np.abs(beta) * scale)
@@ -96,6 +115,8 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
                 kappa * np.eye(N),
             )
         return AnalogFrontend(analog_system, digital_control)
+    elif all(param in kwargs for param in ('SNR', 'N', 'BW')):
+        return get_leap_frog(ENOB=snr_to_enob(kwargs['SNR']), **kwargs)
     elif all(param in kwargs for param in ('OSR', 'N', 'BW')):
         N = kwargs['N']
         BW = kwargs['BW']

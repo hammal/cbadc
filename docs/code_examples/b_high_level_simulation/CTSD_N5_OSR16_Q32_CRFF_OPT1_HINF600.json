@@ -1,0 +1,64 @@
+{
+    "quantizer": {
+        "level": 32
+    },
+    "systemOptions": {
+        "systemOrder": 5,
+        "osr": 16,
+        "umax": 1
+    },
+    "coefficient": {
+        "b1": {
+            "fixedValue": 0.16918025019630747,
+            "active": true
+        },
+        "a1": {
+            "fixedValue": -0.16918025019629568,
+            "active": true
+        },
+        "c1": {
+            "fixedValue": 1.9494923679229821,
+            "active": true
+        },
+        "e32": {
+            "fixedValue": -0.01026626453264015,
+            "active": true
+        },
+        "c2": {
+            "fixedValue": 1.0888529728095564,
+            "active": true
+        },
+        "c3": {
+            "fixedValue": 0.96333242190542534,
+            "active": true
+        },
+        "e54": {
+            "fixedValue": -0.05338891556074972,
+            "active": true
+        },
+        "c4": {
+            "fixedValue": 0.59297649463338864,
+            "active": true
+        },
+        "d16": {
+            "fixedValue": 10.741015364567232,
+            "active": true
+        },
+        "d26": {
+            "fixedValue": 6.74315248415941,
+            "active": true
+        },
+        "d36": {
+            "fixedValue": 5.07846024709759,
+            "active": true
+        },
+        "d46": {
+            "fixedValue": 2.6931344757041269,
+            "active": true
+        },
+        "c5": {
+            "fixedValue": 0.96145383908979021,
+            "active": true
+        }
+    }
+}

@@ -94,15 +94,15 @@ print(analog_frontend_leap_frog.analog_system)
 #  Input Signal
 # ---------------------------------------------------
 #
-amplitude = 0.0e-0
+amplitude = 0.25e-0
 phase = 0.0
 offset = 0.0
 frequency = 1.0 / analog_frontend_ctsd.digital_control.clock.T
 
 while frequency > BW:
     frequency /= 2
-# input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
-input_signal = cbadc.analog_signal.ConstantSignal(amplitude)
+input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
+# input_signal = cbadc.analog_signal.ConstantSignal(amplitude)
 
 ###############################################################################
 #  Transfer Functions

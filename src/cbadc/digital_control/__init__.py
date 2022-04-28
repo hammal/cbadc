@@ -13,5 +13,9 @@ from .utilities import overcomplete_set, unit_element_set
 from .dither_control import DitherControl
 
 _valid_digital_control_types = Union[
-    DigitalControl, MultiPhaseDigitalControl, ConservativeControl
+    DigitalControl,
+    MultiPhaseDigitalControl,
+    ConservativeControl,
+    MultiLevelDigitalControl,
+    DitherControl,
 ]
