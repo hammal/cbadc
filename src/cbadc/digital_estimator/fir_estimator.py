@@ -722,3 +722,14 @@ class FIRFilter(BatchEstimator):
             total number of non-zero filter coefficients
         """
         return np.sum(self.h > 0)
+
+    def impulse_response(self) -> np.ndarray:
+        """Return the filter's impulse response
+
+        Returns
+        -------
+        `array_like`, shape=(L, K3, M)
+            the impulse response
+        """
+        # (self.analog_system.L, self.K3, self.analog_system.M)
+        return self.h[:, ::-1, :]
