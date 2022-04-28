@@ -275,8 +275,6 @@ High Level Simulations
 .. toctree::
    :hidden:
 
-   /tutorials/b_high_level_simulation/plot_h_calibrating_from_numpy_simulator
-
 .. raw:: html
 
     <div class="sphx-glr-thumbcontainer" tooltip="Simulating a Continuous-Time Delta-Sigma Modulator">
@@ -297,6 +295,9 @@ High Level Simulations
    :hidden:
 
    /tutorials/b_high_level_simulation/plot_i_simulating_a_delta_sigma_modulator
+
+   /tutorials/b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications
+
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

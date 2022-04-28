@@ -4,8 +4,8 @@
 .. _sphx_glr_tutorials_b_high_level_simulation_sg_execution_times:
 
 Computation times
-=================
-**00:39.405** total execution time for **tutorials_b_high_level_simulation** files:
+**01:51.673** total execution time for **tutorials_b_high_level_simulation** files:
+
 
 +-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_i_simulating_a_delta_sigma_modulator.py` (``plot_i_simulating_a_delta_sigma_modulator.py``)           | 00:39.405 | 0.0 MB |
