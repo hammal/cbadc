@@ -178,49 +178,53 @@ atol, rtol:
 
 class PreComputedControlSignalsSimulator(_BaseSimulator):
     """Simulate the analog system and digital control interactions
-    in the presence on analog signals.
+        in the presence on analog signals.
 
-    Parameters
-    ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
-        the analog system
-    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
-        the digital control
-    input_signals : [:py:class:`cbadc.analog_signal.AnalogSignal`]
-        a python list of analog signals (or a derived class)
-    clock: :py:class:`cbadc.simulator.clock`, `optional`
-        a clock to syncronize simulator output against, defaults to
-        a phase delayed version of the digital_control clock.
-    t_stop : `float`, optional
-        determines a stop time, defaults to :py:obj:`math.inf`
-    initial_state_vector: `array_like`, shape=(N), `optional`
-        initial state vector.
-    rtol, atol : `float`, `optional`
-        Relative and absolute tolerances. The solver keeps the local error estimates less
-        than atol + rtol * abs(y). Effects the underlying solver as described in
-        :py:func:`scipy.integrate.solve_ivp`. Default to 1e-3 for rtol and 1e-6 for atol.
+        Parameters
+        ----------
+        analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+            the analog system
+        digital_control: :py:class:`cbadc.digital_control.DigitalControl`
+            the digital control
+        input_signals : [:py:class:`cbadc.analog_signal.AnalogSignal`]
+            a python list of analog signals (or a derived class)
+        clock: :py:class:`cbadc.simulator.clock`, `optional`
+            a clock to syncronize simulator output against, defaults to
+            a phase delayed version of the digital_control clock.
+        t_stop : `float`, optional
+            determines a stop time, defaults to :py:obj:`math.inf`
+        initial_state_vector: `array_like`, shape=(N), `optional`
+            initial state vector.
+        rtol, atol : `float`, `optional`
+            Relative and absolute tolerances. The solver keeps the local error estimates less
+            than atol + rtol * abs(y). Effects the underlying solver as described in
+            :py:func:`scipy.integrate.solve_ivp`. Default to 1e-3 for rtol and 1e-6 for atol.
 
 
-    Attributes
-    ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
-        the analog system being simulated.
-    digital_control : :py:class:`cbadc.digital_control.DigitalControl`
-        the digital control being simulated.
-    t : `float`
-        current time of simulator.
-    clock: `float`
-        a clock to which the outputs of the simulator are synchronized.
-    t_stop : `float`
-        end time at which the generator raises :py:class:`StopIteration`.
-    rtol, atol : `float`, `optional`
-        Relative and absolute tolerances. The solver keeps the local error estimates less
-        than atol + rtol * abs(y). Effects the underlying solver as described in
-        :py:func:`scipy.integrate.solve_ivp`. Default to 1e-3 for rtol and 1e-6 for atol.
+        Attributes
+        ----------
+        analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+            the analog system being simulated.
+        digital_control : :py:class:`cbadc.digital_control.DigitalControl`
+            the digital control being simulated.
+        t : `float`
+            current time of simulator.
+        clock: `float`
+            a clock to which the outputs of the simulator are synchronized.
+        t_stop : `float`
+            end time at which the generator raises :py:class:`StopIteration`.
+        rtol, atol : `float`, `optional`
+            Relative and absolute tolerances. The solver keeps the local error estimates less
+            than atol + rtol * abs(y). Effects the underlying solver as described in
+            :py:func:`scipy.integrate.solve_ivp`. Default to 1e-3 for rtol and 1e-6 for atol.
 
-    Yields
-    ------
-    `array_like`, shape=(M,)
+        Yields
+        ------
+    <<<<<<< HEAD
+        `array_like`, shape=(M,)
+    =======
+        `array_like`, shape=(M,), dtype=numpy.int8
+    >>>>>>> origin/master
 
     """
 
