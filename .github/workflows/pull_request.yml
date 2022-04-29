@@ -73,6 +73,7 @@ jobs:
             "b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications.py",
             "b_high_level_simulation/plot_g_calibrating_mismatch.py",
             # "b_high_level_simulation/plot_h_calibrating_from_numpy_simulator.py",
+            # "b_high_level_simulation/plot_i_simulating_a_delta_sigma_modulator.py",
             "c_circuit_level/plot_a_analog_system.py",
             "c_circuit_level/plot_b_analog_frontend.py",
             "c_circuit_level/plot_c_testbench.py",

@@ -423,11 +423,11 @@ def snr_spectrum_computation_extended(
     if win == "blackman":
         window = scipy.signal.windows.blackman(N)
         CG = np.mean(window)
-        NG = np.sum(window ** 2) / N
+        NG = np.sum(window**2) / N
     if win == "hanning":
         window = scipy.signal.windows.blackman(N)
         CG = np.mean(window)
-        NG = np.sum(window ** 2) / N
+        NG = np.sum(window**2) / N
 
     noise = np.sum(spectrum[noise_mask])
     signal = np.sum(spectrum[signal_mask])
@@ -437,7 +437,7 @@ def snr_spectrum_computation_extended(
     sinad = (signal + noise + harmonics) / (noise + harmonics)
     thd = np.sqrt(harmonics / signal)
     thd_n = np.sqrt((harmonics + noise) / signal)
-    signal_rms = np.sqrt(signal * NG * f_bin / (CG ** 2))
+    signal_rms = np.sqrt(signal * NG * f_bin / (CG**2))
     noise_rms = np.sqrt(noise * f_bin)
 
     return {

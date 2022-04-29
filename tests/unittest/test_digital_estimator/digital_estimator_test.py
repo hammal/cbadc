@@ -1,9 +1,14 @@
 from cbadc.simulator import get_simulator
-from cbadc.digital_estimator import BatchEstimator
+from cbadc.digital_estimator import (
+    BatchEstimator,
+    ParallelEstimator,
+    FIRFilter,
+    IIRFilter,
+)
 from cbadc.analog_signal import ConstantSignal, Clock
 from cbadc.analog_system import AnalogSystem
 from cbadc.digital_control import DigitalControl
-
+import pytest
 import numpy as np
 from tests.fixture.chain_of_integrators import chain_of_integrators
 
@@ -119,3 +124,31 @@ def test_stf():
     omega = np.logspace(-5, 0) * beta
     stf = estimator.signal_transfer_function(omega)
     print(stf)
+
+
+@pytest.mark.parametrize(
+    'reconstruction_method',
+    [
+        pytest.param(BatchEstimator, id="batch_de"),
+        pytest.param(ParallelEstimator, id="par-batch-de"),
+        pytest.param(IIRFilter, id="IIR_de"),
+        pytest.param(FIRFilter, id="FIR_de"),
+    ],
+)
+def test_single_output_systems(reconstruction_method):
+    eta2 = 1e4
+    K1 = 1 << 8
+    K2 = K1
+    N = 12
+    M = 12
+    B = np.zeros((N, 1))
+    B[0, 0] = beta
+    Gamma_tildeT = np.eye(M)
+    Gamma = Gamma_tildeT * (-beta)
+    A = np.eye(N) * rho + np.eye(N, k=-1) * beta - np.eye(N, k=1) * beta / 10
+    CT = np.zeros((1, N))
+    CT[0, N - 1] = 1.0
+    analogSystem = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    clock = Clock(Ts)
+    digitalControl = DigitalControl(clock, M)
+    reconstruction_method(analogSystem, digitalControl, eta2, K1, K2)

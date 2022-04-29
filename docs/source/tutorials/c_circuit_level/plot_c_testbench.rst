@@ -63,9 +63,9 @@ Analog System
     BW = 1e6
 
     # Instantiate leap-frog analog system is created as
-    target_analog_system, target_digital_control = cbadc.specification.get_leap_frog(
-        ENOB=ENOB, N=N, BW=BW
-    )
+    analog_frontend_target = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    target_analog_system = analog_frontend_target.analog_system
+    target_digital_control = analog_frontend_target.digital_control
 
     verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
         target_analog_system
@@ -256,7 +256,7 @@ together with the analog frontend verilog module.
 
  .. code-block:: none
 
-    /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
       f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
 
 
@@ -425,7 +425,7 @@ Simulation and Verification
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  3.176 seconds)
+   **Total running time of the script:** ( 2 minutes  15.089 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_c_testbench.py:

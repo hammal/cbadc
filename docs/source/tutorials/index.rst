@@ -216,7 +216,7 @@ High Level Simulations
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the :py:func:`cbadc.specification.get_chain_of_integrator` and ...">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we investigate the :py:func:`cbadc.synthesis.get_chain_of_integrator` and :py:...">
 
 .. only:: html
 
@@ -224,7 +224,6 @@ High Level Simulations
      :alt: Designing for a Target Specification
 
      :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_f_designing_a_leap_frog_to_specifications.py`
-<<<<<<< HEAD
 
 .. raw:: html
 
@@ -267,8 +266,6 @@ High Level Simulations
      :alt: Calibrating an Unknown Op-Amp Pole from Data
 
      :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_h_calibrating_from_numpy_simulator.py`
-=======
->>>>>>> origin/master
 
 .. raw:: html
 
@@ -278,11 +275,29 @@ High Level Simulations
 .. toctree::
    :hidden:
 
-<<<<<<< HEAD
-   /tutorials/b_high_level_simulation/plot_h_calibrating_from_numpy_simulator
-=======
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Simulating a Continuous-Time Delta-Sigma Modulator">
+
+.. only:: html
+
+ .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_thumb.png
+     :alt: Simulating a Continuous-Time Delta-Sigma Modulator
+
+     :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_i_simulating_a_delta_sigma_modulator.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/b_high_level_simulation/plot_i_simulating_a_delta_sigma_modulator
+
    /tutorials/b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications
->>>>>>> origin/master
+
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

@@ -1,6 +1,6 @@
 """Tools to construct analog systems by means of combining other analog systems."""
 import numpy as np
-from typing import List, Tuple
+from typing import Tuple, List
 from .analog_system import AnalogSystem
 
 
@@ -204,7 +204,7 @@ def zpk2abcd(z, p, k):
         if index + 1 < len(p):
             # Two poles
             A = np.zeros((2, 2))
-            B = k_per_state ** 2 * np.array([[1.0], [0.0]])
+            B = k_per_state**2 * np.array([[1.0], [0.0]])
             CT = np.zeros((1, 2))
             D = np.array([[0.0]])
 
@@ -234,7 +234,7 @@ def zpk2abcd(z, p, k):
                         raise Exception("Can't have non-conjugate complex zeros")
                     M = np.array([[-1.0, 0], [-A[1, 1], A[1, 0]]])
                     sol = np.linalg.solve(M, np.real(y))
-                    D = k_per_state ** 2 * np.array([[1.0]])
+                    D = k_per_state**2 * np.array([[1.0]])
                     CT = np.array([[sol[0, 0], sol[1, 0]]])
                 else:
                     # Single zero
@@ -319,6 +319,7 @@ def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.nd
         biquad equations
 
     Returns
+    -------
     A: numpy.ndarray, shape=(2 * L, 2 * L)
         a joint state transition matrix.
     B: numpy.ndarray, shape=(2 * L, 1)
@@ -377,6 +378,7 @@ def tf2abcd(
         transferfunction denominator :math:`\\begin{pmatrix}a_{L-1}, & \\dots, & a_{0}\\end{pmatrix}`.
 
     Returns
+    -------
     A: numpy.ndarray, shape=(L, L)
         a joint state transition matrix.
     B: numpy.ndarray, shape=(L, 1)

@@ -1,9 +1,9 @@
 """Sinusoidal signals."""
 from typing import Union
-import numpy as np
 from ._analog_signal import _AnalogSignal
 from sympy import sin
 from mpmath import mp
+import numpy as np
 
 
 class Sinusoidal(_AnalogSignal):

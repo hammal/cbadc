@@ -51,7 +51,7 @@ high level utilities functions from the :py:mod:`cbadc.specification`
 module.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 22-54
+.. GENERATED FROM PYTHON SOURCE LINES 22-55
 
 .. code-block:: default
 
@@ -64,7 +64,8 @@ module.
     BW = 1e6
 
     # Instantiate leap-frog analog system is created as
-    analog_system, _ = cbadc.specification.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    analog_system = analog_frontend.analog_system
 
     # Visualize the analog system's transfer functions
     BW_log = np.log10(BW)
@@ -99,7 +100,7 @@ module.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 55-66
+.. GENERATED FROM PYTHON SOURCE LINES 56-67
 
 Instantiating a Circuit Level Model
 -----------------------------------
@@ -113,7 +114,7 @@ be done using the class :py:class:`cbadc.circuit_level.AnalogSystemStateSpaceEqu
 as
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-78
+.. GENERATED FROM PYTHON SOURCE LINES 67-79
 
 .. code-block:: default
 
@@ -219,12 +220,12 @@ as
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 79-81
+.. GENERATED FROM PYTHON SOURCE LINES 80-82
 
 :download:`verilog_analog_system.vams <verilog_analog_system.vams>`
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-90
+.. GENERATED FROM PYTHON SOURCE LINES 85-91
 
 Ideal Op-amp Implementation
 ----------------------------
@@ -233,7 +234,7 @@ Next we realize the same analog system using an ideal op-amp configuration
 with capacitive feedback.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 90-102
+.. GENERATED FROM PYTHON SOURCE LINES 91-103
 
 .. code-block:: default
 
@@ -259,7 +260,7 @@ with capacitive feedback.
 
  .. code-block:: none
 
-    /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
       f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
     // resistor_network_gamma_tildeT
     // 
@@ -770,17 +771,17 @@ with capacitive feedback.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 103-105
+.. GENERATED FROM PYTHON SOURCE LINES 104-106
 
 :download:`ideal_op_amp_analog_system.vams <ideal_op_amp_analog_system.vams>`
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 107-109
+.. GENERATED FROM PYTHON SOURCE LINES 108-110
 
 Similarly, we can instantiate op-amp realizations that account for
 imperfections such as finite gain and first order pole.
 
-.. GENERATED FROM PYTHON SOURCE LINES 110-123
+.. GENERATED FROM PYTHON SOURCE LINES 111-124
 
 .. code-block:: default
 
@@ -804,7 +805,7 @@ imperfections such as finite gain and first order pole.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-131
+.. GENERATED FROM PYTHON SOURCE LINES 125-132
 
 again the corresponding verilog files can be found below
 
@@ -814,7 +815,7 @@ again the corresponding verilog files can be found below
 and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp.to_file`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 132-141
+.. GENERATED FROM PYTHON SOURCE LINES 133-142
 
 .. code-block:: default
 
@@ -837,13 +838,13 @@ and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrder
 
  .. code-block:: none
 
-    /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
       f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 142-159
+.. GENERATED FROM PYTHON SOURCE LINES 143-160
 
 Reference Simulation
 ---------------------
@@ -863,7 +864,7 @@ Tom demonstarte this second use case we will next compare the transfer
 functions of the analog systems we covered previously.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 159-188
+.. GENERATED FROM PYTHON SOURCE LINES 160-189
 
 .. code-block:: default
 
@@ -1033,7 +1034,7 @@ functions of the analog systems we covered previously.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  2.888 seconds)
+   **Total running time of the script:** ( 0 minutes  3.615 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_a_analog_system.py:

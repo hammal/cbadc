@@ -21,5 +21,6 @@ Root Modules
     cbadc.circuit_level
     cbadc.utilities
     cbadc.fom
-    cbadc.specification
     cbadc.digital_calibration
+    cbadc.synthesis
+    cbadc.analog_frontend
