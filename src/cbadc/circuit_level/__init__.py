@@ -5,6 +5,7 @@ from . import analog_frontend
 from . import op_amp
 from . import state_space_equations
 from . import testbench
+from . import noise_models
 
 from .module import Module, Wire, Parameter
 from .state_space_equations import AnalogSystem as AnalogSystemStateSpaceEquations

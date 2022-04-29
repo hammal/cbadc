@@ -184,7 +184,6 @@ def compute_filter_coefficients(
     # Solve care
     Vf = care(A, B, Q, R)
     Vb = care(-A, B, Q, R)
-    print("Vb\n", Vb)
 
     if solver_type == FilterComputationBackend.sympy:
         return _analytical_solver(
