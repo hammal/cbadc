@@ -128,7 +128,7 @@ class TestBench:
             }
         )
 
-    def get_simulator(self, simulator_type: SimulatorType):
+    def get_simulator(self, simulator_type: SimulatorType, **kwargs):
         """Return an instantiated simulator
 
         Return a python simulator of the specified testbench.
@@ -150,6 +150,7 @@ class TestBench:
             self._simulation_clock,
             self._t_stop,
             simulator_type=simulator_type,
+            **kwargs,
         )
 
     def to_file(self, filename: str, path: str = "."):

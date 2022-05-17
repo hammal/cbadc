@@ -76,19 +76,19 @@ Analog System
 
     C = 1e-12
     ideal_op_amp_analog_system = cbadc.circuit_level.AnalogSystemIdealOpAmp(
-        target_analog_system, C
+        analog_system=target_analog_system, C=C
     )
 
     A_DC = 1e2
     omega_p = 2 * np.pi * BW
 
     finite_gain_op_amp_analog_system = cbadc.circuit_level.AnalogSystemFiniteGainOpAmp(
-        target_analog_system, C, A_DC
+        analog_system=target_analog_system, C=C, A_DC=A_DC
     )
 
     first_order_pole_op_amp_analog_system = (
         cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(
-            target_analog_system, C, A_DC, omega_p
+            analog_system=target_analog_system, C=C, A_DC=A_DC, omega_p=omega_p
         )
     )
 
@@ -357,7 +357,7 @@ We also compare the resulting filters impulse responses
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  25.581 seconds)
+   **Total running time of the script:** ( 0 minutes  28.805 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_b_analog_frontend.py:

@@ -31,6 +31,10 @@ class _BaseSimulator(Iterator[np.ndarray]):
         determines a stop time, defaults to :py:obj:`math.inf`
     initial_state_vector: `array_like`, shape=(N), `optional`
         initial state vector.
+    cov_x: `array_like`, shape=(N, N)
+        the covariance matrix of white noise contributions, `optional`
+        defaults to all zero. The variance magnitude corresponds to
+        V^2 in the case that the states are represented in volts.
 
     Attributes
     ----------
@@ -87,7 +91,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
                     )
         else:
             # Default is to delay readout until negative edge of clock
-            logger.info("No valid clock specified. Deriving one from digital control.")
+            logger.info("No clock specified. Deriving one from digital control.")
             self.clock = cbadc.analog_signal.clock.delay_clock_by_duty_cycle(
                 self.digital_control.clock
             )
@@ -105,11 +109,22 @@ class _BaseSimulator(Iterator[np.ndarray]):
         self._res = np.zeros(self.analog_system.N, dtype=np.double)
         self.noise = False
         if not (cov_x is None):
-            self._compute_noise_covariance(cov_x)
-            self.noise = True
+            self.set_covariance_matrix(cov_x)
+
+    def set_covariance_matrix(self, cov_x: np.ndarray):
+        """Introduce a i.i.d. white noise process
+        with covariance matrix cov_x
+
+        Parameters
+        ----------
+        cov_x: array_like, shape=(N, N)
+            the covariance matrix
+        """
+        self._compute_noise_covariance(cov_x)
+        self.noise = True
 
     def _compute_noise_covariance(self, cov_x):
-        noise_covariance_per_unit_time = cov_x  # / self.digital_control.clock.T
+        noise_covariance_per_unit_time = cov_x / self.digital_control.clock.T
 
         def derivative(t: float, y: np.ndarray):
             A_exp = np.asarray(scipy.linalg.expm(np.asarray(self.analog_system.A) * t))

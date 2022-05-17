@@ -13,14 +13,15 @@ Root Modules
     :recursive:
     :template: custom-module-template.rst
 
+
     cbadc.analog_signal
     cbadc.analog_system
     cbadc.digital_control
     cbadc.digital_estimator
+    cbadc.analog_frontend
     cbadc.simulator
     cbadc.circuit_level
     cbadc.utilities
     cbadc.fom
     cbadc.digital_calibration
     cbadc.synthesis
-    cbadc.analog_frontend

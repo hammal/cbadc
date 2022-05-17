@@ -40,7 +40,7 @@ Next follows three basic examples demonstrating how to
 .. only:: html
 
  .. figure:: /tutorials/a_getting_started/images/thumb/sphx_glr_plot_b_simulate_a_control_bounded_adc_thumb.png
-     :alt: Simulating a Control-Bounded ADC
+     :alt: Simulating a CBADC
 
      :ref:`sphx_glr_tutorials_a_getting_started_plot_b_simulate_a_control_bounded_adc.py`
 
@@ -137,7 +137,7 @@ High Level Simulations
 .. only:: html
 
  .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_b_FIR_Filtering_thumb.png
-     :alt: Digital Estimator as a FIR Filter
+     :alt: FIR Filter
 
      :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_b_FIR_Filtering.py`
 
@@ -237,12 +237,12 @@ High Level Simulations
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Calibrating Digital Estimator for Mismatch">
+    <div class="sphx-glr-thumbcontainer" tooltip="Calibrating Component Variations">
 
 .. only:: html
 
  .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_g_calibrating_mismatch_thumb.png
-     :alt: Calibrating Digital Estimator for Mismatch
+     :alt: Calibrating Component Variations
 
      :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_g_calibrating_mismatch.py`
 
@@ -279,12 +279,12 @@ High Level Simulations
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Simulating a Continuous-Time Delta-Sigma Modulator">
+    <div class="sphx-glr-thumbcontainer" tooltip="Simulating a CTDS Modulator">
 
 .. only:: html
 
  .. figure:: /tutorials/b_high_level_simulation/images/thumb/sphx_glr_plot_i_simulating_a_delta_sigma_modulator_thumb.png
-     :alt: Simulating a Continuous-Time Delta-Sigma Modulator
+     :alt: Simulating a CTDS Modulator
 
      :ref:`sphx_glr_tutorials_b_high_level_simulation_plot_i_simulating_a_delta_sigma_modulator.py`
 
@@ -373,6 +373,48 @@ Circuit Level Simulations
    :hidden:
 
    /tutorials/c_circuit_level/plot_c_testbench
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to account for non-idealities in the design process.">
+
+.. only:: html
+
+ .. figure:: /tutorials/c_circuit_level/images/thumb/sphx_glr_plot_d_noise_thumb.png
+     :alt: Thermal Noise Simulations
+
+     :ref:`sphx_glr_tutorials_c_circuit_level_plot_d_noise.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/c_circuit_level/plot_d_noise
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial we demonstrate how to account for non-idealities in the design process.">
+
+.. only:: html
+
+ .. figure:: /tutorials/c_circuit_level/images/thumb/sphx_glr_plot_e_linearity_thumb.png
+     :alt: Linearity Simulations
+
+     :ref:`sphx_glr_tutorials_c_circuit_level_plot_e_linearity.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /tutorials/c_circuit_level/plot_e_linearity
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
@@ -396,7 +438,7 @@ These are fun and otherwise useful examples showcasing the cbadc package.
 .. only:: html
 
  .. figure:: /tutorials/d_further/images/thumb/sphx_glr_plot_a_Murmann_ADC_survey_thumb.png
-     :alt: The Murmann ADC Survey
+     :alt: The Murmann Survey
 
      :ref:`sphx_glr_tutorials_d_further_plot_a_Murmann_ADC_survey.py`
 

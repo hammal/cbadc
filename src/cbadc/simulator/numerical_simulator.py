@@ -1,5 +1,6 @@
 """Numerical solvers."""
 import logging
+from operator import index
 import cbadc.analog_system
 import cbadc.digital_control
 import cbadc.analog_signal
@@ -9,6 +10,7 @@ import scipy.linalg
 import math
 from typing import List
 from ._base_simulator import _BaseSimulator
+from scipy.special import factorial
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -455,8 +457,12 @@ class NonLinearSimulator(FullSimulator):
         determines a stop time, defaults to :py:obj:`math.inf`
     initial_state_vector: `array_like`, shape=(N), `optional`
         initial state vector.
-    harmonic_gains: np.ndarray, shape=(N, number_of_harmonics), optional
-        harmonic gains for each amplifier.
+    function_expansion: np.ndarray, shape=(N, number_of_harmonics), `optional`
+        a truncated series of f^(i)(offset) for i=2,... for which the Taylor series
+        :math:`f''(offset) / 2! * (x - offset)^2 + f'''(offset) / 3! * (x - offset)^3  ...`
+        will be evaluated.
+    offset: np.ndarray, shape=(N), `optional`
+        expansion point, offset, at which the Taylor series is expanded.
 
     Attributes
     ----------
@@ -491,7 +497,8 @@ class NonLinearSimulator(FullSimulator):
         clock: cbadc.analog_signal._valid_clock_types = None,
         t_stop: float = math.inf,
         initial_state_vector=None,
-        harmonic_gains: np.ndarray = None,
+        function_expansion: np.ndarray = None,
+        offset: np.ndarray = None,
         atol: float = 1e-20,
         rtol: float = 1e-12,
         cov_x: np.ndarray = None,
@@ -507,19 +514,32 @@ class NonLinearSimulator(FullSimulator):
         )
         self.atol = atol
         self.rtol = rtol
-        if harmonic_gains is None:
+        if function_expansion is None:
             raise Exception("Must specify a (N times #NumberOfHarmonics) gain matrix")
-        if harmonic_gains.shape[0] != analog_system.N:
+        if function_expansion.shape[0] != analog_system.N:
             raise Exception("Must have a harmonics specification for each N")
-        self._number_of_harmonics = harmonic_gains.shape[1]
-        self._harmonic_weights = harmonic_gains
+        if offset is None:
+            self._offset = np.zeros(analog_system.N)
+        elif offset.size != analog_system.N and len(offset.shape) == 1:
+            self._offset = np.array(offset)
+        else:
+            raise Exception("No valid offset specified.")
+
+        self._taylor_expansion_size = function_expansion.shape[1]
+        self._taylor_weight = np.zeros_like(function_expansion)
+        for k in range(self._taylor_expansion_size):
+            self._taylor_weight[:, k] = function_expansion[:, k] / factorial(
+                k + 2, exact=True
+            )
 
     def _non_linearity(self, input_array: np.ndarray):
+        # res = np.zeros(self.analog_system.N)
         res = input_array[:]
-        for harmonic in range(self._number_of_harmonics):
-            temp = self._harmonic_weights[:, harmonic] * (input_array ** (harmonic + 2))
+        for k in range(self._taylor_expansion_size):
+            temp = np.multiply(
+                self._taylor_weight[:, k], (np.power(input_array - self._offset, k))
+            )
             res += temp
-            # print(f"Harmonic, res: {temp}, {res}")
         return res
 
     def _full_ordinary_differential_solution(self, t_span: np.ndarray) -> np.ndarray:

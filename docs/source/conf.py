@@ -30,7 +30,7 @@ print(f"system path: {sys.path}")
 # -- Project information -----------------------------------------------------
 
 project = "Control-Bounded A/D Conversion Toolbox"
-copyright = "2021, Hampus Malmberg"
+copyright = "2022, Hampus Malmberg"
 author = "Hampus Malmberg"
 
 # The full version, including alpha/beta/rc tags
@@ -86,26 +86,36 @@ intersphinx_mapping = {
 # Sphinx-gallery
 sphinx_gallery_conf = {
     # path to your example scripts
-    "examples_dirs": ["../code_examples", "../datasets"],
+    "examples_dirs": ["../code_examples"],  # , "../datasets"],
     # path to where to save gallery generated output
-    "gallery_dirs": ["tutorials", "datasets"],
+    "gallery_dirs": ["tutorials"],  # , "datasets"],
     "compress_images": ("images", "thumbnails", "-o7"),
     # directory where function/class granular galleries are stored
     "backreferences_dir": "backreferences",
     # Modules for which function/class level galleries are created. In
     # this case sphinx_gallery and numpy in a tuple of strings.
     "doc_module": (
-        "cbadc.analog_system",
-        "cbadc.analog_signal",
-        "cbadc.digital_control",
-        "cbadc.digital_estimator",
-        "cbadc.simulator",
-        "cbadc.utilities",
-        "cbadc.datasets",
+        "cbadc"
+        # "cbadc.analog_signal.clock",
+        # "cbadc.analog_signal.constant_signal",
+        # "cbadc.analog_signal.impulse_responses",
+        # "cbadc.analog_signal.ramp",
+        # "cbadc.analog_signal.sinc_pulse",
+        # "cbadc.analog_signal.sinusoidal",
+        # "cbadc.analog_system",
+        # "cbadc.digital_control",
+        # "cbadc.digital_estimator",
+        # "cbadc.simulator",
+        # "cbadc.utilities",
+        # "cbadc.datasets",
     ),
     "line_numbers": False,
     "remove_config_comments": True,
     "within_subsection_order": FileNameSortKey,
+    'reference_url': {
+        # The module you locally document uses None
+        'sphinx_gallery': None,
+    },
 }
 
 # generate autosummary even if no references

@@ -1,6 +1,6 @@
 """
 ======================
-The Murmann ADC Survey
+The Murmann Survey
 ======================
 
 This notebook demonstrate the main

@@ -1,5 +1,5 @@
 """
-Simulating a Control-Bounded ADC
+Simulating a CBADC
 ================================
 
 This example shows how to simulate the interactions between an analog system

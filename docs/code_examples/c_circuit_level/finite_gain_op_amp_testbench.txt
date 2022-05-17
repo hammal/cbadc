@@ -7,7 +7,7 @@
 //
 // This file was generated at
 //
-// 2022-03-23T11:38:01.945554
+// 2022-05-10T17:19:21.572017
 //
 // using the cbadc package version
 //
@@ -28,10 +28,10 @@ VSG vsgd 0 vsource dc= 0.5 type=dc
 VCLK clk vgd vsource type=pulse val0=0.0 val1=1.0 period= rise= fall=
 
 * Input Signal
-VS u vgd vsource type=sine sinedc=0.0 ampl=1.0 freq=513564.28010622674 mag=1
+VS u vgd vsource type=sine sinedc=0.0 ampl=1.0 freq=891073.4697618947 mag=1
 
 * Analog frontend
 analog_frontend vddvgdvsgdclku_0 s_0s_1s_2s_3 analog_frontend
 
-tran tran cmin=0 stop=0.0015212311881161295 strobefreq=65736227.85359702 strobedelay=3.803077970290324e-09
+tran tran cmin=0 stop=0.0017535029972528735 strobefreq=57028702.06476126 strobedelay=4.3837574931321834e-09
 save vddvgdvsgdclku_0s_0s_1s_2s_3x_0x_1x_2x_3vddvgdvsgdu_0s_0s_1s_2s_3s_tilde_0s_tilde_1s_tilde_2s_tilde_3

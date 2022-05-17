@@ -1,4 +1,4 @@
-"""Analog System and Digital Control Simulator
+"""Analog frontend simulators
 
 This module provides simulator tools to simulate the hardware
 interaction between an analog system and digital control.
