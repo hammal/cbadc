@@ -115,7 +115,7 @@ in other words by specifying the :math:`f^{\ell}(\mathbf{x}_0,t)` column vectors
     beta = 1 / (2 * analog_frontend.digital_control.clock.T)
     function_derivatives = np.array(
         [
-            [1e-3 / beta, 1e-2 / (beta**2), 1e-2 / (beta**3), 1e-2 / (beta**4)],
+            [1e-2 / beta, 1e-2 / (beta**2), 1e-2 / (beta**3), 1e-2 / (beta**4)],
             [0, 0, 0, 0],
             [0, 0, 0, 0],
             [0, 0, 0, 0],
@@ -250,7 +250,7 @@ Visualizing
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 2 minutes  57.260 seconds)
+   **Total running time of the script:** ( 2 minutes  56.195 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_e_linearity.py:

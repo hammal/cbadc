@@ -66,7 +66,7 @@ digital_estimator_ref = cbadc.digital_estimator.BatchEstimator(
 beta = 1 / (2 * analog_frontend.digital_control.clock.T)
 function_derivatives = np.array(
     [
-        [1e-1 / beta, 1e-1 / (beta**2), 1e-1 / (beta**3), 1e-1 / (beta**4)],
+        [1e-2 / beta, 1e-2 / (beta**2), 1e-2 / (beta**3), 1e-2 / (beta**4)],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],

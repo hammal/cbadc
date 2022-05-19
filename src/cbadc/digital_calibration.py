@@ -1,8 +1,8 @@
 """digital estimator calibration.
 """
 from typing import Callable, Union
-
 import numpy as np
+from cbadc.digital_estimator import BatchEstimator
 import logging
 
 import matplotlib.pyplot as plt

@@ -79,3 +79,22 @@ def test_write_C_header_with_fixed_point(chain_of_integrators):
         fixed_point=fixed_point,
     )
     filter.write_C_header("FIR_filter_C_header_with_fixed_point")
+
+
+def test_impulse_response(chain_of_integrators):
+    eta2 = 1.0
+    K1 = 4
+    K2 = 3
+    Ts = 1.0 / (2 * chain_of_integrators["beta"])
+    clock = Clock(Ts)
+    fixed_point = cbadc.utilities.FixedPoint(8, 1.0)
+    digital_control = cbadc.digital_control.DigitalControl(clock, 5)
+    filter = cbadc.digital_estimator.FIRFilter(
+        chain_of_integrators["system"],
+        digital_control,
+        eta2,
+        K1,
+        K2,
+        fixed_point=fixed_point,
+    )
+    np.testing.assert_almost_equal(filter.h[:, ::-1, :], filter.impulse_response())

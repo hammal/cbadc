@@ -194,7 +194,7 @@ first_order_pole_op_amp_testbench = cbadc.circuit_level.TestBench(
     t_stop,
 )
 
-print(f"Capacitor values = {first_order_pole_op_amp_analog_system.C_diag}")
+print(f"Capacitor values:\n{first_order_pole_op_amp_analog_system.C_diag}")
 print(f"\n\nResistor network A: {first_order_pole_op_amp_analog_system._A_G_matrix}")
 print(f"\n\nResistor network B: {first_order_pole_op_amp_analog_system._B_G_matrix}")
 print(
@@ -211,6 +211,9 @@ digital_estimator = first_order_pole_op_amp_analog_frontend.get_estimator(
 )
 white_noise_sensitivies = digital_estimator.white_noise_sensitivities(
     (BW * 1e-5, BW), snr, input_power=input_signal_power, spectrum=True
+)
+print(
+    f"These are the permissable white noise PSDs:\n{white_noise_sensitivies[0,:]} V^2/Hz\n{np.sqrt(white_noise_sensitivies[0,:])} V/sqrt(Hz)"
 )
 noise_covariance_matrix = np.diag(white_noise_sensitivies[0, :] * BW)
 simulator = first_order_pole_op_amp_testbench.get_simulator(

@@ -537,7 +537,7 @@ class NonLinearSimulator(FullSimulator):
         res = input_array[:]
         for k in range(self._taylor_expansion_size):
             temp = np.multiply(
-                self._taylor_weight[:, k], (np.power(input_array - self._offset, k))
+                self._taylor_weight[:, k], (np.power(input_array - self._offset, k + 2))
             )
             res += temp
         return res

@@ -260,8 +260,8 @@ with capacitive feedback.
 
  .. code-block:: none
 
-    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
-      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in true_divide
+      f"[out_{i}] \u2248 [{', '.join([f'{np.divide(1, a):.2e}' for a in self.G[i, :]])}] [in_{i}]"
     // resistor_network_gamma_tildeT
     // 
     // Ports: in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3
@@ -804,15 +804,6 @@ imperfections such as finite gain and first order pole.
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/analog_system.py:564: RuntimeWarning: divide by zero encountered in true_divide
-      -np.eye(analog_system.N) * self.omega_p * self.A_DC - G_gnd / C_diag
-
 
 
 
@@ -849,8 +840,8 @@ and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrder
 
  .. code-block:: none
 
-    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
-      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in true_divide
+      f"[out_{i}] \u2248 [{', '.join([f'{np.divide(1, a):.2e}' for a in self.G[i, :]])}] [in_{i}]"
 
 
 
@@ -983,10 +974,14 @@ functions of the analog systems we covered previously.
      [ 0.00e+00]]
     The analog system is parameterized as:
     A =
-    [[-1.76e+08 -inf -inf -inf -7.85e+05  5.96e+05  0.00e+00  0.00e+00]
-     [-inf -1.76e+08 -inf -inf -4.91e+07 -7.85e+05  5.96e+05  0.00e+00]
-     [-inf -inf -1.76e+08 -inf  0.00e+00 -4.91e+07 -7.85e+05  5.96e+05]
-     [-inf -inf -inf -1.77e+08  0.00e+00  0.00e+00 -4.92e+07 -7.85e+05]
+    [[-1.76e+08 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05  5.96e+05  0.00e+00
+       0.00e+00]
+     [-0.00e+00 -1.76e+08 -0.00e+00 -0.00e+00 -4.91e+07 -7.85e+05  5.96e+05
+       0.00e+00]
+     [-0.00e+00 -0.00e+00 -1.76e+08 -0.00e+00  0.00e+00 -4.91e+07 -7.85e+05
+       5.96e+05]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -1.77e+08  0.00e+00  0.00e+00 -4.92e+07
+      -7.85e+05]
      [-7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05 -0.00e+00 -0.00e+00
       -0.00e+00]
      [-0.00e+00 -7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05 -0.00e+00
@@ -1041,7 +1036,7 @@ functions of the analog systems we covered previously.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  2.454 seconds)
+   **Total running time of the script:** ( 0 minutes  12.395 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_a_analog_system.py:

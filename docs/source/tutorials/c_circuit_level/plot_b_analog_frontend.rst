@@ -193,8 +193,8 @@ modules as
 
  .. code-block:: none
 
-    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
-      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in true_divide
+      f"[out_{i}] \u2248 [{', '.join([f'{np.divide(1, a):.2e}' for a in self.G[i, :]])}] [in_{i}]"
 
 
 
@@ -357,7 +357,7 @@ We also compare the resulting filters impulse responses
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  28.805 seconds)
+   **Total running time of the script:** ( 0 minutes  37.342 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_b_analog_frontend.py:
