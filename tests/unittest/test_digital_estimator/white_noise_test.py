@@ -18,9 +18,8 @@ def test_get_white_noise():
     digital_estimator = BatchEstimator(
         analog_frontend.analog_system, analog_frontend.digital_control, eta2, K1, K2
     )
-    white_noise_RMS = digital_estimator.thermal_noise_estimate(
+    white_noise_RMS = digital_estimator.white_noise_balance(
         np.ones(N) / cbadc.fom.enob_to_snr(ENOB),
-        np.array((BW * 1e-5, BW)),
     )
     print(white_noise_RMS)
 
@@ -30,9 +29,8 @@ def test_get_white_noise_leap_frog():
     digital_estimator = BatchEstimator(
         analog_frontend.analog_system, analog_frontend.digital_control, eta2, K1, K2
     )
-    white_noise_RMS = digital_estimator.thermal_noise_estimate(
+    white_noise_RMS = digital_estimator.white_noise_balance(
         np.ones(N) / cbadc.fom.enob_to_snr(ENOB),
-        np.array((BW * 1e-5, BW)),
     )
     print(white_noise_RMS)
 
@@ -42,9 +40,8 @@ def test_verify_get_white_noise_leap_frog():
     digital_estimator = BatchEstimator(
         analog_frontend.analog_system, analog_frontend.digital_control, eta2, K1, K2
     )
-    white_noise_RMS = digital_estimator.thermal_noise_estimate(
+    white_noise_RMS = digital_estimator.white_noise_balance(
         np.ones(N) / cbadc.fom.enob_to_snr(ENOB),
-        np.array((BW * 1e-5, BW)),
     )
     print(white_noise_RMS)
     input_signals = [cbadc.analog_signal.ConstantSignal(0)]
