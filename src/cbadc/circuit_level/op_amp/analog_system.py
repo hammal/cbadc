@@ -354,8 +354,8 @@ class AnalogSystemFiniteGainOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         if analog_system.Gamma is None or analog_system.Gamma_tildeT is None:
             raise Exception("both Gammas must be defined.")
         # Modify system to account for finite gain
-        if not 'A_DC' in kwargs:
-            raise NotImplemented("A_DC must be specified")
+        if 'A_DC' not in kwargs:
+            raise NotImplementedError("A_DC must be specified")
         self.A_DC = kwargs.pop("A_DC", 1e9)
         super().__init__(analog_system, **kwargs)
         xi = 1 + 1 / self.A_DC
@@ -513,8 +513,8 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         **kwargs,
     ) -> None:
         analog_system, self.C_diag = _power_or_fixed(kwargs)
-        if not 'A_DC' in kwargs or not "omega_p" in kwargs:
-            raise NotImplemented("A_DC and omega_p must be specified")
+        if 'A_DC' not in kwargs or "omega_p" not in kwargs:
+            raise NotImplementedError("A_DC and omega_p must be specified")
         self.A_DC = kwargs.pop("A_DC", 1e9)
         self.omega_p = kwargs.pop("omega_p", 2 * np.pi * 1e7)
         G_gnd = (
