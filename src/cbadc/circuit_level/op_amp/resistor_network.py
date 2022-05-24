@@ -58,7 +58,7 @@ class ResistorNetwork(Module):
             "Resistor network connecting inputs and outputs according to the following matrix",
             "",
             *[
-                f"[out_{i}] \u2248 [{', '.join([f'{np.divide(1, a):.2e}' for a in self.G[i, :]])}] [in_{i}]"
+                f"[out_{i}] \u2248 [{', '.join([f'{1.0/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
                 for i in range(self.G.shape[0])
             ],
             "",

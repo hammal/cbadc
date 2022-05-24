@@ -15,7 +15,7 @@ def test_AnalogFrontend(get_simulator):
     C = 1e-12
     analog_system_module = (
         cbadc.circuit_level.op_amp.analog_system.AnalogSystemFiniteGainOpAmp(
-            get_simulator.analog_system, C, ADC
+            analog_system=get_simulator.analog_system, C=C, A_DC=ADC
         )
     )
     analog_frontend_module = cbadc.circuit_level.analog_frontend.AnalogFrontend(
