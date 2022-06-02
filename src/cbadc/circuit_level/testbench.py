@@ -7,6 +7,13 @@ from datetime import datetime
 from ..__version__ import __version__
 import os.path
 
+_env = Environment(
+    loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
+    autoescape=select_autoescape(),
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
+
 
 class TestBench:
     """Initialize a Cadence type testbench
@@ -32,7 +39,6 @@ class TestBench:
 
     """
 
-    env: Environment
     strobe_freq: float
     strobe_delay: float
     analog_frontend: AnalogFrontend
@@ -48,12 +54,6 @@ class TestBench:
         vgd: float = 0.0,
         vsgd: float = None,
     ):
-        self.env = Environment(
-            loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
-            autoescape=select_autoescape(),
-            trim_blocks=True,
-            lstrip_blocks=True,
-        )
         if not isinstance(input_signal, Sinusoidal):
             raise NotImplementedError("Currently only supported for sinusodials.")
         self.analog_frontend = analog_frontend
@@ -89,7 +89,7 @@ class TestBench:
             a string containing the rendered file.s
         """
         path = os.path.abspath(verilog_path)
-        template = self.env.get_template('testbench_cadence.txt')
+        template = _env.get_template('testbench_cadence.txt')
         return template.render(
             {
                 'includes': [os.path.join(path, self.analog_frontend._filename)],
@@ -164,7 +164,7 @@ class TestBench:
             defaults to cwd.
         """
         path = os.path.abspath(path)
-        preamble = self.env.get_template('preamble.txt').render(
+        preamble = _env.get_template('preamble.txt').render(
             {
                 "datetime": datetime.isoformat(datetime.now()),
                 "cbadc_version": __version__,

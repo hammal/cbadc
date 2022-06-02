@@ -12,6 +12,15 @@ from .conservative_control import ConservativeControl
 from .utilities import overcomplete_set, unit_element_set
 from .dither_control import DitherControl
 
+from . import calibration_control
+from . import conservative_control
+from . import digital_control
+from . import dither_control
+from . import multi_level_digital_control
+from . import multi_phase_control
+
+# from .switch_capacitor_control import SwitchedCapacitorControl
+
 _valid_digital_control_types = Union[
     DigitalControl,
     MultiPhaseDigitalControl,
