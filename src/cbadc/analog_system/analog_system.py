@@ -237,10 +237,13 @@ class AnalogSystem:
             )
 
         self.t = sp.Symbol('t', real=True)
-        self.x = [sp.Function(f'x_{i+1}')(self.t) for i in range(self.N)]
+        # self.x = [sp.Function(f'x_{i+1}')(self.t) for i in range(self.N)]
         self.omega = sp.Symbol('omega')
         self._atf_lambda = None
         self._ctf_lambda = None
+
+    def _symbolic_x(self, n: int):
+        return sp.Function(f'x_{n}')(self.t)
 
     def derivative(
         self, x: np.ndarray, t: float, u: np.ndarray, s: np.ndarray
@@ -317,13 +320,13 @@ class AnalogSystem:
         for n in range(self.N):
             expr = sp.Float(0)
             for nn in range(self.N):
-                expr += self._A_s[n, nn] * self.x[nn]
+                expr += self._A_s[n, nn] * self._symbolic_x(nn + 1)
             if input_signal:
                 expr += self._B_s[n, dim] * input
             elif self._Gamma_s is not None:
                 expr += self._Gamma_s[n, dim] * input
-            equations.append(sp.Eq(self.x[n].diff(self.t), expr))
-        return equations, self.x
+            equations.append(sp.Eq(self._symbolic_x(n + 1).diff(self.t), expr))
+        return equations, self._symbolic_x(n + 1)
 
     def signal_observation(self, x: np.ndarray) -> np.ndarray:
         """Computes the signal observation for a given state vector

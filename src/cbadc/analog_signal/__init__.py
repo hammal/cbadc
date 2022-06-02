@@ -16,6 +16,13 @@ from .sinusoidal import Sinusoidal
 from .clock import Clock
 from .impulse_responses import StepResponse, RCImpulseResponse
 
+from . import clock
+from . import constant_signal
+from . import impulse_responses
+from . import ramp
+from . import sinc_pulse
+from . import sinusoidal
+
 _valid_input_signal_types = Union[ConstantSignal, Ramp, SincPulse, Sinusoidal, Clock]
 
 _valid_impulse_response_types = Union[StepResponse, RCImpulseResponse]
