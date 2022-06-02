@@ -6,6 +6,13 @@ from datetime import datetime
 from ..__version__ import __version__
 import os.path
 
+_env = Environment(
+    loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
+    autoescape=select_autoescape(),
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
+
 
 class Parameter:
     """A verilog-ams parameter class
@@ -94,7 +101,6 @@ class Wire:
 
 
 class _SubModule:
-    env: Environment
     module_name: str
     instance_name: str
     ports: List[Wire]
@@ -115,12 +121,6 @@ class _SubModule:
         analog_statements: List[str] = [],
         analog_initial: List[str] = [],
     ):
-        self.env = Environment(
-            loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
-            autoescape=select_autoescape(),
-            trim_blocks=True,
-            lstrip_blocks=True,
-        )
         self.module_name = module_name
         self.instance_name = instance_name
         self.nets = nets
@@ -160,7 +160,7 @@ class _SubModule:
         ]
 
     def render(self, rendered_modules=[]):
-        template = self.env.get_template('module.vams')
+        template = _env.get_template('module.vams')
 
         def input_filter(key: Wire):
             return key.input and not key.output
@@ -361,7 +361,7 @@ class Module(_SubModule):
             the filename to write module definition to, defaults
             to no_name.
         """
-        preamble = self.env.get_template('preamble.txt').render(
+        preamble = _env.get_template('preamble.txt').render(
             {
                 "datetime": datetime.isoformat(datetime.now()),
                 "cbadc_version": __version__,
@@ -394,7 +394,7 @@ class Module(_SubModule):
             a rendered string and list including a flattended version of all
             rendered modules and submodules.
         """
-        template = self.env.get_template('module.vams')
+        template = _env.get_template('module.vams')
         rendered_modules_strings = []
         for submod in self.submodules:
             if submod.module.module_name not in [
