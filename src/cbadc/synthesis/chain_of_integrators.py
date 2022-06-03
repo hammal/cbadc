@@ -6,6 +6,7 @@ from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepRespons
 from cbadc.analog_signal.clock import Clock
 from cbadc.analog_frontend import AnalogFrontend
 import numpy as np
+import scipy.integrate
 
 
 def g_i(N: int):
@@ -60,13 +61,14 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         snr = snr_from_dB(SNR)
         N = kwargs['N']
         omega_3dB = 2.0 * np.pi * kwargs['BW']
-        xi = kwargs.get('xi', 3.3e-3)
+        # xi = 1e-1 / (np.pi * (2 * N * 0 + 1))
+        xi = kwargs.get('xi', 2.3e-3)
         gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
         beta = -gamma * omega_3dB
         if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
             rho = -omega_3dB / gamma
         else:
-            rho = 0
+            rho = kwargs.get('rho', 0.0)
         kappa = beta
         T = 1.0 / np.abs(2.0 * beta)
         all_ones = np.ones(N)

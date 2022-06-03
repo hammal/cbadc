@@ -1,6 +1,6 @@
 """
 =================================
-Digital Estimator as a FIR Filter
+FIR Filter
 =================================
 
 We demonstrate how to set up the FIR filter implementation.

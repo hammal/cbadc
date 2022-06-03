@@ -164,22 +164,22 @@ as
     // s_tilde(t) = [s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3]^T
     // 
     // A ≈
-    // [0.00e+00, 3.00e+05, 0.00e+00, 0.00e+00]
-    // [-3.29e+07, 0.00e+00, 3.00e+05, 0.00e+00]
-    // [0.00e+00, -3.29e+07, 0.00e+00, 3.00e+05]
-    // [0.00e+00, 0.00e+00, -3.29e+07, 0.00e+00]
+    // [0.00e+00, 3.46e+05, 0.00e+00, 0.00e+00]
+    // [-2.85e+07, 0.00e+00, 3.46e+05, 0.00e+00]
+    // [0.00e+00, -2.85e+07, 0.00e+00, 3.46e+05]
+    // [0.00e+00, 0.00e+00, -2.85e+07, 0.00e+00]
     // 
     // B ≈
-    // [-3.29e+07]
+    // [-2.85e+07]
     // [0.00e+00]
     // [0.00e+00]
     // [0.00e+00]
     // 
     // Gamma ≈
-    // [-3.29e+07, -0.00e+00, -0.00e+00, -0.00e+00]
-    // [-0.00e+00, -3.29e+07, -0.00e+00, -0.00e+00]
-    // [-0.00e+00, -0.00e+00, -3.29e+07, -0.00e+00]
-    // [-0.00e+00, -0.00e+00, -0.00e+00, -3.29e+07]
+    // [-2.85e+07, -0.00e+00, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -2.85e+07, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -2.85e+07, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -0.00e+00, -2.85e+07]
     // 
     // Gamma_tildeT ≈
     // [1.00e+00, 0.00e+00, 0.00e+00, 0.00e+00]
@@ -205,10 +205,10 @@ as
 
 
         analog begin
-            ddt(V(x_0), sgd) <+ 300279.0005861069*V(x_1, sgd) -32868113.926798508*V(s_0, sgd) -32868113.926798508*V(u_0, sgd);
-            ddt(V(x_1), sgd) <+ -32868113.926798508*V(x_0, sgd) 300279.0005861069*V(x_2, sgd) -32868113.926798508*V(s_1, sgd);
-            ddt(V(x_2), sgd) <+ -32868113.926798508*V(x_1, sgd) 300279.0005861069*V(x_3, sgd) -32868113.926798508*V(s_2, sgd);
-            ddt(V(x_3), sgd) <+ -32868113.926798508*V(x_2, sgd) -32868113.926798508*V(s_3, sgd);
+            ddt(V(x_0), sgd) <+ 346127.61798020673*V(x_1, sgd) -28514351.032380633*V(s_0, sgd) -28514351.032380633*V(u_0, sgd);
+            ddt(V(x_1), sgd) <+ -28514351.032380633*V(x_0, sgd) 346127.61798020673*V(x_2, sgd) -28514351.032380633*V(s_1, sgd);
+            ddt(V(x_2), sgd) <+ -28514351.032380633*V(x_1, sgd) 346127.61798020673*V(x_3, sgd) -28514351.032380633*V(s_2, sgd);
+            ddt(V(x_3), sgd) <+ -28514351.032380633*V(x_2, sgd) -28514351.032380633*V(s_3, sgd);
             V(s_tilde_0, sgd) <+ 1.0*V(x_0, sgd);
             V(s_tilde_1, sgd) <+ 1.0*V(x_1, sgd);
             V(s_tilde_2, sgd) <+ 1.0*V(x_2, sgd);
@@ -241,7 +241,7 @@ with capacitive feedback.
 
     C = 1e-12
     ideal_op_amp_analog_system = cbadc.circuit_level.AnalogSystemIdealOpAmp(
-        analog_system, C
+        analog_system=analog_system, C=C
     )
 
     # The verilog module description can be accessed by
@@ -260,8 +260,8 @@ with capacitive feedback.
 
  .. code-block:: none
 
-    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
-      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in true_divide
+      f"[out_{i}] \u2248 [{', '.join([f'{np.divide(1, a):.2e}' for a in self.G[i, :]])}] [in_{i}]"
     // resistor_network_gamma_tildeT
     // 
     // Ports: in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3
@@ -312,10 +312,10 @@ with capacitive feedback.
     // 
     // Resistor network connecting inputs and outputs according to the following matrix
     // 
-    // [out_0] ≈ [3.04e+04, inf, inf, inf] [in_0]
-    // [out_1] ≈ [inf, 3.04e+04, inf, inf] [in_1]
-    // [out_2] ≈ [inf, inf, 3.04e+04, inf] [in_2]
-    // [out_3] ≈ [inf, inf, inf, 3.04e+04] [in_3]
+    // [out_0] ≈ [3.51e+04, -inf, -inf, -inf] [in_0]
+    // [out_1] ≈ [-inf, 3.51e+04, -inf, -inf] [in_1]
+    // [out_2] ≈ [-inf, -inf, 3.51e+04, -inf] [in_2]
+    // [out_3] ≈ [-inf, -inf, -inf, 3.51e+04] [in_3]
     // 
     // note the resistors are specified by their resistive values in Ohms
     //
@@ -333,10 +333,10 @@ with capacitive feedback.
 
 
         analog begin
-            I(in_0, out_0) <+ 3.286811392679851e-05 * V(in_0,out_0);
-            I(in_1, out_1) <+ 3.286811392679851e-05 * V(in_1,out_1);
-            I(in_2, out_2) <+ 3.286811392679851e-05 * V(in_2,out_2);
-            I(in_3, out_3) <+ 3.286811392679851e-05 * V(in_3,out_3);
+            I(in_0, out_0) <+ 2.851435103238063e-05 * V(in_0,out_0);
+            I(in_1, out_1) <+ 2.851435103238063e-05 * V(in_1,out_1);
+            I(in_2, out_2) <+ 2.851435103238063e-05 * V(in_2,out_2);
+            I(in_3, out_3) <+ 2.851435103238063e-05 * V(in_3,out_3);
         end
 
     endmodule
@@ -352,7 +352,7 @@ with capacitive feedback.
     // 
     // Resistor network connecting inputs and outputs according to the following matrix
     // 
-    // [out_0] ≈ [3.04e+04] [in_0]
+    // [out_0] ≈ [3.51e+04] [in_0]
     // [out_1] ≈ [-inf] [in_1]
     // [out_2] ≈ [-inf] [in_2]
     // [out_3] ≈ [-inf] [in_3]
@@ -370,7 +370,7 @@ with capacitive feedback.
 
 
         analog begin
-            I(in_0, out_0) <+ 3.286811392679851e-05 * V(in_0,out_0);
+            I(in_0, out_0) <+ 2.851435103238063e-05 * V(in_0,out_0);
         end
 
     endmodule
@@ -386,10 +386,10 @@ with capacitive feedback.
     // 
     // Resistor network connecting inputs and outputs according to the following matrix
     // 
-    // [out_0] ≈ [-inf, -3.33e+06, -inf, -inf] [in_0]
-    // [out_1] ≈ [3.04e+04, -inf, -3.33e+06, -inf] [in_1]
-    // [out_2] ≈ [-inf, 3.04e+04, -inf, -3.33e+06] [in_2]
-    // [out_3] ≈ [-inf, -inf, 3.04e+04, -inf] [in_3]
+    // [out_0] ≈ [-inf, -2.89e+06, -inf, -inf] [in_0]
+    // [out_1] ≈ [3.51e+04, -inf, -2.89e+06, -inf] [in_1]
+    // [out_2] ≈ [-inf, 3.51e+04, -inf, -2.89e+06] [in_2]
+    // [out_3] ≈ [-inf, -inf, 3.51e+04, -inf] [in_3]
     // 
     // note the resistors are specified by their resistive values in Ohms
     //
@@ -407,12 +407,12 @@ with capacitive feedback.
 
 
         analog begin
-            I(in_1, out_0) <+ -3.002790005861069e-07 * V(in_1,out_0);
-            I(in_0, out_1) <+ 3.286811392679851e-05 * V(in_0,out_1);
-            I(in_2, out_1) <+ -3.002790005861069e-07 * V(in_2,out_1);
-            I(in_1, out_2) <+ 3.286811392679851e-05 * V(in_1,out_2);
-            I(in_3, out_2) <+ -3.002790005861069e-07 * V(in_3,out_2);
-            I(in_2, out_3) <+ 3.286811392679851e-05 * V(in_2,out_3);
+            I(in_1, out_0) <+ -3.461276179802067e-07 * V(in_1,out_0);
+            I(in_0, out_1) <+ 2.851435103238063e-05 * V(in_0,out_1);
+            I(in_2, out_1) <+ -3.461276179802067e-07 * V(in_2,out_1);
+            I(in_1, out_2) <+ 2.851435103238063e-05 * V(in_1,out_2);
+            I(in_3, out_2) <+ -3.461276179802067e-07 * V(in_3,out_2);
+            I(in_2, out_3) <+ 2.851435103238063e-05 * V(in_2,out_3);
         end
 
     endmodule
@@ -647,22 +647,22 @@ with capacitive feedback.
     // s_tilde(t) = [s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3]^T
     // 
     // A ≈
-    // [0.00e+00, 3.00e+05, 0.00e+00, 0.00e+00]
-    // [-3.29e+07, 0.00e+00, 3.00e+05, 0.00e+00]
-    // [0.00e+00, -3.29e+07, 0.00e+00, 3.00e+05]
-    // [0.00e+00, 0.00e+00, -3.29e+07, 0.00e+00]
+    // [0.00e+00, 3.46e+05, 0.00e+00, 0.00e+00]
+    // [-2.85e+07, 0.00e+00, 3.46e+05, 0.00e+00]
+    // [0.00e+00, -2.85e+07, 0.00e+00, 3.46e+05]
+    // [0.00e+00, 0.00e+00, -2.85e+07, 0.00e+00]
     // 
     // B ≈
-    // [-3.29e+07]
+    // [-2.85e+07]
     // [0.00e+00]
     // [0.00e+00]
     // [0.00e+00]
     // 
     // Gamma ≈
-    // [-3.29e+07, -0.00e+00, -0.00e+00, -0.00e+00]
-    // [-0.00e+00, -3.29e+07, -0.00e+00, -0.00e+00]
-    // [-0.00e+00, -0.00e+00, -3.29e+07, -0.00e+00]
-    // [-0.00e+00, -0.00e+00, -0.00e+00, -3.29e+07]
+    // [-2.85e+07, -0.00e+00, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -2.85e+07, -0.00e+00, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -2.85e+07, -0.00e+00]
+    // [-0.00e+00, -0.00e+00, -0.00e+00, -2.85e+07]
     // 
     // Gamma_tildeT ≈
     // [1.00e+00, 0.00e+00, 0.00e+00, 0.00e+00]
@@ -781,7 +781,7 @@ with capacitive feedback.
 Similarly, we can instantiate op-amp realizations that account for
 imperfections such as finite gain and first order pole.
 
-.. GENERATED FROM PYTHON SOURCE LINES 111-124
+.. GENERATED FROM PYTHON SOURCE LINES 111-126
 
 .. code-block:: default
 
@@ -791,11 +791,13 @@ imperfections such as finite gain and first order pole.
     omega_p = 2 * np.pi * BW / 8
 
     finite_gain_op_amp_analog_system = cbadc.circuit_level.AnalogSystemFiniteGainOpAmp(
-        analog_system, C, A_DC
+        analog_system=analog_system, C=C, A_DC=A_DC
     )
 
     first_order_pole_op_amp_analog_system = (
-        cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(analog_system, C, A_DC, omega_p)
+        cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(
+            analog_system=analog_system, C=C, A_DC=A_DC, omega_p=omega_p
+        )
     )
 
 
@@ -805,7 +807,7 @@ imperfections such as finite gain and first order pole.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 125-132
+.. GENERATED FROM PYTHON SOURCE LINES 127-134
 
 again the corresponding verilog files can be found below
 
@@ -815,7 +817,7 @@ again the corresponding verilog files can be found below
 and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp.to_file`.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-142
+.. GENERATED FROM PYTHON SOURCE LINES 135-144
 
 .. code-block:: default
 
@@ -838,13 +840,13 @@ and are generated using the :py:func:`cbadc.circuit_level.AnalogSystemFirstOrder
 
  .. code-block:: none
 
-    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in double_scalars
-      f"[out_{i}] \u2248 [{', '.join([f'{1/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+    /Users/hammal/miniforge3/lib/python3.9/site-packages/cbadc/circuit_level/op_amp/resistor_network.py:61: RuntimeWarning: divide by zero encountered in true_divide
+      f"[out_{i}] \u2248 [{', '.join([f'{np.divide(1, a):.2e}' for a in self.G[i, :]])}] [in_{i}]"
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 143-160
+.. GENERATED FROM PYTHON SOURCE LINES 145-162
 
 Reference Simulation
 ---------------------
@@ -864,7 +866,7 @@ Tom demonstarte this second use case we will next compare the transfer
 functions of the analog systems we covered previously.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 160-189
+.. GENERATED FROM PYTHON SOURCE LINES 162-191
 
 .. code-block:: default
 
@@ -914,12 +916,12 @@ functions of the analog systems we covered previously.
 
     The analog system is parameterized as:
     A =
-    [[ 0.00e+00  3.00e+05  0.00e+00  0.00e+00]
-     [-3.29e+07  0.00e+00  3.00e+05  0.00e+00]
-     [ 0.00e+00 -3.29e+07  0.00e+00  3.00e+05]
-     [ 0.00e+00  0.00e+00 -3.29e+07  0.00e+00]],
+    [[ 0.00e+00  3.46e+05  0.00e+00  0.00e+00]
+     [-2.85e+07  0.00e+00  3.46e+05  0.00e+00]
+     [ 0.00e+00 -2.85e+07  0.00e+00  3.46e+05]
+     [ 0.00e+00  0.00e+00 -2.85e+07  0.00e+00]],
     B =
-    [[-3.29e+07]
+    [[-2.85e+07]
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]],
@@ -929,10 +931,10 @@ functions of the analog systems we covered previously.
      [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00]],
     Gamma =
-    [[-3.29e+07 -0.00e+00 -0.00e+00 -0.00e+00]
-     [-0.00e+00 -3.29e+07 -0.00e+00 -0.00e+00]
-     [-0.00e+00 -0.00e+00 -3.29e+07 -0.00e+00]
-     [-0.00e+00 -0.00e+00 -0.00e+00 -3.29e+07]],
+    [[-2.85e+07 -0.00e+00 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -2.85e+07 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -2.85e+07 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -2.85e+07]],
     Gamma_tildeT =
     [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00]
@@ -943,12 +945,12 @@ functions of the analog systems we covered previously.
      [ 0.00e+00]]
     The analog system is parameterized as:
     A =
-    [[-6.54e+05  3.00e+05  0.00e+00  0.00e+00]
-     [-3.29e+07 -6.54e+05  3.00e+05  0.00e+00]
-     [ 0.00e+00 -3.29e+07 -6.54e+05  3.00e+05]
-     [ 0.00e+00  0.00e+00 -3.29e+07 -6.57e+05]],
+    [[-5.67e+05  3.46e+05  0.00e+00  0.00e+00]
+     [-2.85e+07 -5.67e+05  3.46e+05  0.00e+00]
+     [ 0.00e+00 -2.85e+07 -5.67e+05  3.46e+05]
+     [ 0.00e+00  0.00e+00 -2.85e+07 -5.70e+05]],
     B =
-    [[-3.29e+07]
+    [[-2.85e+07]
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]],
@@ -958,10 +960,10 @@ functions of the analog systems we covered previously.
      [ 0.00e+00  0.00e+00  1.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  0.00e+00  1.00e+00]],
     Gamma =
-    [[-3.29e+07 -0.00e+00 -0.00e+00 -0.00e+00]
-     [-0.00e+00 -3.29e+07 -0.00e+00 -0.00e+00]
-     [-0.00e+00 -0.00e+00 -3.29e+07 -0.00e+00]
-     [-0.00e+00 -0.00e+00 -0.00e+00 -3.29e+07]],
+    [[-2.85e+07 -0.00e+00 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -2.85e+07 -0.00e+00 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -2.85e+07 -0.00e+00]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -2.85e+07]],
     Gamma_tildeT =
     [[ 1.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  1.00e+00  0.00e+00  0.00e+00]
@@ -972,13 +974,13 @@ functions of the analog systems we covered previously.
      [ 0.00e+00]]
     The analog system is parameterized as:
     A =
-    [[-1.98e+08 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05  5.50e+05  0.00e+00
+    [[-1.76e+08 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05  5.96e+05  0.00e+00
        0.00e+00]
-     [-0.00e+00 -1.98e+08 -0.00e+00 -0.00e+00 -6.03e+07 -7.85e+05  5.50e+05
+     [-0.00e+00 -1.76e+08 -0.00e+00 -0.00e+00 -4.91e+07 -7.85e+05  5.96e+05
        0.00e+00]
-     [-0.00e+00 -0.00e+00 -1.98e+08 -0.00e+00  0.00e+00 -6.03e+07 -7.85e+05
-       5.50e+05]
-     [-0.00e+00 -0.00e+00 -0.00e+00 -1.99e+08  0.00e+00  0.00e+00 -6.04e+07
+     [-0.00e+00 -0.00e+00 -1.76e+08 -0.00e+00  0.00e+00 -4.91e+07 -7.85e+05
+       5.96e+05]
+     [-0.00e+00 -0.00e+00 -0.00e+00 -1.77e+08  0.00e+00  0.00e+00 -4.92e+07
       -7.85e+05]
      [-7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00 -7.85e+05 -0.00e+00 -0.00e+00
       -0.00e+00]
@@ -989,7 +991,7 @@ functions of the analog systems we covered previously.
      [-0.00e+00 -0.00e+00 -0.00e+00 -7.85e+07 -0.00e+00 -0.00e+00 -0.00e+00
       -7.85e+05]],
     B =
-    [[-6.03e+07]
+    [[-4.91e+07]
      [ 0.00e+00]
      [ 0.00e+00]
      [ 0.00e+00]
@@ -1007,10 +1009,10 @@ functions of the analog systems we covered previously.
      [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00 -0.00e+00 -0.00e+00 -0.00e+00
       -1.00e+00]],
     Gamma =
-    [[-6.03e+07  0.00e+00  0.00e+00  0.00e+00]
-     [ 0.00e+00 -6.03e+07  0.00e+00  0.00e+00]
-     [ 0.00e+00  0.00e+00 -6.03e+07  0.00e+00]
-     [ 0.00e+00  0.00e+00  0.00e+00 -6.04e+07]
+    [[-4.91e+07  0.00e+00  0.00e+00  0.00e+00]
+     [ 0.00e+00 -4.91e+07  0.00e+00  0.00e+00]
+     [ 0.00e+00  0.00e+00 -4.91e+07  0.00e+00]
+     [ 0.00e+00  0.00e+00  0.00e+00 -4.92e+07]
      [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00]
      [ 0.00e+00  0.00e+00  0.00e+00  0.00e+00]
@@ -1034,7 +1036,7 @@ functions of the analog systems we covered previously.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  3.615 seconds)
+   **Total running time of the script:** ( 0 minutes  12.395 seconds)
 
 
 .. _sphx_glr_download_tutorials_c_circuit_level_plot_a_analog_system.py:

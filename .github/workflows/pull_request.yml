@@ -77,6 +77,8 @@ jobs:
             "c_circuit_level/plot_a_analog_system.py",
             "c_circuit_level/plot_b_analog_frontend.py",
             "c_circuit_level/plot_c_testbench.py",
+            "c_circuit_level/plot_d_noise.py",
+            "c_circuit_level/plot_e_linearity.py",
             "d_further/plot_a_Murmann_ADC_survey.py",
             "d_further/plot_z_artsy_sine.py",
           ]

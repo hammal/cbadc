@@ -7,7 +7,7 @@
 //
 // This file was generated at
 //
-// 2022-03-23T11:37:36.233838
+// 2022-05-17T16:17:01.380216
 //
 // using the cbadc package version
 //
@@ -185,10 +185,10 @@ endmodule
 //
 // Resistor network connecting inputs and outputs according to the following matrix
 //
-// [out_0] ≈ [3.01e+04, inf, inf, inf] [in_0]
-// [out_1] ≈ [inf, 3.01e+04, inf, inf] [in_1]
-// [out_2] ≈ [inf, inf, 3.01e+04, inf] [in_2]
-// [out_3] ≈ [inf, inf, inf, 3.01e+04] [in_3]
+// [out_0] ≈ [3.47e+04, -inf, -inf, -inf] [in_0]
+// [out_1] ≈ [-inf, 3.47e+04, -inf, -inf] [in_1]
+// [out_2] ≈ [-inf, -inf, 3.47e+04, -inf] [in_2]
+// [out_3] ≈ [-inf, -inf, -inf, 3.47e+04] [in_3]
 //
 // note the resistors are specified by their resistive values in Ohms
 //
@@ -206,10 +206,10 @@ module resistor_network_gamma(in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3
 
 
     analog begin
-        I(in_0, out_0) <+ 3.319679506606649e-05 * V(in_0,out_0);
-        I(in_1, out_1) <+ 3.319679506606649e-05 * V(in_1,out_1);
-        I(in_2, out_2) <+ 3.319679506606649e-05 * V(in_2,out_2);
-        I(in_3, out_3) <+ 3.319679506606649e-05 * V(in_3,out_3);
+        I(in_0, out_0) <+ 2.879949454270444e-05 * V(in_0,out_0);
+        I(in_1, out_1) <+ 2.879949454270444e-05 * V(in_1,out_1);
+        I(in_2, out_2) <+ 2.879949454270444e-05 * V(in_2,out_2);
+        I(in_3, out_3) <+ 2.879949454270444e-05 * V(in_3,out_3);
     end
 
 endmodule
@@ -225,7 +225,7 @@ endmodule
 //
 // Resistor network connecting inputs and outputs according to the following matrix
 //
-// [out_0] ≈ [3.01e+04] [in_0]
+// [out_0] ≈ [3.47e+04] [in_0]
 // [out_1] ≈ [-inf] [in_1]
 // [out_2] ≈ [-inf] [in_2]
 // [out_3] ≈ [-inf] [in_3]
@@ -243,7 +243,7 @@ module resistor_network_b(in_0, out_0, out_1, out_2, out_3);
 
 
     analog begin
-        I(in_0, out_0) <+ 3.319679506606649e-05 * V(in_0,out_0);
+        I(in_0, out_0) <+ 2.879949454270444e-05 * V(in_0,out_0);
     end
 
 endmodule
@@ -259,10 +259,10 @@ endmodule
 //
 // Resistor network connecting inputs and outputs according to the following matrix
 //
-// [out_0] ≈ [-inf, -3.30e+06, -inf, -inf] [in_0]
-// [out_1] ≈ [3.01e+04, -inf, -3.30e+06, -inf] [in_1]
-// [out_2] ≈ [-inf, 3.01e+04, -inf, -3.30e+06] [in_2]
-// [out_3] ≈ [-inf, -inf, 3.01e+04, -inf] [in_3]
+// [out_0] ≈ [-inf, -2.86e+06, -inf, -inf] [in_0]
+// [out_1] ≈ [3.47e+04, -inf, -2.86e+06, -inf] [in_1]
+// [out_2] ≈ [-inf, 3.47e+04, -inf, -2.86e+06] [in_2]
+// [out_3] ≈ [-inf, -inf, 3.47e+04, -inf] [in_3]
 //
 // note the resistors are specified by their resistive values in Ohms
 //
@@ -280,12 +280,12 @@ module resistor_network_a(in_0, in_1, in_2, in_3, out_0, out_1, out_2, out_3);
 
 
     analog begin
-        I(in_1, out_0) <+ -3.0328179059196796e-07 * V(in_1,out_0);
-        I(in_0, out_1) <+ 3.319679506606649e-05 * V(in_0,out_1);
-        I(in_2, out_1) <+ -3.0328179059196796e-07 * V(in_2,out_1);
-        I(in_1, out_2) <+ 3.319679506606649e-05 * V(in_1,out_2);
-        I(in_3, out_2) <+ -3.0328179059196796e-07 * V(in_3,out_2);
-        I(in_2, out_3) <+ 3.319679506606649e-05 * V(in_2,out_3);
+        I(in_1, out_0) <+ -3.495888941600088e-07 * V(in_1,out_0);
+        I(in_0, out_1) <+ 2.879949454270444e-05 * V(in_0,out_1);
+        I(in_2, out_1) <+ -3.495888941600088e-07 * V(in_2,out_1);
+        I(in_1, out_2) <+ 2.879949454270444e-05 * V(in_1,out_2);
+        I(in_3, out_2) <+ -3.495888941600088e-07 * V(in_3,out_2);
+        I(in_2, out_3) <+ 2.879949454270444e-05 * V(in_2,out_3);
     end
 
 endmodule
@@ -524,22 +524,22 @@ endmodule
 // s_tilde(t) = [s_tilde_0, s_tilde_1, s_tilde_2, s_tilde_3]^T
 //
 // A ≈
-// [-6.54e+05, 3.00e+05, 0.00e+00, 0.00e+00]
-// [-3.29e+07, -6.54e+05, 3.00e+05, 0.00e+00]
-// [0.00e+00, -3.29e+07, -6.54e+05, 3.00e+05]
-// [0.00e+00, 0.00e+00, -3.29e+07, -6.57e+05]
+// [-5.67e+05, 3.46e+05, 0.00e+00, 0.00e+00]
+// [-2.85e+07, -5.67e+05, 3.46e+05, 0.00e+00]
+// [0.00e+00, -2.85e+07, -5.67e+05, 3.46e+05]
+// [0.00e+00, 0.00e+00, -2.85e+07, -5.70e+05]
 //
 // B ≈
-// [-3.29e+07]
+// [-2.85e+07]
 // [0.00e+00]
 // [0.00e+00]
 // [0.00e+00]
 //
 // Gamma ≈
-// [-3.29e+07, -0.00e+00, -0.00e+00, -0.00e+00]
-// [-0.00e+00, -3.29e+07, -0.00e+00, -0.00e+00]
-// [-0.00e+00, -0.00e+00, -3.29e+07, -0.00e+00]
-// [-0.00e+00, -0.00e+00, -0.00e+00, -3.29e+07]
+// [-2.85e+07, -0.00e+00, -0.00e+00, -0.00e+00]
+// [-0.00e+00, -2.85e+07, -0.00e+00, -0.00e+00]
+// [-0.00e+00, -0.00e+00, -2.85e+07, -0.00e+00]
+// [-0.00e+00, -0.00e+00, -0.00e+00, -2.85e+07]
 //
 // Gamma_tildeT ≈
 // [1.00e+00, 0.00e+00, 0.00e+00, 0.00e+00]

@@ -711,7 +711,7 @@ class FIRFilter(BatchEstimator):
                 f.write("}")
                 if l < (self.analog_system.L - 1):
                     f.write(",")
-            f.write("}" + os.linesep)
+            f.write("};" + os.linesep)
 
     def number_of_filter_coefficients(self) -> int:
         """Number of non-zero filter coefficients

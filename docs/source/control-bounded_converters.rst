@@ -99,10 +99,9 @@ digital cancellation logic which fundamentally constrains how the AS and DC can 
 interconnected. In comparison, the control-bounded DE pose no such restrictions but
 instead enables a vast AS and DC design space.
 
-Interestingly, :doc:`any MASH converter can be written in the form of a control-bounded A/D
-converter<MASH_delta_sigma>` and thereby benefit from using the simple design procedure of the
-DE as opposed to the conventional way of a digital cancellation logic followed by a
-decimation filter.
+Interestingly, any continuous-time :math:`\Delta\Sigma` modulator can be written in the form of a control-bounded A/D
+converter and thereby benefit from using the same tools, simulators, and reconstruction filters
+as any other CBADC converter, see :doc:`the CTDS tutorial <./tutorials/b_high_level_simulation/plot_i_simulating_a_delta_sigma_modulator>`.
 
 ======================
 References
@@ -112,6 +111,7 @@ This was a brief introduction to the control-bounded A/D conversion concept.
 For a more in-depth description, consider the following references.
 
 
+* `H. Malmberg, G. Wilckens, and H.-A. Loeliger, Control-Bounded Analog-to-Digital Conversion. Circuits Syst Signal Process 41, 1223–1254 (2022). <https://doi.org/10.1007/s00034-021-01837-z>`_
 * `H. Malmberg, Control-bounded converters, Ph.D. dissertation, Dept. Inf. Technol. Elect. Eng., ETH Zurich, 2020.  <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf>`_
 * `H.-A. Loeliger, H. Malmberg, and G. Wilckens, Control-bounded analog-to-digital conversion: transfer function analysis, proof of concept, and digital filter implementation, arXiv:2001.05929 <https://arxiv.org/abs/2001.05929>`_
 * `H.-A. Loeliger and G. Wilckens, Control-based analog-to-digital conversion without sampling and quantization, 2015 Information Theory & Applications Workshop (ITA), UCSD, La Jolla, CA, USA, Feb. 1-6, 2015 <https://ieeexplore.ieee.org/document/7308975>`_

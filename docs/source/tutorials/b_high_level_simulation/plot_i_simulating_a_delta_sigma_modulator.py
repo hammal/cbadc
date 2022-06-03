@@ -1,5 +1,5 @@
 """
-Simulating a Continuous-Time Delta-Sigma Modulator
+Simulating a CTDS Modulator
 ==================================================
 """
 import cbadc
@@ -19,7 +19,7 @@ BW = 1 / (2 * T * OSR)
 # ---------------------------------------------------
 #
 # We start by loading a delta sigma modulator constructed
-# using [www.sigma-delta.de](www.sigma-delta.de) framework.
+# using the `www.sigma-delta.de <www.sigma-delta.de>`_ framework.
 #
 
 with open('CTSD_N5_OSR16_Q32_CRFF_OPT1_HINF600.json') as f:

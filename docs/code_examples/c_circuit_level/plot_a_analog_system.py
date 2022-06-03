@@ -91,7 +91,7 @@ verilog_analog_system.to_file(filename="verilog_analog_system.vams")
 
 C = 1e-12
 ideal_op_amp_analog_system = cbadc.circuit_level.AnalogSystemIdealOpAmp(
-    analog_system, C
+    analog_system=analog_system, C=C
 )
 
 # The verilog module description can be accessed by
@@ -114,11 +114,13 @@ A_DC = 1e2
 omega_p = 2 * np.pi * BW / 8
 
 finite_gain_op_amp_analog_system = cbadc.circuit_level.AnalogSystemFiniteGainOpAmp(
-    analog_system, C, A_DC
+    analog_system=analog_system, C=C, A_DC=A_DC
 )
 
 first_order_pole_op_amp_analog_system = (
-    cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(analog_system, C, A_DC, omega_p)
+    cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(
+        analog_system=analog_system, C=C, A_DC=A_DC, omega_p=omega_p
+    )
 )
 
 ###############################################################################

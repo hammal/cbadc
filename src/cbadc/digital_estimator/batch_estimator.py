@@ -1,12 +1,15 @@
 """The digital batch estimator
 """
-from typing import Iterator
+from typing import Iterator, List
+
+from scipy.misc import derivative
 import cbadc
 from cbadc.digital_estimator._filter_coefficients import (
     compute_filter_coefficients,
     FilterComputationBackend,
 )
 import cbadc.utilities
+import scipy.integrate
 import numpy as np
 import sympy as sp
 import logging
@@ -192,7 +195,7 @@ class BatchEstimator(Iterator[np.ndarray]):
 
         Returns
         -------
-        `int`
+        : `int`
             The filter lag.
 
         """
@@ -507,6 +510,134 @@ class BatchEstimator(Iterator[np.ndarray]):
                 np.dot(GH, np.dot(np.linalg.inv(GGH + self.eta2Matrix), G_bar))
             )
         return result
+
+    def general_transfer_function(self, omega: np.ndarray):
+        """Compute the general transfer functions from additive sources into each state varible
+         to the estimates.
+
+        Parameters
+        ----------
+        omega: `array_like`, shape=(K,)
+            an array_like object containing the angular frequencies for
+            evaluation.
+
+        Returns
+        -------
+        `array_like`, shape=(L, N, K)
+            return transfer function from each state N to each input estimate L for each frequency K.
+        """
+        #  shape=(N_tilde, N, K)
+        stf_array = self.analog_system.transfer_function_matrix(omega, general=True)
+        # shape=(L, N_tilde, K)
+        ntf_array = self.noise_transfer_function(omega)
+        return np.einsum('lnk,nxk->lxk', ntf_array, stf_array)
+
+    def max_transfer_function_peak(self, BW: np.ndarray):
+        omega = np.geomspace(BW[0], BW[1], 1000)
+        tfs = np.abs(self.general_transfer_function(omega)) ** 2
+        res = np.max(tfs, axis=2)
+        return res
+
+    def white_noise_balance(self, BW: np.ndarray, max=True):
+        """See the magnitude difference between different noise contributions.
+
+        Parameters
+        ----------
+        BW: `array_like`, `shape=(2,)`
+            the upper and lower bandwidth ranges as (BW_low, BW_high).
+        max: `bool`, `optional`
+            If to take the max value of the transferfunction or the squared integrated, defaults to True.
+
+        Returns
+        -------
+        : array_like, shape=(L, N)
+            white noise balance.
+        """
+        if max:
+            omega = np.geomspace(BW[0], BW[1], 1000)
+            tfs = np.abs(self.general_transfer_function(omega)) ** 2
+            res = np.max(tfs, axis=2)
+        else:
+
+            def _derivative(omega, x):
+                _omega = np.array([omega])
+                return (
+                    np.abs(self.general_transfer_function(_omega)).flatten(order="C")
+                    ** 2
+                )
+
+            res = (
+                scipy.integrate.solve_ivp(
+                    _derivative,
+                    (BW[0], BW[-1]),
+                    np.zeros(self.analog_system.L * self.analog_system.N),
+                )
+                .y[:, -1]
+                .reshape((self.analog_system.L, self.analog_system.N), order="C")
+            )
+        # for n, sigma_z_2 in enumerate(noise_variances):
+        #     integrated_tf[:, n] *= sigma_z_2
+        # return integrated_tf
+        return np.max(res, axis=1) / res / self.analog_system.N
+
+    def white_noise_sensitivities(
+        self,
+        BW: np.ndarray,
+        target_snr: float,
+        input_power: float = 0.5,
+        max=True,
+        spectrum=False,
+    ) -> np.ndarray:
+        """Compute per node white noise sensitivity
+
+        Parameters
+        ----------
+        BW: `array_like`, `shape=(2,)`
+            the upper and lower bandwidth ranges as (BW_low, BW_high).
+        target_snr: `float`
+            the target SNR expressed in a linear scale.
+        input_power: `float`, `optional`
+            the input power expressed in a linear scale, defaults to 1/2.
+        max: `bool`, `optional`
+            If to take the max value of the transferfunction or the squared integrated, defaults to True.
+        spectrum: `bool`, `optional`
+            express the returned noise variance as a power spectral density, i.e., V^2/Hz, for states
+            representing voltages. Defaults to False.
+
+        Returns
+        -------
+        : array_like, shape=(L, N)
+            admissable noise power to align with SNR requirement.
+        """
+        noise_variance = (
+            np.ones((self.analog_system.L, self.analog_system.N))
+            * input_power
+            / target_snr
+        )
+        balances = self.white_noise_balance(BW, max=max)
+        for l in range(self.analog_system.L):
+            for n in range(self.analog_system.N):
+                noise_variance[l, n] *= balances[l, n]
+        if spectrum:
+            return noise_variance / (BW[1] - BW[0])
+        return noise_variance
+
+    def max_harmonic_estimate(self, BW: np.ndarray, SFDR: float):
+
+        sfdr = cbadc.fom.snr_from_dB(SFDR)
+
+        num = 1000
+        _omega = np.logspace(np.log(BW[0]), np.log(BW[-1]), num)
+        tfs = np.abs(self.general_transfer_function(_omega))
+
+        max_input = np.max(tfs)
+        # value =
+
+        temp = np.max(tfs, axis=2) / max_input
+        # this could probably be normalized by somethings like np.linalg.norm(temp)
+        local_harmonics = 1.0 / temp
+        local_harmonics /= np.linalg.norm(local_harmonics, ord=1)
+        return local_harmonics / sfdr
 
     def __str__(self):
         return f"""Digital estimator is parameterized as

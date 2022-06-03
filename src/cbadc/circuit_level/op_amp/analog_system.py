@@ -1,14 +1,18 @@
 """Analog systems implemented with op-amps"""
-from typing import List
+from typing import Dict, List, Tuple
 from ..module import Module, Wire, SubModules
 from ...analog_system.analog_system import AnalogSystem
+from ...digital_estimator import BatchEstimator
 from ...analog_system.topology import chain
 from .resistor_network import ResistorNetwork
 from .amplifier_configurations import InvertingAmplifierCapacitiveFeedback
 from .op_amp import FiniteGainOpAmp, FirstOrderPoleOpAmp, IdealOpAmp
 from ..state_space_equations import StateSpaceLinearSystem
+from ..noise_models import resistor_sizing_voltage_source
 import logging
 import numpy as np
+
+from cbadc import digital_estimator
 
 
 logger = logging.getLogger(__name__)
@@ -127,6 +131,40 @@ class _AnalogSystemOpAmpWithoutIntegrators(Module):
         ]
 
 
+def _power_or_fixed(
+    kwargs: Dict,
+) -> Tuple[AnalogSystem, np.ndarray]:
+    if "C" in kwargs and "analog_system" in kwargs:
+        analog_system = kwargs.pop('analog_system')
+        C_diag = np.eye(analog_system.N)
+        C = float(kwargs.pop("C"))
+        C_diag *= C
+    elif "target_snr" in kwargs and "digital_estimator" in kwargs and "BW" in kwargs:
+
+        target_SNR = kwargs.pop("target_snr")
+        digital_estimator = kwargs.pop("digital_estimator")
+        analog_system = digital_estimator.analog_system
+        BW = kwargs.pop("BW")
+        C_diag = np.eye(analog_system.N)
+        P_Hz = np.max(
+            digital_estimator.white_noise_sensitivities(
+                np.array(BW), target_SNR, spectrum=True
+            ),
+            axis=0,
+        )
+        tau_sum = 1.0 / (
+            np.linalg.norm(analog_system.A, axis=1, ord=1)
+            + np.linalg.norm(analog_system.B, axis=1, ord=1)
+            + np.linalg.norm(analog_system.Gamma, axis=1, ord=1)
+        )
+        for n, p_Hz in enumerate(P_Hz):
+            R_tot = resistor_sizing_voltage_source(p_Hz)
+            C_diag[n, n] = tau_sum[n] / R_tot
+    else:
+        raise Exception("Either the capacitance C or the target_snr must be specified.")
+    return analog_system, C_diag
+
+
 class AnalogSystemIdealOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
     """Analog system implementation using op-amps and RC-networks.
 
@@ -182,41 +220,54 @@ class AnalogSystemIdealOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 
     Parameters
     ----------
-    analog_system: :py:class:`AnalogSystem`
+    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`, `optional`
         the ideal analog system specification.
-    C: `float`
-        the capacitance of the feedback capacitor.
+    C: `float`, `optional`
+        the capacitance for all integrators.
+    BW: `[float, float]`, `optional`
+        the bandwidth range [min_BW, max_BW].
+    target_snr: `float`, `optional`
+        the target SNR.
+    digital_estimator: :py:class:`cbdac.digital_estimator.BatchEstimator`
+        a digital estimator from which to design
     """
 
     analog_system: AnalogSystem
 
-    def __init__(self, analog_system: AnalogSystem, C: float, **kwargs) -> None:
+    def __init__(
+        self,
+        **kwargs,
+    ) -> None:
+        analog_system, self.C_diag = _power_or_fixed(kwargs)
         if analog_system.Gamma is None or analog_system.Gamma_tildeT is None:
             raise Exception("both Gammas must be defined.")
         super().__init__(analog_system, **kwargs)
+
         self._A_G_matrix = ResistorNetwork(
             "resistor_network_a",
             "A",
-            -analog_system.A * C,
+            -np.dot(self.C_diag, analog_system.A),
         )
         self._B_G_matrix = ResistorNetwork(
             "resistor_network_b",
             "B",
-            -analog_system.B * C,
+            -np.dot(self.C_diag, analog_system.B),
         )
         self._Gamma_G_matrix = ResistorNetwork(
             "resistor_network_gamma",
             "Gamma",
-            -analog_system.Gamma * C,
+            -np.dot(self.C_diag, analog_system.Gamma),
         )
         self._Gamma_tilde_G_matrix = ResistorNetwork(
             "resistor_network_gamma_tildeT",
             "Gamma_tildeT",
-            analog_system.Gamma_tildeT * C,
+            np.dot(self.C_diag, analog_system.Gamma_tildeT),
         )
 
         integrators = [
-            InvertingAmplifierCapacitiveFeedback(f"int_{n}", C, IdealOpAmp)
+            InvertingAmplifierCapacitiveFeedback(
+                f"int_{n}", self.C_diag[n, n], IdealOpAmp
+            )
             for n in range(analog_system.N)
         ]
         submodules = [
@@ -281,54 +332,58 @@ class AnalogSystemFiniteGainOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 
     Parameters
     ----------
-    analog_system: :py:class:`AnalogSystem`
+    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`, `optional`
         the ideal analog system specification.
-    C: `float`
-        the capacitance of the feedback capacitor.
-    A_DC: `float`
-        the finite gain.
+    C: `float`, `optional`
+        the capacitance for all integrators.
+    BW: `[float, float]`, `optional`
+        the bandwidth range [min_BW, max_BW].
+    target_snr: `float`, `optional`
+        the target SNR.
+    digital_estimator: :py:class:`cbdac.digital_estimator.BatchEstimator`
+        a digital estimator from which to design
+    A_DC: `float`, `optional`
+        the finite gain, defaults to 1e9.
     """
 
     def __init__(
         self,
-        analog_system: AnalogSystem,
-        C: float,
-        A_DC: float,
         **kwargs,
     ) -> None:
+        analog_system, self.C_diag = _power_or_fixed(kwargs)
         if analog_system.Gamma is None or analog_system.Gamma_tildeT is None:
             raise Exception("both Gammas must be defined.")
-        super().__init__(analog_system, **kwargs)
         # Modify system to account for finite gain
-        self.A_DC = A_DC
+        if 'A_DC' not in kwargs:
+            raise NotImplementedError("A_DC must be specified")
+        self.A_DC = kwargs.pop("A_DC", 1e9)
+        super().__init__(analog_system, **kwargs)
         xi = 1 + 1 / self.A_DC
 
         self._A_G_matrix = ResistorNetwork(
-            "resistor_network_a",
-            "A",
-            -analog_system.A * xi * C,
+            "resistor_network_a", "A", -np.dot(self.C_diag, analog_system.A) * xi
         )
         self._B_G_matrix = ResistorNetwork(
             "resistor_network_b",
             "B",
-            -analog_system.B * xi * C,
+            -np.dot(self.C_diag, analog_system.B) * xi,
         )
         self._Gamma_G_matrix = ResistorNetwork(
             "resistor_network_gamma",
             "Gamma",
-            -analog_system.Gamma * xi * C,
+            -np.dot(self.C_diag, analog_system.Gamma) * xi,
         )
         self._Gamma_tilde_G_matrix = ResistorNetwork(
             "resistor_network_gamma_tildeT",
             "Gamma_tildeT",
-            analog_system.Gamma_tildeT * C,
+            np.dot(self.C_diag, analog_system.Gamma_tildeT),
         )
 
         G_x = (
             np.sum(self._A_G_matrix.G, axis=1)
             + np.sum(self._B_G_matrix.G, axis=1)
             + np.sum(self._Gamma_G_matrix.G, axis=1)
-        ) / (self.A_DC * xi * C)
+        ) / (self.A_DC * xi * np.sum(self.C_diag, axis=1))
 
         # Update the analog system.
         analog_system_new = AnalogSystem(
@@ -342,7 +397,7 @@ class AnalogSystemFiniteGainOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         integrators = [
             InvertingAmplifierCapacitiveFeedback(
                 f"int_{n}",
-                C,
+                self.C_diag[n, n],
                 FiniteGainOpAmp,
                 A_DC=self.A_DC,
             )
@@ -437,27 +492,31 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 
     Parameters
     ----------
-    analog_system: :py:class:`AnalogSystem`
+    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`, `optional`
         the ideal analog system specification.
-    C: `float`
-        the capacitance of the feedback capacitor.
-    A_DC: `float`
-        the DC gain of the amplifier.
-    omega_p: `float`
-        the angular pole frequency of the amplifier.
+    C: `float`, `optional`
+        the capacitance for all integrators.
+    BW: `[float, float]`, `optional`
+        the bandwidth range [min_BW, max_BW].
+    target_snr: `float`, `optional`
+        the target SNR.
+    digital_estimator: :py:class:`cbdac.digital_estimator.BatchEstimator`
+        a digital estimator from which to design
+    A_DC: `float`, `optional`
+        the DC gain of the amplifier, defaults to 1e9.
+    omega_p: `float`, `optional`
+        the angular pole frequency of the amplifier, defaults to 2 * np.pi * 1e7.
     """
 
     def __init__(
         self,
-        analog_system: AnalogSystem,
-        C: float,
-        A_DC: float,
-        omega_p: float,
         **kwargs,
     ) -> None:
-
-        self.A_DC = A_DC
-        self.omega_p = omega_p
+        analog_system, self.C_diag = _power_or_fixed(kwargs)
+        if 'A_DC' not in kwargs or "omega_p" not in kwargs:
+            raise NotImplementedError("A_DC and omega_p must be specified")
+        self.A_DC = kwargs.pop("A_DC", 1e9)
+        self.omega_p = kwargs.pop("omega_p", 2 * np.pi * 1e7)
         G_gnd = (
             np.sum(-analog_system.A, axis=1)
             + np.sum(-analog_system.B, axis=1)
@@ -468,22 +527,22 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         self._A_G_matrix = ResistorNetwork(
             "resistor_network_a",
             "A",
-            -np.dot(np.diag(xi), analog_system.A) * C,
+            -np.dot(np.diag(xi), np.dot(self.C_diag, analog_system.A)),
         )
         self._B_G_matrix = ResistorNetwork(
             "resistor_network_b",
             "B",
-            -np.dot(np.diag(xi), analog_system.B) * C,
+            -np.dot(np.diag(xi), np.dot(self.C_diag, analog_system.B)),
         )
         self._Gamma_G_matrix = ResistorNetwork(
             "resistor_network_gamma",
             "Gamma",
-            -np.dot(np.diag(xi), analog_system.Gamma) * C,
+            -np.dot(np.diag(xi), np.dot(self.C_diag, analog_system.Gamma)),
         )
         self._Gamma_tilde_G_matrix = ResistorNetwork(
             "resistor_network_gamma_tildeT",
             "Gamma_tildeT",
-            analog_system.Gamma_tildeT * C,
+            np.dot(self.C_diag, analog_system.Gamma_tildeT),
         )
 
         G_gnd = (
@@ -500,8 +559,9 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         Gamma_new = np.zeros((N_new, analog_system.M))
         Gamma_tildeT_new = np.zeros((analog_system.M_tilde, N_new))
         CT_new = np.zeros((analog_system.N_tilde, N_new))
-
-        A_new[:N_old, :N_old] = -np.diag(G_gnd / C + self.omega_p * self.A_DC)
+        A_new[:N_old, :N_old] = -np.eye(
+            analog_system.N
+        ) * self.omega_p * self.A_DC - np.diag(G_gnd / np.diag(self.C_diag))
         A_new[:N_old, N_old:] = np.dot(
             np.diag(xi), analog_system.A
         ) - self.omega_p * np.eye(N_old)
@@ -525,7 +585,7 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         integrators = [
             InvertingAmplifierCapacitiveFeedback(
                 f"int_{n}",
-                C,
+                self.C_diag[n, n],
                 FirstOrderPoleOpAmp,
                 A_DC=self.A_DC,
                 omega_p=self.omega_p,

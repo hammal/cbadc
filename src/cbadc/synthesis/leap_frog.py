@@ -72,7 +72,7 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
         snr = snr_from_dB(SNR)
         N = kwargs['N']
         omega_BW = 2.0 * np.pi * kwargs['BW']
-        xi = kwargs.get('xi', 7e-3)
+        xi = kwargs.get('xi', 4e-3)
         gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
         omega_p = omega_BW / 2.0
         # omega_p /= np.cos(N * np.pi / (N + 1.0))
