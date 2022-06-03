@@ -254,7 +254,7 @@ import cbadc.circuit_level.testbench
 import os
 
 
-def test_AnalogFrontend(get_simulator):
+def test_testbench(get_simulator):
     digital_control_module = cbadc.circuit_level.digital_control.DigitalControl(
         get_simulator.digital_control
     )
@@ -262,7 +262,7 @@ def test_AnalogFrontend(get_simulator):
     C = 1e-12
     analog_system_module = (
         cbadc.circuit_level.op_amp.analog_system.AnalogSystemFiniteGainOpAmp(
-            get_simulator.analog_system, C, ADC
+            analog_system=get_simulator.analog_system, C=C, A_DC=ADC
         )
     )
     analog_frontend_module = cbadc.circuit_level.analog_frontend.AnalogFrontend(
