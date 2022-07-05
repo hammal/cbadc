@@ -79,8 +79,8 @@ DEBUG = False
     'simulation_method',
     [
         # pytest.param(AnalyticalSimulator, id="an_sim"),
-        # pytest.param(FullSimulator, id="full_num_sim"),
-        pytest.param(PreComputedControlSignalsSimulator, id="pre_num_sim"),
+        pytest.param(FullSimulator, id="full_num_sim"),
+        # pytest.param(PreComputedControlSignalsSimulator, id="pre_num_sim"),
         # pytest.param(MPSimulator, id="mp_sim"),
     ],
 )

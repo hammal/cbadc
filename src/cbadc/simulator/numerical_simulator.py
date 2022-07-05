@@ -8,9 +8,11 @@ import numpy as np
 import scipy.integrate
 import scipy.linalg
 import math
-from typing import List
+from typing import Dict, List
 from ._base_simulator import _BaseSimulator
+from ..simulation_event import SimulationEvent
 from scipy.special import factorial
+from scipy.integrate._ivp.ivp import OdeResult
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -29,7 +31,7 @@ class FullSimulator(_BaseSimulator):
     input_signals : [:py:class:`cbadc.analog_signal.AnalogSignal`]
         a python list of analog signals (or a derived class)
     clock: :py:class:`cbadc.simulator.clock`, `optional`
-        a clock to syncronize simulator output against, defaults to
+        a clock to synchronize simulator output against, defaults to
         a phase delayed version of the digital_control clock.
     t_stop : `float`, optional
         determines a stop time, defaults to :py:obj:`math.inf`
@@ -61,6 +63,8 @@ class FullSimulator(_BaseSimulator):
     `array_like`, shape=(M,)
     """
 
+    res: Dict
+
     def __init__(
         self,
         analog_system: cbadc.analog_system._valid_analog_system_types,
@@ -72,6 +76,7 @@ class FullSimulator(_BaseSimulator):
         atol: float = 1e-20,
         rtol: float = 1e-12,
         cov_x: np.ndarray = None,
+        event_list: List[SimulationEvent] = [],
     ):
         super().__init__(
             analog_system,
@@ -81,9 +86,11 @@ class FullSimulator(_BaseSimulator):
             t_stop,
             initial_state_vector,
             cov_x,
+            event_list,
         )
         self.atol = atol
         self.rtol = rtol
+        self.res: OdeResult = None
 
     def __next__(self) -> np.ndarray:
         """Computes the next control signal :math:`\mathbf{s}[k]`"""
@@ -126,27 +133,15 @@ class FullSimulator(_BaseSimulator):
             delta = self.analog_system.derivative(y, t, input_vector, control_vector)
             return delta
 
-        # terminate in case of control update
-        def control_update(t, x):
-            return t - self.digital_control._t_next
-
-        control_update.terminal = True
-        control_update.direction = 1.0
-        t0_impulse_response = [
-            lambda t, x: t
-            - self.digital_control._t_last_update[m]
-            - self.digital_control._impulse_response[m].t0
-            for m in range(self.digital_control.M)
-        ]
-        for i_resp in t0_impulse_response:
-            i_resp.direction = 1.0
+        # Getting all events
+        event_list = (*self.digital_control.event_list(), *self.event_list)
 
         # Default Case
         t = t_span[0]
         y_new = self._state_vector[:]
         atol_clock = self.digital_control.clock.T * 1e-4
         while not np.allclose(t, t_span[1], atol=atol_clock):
-            res = scipy.integrate.solve_ivp(
+            self.res: OdeResult = scipy.integrate.solve_ivp(
                 f,
                 (t, t_span[1]),
                 y_new,
@@ -155,24 +150,26 @@ class FullSimulator(_BaseSimulator):
                 # method="Radau",
                 # jac=self.analog_system.A,
                 # method="DOP853",
-                events=(control_update, *t0_impulse_response),
+                events=event_list,
             )
-            if res.status == -1:
-                logger.critical(f"IVP solver failed, See:\n\n{res}")
+            # if self.res.success:
+            # logger.critical(f"IVP solver failed, See:\n\n{self.res}")
+            self.res.event_list = event_list
             # In case of control update event
-            t = res.t[-1]
-            y_new = res.y[:, -1]
-            if self.noise:
-                y_new += self._noise_sample()
+            t = self.res.t[-1]
+            y_new = self.res.y[:, -1]
             u = np.zeros(self.analog_system.L)
             for l in range(self.analog_system.L):
                 u[l] = self.input_signals[l].evaluate(t)
-            if res.status == 1 or t == t_span[1]:
+            if self.res.status == 1 or t == t_span[1]:
                 self.digital_control.control_update(
                     t,
-                    np.dot(self.analog_system.Gamma_tildeT, y_new)
-                    + np.dot(self.analog_system.D_tilde, u),
+                    self.analog_system.control_observation(
+                        y_new, u, self.digital_control.control_signal()
+                    ),
                 )
+        if self.noise:
+            y_new += self._noise_sample()
         return y_new
 
     def __str__(self):
@@ -415,8 +412,9 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         # Update controls for next period if necessary
         self.digital_control.control_update(
             t_span[1],
-            np.dot(self.analog_system.Gamma_tildeT, self._temp_state_vector)
-            + np.dot(self.analog_system.D_tilde, u),
+            self.analog_system.control_observation(
+                self._temp_state_vector, u, self.digital_control.control_signal()
+            ),
         )
 
         return self._temp_state_vector

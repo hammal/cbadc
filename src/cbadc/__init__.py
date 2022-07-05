@@ -14,6 +14,8 @@ from . import digital_calibration
 from . import fom
 from . import synthesis
 from . import analog_frontend
+from . import observer
+from . import simulation_event
 
 # Set logging level
 logging.basicConfig(level=logging.INFO)

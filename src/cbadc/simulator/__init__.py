@@ -21,6 +21,7 @@ from .numpy_simulator import NumpySimulator
 from .utilities import extended_simulation_result
 from .wrapper import get_simulator, SimulatorType
 
+from ..simulation_event import SimulationEvent, TimeEvent, OutOfBounds
 
 _valid_simulators = Union[
     FullSimulator, PreComputedControlSignalsSimulator, AnalyticalSimulator, MPSimulator

@@ -63,6 +63,8 @@ class AnalogSystem:
         the direct matrix, defaults to None
     D_tilde : `array_like`, shape=(M_tilde, L), optional
         the direct control observation matrix, defaults to None
+    A_tilde : `array_like`, shape=(M_tilde, N), optional
+        the self control observation matrix, defaults to None
 
     Attributes
     ----------
@@ -121,6 +123,7 @@ class AnalogSystem:
         Gamma_tildeT: Union[np.ndarray, None],
         D: Union[np.ndarray, None] = None,
         D_tilde: Union[np.ndarray, None] = None,
+        A_tilde: Union[np.ndarray, None] = None,
     ):
         """Create an analog system.
 
@@ -231,6 +234,19 @@ class AnalogSystem:
 
         if self.D_tilde is not None and (
             self.D_tilde.shape[0] != self.M_tilde or self.D_tilde.shape[1] != self.L
+        ):
+            raise InvalidAnalogSystemError(
+                self, "D_tilde matrix has wrong dimensions. Should be M_tilde x L"
+            )
+
+        if A_tilde is not None:
+            self.A_tilde = np.array(A_tilde, dtype=np.double)
+        else:
+            self.A_tilde = np.zeros((self.M_tilde, self.M))
+        self._A_tilde_s = sp.Matrix(self.A_tilde)
+
+        if self.A_tilde is not None and (
+            self.A_tilde.shape[0] != self.M_tilde or self.A_tilde.shape[1] != self.M
         ):
             raise InvalidAnalogSystemError(
                 self, "D_tilde matrix has wrong dimensions. Should be M_tilde x L"
@@ -349,7 +365,9 @@ class AnalogSystem:
         """
         return np.dot(self.CT, x)
 
-    def control_observation(self, x: np.ndarray, u: np.ndarray = None) -> np.ndarray:
+    def control_observation(
+        self, x: np.ndarray, u: np.ndarray = None, s: np.ndarray = None
+    ) -> np.ndarray:
         """Computes the control observation for a given state vector :math:`\mathbf{x}(t)`
         evaluated at time :math:`t`.
 
@@ -363,6 +381,8 @@ class AnalogSystem:
             the state vector.
         u : `array_like`, shape=(L,)
             the input vector
+        s : `array_like`, shape=(M,)
+            the control signal
         Returns
         -------
         `array_like`, shape=(M_tilde,)
@@ -371,7 +391,13 @@ class AnalogSystem:
         """
         if u is None:
             return np.dot(self.Gamma_tildeT, x)
-        return np.dot(self.Gamma_tildeT, x) + np.dot(self.D_tilde, u)
+        if s is None:
+            np.dot(self.Gamma_tildeT, x) + np.dot(self.D_tilde, u)
+        return (
+            np.dot(self.Gamma_tildeT, x)
+            + np.dot(self.D_tilde, u)
+            + np.dot(self.A_tilde, s)
+        )
 
     def _lazy_initialize_ATF(self):
         logger.info("computing analytical transfer function matrix")
