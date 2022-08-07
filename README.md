@@ -13,14 +13,14 @@ Specifically, it is capable of:
 
 The projects official documentation can be found at [Read the Docs](https://cbadc.readthedocs.io/en/latest/).
 
-# Background & References
+<!-- # Background & References
 
 For a in depth description of the control-bounded conversion concept consider the following publications
 - [Control-bounded analog-to-digital conversion, circuits, systems, and signal processing, 2021](https://doi.org/10.1007/s00034-021-01837-z)
 - [Control-bounded converters, PhD Thesis, 2020](https://doi.org/10.3929/ethz-b-000469192).
 - [Control-bounded analog-to-digital conversion: transfer functions analysis, proof of concept, and digital filter implementation, arXiv:2001.05929, 2020](https://arxiv.org/abs/2001.05929)
 - [Control-based analog-to-digital conversion without sampling and quantization, information theory & applications workshop, 2015](https://ieeexplore.ieee.org/document/7308975)
-- [Analog-to-digital conversion using unstable filters, information theory & applications workshop, 2011](https://ieeexplore.ieee.org/abstract/document/5743620)
+- [Analog-to-digital conversion using unstable filters, information theory & applications workshop, 2011](https://ieeexplore.ieee.org/abstract/document/5743620) -->
 
 # Installation
 
@@ -35,7 +35,11 @@ into your console. Note that, currently cbadc is only supported for Python3.8 an
 ## Develop Version
 Alternatively, the latest develop branch can be installed by
 ```bash
-git clone --branch develop https://github.com/hammal/cbadc.git && cd cbadc &&python -m pip install . && cd .. && rm -rf cbadc;
+git clone --branch develop https://github.com/hammal/cbadc.git && \
+cd cbadc && \
+python -m pip install . && \
+cd .. && \
+rm -rf cbadc
 ```
 
 # Source Code
