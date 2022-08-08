@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**02:56.195** total execution time for **tutorials_c_circuit_level** files:
+**17:11.884** total execution time for **tutorials_c_circuit_level** files:
 
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_c_circuit_level_plot_e_linearity.py` (``plot_e_linearity.py``)             | 02:56.195 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_c_circuit_level_plot_d_noise.py` (``plot_d_noise.py``)                     | 17:11.884 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_c_circuit_level_plot_a_analog_system.py` (``plot_a_analog_system.py``)     | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
@@ -16,5 +16,5 @@ Computation times
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_tutorials_c_circuit_level_plot_c_testbench.py` (``plot_c_testbench.py``)             | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_tutorials_c_circuit_level_plot_d_noise.py` (``plot_d_noise.py``)                     | 00:00.000 | 0.0 MB |
+| :ref:`sphx_glr_tutorials_c_circuit_level_plot_e_linearity.py` (``plot_e_linearity.py``)             | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+

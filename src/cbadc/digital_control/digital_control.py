@@ -2,6 +2,7 @@
 import numpy as np
 from ..analog_signal import StepResponse, _valid_clock_types, Clock
 from ..analog_signal.impulse_responses import _ImpulseResponse
+from ..simulation_event import TimeEvent
 
 
 class DigitalControl:
@@ -108,6 +109,32 @@ class DigitalControl:
             # DAC
             self._control_descisions = np.asarray(2 * self._s - 1, dtype=np.double)
         # return self._dac_values * self._impulse_response(t - self._t_next + self.T)
+
+    def event_list(self):
+        """
+        Return the event list of the digital control.
+
+        Returns
+        -------
+        : [(t, x)->r]
+            the list of event functions.
+        """
+
+        # The next control update
+        control_update = TimeEvent(self._t_next, name='control_update', terminal=True)
+
+        event_list = [control_update]
+
+        # The start of delayed impulse responses
+        for m in range(self.M):
+            response = TimeEvent(
+                self._t_last_update[m] - self._impulse_response[m].t0,
+                name=f"impulse_response_{m}",
+                terminal=False,
+            )
+            event_list.append(response)
+
+        return event_list
 
     def control_signal(self) -> np.ndarray:
         """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.

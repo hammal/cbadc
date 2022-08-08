@@ -13,3 +13,4 @@ xlrd >= 1.0.0
 sympy >= 1.9
 mpmath >= 1.1
 jinja2==3.0.3
+pyarrow >= 8.0.0
