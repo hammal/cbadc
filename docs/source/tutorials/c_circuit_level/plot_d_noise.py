@@ -87,7 +87,7 @@ for index, thermal_snr_limit in enumerate(
     )
 
     digital_control.reset()
-    simulator = cbadc.simulator.FullSimulator(
+    simulator = cbadc.simulator.PreComputedControlSignalsSimulator(
         analog_system, digital_control, input_signals, cov_x=noise_covariance_matrix
     )
     digital_estimator(simulator)
@@ -117,7 +117,7 @@ for index, thermal_snr_limit in enumerate(
 
 # Reference Simulation
 
-simulator_ref = cbadc.simulator.FullSimulator(
+simulator_ref = cbadc.simulator.PreComputedControlSignalsSimulator(
     analog_system_ref, digital_control_ref, input_signals
 )
 digital_estimator_ref(simulator_ref)
