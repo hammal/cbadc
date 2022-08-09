@@ -1,16 +1,11 @@
-
 name: building tutorials
 
 on:
   push:
     branches:
-      - 'master'
-      - 'develop'
-      - 'feature/github_build_sphinx'
-  workflow_run:
-      workflows: ['linting, doc, and unit testing']
-      types:
-        - completed
+      - "master"
+      - "develop"
+      - "feature/github_build_sphinx"
 
 jobs:
   build-tutorials:
@@ -21,9 +16,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3.10 -m pip install --upgrade pip
-          python3.10 -m pip install .
-          python3.10 -m pip install -r docs/requirements.txt
+          python3 -m pip install --upgrade pip
+          python3 -m pip install .
+          python3 -m pip install -r docs/requirements.txt
 
       - name: Execute the notebooks
         working-directory: docs
