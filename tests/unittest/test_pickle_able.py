@@ -1,20 +1,28 @@
-from inspect import isclass
 import cbadc
 import cbadc
 import pytest
 import math
 import numpy as np
-
-filename = './dummy.pickle'
-
-
-def pickle_unpickle(test_object):
-    cbadc.utilities.pickle_dump(test_object, filename)
-    unpickled_object = cbadc.utilities.pickle_load(filename)
-    assert isinstance(unpickled_object, test_object.__class__)
+import uuid
+import os
 
 
-def test_analog_signals():
+@pytest.fixture()
+def pickle_unpickle():
+    filename = f"{str(uuid.uuid4())}.pkl"
+
+    def pickle_unpickle(test_object):
+        cbadc.utilities.pickle_dump(test_object, filename)
+        unpickled_object = cbadc.utilities.pickle_load(filename)
+        assert isinstance(unpickled_object, test_object.__class__)
+
+    yield pickle_unpickle
+    if os.path.exists(filename):
+        print(f"removing file: {filename}")
+        os.remove(filename)
+
+
+def test_analog_signals(pickle_unpickle):
     pickle_unpickle(cbadc.analog_signal.ConstantSignal())
     T = 1e-3
     tt = 1e-6
@@ -35,7 +43,7 @@ def test_analog_signals():
     pickle_unpickle(cbadc.analog_signal.Sinusoidal(amplitude, frequency))
 
 
-def test_analog_system():
+def test_analog_system(pickle_unpickle):
     beta = 6250.0
     rho = -62.5
     N = 5
@@ -50,7 +58,7 @@ def test_analog_system():
     pickle_unpickle(analog_system)
 
 
-def test_chain_of_integrator():
+def test_chain_of_integrator(pickle_unpickle):
     beta = 6250.0
     rho = -62.5
     N = 5
@@ -62,7 +70,7 @@ def test_chain_of_integrator():
     pickle_unpickle(analog_system)
 
 
-def test_leapfrog():
+def test_leapfrog(pickle_unpickle):
     beta = 6250.0
     alpha = -beta / 10
     rho = -62.5
@@ -75,7 +83,7 @@ def test_leapfrog():
     pickle_unpickle(analog_system)
 
 
-def test_filters():
+def test_filters(pickle_unpickle):
     N = 6
     Wn = (1e2, 1e3)
     rp = 3e0
@@ -97,7 +105,7 @@ def test_filters():
         pickle_unpickle(analog_system)
 
 
-def test_digital_control():
+def test_digital_control(pickle_unpickle):
     Ts = 1e-3
     M = 4
     clock = cbadc.analog_signal.Clock(Ts)
@@ -124,7 +132,7 @@ def test_digital_control():
         pytest.param(cbadc.digital_estimator.FIRFilter, id="FIR_de"),
     ],
 )
-def test_digital_estimator(reconstruction_method):
+def test_digital_estimator(reconstruction_method, pickle_unpickle):
     beta = 6250.0
     rho = -62.5
     N = 2
@@ -146,7 +154,7 @@ def test_digital_estimator(reconstruction_method):
     pickle_unpickle(reconstruction_method(analog_system, digitalControl, eta2, K1, K2))
 
 
-def test_adaptive_filter_and_calibrator():
+def test_adaptive_filter_and_calibrator(pickle_unpickle):
     beta = 6250.0
     rho = -62.5
     N = 2
@@ -200,7 +208,7 @@ def test_adaptive_filter_and_calibrator():
         pytest.param(cbadc.simulator.MPSimulator, id="mp_sim"),
     ],
 )
-def test_simulator(simulation_method):
+def test_simulator(simulation_method, pickle_unpickle):
     if issubclass(simulation_method, cbadc.simulator.AnalyticalSimulator) or issubclass(
         simulation_method, cbadc.simulator.MPSimulator
     ):
@@ -226,7 +234,7 @@ def test_simulator(simulation_method):
     )
 
 
-def test_analog_frontend():
+def test_analog_frontend(pickle_unpickle):
     beta = 6250.0
     rho = -62.5
     N = 2
@@ -245,16 +253,53 @@ def test_analog_frontend():
     pickle_unpickle(cbadc.analog_frontend.AnalogFrontend(analog_system, digitalControl))
 
 
-from tests.fixture.chain_of_integrators import get_simulator, chain_of_integrators
+@pytest.fixture
+def chain_of_integrators():
+    beta = 6250.0
+    rho = -62.5
+    N = 5
+    A = np.eye(N) * rho + np.eye(N, k=-1) * beta
+    B = np.zeros((N, 1))
+    B[0] = beta
+    CT = np.zeros((N, 1)).transpose()
+    CT[0, -1] = 1.0
+    Gamma_tildeT = np.eye(N)
+    Gamma = Gamma_tildeT * (-beta)
+    return {
+        "N": N,
+        "A": A,
+        "B": B,
+        "CT": CT,
+        "M": N,
+        "Gamma": Gamma,
+        "Gamma_tildeT": Gamma_tildeT,
+        "system": cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT),
+        "beta": beta,
+        "rho": rho,
+    }
+
+
+@pytest.fixture()
+def get_simulator(chain_of_integrators):
+    Ts = 1 / (2 * chain_of_integrators['beta'])
+    M = chain_of_integrators['M']
+    analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
+    clock = cbadc.analog_signal.Clock(Ts)
+    digitalControl = cbadc.digital_control.DigitalControl(clock, M)
+    simulator = cbadc.simulator.get_simulator(
+        chain_of_integrators["system"], digitalControl, analogSignals, clock
+    )
+    return simulator
+
+
 import cbadc.circuit_level.digital_control
 import cbadc.circuit_level.op_amp
 import cbadc.circuit_level.analog_frontend
 from cbadc.analog_signal import Clock, Sinusoidal
 import cbadc.circuit_level.testbench
-import os
 
 
-def test_testbench(get_simulator):
+def test_testbench(get_simulator, pickle_unpickle):
     digital_control_module = cbadc.circuit_level.digital_control.DigitalControl(
         get_simulator.digital_control
     )

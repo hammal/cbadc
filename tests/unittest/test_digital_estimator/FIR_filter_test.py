@@ -1,7 +1,10 @@
+import os
 import cbadc
 import numpy as np
 from tests.fixture.chain_of_integrators import chain_of_integrators
 from cbadc.analog_signal import Clock
+
+_ = chain_of_integrators
 
 beta = 6250.0
 rho = -62.5
@@ -27,7 +30,9 @@ def test_write_C_header(chain_of_integrators):
     filter = cbadc.digital_estimator.FIRFilter(
         chain_of_integrators["system"], digital_control, eta2, K1, K2
     )
-    filter.write_C_header("FIR_filter_C_header")
+    filename = "FIR_filter_C_header"
+    filter.write_C_header(filename)
+    os.remove(f"{filename}.h")
 
 
 # TODO fix scaling factor
@@ -78,7 +83,9 @@ def test_write_C_header_with_fixed_point(chain_of_integrators):
         K2,
         fixed_point=fixed_point,
     )
-    filter.write_C_header("FIR_filter_C_header_with_fixed_point")
+    filename = "FIR_filter_C_header_with_fixed_point"
+    filter.write_C_header(filename)
+    os.remove(f"{filename}.h")
 
 
 def test_impulse_response(chain_of_integrators):
