@@ -133,4 +133,4 @@ rtds_action_path = "tutorials"
 rtds_action_artifact_prefix = "notebooks-for-"
 
 # A GitHub personal access token is required, more info below
-rtds_action_github_token = os.environ["GITHUB_TOKEN"]
+rtds_action_github_token = os.environ.get("GITHUB_TOKEN", '')
