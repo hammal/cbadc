@@ -33,6 +33,7 @@ jobs:
   trigger-RTDS:
     name: "trigger read-the-docs hook"
     runs-on: ubuntu-latest
+    needs: build-tutorials
     steps:
       - name: Trigger RTDs build
         uses: dfm/rtds-action@v1
