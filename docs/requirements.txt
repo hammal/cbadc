@@ -9,7 +9,7 @@ sphinx-gallery == 0.10.1
 pygments == 2.4.1
 pandas == 1.4.1
 matplotlib == 3.5.1
-xlrd == 1.0.0
+xlrd == 2.0.1
 sympy == 1.9
 mpmath == 1.1
 jinja2 == 3.0.3
