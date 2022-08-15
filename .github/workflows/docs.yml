@@ -28,7 +28,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: notebooks-for-${{ github.sha }}
-          path: docs/source/tutorials
+          path: docs
 
   trigger-RTDS:
     name: "trigger read-the-docs hook"

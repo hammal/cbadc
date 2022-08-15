@@ -129,7 +129,7 @@ rtds_action_github_repo = "hammal/cbadc"
 
 # The path where the artifact should be extracted
 # Note: this is relative to the conf.py file!
-rtds_action_path = "tutorials"
+rtds_action_path = "../../docs"
 
 # The "prefix" used in the `upload-artifact` step of the action
 rtds_action_artifact_prefix = "notebooks-for-"
