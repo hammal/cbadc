@@ -50,12 +50,11 @@ class ResistorNetwork(Module):
         )
 
     def _module_comment(self) -> List[str]:
-        
         def _check_for_divide_by_zero(value: float) -> str:
             if value == 0:
                 return "inf"
             else:
-                return f"{1.0/a:.2e}"
+                return f"{1.0/value:.2e}"
 
         return [
             *super()._module_comment(),
