@@ -54,6 +54,7 @@ class Parameter:
         self.real = real
         self.comment = comment
 
+
 class Variable:
     """A verilog-ams variable class
 
