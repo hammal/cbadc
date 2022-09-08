@@ -54,6 +54,44 @@ class Parameter:
         self.real = real
         self.comment = comment
 
+class Variable:
+    """A verilog-ams variable class
+
+    Describes the necessary data to constitute a
+    verilog-ams variable.
+
+    Parameters
+    ----------
+    name: `str`
+        the name of the variable.
+    initial_value: Union[`float`, `int`, `str`, `None`], `optional`
+        an initial value, defaults to `None`.
+    real: `bool`, `optional`
+        a bool determining if the variable is real valued. If false
+        the variable will be assumed to be integer valued. Defafults
+        to True.
+    comment: `str`
+        a descriptive comment.
+    """
+
+    real: bool
+    name: str
+    initial_value: Union[float, int, str, None]
+    comment: str
+
+    def __init__(
+        self,
+        name: str,
+        initial_value: Union[float, int, str, None] = None,
+        real: bool = True,
+        comment: str = "",
+    ):
+        self.name = name
+        self.initial_value = initial_value
+        self.real = real
+        self.comment = comment
+
+
 
 class Variable:
     """A verilog-ams variable class
