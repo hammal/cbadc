@@ -2,13 +2,11 @@
 from typing import Dict, List, Tuple
 from cbadc.circuit.module import Module, Wire, SubModules
 from cbadc.analog_system.analog_system import AnalogSystem
-from cbadc.analog_system.topology import chain
 from cbadc.circuit.op_amp.resistor_network import ResistorNetwork
 from cbadc.circuit.op_amp.amplifier_configurations import (
     InvertingAmplifierCapacitiveFeedback,
 )
 from cbadc.circuit.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
-from cbadc.circuit.state_space_equations import StateSpaceLinearSystem
 from cbadc.circuit.noise_models import resistor_sizing_voltage_source
 import logging
 import numpy as np
