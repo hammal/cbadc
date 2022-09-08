@@ -1,0 +1,44 @@
+{
+    "quantizer": {
+        "level": 2
+    },
+    "systemOptions": {
+        "systemOrder": 3,
+        "osr": 40,
+        "umax": 0.76666666666666661
+    },
+    "coefficient": {
+        "b1": {
+            "fixedValue": 0.14582637128583303,
+            "active": true
+        },
+        "a1": {
+            "fixedValue": -0.14582637128583056,
+            "active": true
+        },
+        "a2": {
+            "fixedValue": -0.24627117987493433,
+            "active": true
+        },
+        "a3": {
+            "fixedValue": -0.16990812428725083,
+            "active": true
+        },
+        "c1": {
+            "fixedValue": 0.30950001274743116,
+            "active": true
+        },
+        "e32": {
+            "fixedValue": -0.014887512560713544,
+            "active": true
+        },
+        "c2": {
+            "fixedValue": 0.24860443511398253,
+            "active": true
+        },
+        "c3": {
+            "fixedValue": 3.9441856559145712,
+            "active": true
+        }
+    }
+}
