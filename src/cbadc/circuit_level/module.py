@@ -54,6 +54,7 @@ class Parameter:
         self.real = real
         self.comment = comment
 
+
 class Variable:
     """A verilog-ams variable class
 
@@ -90,7 +91,6 @@ class Variable:
         self.initial_value = initial_value
         self.real = real
         self.comment = comment
-
 
 
 class Wire:
@@ -163,7 +163,7 @@ class _SubModule:
     ):
         self.module_name = module_name
         # Hack to force a nonempty instance name:
-        self.instance_name = self.module_name if instance_name=='' else instance_name
+        self.instance_name = self.module_name if instance_name == '' else instance_name
         self.nets = nets
         self.ports = ports
         self._check_ports()
@@ -244,9 +244,7 @@ class _SubModule:
                 "electricals": [
                     w.name for w in filter(lambda x: x.electrical, self.nets)
                 ],
-                "real_variables": [
-                    p for p in filter(real_variables, self.variables)
-                ],
+                "real_variables": [p for p in filter(real_variables, self.variables)],
                 "int_variables": [
                     p for p in filter(lambda x: not real_variables(x), self.variables)
                 ],
@@ -508,9 +506,7 @@ class Module(_SubModule):
                     ],
                     "int_variables": [
                         p
-                        for p in filter(
-                            lambda x: not real_variables(x), self.variables
-                        )
+                        for p in filter(lambda x: not real_variables(x), self.variables)
                     ],
                     "analog_initial": self.analog_initial,
                     "submodules": self.submodules,

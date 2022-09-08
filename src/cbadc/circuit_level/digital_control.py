@@ -34,9 +34,7 @@ class Comparator(Module):
             Parameter("dly", 0.0),
             Parameter("ttime", "10p"),
         ]
-        variables = [
-            Variable("vout", real=True, comment="Output voltage value")
-        ]
+        variables = [Variable("vout", real=True, comment="Output voltage value")]
         analog_statements = [
             "@(cross(V(clk) - V(vsgd), -1)) begin",
             "\tif(V(s_tilde) > V(vsgd)) begin",
