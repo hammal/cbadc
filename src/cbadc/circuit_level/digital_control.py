@@ -1,6 +1,6 @@
 """"digital control implementations."""
 from typing import List, Union
-from .module import Module, Wire, Parameter, SubModules
+from .module import Module, Variable, Wire, Parameter, SubModules
 from ..analog_signal.impulse_responses import StepResponse, RCImpulseResponse
 from ..digital_control.digital_control import DigitalControl as IdealDigitalControl
 
@@ -31,24 +31,32 @@ class Comparator(Module):
         ports = [*self.inputs, *self.outputs]
         nets = [*ports]
         parameters = [
-            Parameter('dly', 0.0),
+            Parameter("dly", 0.0),
             Parameter("ttime", "10p"),
         ]
-        analog_statements = [
-            "@(cross(V(clk) - V(sgd), -1)) begin",
-            "\tif(V(s_tilde) > V(sgd))",
-            "\t\tV(s, vgd) <+ V(vdd, vgd) * transition(1, dly, ttime);",
-            "\telse",
-            "\t\tV(s, vgd) <+ V(vdd, vgd) * transition(0, dly, ttime);",
-            "end",
+        variables = [
+            Variable("vout", real=True, comment="Output voltage value")
         ]
-        analog_initial = ["V(s) = 0"]
+        analog_statements = [
+            "@(cross(V(clk) - V(vsgd), -1)) begin",
+            "\tif(V(s_tilde) > V(vsgd)) begin",
+            "\t\tvout=V(vdd, vgd);",
+            "\tend",
+            "\telse begin",
+            "\t\tvout = V(vgd);",
+            "\tend",
+            "end",
+            "V(s, vgd) <+ vout * transition(1.0, dly, ttime);",
+        ]
+        # analog_initial = ["V(s) = 0"]
+        analog_initial = []
         super().__init__(
             "comparator",
             nets,
             ports,
             instance_name=instance_name,
             parameters=parameters,
+            variables=variables,
             analog_statements=analog_statements,
             analog_initial=analog_initial,
         )

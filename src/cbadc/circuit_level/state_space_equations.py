@@ -65,24 +65,24 @@ class StateSpaceLinearSystem(Module):
             tmp = []
             for nn in range(self.analog_system.N):
                 if self.analog_system.A[n, nn] != 0:
-                    tmp.append(f"{self.analog_system.A[n, nn]}*V(x_{nn}, sgd)")
+                    tmp.append(f"{self.analog_system.A[n, nn]}*V(x_{nn}, vsgd)")
             for l in range(self.analog_system.L):
                 if self.analog_system.B[n, l] != 0:
-                    tmp.append(f"{self.analog_system.B[n,l]}*V(u_{l}, sgd)")
+                    tmp.append(f"{self.analog_system.B[n,l]}*V(u_{l}, vsgd)")
             if tmp:
                 analog_statements.append(
-                    f"ddt(V(x_{n}, sgd)) <+ " + " ".join(tmp) + ";"
+                    f"ddt(V(x_{n}, vsgd)) <+ " + " ".join(tmp) + ";"
                 )
         # OutputEquations
         for n_tilde in range(self.analog_system.N_tilde):
             tmp = []
             for n in range(self.analog_system.N):
                 if self.analog_system.CT[n_tilde, n] != 0:
-                    tmp.append(f"{self.analog_system.CT[n_tilde, n]}*V(x_{n}, sgd)")
+                    tmp.append(f"{self.analog_system.CT[n_tilde, n]}*V(x_{n}, vsgd)")
             if tmp:
                 (
                     analog_statements.append(
-                        f"V(y_{n_tilde}, sgd) <+ " + " ".join(tmp) + ";"
+                        f"V(y_{n_tilde}, vsgd) <+ " + " ".join(tmp) + ";"
                     )
                 )
         super().__init__(
@@ -188,16 +188,16 @@ class AnalogSystem(Module):
             tmp = []
             for nn in range(self.analog_system.N):
                 if self.analog_system.A[n, nn] != 0:
-                    tmp.append(f"{self.analog_system.A[n, nn]}*V(x_{nn}, sgd)")
+                    tmp.append(f"{self.analog_system.A[n, nn]}*V(x_{nn}, vsgd)")
             for m in range(self.analog_system.M):
                 if self.analog_system.Gamma[n, m] != 0:
-                    tmp.append(f"{self.analog_system.Gamma[n,m]}*V(s_{m}, sgd)")
+                    tmp.append(f"{self.analog_system.Gamma[n,m]}*V(s_{m}, vsgd)")
             for l in range(self.analog_system.L):
                 if self.analog_system.B[n, l] != 0:
-                    tmp.append(f"{self.analog_system.B[n,l]}*V(u_{l}, sgd)")
+                    tmp.append(f"{self.analog_system.B[n,l]}*V(u_{l}, vsgd)")
             if tmp:
                 analog_statements.append(
-                    f"ddt(V(x_{n}), sgd) <+ " + " ".join(tmp) + ";"
+                    f"ddt(V(x_{n}, vsgd)) <+ " + " ".join(tmp) + ";"
                 )
         # OutputEquations
         for m_tilde in range(self.analog_system.M_tilde):
@@ -205,12 +205,12 @@ class AnalogSystem(Module):
             for n in range(self.analog_system.N):
                 if self.analog_system.Gamma_tildeT[m_tilde, n] != 0:
                     tmp.append(
-                        f"{self.analog_system.Gamma_tildeT[m_tilde, n]}*V(x_{n}, sgd)"
+                        f"{self.analog_system.Gamma_tildeT[m_tilde, n]}*V(x_{n}, vsgd)"
                     )
             if tmp:
                 (
                     analog_statements.append(
-                        f"V(s_tilde_{m_tilde}, sgd) <+ " + " ".join(tmp) + ";"
+                        f"V(s_tilde_{m_tilde}, vsgd) <+ " + " ".join(tmp) + ";"
                     )
                 )
         super().__init__(

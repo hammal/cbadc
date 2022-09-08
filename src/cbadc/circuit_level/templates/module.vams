@@ -10,13 +10,11 @@ module {{ module_name }}({% for p in ports %}{{ p.name }}{% if loop.last %}{% el
     input {{ val.name }};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
 {% endfor %}{% endif %}
 {% if outputs %}
-
 {% for val in outputs %}
 
     output {{ val.name }};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
 {% endfor %}{% endif %}
 {% if inouts %}
-
 {% for val in inouts %}
 
     inout {{ val.name }};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
@@ -25,22 +23,32 @@ module {{ module_name }}({% for p in ports %}{{ p.name }}{% if loop.last %}{% el
 
     {% for val in real_parameters %}
 
-    parameter real {{ val.name }}{% if val.initial_value %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
+    parameter real {{ val.name }}{% if val.initial_value is not none %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
 {% endfor %}{% endif %}
 {% if int_parameters %}
+    {% for val in int_parameters %}
 
-     {% for val in int_parameters %}
-
-    parameter int {{ val.name }}{% if val.initial_value %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
+    parameter int {{ val.name }}{% if val.initial_value is not none %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
 {% endfor %}{% endif %}
 {% if electricals %}
 
-    {% for val in int_parameters %}
+    {% for val in electricals %}
 
     electrical {{ val.name }};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
-{% endfor %}
-
+    {% endfor %}
 {% endif %}
+{% if real_variables %}
+
+    {% for val in real_variables %}
+
+    real {{ val.name }}{% if val.initial_value is not none %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
+{% endfor %}{% endif %}
+{% if int_variables %}
+    {% for val in int_variables %}
+
+    int {{ val.name }}{% if val.initial_value is not none %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
+{% endfor %}{% endif %}
+
 {% if submodules %}
 
     {% for mod in submodules %}

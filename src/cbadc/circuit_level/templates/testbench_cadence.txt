@@ -19,6 +19,3 @@ VS u vgd vsource type=sine sinedc={{  input['offset'] }} ampl={{ input['amplitud
 
 // Analog frontend
 analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }} {% endfor %} {% for output in analog_frontend['outputs'] %}{{ output }} {% endfor %}{{ analog_frontend['name'] }}
-
-tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ strobedelay }}
-save {% for var in save_variables %}{{ var }} {% endfor %}

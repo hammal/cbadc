@@ -35,7 +35,7 @@ class InvertingAmplifierCapacitiveFeedback(Module):
         nets = ports
         parameters = [Parameter("C", C, True)]
         analog_statements = [
-            "ddt(V(out, n_in)) <+ I(out, n_in) / C;",
+            "I(out, n_in) <+ ddt(V(out, n_in)) * C;",
         ]
         unique_op_amp_name = f"op_amp_{name}"
         op_amp = OpAmp(unique_op_amp_name, instance_name=unique_op_amp_name, **kwargs)

@@ -14,7 +14,6 @@ _env = Environment(
     lstrip_blocks=True,
 )
 
-
 class TestBench:
     """Initialize a Cadence type testbench
 
@@ -26,8 +25,6 @@ class TestBench:
         an input signal.
     clock: :py:class:`cbadc.analog_signal.clock.Clock`
         a simulation clock that determines the sample times of the simulation.
-    t_stop: `float`
-        end time [s] of simulation, the simulation always starts at 0.
     name: `str`
         name of the testbench
     vdd: `float`
@@ -48,7 +45,6 @@ class TestBench:
         analog_frontend: AnalogFrontend,
         input_signal: Sinusoidal,
         clock: Clock,
-        t_stop: float,
         name: str = "",
         vdd: float = 1.0,
         vgd: float = 0.0,
@@ -62,7 +58,6 @@ class TestBench:
         self.strobe_freq = 1 / clock.T
         # quarter clock phase delay until readout
         self.strobe_delay = clock.T / 4.0
-        self._t_stop = t_stop
         self._name = name
         if vdd < vgd:
             raise Exception("Must be postive supply")
@@ -112,19 +107,6 @@ class TestBench:
                     'outputs': [out.name for out in self.analog_frontend.outputs],
                     'name': self.analog_frontend.module_name,
                 },
-                't_stop': self._t_stop,
-                'strobefreq': self.strobe_freq,
-                'strobedelay': self.strobe_delay,
-                'save_variables': [
-                    v.name
-                    for v in [
-                        *self.analog_frontend.inputs,
-                        *self.analog_frontend.outputs,
-                        *self.analog_frontend.analog_system._x,
-                        *self.analog_frontend.analog_system.inputs,
-                        *self.analog_frontend.analog_system.outputs,
-                    ]
-                ],
             }
         )
 
