@@ -19,16 +19,18 @@ def test_Module_inputs():
     assert (
         module.render()[0][-1]
         == """// op-amp
-// 
+//
 // Ports: in_0, in_1
-// 
-// Parameters: 
+//
+// Parameters:
 //
 module op-amp(in_0, in_1);
 
     input in_0; // Comment number 1
     input in_1; // Comment number 2
 
+    electrical in_0; // Comment number 1
+    electrical in_1; // Comment number 2
 
 endmodule"""
     )
@@ -49,26 +51,7 @@ def test_Module_ports():
     )
     assert (
         module.render()[0][-1]
-        == """// op-amp
-// 
-// Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-// 
-// Parameters: 
-//
-module op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
-
-    input in_0;
-    input in_1;
-
-    output out_0;
-    output out_1;
-
-    inout io_0;
-    inout io_1;
-    inout io_2;
-
-
-endmodule"""
+        == """// op-amp\n// \n// Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2\n// \n// Parameters: \n//\nmodule op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);\n\n    input in_0;\n    input in_1;\n\n    output out_0;\n    output out_1;\n\n    inout io_0;\n    inout io_1;\n    inout io_2;\n\n    electrical n_0;\n    electrical n_1;\n    electrical in_0;\n    electrical in_1;\n    electrical out_0;\n    electrical out_1;\n    electrical io_0;\n    electrical io_1;\n    electrical io_2;\n\nendmodule"""
     )
 
 
@@ -113,46 +96,7 @@ def test_Module_ports_and_parameters():
     module = cbadc.circuit_level.Module("op-amp", nets, ports, parameters=parameters)
     assert (
         module.render()[0][-1]
-        == """// op-amp
-// 
-// Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-// 
-// Parameters: r_0, r_1, r_2, r_3, r_4, r_5, int_6, int_7, int_8, int_9, int_10, int_11
-//
-module op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
-
-    input in_0;
-    input in_1;
-
-    output out_0;
-    output out_1;
-
-    inout io_0; // Small comment 0
-    inout io_1; // Small comment 1
-    inout io_2; // Small comment 2
-
-    parameter real r_0;
-    parameter real r_1;
-    parameter real r_2 = 0.01;
-    parameter real r_3 = 0.01;
-    parameter real r_4 = 10p;
-    parameter real r_5 = 10p;
-
-    parameter int int_6;
-    parameter int int_7;
-    parameter int int_8 = 2;
-    parameter int int_9 = 2;
-    parameter int int_10 = 3;
-    parameter int int_11 = 3;
-
-    electrical int_6;
-    electrical int_7;
-    electrical int_8;
-    electrical int_9;
-    electrical int_10;
-    electrical int_11;
-
-endmodule"""
+        == '// op-amp\n// \n// Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2\n// \n// Parameters: r_0, r_1, r_2, r_3, r_4, r_5, int_6, int_7, int_8, int_9, int_10, int_11\n//\nmodule op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);\n\n    input in_0;\n    input in_1;\n\n    output out_0;\n    output out_1;\n\n    inout io_0; // Small comment 0\n    inout io_1; // Small comment 1\n    inout io_2; // Small comment 2\n\n    parameter real r_0;\n    parameter real r_1;\n    parameter real r_2 = 0.01;\n    parameter real r_3 = 0.01;\n    parameter real r_4 = 10p;\n    parameter real r_5 = 10p; \n\n    parameter int int_6;\n    parameter int int_7;\n    parameter int int_8 = 2;\n    parameter int int_9 = 2;\n    parameter int int_10 = 3;\n    parameter int int_11 = 3;\n\n    electrical n_0;\n    electrical n_1;\n    electrical in_0;\n    electrical in_1;\n    electrical out_0;\n    electrical out_1;\n    electrical io_0; // Small comment 0\n    electrical io_1; // Small comment 1\n    electrical io_2; // Small comment 2\n\nendmodule'
     )
 
 
@@ -296,9 +240,9 @@ def test_Module_ports_and_parameters_and_analog_statements():
     assert (
         module.render()[0][-1]
         == """// op-amp
-// 
+//
 // Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-// 
+//
 // Parameters: r_0, r_1, r_2, r_3, r_4, r_5, int_6, int_7, int_8, int_9, int_10, int_11
 //
 module op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
@@ -327,12 +271,15 @@ module op-amp(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
     parameter int int_10 = 3;
     parameter int int_11 = 3;
 
-    electrical int_6;
-    electrical int_7;
-    electrical int_8;
-    electrical int_9;
-    electrical int_10;
-    electrical int_11;
+    electrical n_0;
+    electrical n_1;
+    electrical in_0;
+    electrical in_1;
+    electrical out_0;
+    electrical out_1;
+    electrical io_0;
+    electrical io_1;
+    electrical io_2;
 
     analog begin
         V(n_0) <+ r_3 * V(n_1)
@@ -381,124 +328,5 @@ def test_Module_ports_and_parameters_and_submodules():
     )
     assert (
         "\n\n\n".join(super_module.render()[0])
-        == """// submodule_2
-// 
-// Ports: out_0, out_1, io_0
-// 
-// Parameters: r_4, r_5
-//
-module submodule_2(out_0, out_1, io_0);
-
-
-    output out_0;
-    output out_1;
-
-    inout io_0;
-
-    parameter real r_4 = 10p;
-    parameter real r_5 = 10p;
-
-
-    analog begin
-        V(n_0) <+ r_4 * V(n_1)
-        V(out_0) <+ r_5 * V(io_1)
-    end
-
-endmodule
-
-
-// submodule_1
-// 
-// Ports: in_1, out_0
-// 
-// Parameters: r_4, r_5
-//
-module submodule_1(in_1, out_0);
-
-    input in_1;
-
-    output out_0;
-
-    parameter real r_4 = 10p;
-    parameter real r_5 = 10p;
-
-
-    analog begin
-        V(n_0) <+ r_4 * V(n_1)
-        V(out_0) <+ r_5 * V(io_1)
-    end
-
-endmodule
-
-
-// submodule_0
-// 
-// Ports: in_0
-// 
-// Parameters: r_4, r_5
-//
-module submodule_0(in_0);
-
-    input in_0;
-
-    parameter real r_4 = 10p;
-    parameter real r_5 = 10p;
-
-
-    analog begin
-        V(n_0) <+ r_4 * V(n_1)
-        V(out_0) <+ r_5 * V(io_1)
-    end
-
-endmodule
-
-
-// super_module
-// 
-// Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2
-// 
-// Parameters: r_4, r_5
-//
-module super_module(in_0, in_1, out_0, out_1, io_0, io_1, io_2);
-
-    input in_0;
-    input in_1;
-
-    output out_0;
-    output out_1;
-
-    inout io_0;
-    inout io_1;
-    inout io_2;
-
-    parameter real r_4 = 10p;
-    parameter real r_5 = 10p;
-
-
-
-    submodule_0 #(
-            .r_4(r_4), 
-            .r_5(r_5)
-    ) instance_0 (
-            .in_0(in_0)
-    );
-
-    submodule_1 #(
-            .r_4(r_4), 
-            .r_5(r_5)
-    ) instance_1 (
-            .in_1(in_0),
-            .out_0(in_1)
-    );
-
-    submodule_2 #(
-            .r_4(r_4), 
-            .r_5(r_5)
-    ) instance_2 (
-            .out_0(in_0),
-            .out_1(in_1),
-            .io_0(out_0)
-    );
-
-endmodule"""
+        == """// submodule_2\n// \n// Ports: out_0, out_1, io_0\n// \n// Parameters: r_4, r_5\n//\nmodule submodule_2(out_0, out_1, io_0);\n\n\n    output out_0;\n    output out_1;\n\n    inout io_0;\n\n    parameter real r_4 = 10p;\n    parameter real r_5 = 10p;\n\n    electrical n_0;\n    electrical n_1;\n    electrical in_0;\n    electrical in_1;\n    electrical out_0;\n    electrical out_1;\n    electrical io_0;\n    electrical io_1;\n    electrical io_2;\n\n    analog begin\n        V(n_0) <+ r_4 * V(n_1)\n        V(out_0) <+ r_5 * V(io_1)\n    end\n\nendmodule\n\n\n// submodule_1\n// \n// Ports: in_1, out_0\n// \n// Parameters: r_4, r_5\n//\nmodule submodule_1(in_1, out_0);\n\n    input in_1;\n\n    output out_0;\n\n    parameter real r_4 = 10p;\n    parameter real r_5 = 10p;\n\n    electrical n_0;\n    electrical n_1;\n    electrical in_0;\n    electrical in_1;\n    electrical out_0;\n    electrical out_1;\n    electrical io_0;\n    electrical io_1;\n    electrical io_2;\n\n    analog begin\n        V(n_0) <+ r_4 * V(n_1)\n        V(out_0) <+ r_5 * V(io_1)\n    end\n\nendmodule\n\n\n// submodule_0\n// \n// Ports: in_0\n// \n// Parameters: r_4, r_5\n//\nmodule submodule_0(in_0);\n\n    input in_0;\n\n    parameter real r_4 = 10p;\n    parameter real r_5 = 10p;\n\n    electrical n_0;\n    electrical n_1;\n    electrical in_0;\n    electrical in_1;\n    electrical out_0;\n    electrical out_1;\n    electrical io_0;\n    electrical io_1;\n    electrical io_2;\n\n    analog begin\n        V(n_0) <+ r_4 * V(n_1)\n        V(out_0) <+ r_5 * V(io_1)\n    end\n\nendmodule\n\n\n// super_module\n// \n// Ports: in_0, in_1, out_0, out_1, io_0, io_1, io_2\n// \n// Parameters: r_4, r_5\n//\nmodule super_module(in_0, in_1, out_0, out_1, io_0, io_1, io_2);\n\n    input in_0;\n    input in_1;\n\n    output out_0;\n    output out_1;\n\n    inout io_0;\n    inout io_1;\n    inout io_2;\n\n    parameter real r_4 = 10p;\n    parameter real r_5 = 10p;\n\n    electrical n_0;\n    electrical n_1;\n    electrical in_0;\n    electrical in_1;\n    electrical out_0;\n    electrical out_1;\n    electrical io_0;\n    electrical io_1;\n    electrical io_2;\n\n\n    submodule_0 #(\n            .r_4(r_4), \n            .r_5(r_5)\n    ) instance_0 (\n            .in_0(in_0)\n    );\n\n    submodule_1 #(\n            .r_4(r_4), \n            .r_5(r_5)\n    ) instance_1 (\n            .in_1(in_0),\n            .out_0(in_1)\n    );\n\n    submodule_2 #(\n            .r_4(r_4), \n            .r_5(r_5)\n    ) instance_2 (\n            .out_0(in_0),\n            .out_1(in_1),\n            .io_0(out_0)\n    );\n\nendmodule"""
     )

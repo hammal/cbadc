@@ -5,23 +5,26 @@ an analog system and a digital control.
 
 """
 from typing import List, Type, Union
-from cbadc.simulator._base_simulator import _BaseSimulator
-import enum
-from .module import Module, Wire, SubModules
-from .state_space_equations import AnalogSystem
-from .op_amp.analog_system import (
-    AnalogSystemFiniteGainOpAmp,
+from cbadc.circuit_level.module import Module, Wire, SubModules
+from cbadc.circuit_level.state_space_equations import AnalogSystem
+from cbadc.circuit_level.op_amp.analog_system import (
+    # AnalogSystemFiniteGainOpAmp,
     AnalogSystemIdealOpAmp,
     AnalogSystemStateSpaceOpAmp,
     AnalogSystemFirstOrderPoleOpAmp,
 )
-from .digital_control import DigitalControl, SwitchCapacitorControl
-from ..digital_estimator import FIRFilter, BatchEstimator, IIRFilter, ParallelEstimator
-from ..digital_estimator._filter_coefficients import FilterComputationBackend
+from cbadc.circuit_level.digital_control import DigitalControl, SwitchCapacitorControl
+from cbadc.digital_estimator import (
+    FIRFilter,
+    BatchEstimator,
+    IIRFilter,
+    ParallelEstimator,
+)
+from cbadc.digital_estimator._filter_coefficients import FilterComputationBackend
 
 _Analog_systems = Union[
     AnalogSystem,
-    AnalogSystemFiniteGainOpAmp,
+    # AnalogSystemFiniteGainOpAmp,
     AnalogSystemFirstOrderPoleOpAmp,
     AnalogSystemIdealOpAmp,
     AnalogSystemStateSpaceOpAmp,

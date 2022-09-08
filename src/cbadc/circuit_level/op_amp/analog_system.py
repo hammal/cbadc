@@ -1,18 +1,17 @@
 """Analog systems implemented with op-amps"""
 from typing import Dict, List, Tuple
-from ..module import Module, Wire, SubModules
-from ...analog_system.analog_system import AnalogSystem
-from ...digital_estimator import BatchEstimator
-from ...analog_system.topology import chain
-from .resistor_network import ResistorNetwork
-from .amplifier_configurations import InvertingAmplifierCapacitiveFeedback
-from .op_amp import FiniteGainOpAmp, FirstOrderPoleOpAmp, IdealOpAmp
-from ..state_space_equations import StateSpaceLinearSystem
-from ..noise_models import resistor_sizing_voltage_source
+from cbadc.circuit_level.module import Module, Wire, SubModules
+from cbadc.analog_system.analog_system import AnalogSystem
+from cbadc.analog_system.topology import chain
+from cbadc.circuit_level.op_amp.resistor_network import ResistorNetwork
+from cbadc.circuit_level.op_amp.amplifier_configurations import (
+    InvertingAmplifierCapacitiveFeedback,
+)
+from cbadc.circuit_level.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
+from cbadc.circuit_level.state_space_equations import StateSpaceLinearSystem
+from cbadc.circuit_level.noise_models import resistor_sizing_voltage_source
 import logging
 import numpy as np
-
-from cbadc import digital_estimator
 
 
 logger = logging.getLogger(__name__)
@@ -287,142 +286,142 @@ class AnalogSystemIdealOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         super().__init__(analog_system, submodules=submodules, **kwargs)
 
 
-class AnalogSystemFiniteGainOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
-    """Analog system implementation using finite gain op-amps and RC-networks.
+# class AnalogSystemFiniteGainOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
+#     """Analog system implementation using finite gain op-amps and RC-networks.
 
-    We model the analog system where the integrators are realized
-    using ideal op-amp with capacitive feedback together and interconnections
-    are manifested using resistive networks.
+#     We model the analog system where the integrators are realized
+#     using ideal op-amp with capacitive feedback together and interconnections
+#     are manifested using resistive networks.
 
-    Specifically, the integrators will be as modeled in the figure below.
+#     Specifically, the integrators will be as modeled in the figure below.
 
-    .. image:: ../../images/finite_gain_op_amp_2.svg
-        :width: 350
-        :align: center
-        :alt: Analog system using ideal op-amp with negative capacitive feedback.
+#     .. image:: ../../images/finite_gain_op_amp_2.svg
+#         :width: 350
+#         :align: center
+#         :alt: Analog system using ideal op-amp with negative capacitive feedback.
 
-    In this configuration the analog state is represented as the voltage
-    falling over the capacitor, i.e., :math:`V_{\mathbf{x}_k}(t)`.
+#     In this configuration the analog state is represented as the voltage
+#     falling over the capacitor, i.e., :math:`V_{\mathbf{x}_k}(t)`.
 
-    Specifically, the governing differential equation for an inverting op-amp
-    configuration with capacitive feedback and a finite op-amp gain
-    :math:`\\text{A}_{\\text{DC}}` follows as
+#     Specifically, the governing differential equation for an inverting op-amp
+#     configuration with capacitive feedback and a finite op-amp gain
+#     :math:`\\text{A}_{\\text{DC}}` follows as
 
-    :math:`\\xi \\cdot C \\cdot \dot{V}_{\mathbf{x}_{k}}(t) = -\sum_{\\ell=n}^{N} G_{\mathbf{A}_{k,n}} V_{\mathbf{x}_{n}}(t) - \sum_{\\ell=1}^{L} G_{\mathbf{B}_{k,\\ell}} V_{\mathbf{u}_{\\ell}}(t) - \sum_{m=1}^{M} G_{\mathbf{\Gamma}_{k,m}} V_{\mathbf{s}_{m}}(t) - \\frac{G_{\mathbf{x}_k}}{\\text{A}_{\\text{DC}}} V_{\mathbf{x}_k}(t)`
+#     :math:`\\xi \\cdot C \\cdot \dot{V}_{\mathbf{x}_{k}}(t) = -\sum_{\\ell=n}^{N} G_{\mathbf{A}_{k,n}} V_{\mathbf{x}_{n}}(t) - \sum_{\\ell=1}^{L} G_{\mathbf{B}_{k,\\ell}} V_{\mathbf{u}_{\\ell}}(t) - \sum_{m=1}^{M} G_{\mathbf{\Gamma}_{k,m}} V_{\mathbf{s}_{m}}(t) - \\frac{G_{\mathbf{x}_k}}{\\text{A}_{\\text{DC}}} V_{\mathbf{x}_k}(t)`
 
-    where
+#     where
 
-    where the capacitance :math:`C` is a specified parameter, and the resistances
+#     where the capacitance :math:`C` is a specified parameter, and the resistances
 
-    :math:`G_{\mathbf{A}_{k,n}} = - \mathbf{A}_{k, n} \\cdot \\xi \\cdot C`
+#     :math:`G_{\mathbf{A}_{k,n}} = - \mathbf{A}_{k, n} \\cdot \\xi \\cdot C`
 
-    :math:`G_{\mathbf{B}_{k,\\ell}} = - \mathbf{B}_{k, \\ell} \\cdot \\xi \\cdot C`
+#     :math:`G_{\mathbf{B}_{k,\\ell}} = - \mathbf{B}_{k, \\ell} \\cdot \\xi \\cdot C`
 
-    :math:`G_{\mathbf{\Gamma}_{k,m}} = - \mathbf{\Gamma}_{k, m} \\cdot \\xi \\cdot C`.
+#     :math:`G_{\mathbf{\Gamma}_{k,m}} = - \mathbf{\Gamma}_{k, m} \\cdot \\xi \\cdot C`.
 
-    Additionally, we see the effect of the finite gain through the terms
+#     Additionally, we see the effect of the finite gain through the terms
 
-    :math:`\\xi = 1 + 1 / \\text{A}_{\\text{DC}}`
+#     :math:`\\xi = 1 + 1 / \\text{A}_{\\text{DC}}`
 
-    :math:`\\frac{G_{\mathbf{x}_k}}{\\text{A}_{\\text{DC}}} = \\frac{\sum_{n=1}^N G_{\mathbf{A}_{k,n}} + \sum_{l=1}^{L} G_{\mathbf{B}_{k,\\ell}} + \sum_{l=m}^{M} G_{\mathbf{\Gamma}_{k,m}}}{\\text{A}_{\\text{DC}}}`
+#     :math:`\\frac{G_{\mathbf{x}_k}}{\\text{A}_{\\text{DC}}} = \\frac{\sum_{n=1}^N G_{\mathbf{A}_{k,n}} + \sum_{l=1}^{L} G_{\mathbf{B}_{k,\\ell}} + \sum_{l=m}^{M} G_{\mathbf{\Gamma}_{k,m}}}{\\text{A}_{\\text{DC}}}`
 
-    This will effectively change the analog system state matrix as
+#     This will effectively change the analog system state matrix as
 
-    :math:`\mathbf{A}_{k, k} \\gets \mathbf{A}_{k, k} + \\frac{G_{\mathbf{x}_k}}{\\xi \\cdot C \\cdot \\text{A}_{\\text{DC}}}`
+#     :math:`\mathbf{A}_{k, k} \\gets \mathbf{A}_{k, k} + \\frac{G_{\mathbf{x}_k}}{\\xi \\cdot C \\cdot \\text{A}_{\\text{DC}}}`
 
-    Parameters
-    ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`, `optional`
-        the ideal analog system specification.
-    C: `float`, `optional`
-        the capacitance for all integrators.
-    BW: `[float, float]`, `optional`
-        the bandwidth range [min_BW, max_BW].
-    target_snr: `float`, `optional`
-        the target SNR.
-    digital_estimator: :py:class:`cbdac.digital_estimator.BatchEstimator`
-        a digital estimator from which to design
-    A_DC: `float`, `optional`
-        the finite gain, defaults to 1e9.
-    """
+#     Parameters
+#     ----------
+#     analog_system: :py:class:`cbadc.analog_system.AnalogSystem`, `optional`
+#         the ideal analog system specification.
+#     C: `float`, `optional`
+#         the capacitance for all integrators.
+#     BW: `[float, float]`, `optional`
+#         the bandwidth range [min_BW, max_BW].
+#     target_snr: `float`, `optional`
+#         the target SNR.
+#     digital_estimator: :py:class:`cbdac.digital_estimator.BatchEstimator`
+#         a digital estimator from which to design
+#     A_DC: `float`, `optional`
+#         the finite gain, defaults to 1e9.
+#     """
 
-    def __init__(
-        self,
-        **kwargs,
-    ) -> None:
-        analog_system, self.C_diag = _power_or_fixed(kwargs)
-        if analog_system.Gamma is None or analog_system.Gamma_tildeT is None:
-            raise Exception("both Gammas must be defined.")
-        # Modify system to account for finite gain
-        if 'A_DC' not in kwargs:
-            raise NotImplementedError("A_DC must be specified")
-        self.A_DC = kwargs.pop("A_DC", 1e9)
-        super().__init__(analog_system, **kwargs)
-        xi = 1 + 1 / self.A_DC
+#     def __init__(
+#         self,
+#         **kwargs,
+#     ) -> None:
+#         analog_system, self.C_diag = _power_or_fixed(kwargs)
+#         if analog_system.Gamma is None or analog_system.Gamma_tildeT is None:
+#             raise Exception("both Gammas must be defined.")
+#         # Modify system to account for finite gain
+#         if 'A_DC' not in kwargs:
+#             raise NotImplementedError("A_DC must be specified")
+#         self.A_DC = kwargs.pop("A_DC", 1e9)
+#         super().__init__(analog_system, **kwargs)
+#         xi = 1 + 1 / self.A_DC
 
-        self._A_G_matrix = ResistorNetwork(
-            "resistor_network_a", "A", -np.dot(self.C_diag, analog_system.A) * xi
-        )
-        self._B_G_matrix = ResistorNetwork(
-            "resistor_network_b",
-            "B",
-            -np.dot(self.C_diag, analog_system.B) * xi,
-        )
-        self._Gamma_G_matrix = ResistorNetwork(
-            "resistor_network_gamma",
-            "Gamma",
-            -np.dot(self.C_diag, analog_system.Gamma) * xi,
-        )
-        self._Gamma_tilde_G_matrix = ResistorNetwork(
-            "resistor_network_gamma_tildeT",
-            "Gamma_tildeT",
-            np.dot(self.C_diag, analog_system.Gamma_tildeT),
-        )
+#         self._A_G_matrix = ResistorNetwork(
+#             "resistor_network_a", "A", -np.dot(self.C_diag, analog_system.A) * xi
+#         )
+#         self._B_G_matrix = ResistorNetwork(
+#             "resistor_network_b",
+#             "B",
+#             -np.dot(self.C_diag, analog_system.B) * xi,
+#         )
+#         self._Gamma_G_matrix = ResistorNetwork(
+#             "resistor_network_gamma",
+#             "Gamma",
+#             -np.dot(self.C_diag, analog_system.Gamma) * xi,
+#         )
+#         self._Gamma_tilde_G_matrix = ResistorNetwork(
+#             "resistor_network_gamma_tildeT",
+#             "Gamma_tildeT",
+#             np.dot(self.C_diag, analog_system.Gamma_tildeT),
+#         )
 
-        G_x = (
-            np.sum(self._A_G_matrix.G, axis=1)
-            + np.sum(self._B_G_matrix.G, axis=1)
-            + np.sum(self._Gamma_G_matrix.G, axis=1)
-        ) / (self.A_DC * xi * np.sum(self.C_diag, axis=1))
+#         G_x = (
+#             np.sum(self._A_G_matrix.G, axis=1)
+#             + np.sum(self._B_G_matrix.G, axis=1)
+#             + np.sum(self._Gamma_G_matrix.G, axis=1)
+#         ) / (self.A_DC * xi * np.sum(self.C_diag, axis=1))
 
-        # Update the analog system.
-        analog_system_new = AnalogSystem(
-            analog_system.A - np.diag(G_x),
-            analog_system.B,
-            analog_system.CT,
-            analog_system.Gamma,
-            analog_system.Gamma_tildeT,
-        )
+#         # Update the analog system.
+#         analog_system_new = AnalogSystem(
+#             analog_system.A - np.diag(G_x),
+#             analog_system.B,
+#             analog_system.CT,
+#             analog_system.Gamma,
+#             analog_system.Gamma_tildeT,
+#         )
 
-        integrators = [
-            InvertingAmplifierCapacitiveFeedback(
-                f"int_{n}",
-                self.C_diag[n, n],
-                FiniteGainOpAmp,
-                A_DC=self.A_DC,
-            )
-            for n in range(analog_system.N)
-        ]
-        submodules = [
-            *[
-                SubModules(
-                    integrator,
-                    [self._vdd, self._gnd, self._sgd, self._vgd[index], self._x[index]],
-                )
-                for index, integrator in enumerate(integrators)
-            ],
-            SubModules(self._A_G_matrix, [*self._x, *self._vgd]),
-            SubModules(self._B_G_matrix, [*self._u, *self._vgd]),
-            SubModules(self._Gamma_G_matrix, [*self._s, *self._vgd]),
-            SubModules(self._Gamma_tilde_G_matrix, [*self._x, *self._s_tilde]),
-        ]
+#         integrators = [
+#             InvertingAmplifierCapacitiveFeedback(
+#                 f"int_{n}",
+#                 self.C_diag[n, n],
+#                 FiniteGainOpAmp,
+#                 A_DC=self.A_DC,
+#             )
+#             for n in range(analog_system.N)
+#         ]
+#         submodules = [
+#             *[
+#                 SubModules(
+#                     integrator,
+#                     [self._vdd, self._gnd, self._sgd, self._vgd[index], self._x[index]],
+#                 )
+#                 for index, integrator in enumerate(integrators)
+#             ],
+#             SubModules(self._A_G_matrix, [*self._x, *self._vgd]),
+#             SubModules(self._B_G_matrix, [*self._u, *self._vgd]),
+#             SubModules(self._Gamma_G_matrix, [*self._s, *self._vgd]),
+#             SubModules(self._Gamma_tilde_G_matrix, [*self._x, *self._s_tilde]),
+#         ]
 
-        super().__init__(analog_system_new, submodules=submodules, **kwargs)
+#         super().__init__(analog_system_new, submodules=submodules, **kwargs)
 
-    def _module_comment(self) -> List[str]:
-        return [
-            *super()._module_comment(),
-        ]
+#     def _module_comment(self) -> List[str]:
+#         return [
+#             *super()._module_comment(),
+#         ]
 
 
 class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
@@ -506,6 +505,8 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         the DC gain of the amplifier, defaults to 1e9.
     omega_p: `float`, `optional`
         the angular pole frequency of the amplifier, defaults to 2 * np.pi * 1e7.
+    GBWP: `float`, `optional`
+        the gain bandwidth product of the amplifier, defaults to 1e9.
     """
 
     def __init__(
@@ -513,10 +514,22 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         **kwargs,
     ) -> None:
         analog_system, self.C_diag = _power_or_fixed(kwargs)
-        if 'A_DC' not in kwargs or "omega_p" not in kwargs:
-            raise NotImplementedError("A_DC and omega_p must be specified")
-        self.A_DC = kwargs.pop("A_DC", 1e9)
-        self.omega_p = kwargs.pop("omega_p", 2 * np.pi * 1e7)
+        if 'A_DC' in kwargs and 'omega_p' in kwargs:
+            self.A_DC = kwargs.pop("A_DC", 1e9)
+            self.omega_p = kwargs.pop("omega_p", 2 * np.pi * 1e7)
+            self.GBWP = self.A_DC * self.omega_p
+        elif 'GBWP' in kwargs and 'A_DC' in kwargs:
+            self.A_DC = kwargs.pop("A_DC", 1e9)
+            self.GBWP = kwargs.pop("GBWP", 2 * np.pi * 1e7)
+            self.omega_p = self.GBWP / self.A_DC
+        elif 'GBWP' in kwargs and 'omega_p' in kwargs:
+            self.omega_p = kwargs.pop("omega_p", 2 * np.pi * 1e7)
+            self.GBWP = kwargs.pop("GBWP", 2 * np.pi * 1e7)
+            self.A_DC = self.GBWP / self.omega_p
+        else:
+            raise ValueError(
+                "Either A_DC and omega_p or GBWP and omega_p or GBWP and A_DC must be specified."
+            )
         G_gnd = (
             np.sum(-analog_system.A, axis=1)
             + np.sum(-analog_system.B, axis=1)

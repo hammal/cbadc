@@ -11,7 +11,6 @@ from .module import Module, Wire, Parameter
 from .state_space_equations import AnalogSystem as AnalogSystemStateSpaceEquations
 from .analog_frontend import AnalogFrontend
 from .op_amp import (
-    AnalogSystemFiniteGainOpAmp,
     AnalogSystemFirstOrderPoleOpAmp,
     AnalogSystemIdealOpAmp,
     AnalogSystemStateSpaceOpAmp,

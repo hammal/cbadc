@@ -5,7 +5,6 @@ from . import analog_system
 from . import resistor_network
 
 from .analog_system import (
-    AnalogSystemFiniteGainOpAmp,
     AnalogSystemIdealOpAmp,
     AnalogSystemFirstOrderPoleOpAmp,
     AnalogSystemStateSpaceOpAmp,

@@ -1,8 +1,8 @@
 """op-amp configurations"""
 from typing import List, Union, Type
-from ..module import Module, Parameter, Wire, SubModules
-from ..state_space_equations import StateSpaceLinearSystem
-from .op_amp import FiniteGainOpAmp, FirstOrderPoleOpAmp, IdealOpAmp
+from cbadc.circuit_level.module import Module, Parameter, Wire, SubModules
+from cbadc.circuit_level.state_space_equations import StateSpaceLinearSystem
+from cbadc.circuit_level.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
 import logging
 
 
@@ -16,7 +16,7 @@ class InvertingAmplifierCapacitiveFeedback(Module):
         C: float,
         OpAmp: Union[
             Type[IdealOpAmp],
-            Type[FiniteGainOpAmp],
+            # Type[FiniteGainOpAmp],
             Type[FirstOrderPoleOpAmp],
             Type[StateSpaceLinearSystem],
         ],

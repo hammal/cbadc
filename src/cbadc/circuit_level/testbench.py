@@ -1,10 +1,10 @@
 """testbench implementations"""
 from jinja2 import Environment, PackageLoader, select_autoescape
-from .analog_frontend import AnalogFrontend
-from ..analog_signal import Clock, Sinusoidal
-from ..simulator import SimulatorType, get_simulator
+from cbadc.circuit_level.analog_frontend import AnalogFrontend
+from cbadc.analog_signal import Clock, Sinusoidal
+from cbadc.simulator import SimulatorType, get_simulator
 from datetime import datetime
-from ..__version__ import __version__
+from cbadc.__version__ import __version__
 import os.path
 
 _env = Environment(
@@ -13,6 +13,7 @@ _env = Environment(
     trim_blocks=True,
     lstrip_blocks=True,
 )
+
 
 class TestBench:
     """Initialize a Cadence type testbench
@@ -58,6 +59,7 @@ class TestBench:
         self.strobe_freq = 1 / clock.T
         # quarter clock phase delay until readout
         self.strobe_delay = clock.T / 4.0
+        self._t_stop = (1 << 14) * clock.T
         self._name = name
         if vdd < vgd:
             raise Exception("Must be postive supply")
@@ -107,6 +109,27 @@ class TestBench:
                     'outputs': [out.name for out in self.analog_frontend.outputs],
                     'name': self.analog_frontend.module_name,
                 },
+                't_stop': self._t_stop,
+                'strobefreq': self.strobe_freq,
+                'strobedelay': self.strobe_delay,
+                'save_variables': [
+                    [
+                        v.name
+                        for v in [
+                            *self.analog_frontend.inputs,
+                            *self.analog_frontend.outputs,
+                            *self.analog_frontend.analog_system._x,
+                            *self.analog_frontend.analog_system.inputs,
+                            *self.analog_frontend.analog_system.outputs,
+                        ]
+                    ],
+                    [
+                        v.name
+                        for v in [
+                            *self.analog_frontend.outputs,
+                        ]
+                    ],
+                ],
             }
         )
 
