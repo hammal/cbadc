@@ -18,10 +18,10 @@ DEBUG = True
     [
         # pytest.param(2, id="N=2"),
         # pytest.param(3, id="N=3"),
-        # pytest.param(4, id="N=4"),
+        pytest.param(4, id="N=4"),
         # pytest.param(5, id="N=5"),
         # pytest.param(6, id="N=6"),
-        pytest.param(7, id="N=7"),
+        # pytest.param(7, id="N=7"),
     ],
 )
 @pytest.mark.parametrize(
@@ -38,13 +38,13 @@ DEBUG = True
 @pytest.mark.parametrize(
     "BW",
     [
-        pytest.param(1e0, id="BW=1Hz"),
+        # pytest.param(1e0, id="BW=1Hz"),
         # # pytest.param(1e1, id="BW=10Hz"),
         # pytest.param(1e2, id="BW=100Hz"),
         # pytest.param(1e3, id="BW=1kHz"),
         # pytest.param(1e4, id="BW=10kHz"),
         # pytest.param(1e5, id="BW=100kHz"),
-        # pytest.param(1e6, id="BW=1MHz"),
+        pytest.param(1e6, id="BW=1MHz"),
         # pytest.param(1e7, id="BW=10MHz"),
         # pytest.param(1e8, id="BW=100MHz"),
         # pytest.param(1e9, id="BW=1GHz"),
@@ -125,13 +125,18 @@ def test_verilog_ams_in_cadence(
     verilog_analog_frontend = cbadc.circuit_level.AnalogFrontend(
         verilog_analog_system, verilog_digital_control
     )
+
+    CLK = AF.digital_control.clock
+
     vdd = 1
-    vi = vdd / 2
-    fi = 10e3
+    vi = vdd / 4
+    f_clk = 1/CLK.T
+    fi = f_clk
+    while fi > BW/2:
+        fi = fi/2
 
     # Instantiate testbench and write to file
     VS = cbadc.analog_signal.Sinusoidal(vi, fi)
-    CLK = AF.digital_control.clock
     TB = cbadc.circuit_level.TestBench(verilog_analog_frontend, VS, CLK)
     tb_filename = "verilog_testbench.txt"
     TB.to_file(filename=tb_filename, path=work_dir)
@@ -143,11 +148,6 @@ def test_verilog_ams_in_cadence(
     raw_data_dir = shlib.to_path(work_dir, 'simulation_output')
     parser = PSFParser(logger, raw_data_dir, 'tran')
     parser.parse()
-
-    # The signals (nets) saved by the simulator is now available from the parser like this:
-    s1 = parser.get_signal('s_1', 'tran')
-    # s1 is now a pade.Signal object. To get the np array of values, do:
-    s1 = s1.trace
 
     s_array = np.array(
         [parser.get_signal(f's_{index}', 'tran').trace for index in range(N)]
@@ -175,7 +175,7 @@ def test_verilog_ams_in_cadence(
 
     digital_estimator(simulated_control_signals)
 
-    size = s_array.shape[1]
+    size = s_array.shape[0]
     u_hat = np.zeros(size)
     for index in range(size):
         u_hat[index] = next(digital_estimator)
@@ -194,6 +194,9 @@ def test_verilog_ams_in_cadence(
         plt.ylabel('V^2 / Hz dB')
         plt.legend()
         plt.savefig('debug_psd.png')
+        print("s array:")
+        print(s_array)
+        print("uhat:")
         print(u_hat)
         print(verilog_analog_system.analog_system.A)
         print(digital_estimator)
