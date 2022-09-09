@@ -130,10 +130,10 @@ def test_verilog_ams_in_cadence(
 
     vdd = 1
     vi = vdd / 4
-    f_clk = 1/CLK.T
+    f_clk = 1 / CLK.T
     fi = f_clk
-    while fi > BW/2:
-        fi = fi/2
+    while fi > BW / 2:
+        fi = fi / 2
 
     # Instantiate testbench and write to file
     VS = cbadc.analog_signal.Sinusoidal(vi, fi)
@@ -184,11 +184,27 @@ def test_verilog_ams_in_cadence(
         u_hat_cut[:], fs=1 / CLK.T, nperseg=u_hat_cut.size
     )
     if DEBUG:
+        u_hat_python = np.zeros(size)
+        python_simulator = TB.get_simulator(
+            cbadc.simulator.SimulatorType.full_numerical
+        )
+        digital_estimator(python_simulator)
+        for index in range(size):
+            u_hat_python[index] = next(digital_estimator)
+        f_python, psd_python = cbadc.utilities.compute_power_spectral_density(
+            u_hat_python[K1 + K2 :], fs=1 / CLK.T, nperseg=u_hat_cut.size
+        )
+
         plt.title(f"Power spectral density:\nN={N},as={analog_system},ENOB={ENOB}")
         plt.semilogx(
             f,
             10 * np.log10(np.abs(psd)),
-            # label=f"est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB, BW={BW:.0e}",
+            label=f"Verilog-AMS, eta2={eta2}",
+        )
+        plt.semilogx(
+            f_python,
+            10 * np.log10(np.abs(psd_python)),
+            label=f"Python, eta2={eta2}",
         )
         plt.xlabel('Hz')
         plt.ylabel('V^2 / Hz dB')
