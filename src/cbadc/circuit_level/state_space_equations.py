@@ -1,7 +1,15 @@
 """state space equations expressed in verilog-ams modules."""
-import cbadc.analog_system
-from .module import Module, Wire
-from ..analog_system.analog_system import AnalogSystem
+from cbadc.circuit_level.module import Module, Wire
+from cbadc.analog_system.analog_system import AnalogSystem
+import numpy as np
+
+
+def _signed_weight(x: float):
+    magnitude = np.abs(x)
+    if x >= 0:
+        return f"+{magnitude}"
+    else:
+        return f"-{magnitude}"
 
 
 class StateSpaceLinearSystem(Module):
@@ -65,20 +73,24 @@ class StateSpaceLinearSystem(Module):
             tmp = []
             for nn in range(self.analog_system.N):
                 if self.analog_system.A[n, nn] != 0:
-                    tmp.append(f"{self.analog_system.A[n, nn]}*V(x_{nn}, vsgd)")
+                    weight = self.analog_system.A[n, nn]
+                    tmp.append(f"{_signed_weight(weight)}*V(x_{nn}, vsgd)")
             for l in range(self.analog_system.L):
                 if self.analog_system.B[n, l] != 0:
-                    tmp.append(f"{self.analog_system.B[n,l]}*V(u_{l}, vsgd)")
+                    weight = self.analog_system.B[n, l]
+                    tmp.append(f"{_signed_weight(weight)}*V(u_{l}, vsgd)")
             if tmp:
                 analog_statements.append(
-                    f"ddt(V(x_{n}, vsgd)) <+ " + " ".join(tmp) + ";"
+                    f"V(x_{n}, vsgd) <+ idt(" + " ".join(tmp) + ");"
                 )
         # OutputEquations
         for n_tilde in range(self.analog_system.N_tilde):
             tmp = []
             for n in range(self.analog_system.N):
                 if self.analog_system.CT[n_tilde, n] != 0:
-                    tmp.append(f"{self.analog_system.CT[n_tilde, n]}*V(x_{n}, vsgd)")
+                    tmp.append(
+                        f"{_signed_weight(self.analog_system.CT[n_tilde, n])}*V(x_{n}, vsgd)"
+                    )
             if tmp:
                 (
                     analog_statements.append(
@@ -188,16 +200,22 @@ class AnalogSystem(Module):
             tmp = []
             for nn in range(self.analog_system.N):
                 if self.analog_system.A[n, nn] != 0:
-                    tmp.append(f"{self.analog_system.A[n, nn]}*V(x_{nn}, vsgd)")
+                    tmp.append(
+                        f"{_signed_weight(self.analog_system.A[n, nn])}*V(x_{nn}, vsgd)"
+                    )
             for m in range(self.analog_system.M):
                 if self.analog_system.Gamma[n, m] != 0:
-                    tmp.append(f"{self.analog_system.Gamma[n,m]}*V(s_{m}, vsgd)")
+                    tmp.append(
+                        f"{_signed_weight(self.analog_system.Gamma[n,m])}*V(s_{m}, vsgd)"
+                    )
             for l in range(self.analog_system.L):
                 if self.analog_system.B[n, l] != 0:
-                    tmp.append(f"{self.analog_system.B[n,l]}*V(u_{l}, vsgd)")
+                    tmp.append(
+                        f"{_signed_weight(self.analog_system.B[n,l])}*V(u_{l}, vsgd)"
+                    )
             if tmp:
                 analog_statements.append(
-                    f"ddt(V(x_{n}, vsgd)) <+ " + " ".join(tmp) + ";"
+                    f"V(x_{n}, vsgd) <+ idt(" + " ".join(tmp) + ");"
                 )
         # OutputEquations
         for m_tilde in range(self.analog_system.M_tilde):
@@ -205,7 +223,7 @@ class AnalogSystem(Module):
             for n in range(self.analog_system.N):
                 if self.analog_system.Gamma_tildeT[m_tilde, n] != 0:
                     tmp.append(
-                        f"{self.analog_system.Gamma_tildeT[m_tilde, n]}*V(x_{n}, vsgd)"
+                        f"{_signed_weight(self.analog_system.Gamma_tildeT[m_tilde, n])}*V(x_{n}, vsgd)"
                     )
             if tmp:
                 (

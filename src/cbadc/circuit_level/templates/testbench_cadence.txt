@@ -1,6 +1,3 @@
-simulator lang = spectre
-global 0
-
 {% for file in includes %}
 ahdl_include "{{ file }}"
 {% endfor %}
@@ -9,20 +6,27 @@ ahdl_include "{{ file }}"
 {{ option }}
 {% endfor %}
 
-// Power supply
+* Power Supply
 VGND vgd 0 vsource dc={{ vgd }} type=dc
 VDD vdd 0 vsource dc={{ vdd }} type=dc
-VSG vsgd 0 vsource dc={{ vsgd }} type=dc
+VSG vsgd 0 vsource dc= {{ vsgd }} type=dc
 
-// Clock
-VCLK clk vgd vsource type=pulse val0={{ vgd }} val1={{ vdd }} period={{ clock['period'] }} rise={{ clock['rise_time'] }} fall={{ clock['fall_time'] }}
+* Clock
+VCLK clk vgd vsource type=pulse val0={{ vgd }} val1={{ vdd }} period={{ period }} rise={{ rise_time }} fall={{ fall_time }}
 
-// Input signal
-VS u vgd vsource type=sine sinedc={{  input['offset'] }} ampl={{ input['amplitude'] }} freq={{ input["freq"] }} mag=1
+* Input Signal
+VS u_0 vgd vsource type=sine sinedc={{  input['offset'] }} ampl={{ input['amplitude'] }} freq={{ input["freq"] }} mag=1
 
-// Analog frontend
-analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }} {% endfor %} {% for output in analog_frontend['outputs'] %}{{ output }} {% endfor %}{{ analog_frontend['name'] }}
+* Analog frontend
+analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }}{% endfor %} {% for output in analog_frontend['outputs'] %}{{ output }}{% endfor %} {{ analog_frontend['name'] }}
 
 // Example analysis commands
+//
+// stop=(1 << 14) * clock_period
+// strobefreq = 1 / clock_period
+// strobedelay = clock_period / 4
+//
 tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ strobedelay }} skipdc=yes
+
+// Save analog frontend outputs
 save {% for var in save_variables[1] %}{{ var }} {% endfor %}

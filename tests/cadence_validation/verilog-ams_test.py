@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 # Start-up cmd: pytest tests/cadence_validation/verilog-ams_test.py
 DEBUG = True
 
+
 @pytest.mark.parametrize(
     "N",
     [
@@ -87,7 +88,12 @@ def test_verilog_ams_in_cadence(
     work_dir = shlib.to_path(__file__).parent
     logger = init_logger()
     # Instantiate analog frontend
-    AF = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    if analog_system == 'chain-of-integrators':
+        AF = cbadc.synthesis.get_chain_of_integrator(N=N, ENOB=ENOB, BW=BW)
+    elif analog_system == 'leap_frog':
+        AF = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    else:
+        raise ValueError("Unknown analog system")
     C = 1e-12
     if analog_circuit_implementation == cbadc.circuit_level.AnalogSystemIdealOpAmp:
         verilog_analog_system = cbadc.circuit_level.AnalogSystemIdealOpAmp(
