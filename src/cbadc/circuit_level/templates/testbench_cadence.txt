@@ -1,3 +1,6 @@
+simulator lang = spectre
+global 0
+
 {% for file in includes %}
 ahdl_include "{{ file }}"
 {% endfor %}
@@ -21,5 +24,5 @@ VS u vgd vsource type=sine sinedc={{  input['offset'] }} ampl={{ input['amplitud
 analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }} {% endfor %} {% for output in analog_frontend['outputs'] %}{{ output }} {% endfor %}{{ analog_frontend['name'] }}
 
 // Example analysis commands
-tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ strobedelay }}
-save {% for var in save_variables %}{{ var }} {% endfor %}
+tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ strobedelay }} skipdc=yes
+save {% for var in save_variables[1] %}{{ var }} {% endfor %}

@@ -9,8 +9,8 @@ import shlib
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Start-up cmd: pytest tests/cadence_validation/verilog-ams_test.py
 DEBUG = True
-
 
 @pytest.mark.parametrize(
     "N",
@@ -30,7 +30,7 @@ DEBUG = True
         pytest.param(12, id="ENOB=12"),
         # pytest.param(14, id="ENOB=14"),
         # pytest.param(16, id="ENOB=16"),
-        pytest.param(20, id="ENOB=20"),
+        # pytest.param(20, id="ENOB=20"),
         # pytest.param(23, id="ENOB=23"),
     ],
 )
@@ -45,14 +45,14 @@ DEBUG = True
         # pytest.param(1e5, id="BW=100kHz"),
         # pytest.param(1e6, id="BW=1MHz"),
         # pytest.param(1e7, id="BW=10MHz"),
-        pytest.param(1e8, id="BW=100MHz"),
+        # pytest.param(1e8, id="BW=100MHz"),
         # pytest.param(1e9, id="BW=1GHz"),
     ],
 )
 @pytest.mark.parametrize(
     "analog_system",
     [
-        pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
+        # pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
         pytest.param('leap_frog', id="leap_frog_as"),
     ],
 )
@@ -66,12 +66,12 @@ DEBUG = True
 @pytest.mark.parametrize(
     'analog_circuit_implementation',
     [
-        pytest.param(cbadc.circuit_level.AnalogSystemStateSpaceEquations, id="ssm"),
+        # pytest.param(cbadc.circuit_level.AnalogSystemStateSpaceEquations, id="ssm"),
         pytest.param(cbadc.circuit_level.AnalogSystemIdealOpAmp, id="ideal_opamp"),
-        pytest.param(
-            cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp,
-            id="first_order_pole_opamp",
-        ),
+        # pytest.param(
+        #     cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp,
+        #     id="first_order_pole_opamp",
+        # ),
         # pytest.param(
         #     cbadc.circuit_level.AnalogSystemStateSpaceOpAmp,
         #     id="general_order_pole_opamp",
@@ -106,10 +106,9 @@ def test_verilog_ams_in_cadence(
         analog_circuit_implementation
         == cbadc.circuit_level.AnalogSystemStateSpaceEquations
     ):
-        raise NotImplementedError
-        # verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
-        #     analog_system=AF.analog_system
-        # )
+        verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
+            analog_system=AF.analog_system
+        )
     else:
         raise ValueError("Unknown analog_circuit_implementation")
 
@@ -132,7 +131,7 @@ def test_verilog_ams_in_cadence(
     TB.to_file(filename=tb_filename, path=work_dir)
 
     # Simulate
-    simulate_netlist(logger, shlib.to_path(work_dir, 'input.txt'), work_dir=work_dir)
+    simulate_netlist(logger, shlib.to_path(work_dir, tb_filename), work_dir=work_dir)
 
     # Parse the raw data file
     raw_data_dir = shlib.to_path(work_dir, 'simulation_output')
@@ -145,7 +144,7 @@ def test_verilog_ams_in_cadence(
     s1 = s1.trace
 
     s_array = np.array(
-        [parser.get_signals(f's_{index}', 'tran').trace for index in range(N)]
+        [parser.get_signal(f's_{index}', 'tran').trace for index in range(N)]
     ).transpose()
     simulated_control_signals = cbadc.simulator.NumpySimulator('', array=s_array)
 
@@ -178,6 +177,21 @@ def test_verilog_ams_in_cadence(
     f, psd = cbadc.utilities.compute_power_spectral_density(
         u_hat_cut[:], fs=1 / CLK.T, nperseg=u_hat_cut.size
     )
+    if DEBUG:
+        plt.title(f"Power spectral density:\nN={N},as={analog_system},ENOB={ENOB}")
+        plt.semilogx(
+            f,
+            10 * np.log10(np.abs(psd)),
+            # label=f"est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB, BW={BW:.0e}",
+        )
+        plt.xlabel('Hz')
+        plt.ylabel('V^2 / Hz dB')
+        plt.legend()
+        plt.savefig('debug_psd.png')
+        print(u_hat)
+        print(verilog_analog_system.analog_system.A)
+        print(digital_estimator)
+
     signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
     noise_index = np.ones(psd.size, dtype=bool)
     noise_index[signal_index] = False
@@ -189,17 +203,4 @@ def test_verilog_ams_in_cadence(
     est_SNR = cbadc.fom.snr_to_dB(fom['snr'])
     est_ENOB = cbadc.fom.snr_to_enob(est_SNR)
 
-    if DEBUG:
-        plt.title(f"Power spectral density:\nN={N},as={analog_system},ENOB={ENOB}")
-        plt.semilogx(
-            f,
-            10 * np.log10(np.abs(psd)),
-            label=f"est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB, BW={BW:.0e}",
-        )
-        plt.xlabel('Hz')
-        plt.ylabel('V^2 / Hz dB')
-        plt.legend()
-        plt.show()
-        print(verilog_analog_system.analog_system.A)
-        print(digital_estimator)
     assert est_ENOB >= ENOB
