@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 # Start-up cmd: pytest tests/cadence_validation/verilog-ams_test.py
 DEBUG = False
 
-
 @pytest.mark.parametrize(
     "N",
     [
@@ -53,7 +52,7 @@ DEBUG = False
 @pytest.mark.parametrize(
     "analog_system",
     [
-        pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
+        # pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
         pytest.param('leap_frog', id="leap_frog_as"),
     ],
 )
