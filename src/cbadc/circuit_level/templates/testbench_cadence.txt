@@ -1,3 +1,6 @@
+simulator lang=spectre
+global 0
+
 {% for file in includes %}
 ahdl_include "{{ file }}"
 {% endfor %}
