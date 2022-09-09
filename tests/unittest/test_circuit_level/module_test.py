@@ -115,10 +115,10 @@ def test_Module_ports_and_parameters_and_analog_statements():
         ],
     ]
 
-    analog_statements = [
-        f"V({nets[0].name}) <+ {parameters[3].name} * V({nets[1].name})",
-        f"V({nets[4].name}) <+ {parameters[6].name} * V({nets[7].name})",
-    ]
+#     analog_statements = [
+#         f"V({nets[0].name}) <+ {parameters[3].name} * V({nets[1].name})",
+#         f"V({nets[4].name}) <+ {parameters[6].name} * V({nets[7].name})",
+#     ]
 
     module = cbadc.circuit.Module(
         "op-amp",
@@ -171,10 +171,10 @@ def test_Module_ports_and_parameters_and_analog_statements():
         ],
     ]
 
-    analog_statements = [
-        f"V({nets[0].name}) <+ {parameters[3].name} * V({nets[1].name})",
-        f"V({nets[4].name}) <+ {parameters[6].name} * V({nets[7].name})",
-    ]
+#     analog_statements = [
+#         f"V({nets[0].name}) <+ {parameters[3].name} * V({nets[1].name})",
+#         f"V({nets[4].name}) <+ {parameters[6].name} * V({nets[7].name})",
+#     ]
 
     module = cbadc.circuit.Module(
         "op-amp",

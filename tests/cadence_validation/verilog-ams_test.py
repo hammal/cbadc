@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 # Start-up cmd: pytest tests/cadence_validation/verilog-ams_test.py
 DEBUG = False
 
+
 @pytest.mark.parametrize(
     "N",
     [
