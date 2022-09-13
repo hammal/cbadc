@@ -21,7 +21,7 @@ VCLK clk vgd vsource type=pulse val0={{ vgd }} val1={{ vdd }} period={{ clock['p
 VS u_0 vgd vsource type=sine sinedc={{  input['offset'] }} ampl={{ input['amplitude'] }} freq={{ input["freq"] }} mag=1
 
 * Analog frontend
-analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }}{% endfor %} {% for output in analog_frontend['outputs'] %}{{ output }} {% endfor %}{{ analog_frontend['name'] }}
+analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }} {% endfor %}{% for output in analog_frontend['outputs'] %}{{ output }} {% endfor %}{{ analog_frontend['name'] }}
 
 // Example analysis commands
 //

@@ -1,12 +1,11 @@
 """Synthesise functions for chain-of-integrators control-bounded ADCs."""
-from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_enob
+from cbadc.fom import snr_from_dB, enob_to_snr
 from cbadc.analog_system.chain_of_integrators import ChainOfIntegrators
 from cbadc.digital_control.digital_control import DigitalControl
 from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepResponse
 from cbadc.analog_signal.clock import Clock
 from cbadc.analog_frontend import AnalogFrontend
 import numpy as np
-import scipy.integrate
 
 
 def g_i(N: int):
@@ -48,6 +47,8 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         include local feedback, defaults to False.
     excess_delay: `float`, `optional`
         delay control actions by an excess delay, defaults to 0.
+    finite_gain: `bool`, `optional`
+        include finite gain, defaults to False.
 
 
     Returns
@@ -55,6 +56,7 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
     : (:py:class:`cbadc.analog_system.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
         returns an analog system and digital control tuple
     """
+    finite_gain = kwargs.get("finite_gain", False)
 
     if all(param in kwargs for param in ('ENOB', 'N', 'BW')):
         SNR = enob_to_snr(kwargs['ENOB'])
@@ -96,6 +98,10 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         analog_system = ChainOfIntegrators(
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
+
+        if finite_gain:
+            analog_system.A += -omega_3dB / (gamma ** (2 * N)) * np.eye(N)
+
         return AnalogFrontend(analog_system, digital_control)
     elif all(param in kwargs for param in ('SNR', 'N', 'BW')):
         return get_chain_of_integrator(ENOB=snr_to_enob(kwargs['SNR']), **kwargs)

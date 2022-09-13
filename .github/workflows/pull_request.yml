@@ -57,6 +57,18 @@ jobs:
       - name: Full performance validation
         run: tox -e full-test
 
+  circuit_level_validation:
+    timeout-minutes: 3000
+    runs-on: [self-hosted]
+    # needs: doc_and_unit_tests
+    steps:
+      - name: Checkout github repo
+        uses: actions/checkout@v2
+
+      - name: Validate python circuit-level simulations
+        run: tox -e circuit-level-python
+
+
   tutorials:
     timeout-minutes: 3000
     runs-on: [self-hosted]
