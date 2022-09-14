@@ -1,5 +1,5 @@
 """
-Simulating a CTDS Modulator
+Simulating a CTSD Modulator
 ==================================================
 """
 import cbadc
@@ -7,11 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 
-T = 0.1e-8
-N = 5
+T = 1e-9
+N = 3
 K1 = 1 << 9
 K2 = K1
-OSR = 16
+OSR = 40
 BW = 1 / (2 * T * OSR)
 
 ###############################################################################
@@ -22,7 +22,7 @@ BW = 1 / (2 * T * OSR)
 # using the `www.sigma-delta.de <www.sigma-delta.de>`_ framework.
 #
 
-with open('CTSD_N5_OSR16_Q32_CRFF_OPT1_HINF600.json') as f:
+with open('CTSD_N3_OSR40_Q2_CRFB_OPT1_HINF150.json') as f:
     analog_frontend_ctsd = cbadc.synthesis.ctsd_dict2af(json.load(f), T)
 
 eta2_ctsd = (
@@ -53,11 +53,11 @@ analog_frontend_leap_frog = cbadc.synthesis.get_leap_frog(
     OSR=OSR, N=N, BW=BW, opt=False
 )
 
-analog_frontend_leap_frog.digital_control = (
-    cbadc.digital_control.MultiLevelDigitalControl(
-        analog_frontend_leap_frog.digital_control.clock, N, [1] * N
-    )
-)
+# analog_frontend_leap_frog.digital_control = (
+#     cbadc.digital_control.MultiLevelDigitalControl(
+#         analog_frontend_leap_frog.digital_control.clock, N, [1] * N
+#     )
+# )
 
 # Scale B
 # analog_frontend_leap_frog.analog_system.B = (
@@ -345,4 +345,5 @@ plt.title("Estimated input signal")
 plt.grid()
 plt.xlim((0, 1500))
 plt.ylim((-1, 1))
+plt.legend()
 plt.tight_layout()
