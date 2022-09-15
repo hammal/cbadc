@@ -34,7 +34,8 @@ class TestBench:
         negative supply and ground voltage [V].
     vsgd: `float`
         signal ground voltage, defaults to centered between vdd and vgd.
-
+    number_of_samples: `int`
+        number of samples to simulate in the testbench.
     """
 
     strobe_freq: float
@@ -50,6 +51,7 @@ class TestBench:
         vdd: float = 1.0,
         vgd: float = 0.0,
         vsgd: float = None,
+        number_of_samples: int = 1 << 12,
     ):
         if not isinstance(input_signal, Sinusoidal):
             raise NotImplementedError("Currently only supported for sinusodials.")
@@ -59,7 +61,7 @@ class TestBench:
         self.strobe_freq = 1 / clock.T
         # quarter clock phase delay until readout
         self.strobe_delay = clock.T / 4.0
-        self._t_stop = (1 << 14) * clock.T
+        self._t_stop = (number_of_samples + 1) * clock.T
         self._name = name
         if vdd < vgd:
             raise Exception("Must be postive supply")
@@ -153,7 +155,7 @@ class TestBench:
             self.analog_frontend.digital_control.digital_control,
             [self._input_signal],
             self._simulation_clock,
-            self._t_stop,
+            # self._t_stop,
             simulator_type=simulator_type,
             **kwargs,
         )

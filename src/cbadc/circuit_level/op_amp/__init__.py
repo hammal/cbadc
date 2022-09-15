@@ -1,11 +1,5 @@
 """circuit constract related to op-amp designs"""
-from . import op_amp
-from . import amplifier_configurations
-from . import analog_system
-from . import resistor_network
-
-from .analog_system import (
-    AnalogSystemIdealOpAmp,
-    AnalogSystemFirstOrderPoleOpAmp,
-    AnalogSystemStateSpaceOpAmp,
-)
+from cbadc.circuit_level.op_amp import op_amp
+from cbadc.circuit_level.op_amp import amplifier_configurations
+from cbadc.circuit_level import analog_system
+from cbadc.circuit_level.op_amp import resistor_network

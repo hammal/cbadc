@@ -57,6 +57,18 @@ jobs:
       - name: Full performance validation
         run: tox -e full-test
 
+  circuit_level_validation:
+    timeout-minutes: 3000
+    runs-on: [self-hosted]
+    # needs: doc_and_unit_tests
+    steps:
+      - name: Checkout github repo
+        uses: actions/checkout@v2
+
+      - name: Validate python circuit-level simulations
+        run: tox -e circuit-level-python
+
+
   tutorials:
     timeout-minutes: 3000
     runs-on: [self-hosted]
@@ -87,8 +99,8 @@ jobs:
       - name: Checkout github repo
         uses: actions/checkout@v2
 
-      - name: Execute tutorial
-        run: python3.10 -m pip install . ; python3.10 docs/code_examples/${{ matrix.tutorial }}
+  #     - name: Execute tutorial
+  #       run: python3.10 -m pip install . ; python3.10 docs/code_examples/${{ matrix.tutorial }}
 
   benchmarks:
     timeout-minutes: 3000
