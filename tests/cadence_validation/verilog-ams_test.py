@@ -18,8 +18,8 @@ DEBUG = False
     [
         # pytest.param(2, id="N=2"),
         # pytest.param(3, id="N=3"),
-        pytest.param(4, id="N=4"),
-        # pytest.param(5, id="N=5"),
+        # pytest.param(4, id="N=4"),
+        pytest.param(5, id="N=5"),
         # pytest.param(6, id="N=6"),
         # pytest.param(7, id="N=7"),
     ],
@@ -28,8 +28,8 @@ DEBUG = False
     "ENOB",
     [
         # pytest.param(10, id="ENOB=10"),
-        pytest.param(12, id="ENOB=12"),
-        # pytest.param(14, id="ENOB=14"),
+        # pytest.param(12, id="ENOB=12"),
+        pytest.param(14, id="ENOB=14"),
         # pytest.param(16, id="ENOB=16"),
         # pytest.param(20, id="ENOB=20"),
         # pytest.param(23, id="ENOB=23"),
@@ -40,13 +40,13 @@ DEBUG = False
     [
         # pytest.param(1e0, id="BW=1Hz"),
         # # pytest.param(1e1, id="BW=10Hz"),
-        # pytest.param(1e2, id="BW=100Hz"),
+        pytest.param(1e2, id="BW=100Hz"),
         # pytest.param(1e3, id="BW=1kHz"),
         # pytest.param(1e4, id="BW=10kHz"),
         # pytest.param(1e5, id="BW=100kHz"),
         pytest.param(1e6, id="BW=1MHz"),
         # pytest.param(1e7, id="BW=10MHz"),
-        # pytest.param(1e8, id="BW=100MHz"),
+        pytest.param(1e8, id="BW=100MHz"),
         # pytest.param(1e9, id="BW=1GHz"),
     ],
 )
