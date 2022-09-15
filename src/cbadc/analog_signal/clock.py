@@ -1,6 +1,6 @@
 """Analog clock signals.
 """
-from ._analog_signal import _AnalogSignal
+from cbadc.analog_signal._analog_signal import _AnalogSignal
 from sympy import Piecewise
 import numpy as np
 
@@ -136,6 +136,9 @@ class Clock(_AnalogSignal):
             The analog signal value
         """
         return self.clock_edge(t)
+
+    def __str__(self):
+        return f"Clock(T={self.T}, tt={self.tt}, td={self.td}, duty_cycle={self.duty_cycle}, max_swing={self.max_value * 2})"
 
 
 def delay_clock_by_duty_cycle(clock: Clock, delay: float = 0):
