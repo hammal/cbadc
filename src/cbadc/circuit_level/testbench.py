@@ -59,7 +59,7 @@ class TestBench:
         self.strobe_freq = 1 / clock.T
         # quarter clock phase delay until readout
         self.strobe_delay = clock.T / 4.0
-        self._t_stop = (1 << 12) * clock.T
+        self._t_stop = (1 << 14) * clock.T
         self._name = name
         if vdd < vgd:
             raise Exception("Must be postive supply")

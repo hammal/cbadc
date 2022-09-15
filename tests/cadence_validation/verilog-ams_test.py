@@ -18,8 +18,8 @@ DEBUG = True
     [
         # pytest.param(2, id="N=2"),
         # pytest.param(3, id="N=3"),
-        pytest.param(4, id="N=4"),
-        # pytest.param(5, id="N=5"),
+        # pytest.param(4, id="N=4"),
+        pytest.param(5, id="N=5"),
         # pytest.param(6, id="N=6"),
         # pytest.param(7, id="N=7"),
     ],
@@ -28,8 +28,8 @@ DEBUG = True
     "ENOB",
     [
         # pytest.param(10, id="ENOB=10"),
-        pytest.param(12, id="ENOB=12"),
-        # pytest.param(14, id="ENOB=14"),
+        # pytest.param(12, id="ENOB=12"),
+        pytest.param(14, id="ENOB=14"),
         # pytest.param(16, id="ENOB=16"),
         # pytest.param(20, id="ENOB=20"),
         # pytest.param(23, id="ENOB=23"),
@@ -40,13 +40,13 @@ DEBUG = True
     [
         # pytest.param(1e0, id="BW=1Hz"),
         # # pytest.param(1e1, id="BW=10Hz"),
-        # pytest.param(1e2, id="BW=100Hz"),
+        pytest.param(1e2, id="BW=100Hz"),
         # pytest.param(1e3, id="BW=1kHz"),
         # pytest.param(1e4, id="BW=10kHz"),
         # pytest.param(1e5, id="BW=100kHz"),
         pytest.param(1e6, id="BW=1MHz"),
         # pytest.param(1e7, id="BW=10MHz"),
-        # pytest.param(1e8, id="BW=100MHz"),
+        pytest.param(1e8, id="BW=100MHz"),
         # pytest.param(1e9, id="BW=1GHz"),
     ],
 )
@@ -67,8 +67,8 @@ DEBUG = True
 @pytest.mark.parametrize(
     'analog_circuit_implementation',
     [
-        # pytest.param(cbadc.circuit_level.AnalogSystemStateSpaceEquations, id="ssm"),
-        pytest.param(cbadc.circuit_level.AnalogSystemIdealOpAmp, id="ideal_opamp"),
+        pytest.param(cbadc.circuit_level.AnalogSystemStateSpaceEquations, id="ssm"),
+        # pytest.param(cbadc.circuit_level.AnalogSystemIdealOpAmp, id="ideal_opamp"),
         # pytest.param(
         #     cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp,
         #     id="first_order_pole_opamp",
@@ -91,7 +91,8 @@ def test_verilog_ams_in_cadence(
     if analog_system == 'chain-of-integrators':
         AF = cbadc.synthesis.get_chain_of_integrator(N=N, ENOB=ENOB, BW=BW)
     elif analog_system == 'leap_frog':
-        AF = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+        AF = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW, xi=0.03)
+        AF.digital_control.clock.tt = AF.digital_control.clock.T * 1e-8
     else:
         raise ValueError("Unknown analog system")
     C = 1e-12
@@ -129,14 +130,14 @@ def test_verilog_ams_in_cadence(
     CLK = AF.digital_control.clock
 
     vdd = 1
-    vi = vdd / 4
+    vi = vdd / 2
     f_clk = 1 / CLK.T
     fi = f_clk
     while fi > BW / 2:
         fi = fi / 2
 
     # Instantiate testbench and write to file
-    VS = cbadc.analog_signal.Sinusoidal(vi, fi)
+    VS = cbadc.analog_signal.Sinusoidal(vi, fi, offset=vdd/2)
     TB = cbadc.circuit_level.TestBench(verilog_analog_frontend, VS, CLK)
     tb_filename = "verilog_testbench.txt"
     TB.to_file(filename=tb_filename, path=work_dir)
@@ -152,6 +153,7 @@ def test_verilog_ams_in_cadence(
     s_array = np.array(
         [parser.get_signal(f's_{index}', 'tran').trace for index in range(N)]
     ).transpose()
+    u_0 = parser.get_signal('u_0', 'tran').trace
     simulated_control_signals = cbadc.simulator.NumpySimulator('', array=s_array)
 
     K1 = 1 << 10
@@ -189,12 +191,13 @@ def test_verilog_ams_in_cadence(
             cbadc.simulator.SimulatorType.full_numerical
         )
         digital_estimator(python_simulator)
-        for index in range(size):
+        for index in range(size-10):
             u_hat_python[index] = next(digital_estimator)
         f_python, psd_python = cbadc.utilities.compute_power_spectral_density(
             u_hat_python[K1 + K2 :], fs=1 / CLK.T, nperseg=u_hat_cut.size
         )
 
+        plt.figure()
         plt.title(f"Power spectral density:\nN={N},as={analog_system},ENOB={ENOB}")
         plt.semilogx(
             f,
@@ -210,6 +213,15 @@ def test_verilog_ams_in_cadence(
         plt.ylabel('V^2 / Hz dB')
         plt.legend()
         plt.savefig('debug_psd.png')
+
+        plt.figure()
+        plt.plot(u_hat, label="verilog")
+        plt.plot(u_hat_python, label="python")
+        plt.plot(u_0, label="vin")
+        plt.legend()
+        plt.savefig('debug_time.png')
+
+
         print("s array:")
         print(s_array)
         print("uhat:")

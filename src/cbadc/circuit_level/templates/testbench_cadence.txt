@@ -32,4 +32,5 @@ analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }} {% endfo
 tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ strobedelay }} skipdc=yes
 
 // Save analog frontend outputs
-save {% for var in save_variables[1] %}{{ var }} {% endfor %}
+//save {% for var in save_variables[0] %}{{ var }} {% endfor %}
+save *
