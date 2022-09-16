@@ -586,15 +586,15 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         A_new[:N_old, :N_old] = -np.eye(
             analog_system.N
         ) * self.omega_p * self.A_DC - np.diag(G_gnd / np.diag(self.C_diag))
-        A_new[:N_old, N_old:] = np.dot(
+        A_new[:N_old, N_old:] = -np.dot(
             np.diag(xi), analog_system.A
         ) - self.omega_p * np.eye(N_old)
         A_new[N_old:, :N_old] = -self.omega_p * self.A_DC * np.eye(N_old)
         A_new[N_old:, N_old:] = -self.omega_p * np.eye(N_old)
 
-        B_new[:N_old, :] = np.dot(np.diag(xi), analog_system.B)
+        B_new[:N_old, :] = -np.dot(np.diag(xi), analog_system.B)
 
-        Gamma_new[:N_old, :] = np.dot(np.diag(xi), analog_system.Gamma)
+        Gamma_new[:N_old, :] = -np.dot(np.diag(xi), analog_system.Gamma)
 
         Gamma_tildeT_new[:, N_old:] = -analog_system.Gamma_tildeT
 

@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Start-up cmd: pytest tests/cadence_validation/verilog-ams_test.py
-DEBUG = True
+DEBUG = False
 
 
 @pytest.mark.parametrize(
@@ -18,8 +18,8 @@ DEBUG = True
     [
         # pytest.param(2, id="N=2"),
         # pytest.param(3, id="N=3"),
-        # pytest.param(4, id="N=4"),
-        pytest.param(5, id="N=5"),
+        pytest.param(4, id="N=4"),
+        # pytest.param(5, id="N=5"),
         # pytest.param(6, id="N=6"),
         # pytest.param(7, id="N=7"),
     ],
@@ -28,8 +28,8 @@ DEBUG = True
     "ENOB",
     [
         # pytest.param(10, id="ENOB=10"),
-        # pytest.param(12, id="ENOB=12"),
-        pytest.param(14, id="ENOB=14"),
+        pytest.param(12, id="ENOB=12"),
+        # pytest.param(14, id="ENOB=14"),
         # pytest.param(16, id="ENOB=16"),
         # pytest.param(20, id="ENOB=20"),
         # pytest.param(23, id="ENOB=23"),
@@ -40,20 +40,20 @@ DEBUG = True
     [
         # pytest.param(1e0, id="BW=1Hz"),
         # # pytest.param(1e1, id="BW=10Hz"),
-        pytest.param(1e2, id="BW=100Hz"),
+        # pytest.param(1e2, id="BW=100Hz"),
         # pytest.param(1e3, id="BW=1kHz"),
         # pytest.param(1e4, id="BW=10kHz"),
         # pytest.param(1e5, id="BW=100kHz"),
         pytest.param(1e6, id="BW=1MHz"),
         # pytest.param(1e7, id="BW=10MHz"),
-        pytest.param(1e8, id="BW=100MHz"),
+        # pytest.param(1e8, id="BW=100MHz"),
         # pytest.param(1e9, id="BW=1GHz"),
     ],
 )
 @pytest.mark.parametrize(
     "analog_system",
     [
-        # pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
+        pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
         pytest.param('leap_frog', id="leap_frog_as"),
     ],
 )
@@ -68,15 +68,11 @@ DEBUG = True
     'analog_circuit_implementation',
     [
         pytest.param(cbadc.circuit_level.AnalogSystemStateSpaceEquations, id="ssm"),
-        # pytest.param(cbadc.circuit_level.AnalogSystemIdealOpAmp, id="ideal_opamp"),
-        # pytest.param(
-        #     cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp,
-        #     id="first_order_pole_opamp",
-        # ),
-        # pytest.param(
-        #     cbadc.circuit_level.AnalogSystemStateSpaceOpAmp,
-        #     id="general_order_pole_opamp",
-        # ),
+        pytest.param(cbadc.circuit_level.AnalogSystemIdealOpAmp, id="ideal_opamp"),
+        pytest.param(
+            cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp,
+            id="first_order_pole_opamp",
+        ),
     ],
 )
 def test_verilog_ams_in_cadence(
@@ -110,6 +106,7 @@ def test_verilog_ams_in_cadence(
     ):
         A_DC = 1e3
         GBWP = 2 * np.pi * BW * A_DC
+
         verilog_analog_system = cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(
             analog_system=AF.analog_system, C=C, A_DC=A_DC, GBWP=GBWP
         )
@@ -155,6 +152,7 @@ def test_verilog_ams_in_cadence(
     )
 
     CLK = AF.digital_control.clock
+    CLK.tt = CLK.T * 1e-6
 
     vdd = 1
     vi = vdd / 2
@@ -166,7 +164,7 @@ def test_verilog_ams_in_cadence(
     size = 1 << 14
 
     # Instantiate testbench and write to file
-    VS = cbadc.analog_signal.Sinusoidal(vi, fi)
+    VS = cbadc.analog_signal.Sinusoidal(vi, fi, offset=vdd/2)
     TB = cbadc.circuit_level.TestBench(
         verilog_analog_frontend, VS, CLK, number_of_samples=size
     )
@@ -217,16 +215,16 @@ def test_verilog_ams_in_cadence(
         u_hat_cut[:], fs=1 / CLK.T, nperseg=u_hat_cut.size
     )
     if DEBUG:
-        u_hat_python = np.zeros(size)
-        python_simulator = TB.get_simulator(
-            cbadc.simulator.SimulatorType.full_numerical
-        )
-        digital_estimator(python_simulator)
-        for index in range(size-10):
-            u_hat_python[index] = next(digital_estimator)
-        f_python, psd_python = cbadc.utilities.compute_power_spectral_density(
-            u_hat_python[K1 + K2 :], fs=1 / CLK.T, nperseg=u_hat_cut.size
-        )
+        # u_hat_python = np.zeros(size)
+        # python_simulator = TB.get_simulator(
+        #     cbadc.simulator.SimulatorType.full_numerical
+        # )
+        # digital_estimator(python_simulator)
+        # for index in range(size-10):
+        #     u_hat_python[index] = next(digital_estimator)
+        # f_python, psd_python = cbadc.utilities.compute_power_spectral_density(
+        #     u_hat_python[K1 + K2 :], fs=1 / CLK.T, nperseg=u_hat_cut.size
+        # )
 
         plt.figure()
         plt.title(f"Power spectral density:\nN={N},as={analog_system},ENOB={ENOB}")
@@ -235,30 +233,30 @@ def test_verilog_ams_in_cadence(
             10 * np.log10(np.abs(psd)),
             label=f"Verilog-AMS, eta2={eta2}",
         )
-        plt.semilogx(
-            f_python,
-            10 * np.log10(np.abs(psd_python)),
-            label=f"Python, eta2={eta2}",
-        )
+        # plt.semilogx(
+        #     f_python,
+        #     10 * np.log10(np.abs(psd_python)),
+        #     label=f"Python, eta2={eta2}",
+        # )
         plt.xlabel('Hz')
         plt.ylabel('V^2 / Hz dB')
         plt.legend()
         plt.savefig('debug_psd.png')
 
-        plt.figure()
-        plt.plot(u_hat, label="verilog")
-        plt.plot(u_hat_python, label="python")
-        plt.plot(u_0, label="vin")
-        plt.legend()
-        plt.savefig('debug_time.png')
+        # plt.figure()
+        # plt.plot(u_hat, label="verilog")
+        # plt.plot(u_hat_python, label="python")
+        # plt.plot(u_0, label="vin")
+        # plt.legend()
+        # plt.savefig('debug_time.png')
 
 
-        print("s array:")
-        print(s_array)
-        print("uhat:")
-        print(u_hat)
-        print(verilog_analog_system.analog_system.A)
-        print(digital_estimator)
+        # print("s array:")
+        # print(s_array)
+        # print("uhat:")
+        # print(u_hat)
+        # print(verilog_analog_system.analog_system.A)
+        # print(digital_estimator)
 
     signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
     noise_index = np.ones(psd.size, dtype=bool)

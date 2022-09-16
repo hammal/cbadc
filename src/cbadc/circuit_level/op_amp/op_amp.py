@@ -1,6 +1,6 @@
 """op-amp implementations."""
 from typing import List
-from cbadc.circuit_level.module import Module, Wire, Parameter
+from cbadc.circuit_level.module import Module, Wire, Parameter, Variable
 import logging
 
 
@@ -144,8 +144,17 @@ class FirstOrderPoleOpAmp(Module):
             Parameter("A_DC", A_DC, True),
             Parameter("omega_p", omega_p, True),
         ]
+        # Translate A0 and wp into component values
+        G = 100 # Output conductance
+        C = G / omega_p
+        Gm = A_DC * omega_p * C
+        variables = [
+            Variable("Gm", Gm, real=True, comment="Transconductance"),
+            Variable("G", G, real=True, comment="Output conductance"),
+            Variable("C", C, real=True, comment="Output capacitance"),
+            ]
         analog_statements = [
-            "V(out) <+ A_DC * laplace_qp(V(p_in, n_in), , {-omega_p, 0});",
+            "I(out) <+ Gm * V(n_in, p_in) + G * V(out) + C * ddt(V(out));",
         ]
         super().__init__(
             "first_order_pole_op_amp",
@@ -153,6 +162,7 @@ class FirstOrderPoleOpAmp(Module):
             ports,
             instance_name,
             parameters=parameters,
+            variables=variables,
             analog_statements=analog_statements,
         )
 
