@@ -39,4 +39,5 @@ tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ st
 
 // Save analog frontend outputs
 //save {% for var in save_variables[0] %}{{ var }} {% endfor %}
+
 save *
