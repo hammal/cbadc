@@ -194,6 +194,7 @@ class NUVEstimator:
         if self._estimate_pointer < self.K1:
             temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
+
             return temp
 
         # Check if stop iteration has been raised in previous batch
