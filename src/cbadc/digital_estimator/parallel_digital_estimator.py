@@ -127,6 +127,7 @@ class ParallelEstimator(BatchEstimator):
         mid_point: bool = False,
         downsample: int = 1,
         solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        modulation_frequency: float = None,
     ):
         # Check inputs
         if K1 < 1:
@@ -168,6 +169,13 @@ class ParallelEstimator(BatchEstimator):
         self.solver_type = solver_type
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
         self._allocate_memory_buffers()
+
+        # For modulation
+        self._time_index = 0
+        if modulation_frequency is not None:
+            self._modulation_frequency = modulation_frequency
+        else:
+            self._modulation_frequency = 0
 
     def _compute_filter_coefficients(
         self,
@@ -261,6 +269,7 @@ class ParallelEstimator(BatchEstimator):
         if self._estimate_pointer < self.K1:
             temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
+            self._time_index += 1
             return temp
         # Check if stop iteration has been raised in previous batch
         if self._stop_iteration:

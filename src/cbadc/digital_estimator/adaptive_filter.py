@@ -21,12 +21,17 @@ class AdaptiveFilter(FIRFilter):
         (and corresponding filter coefficients) are considered fixed references.
     size: `int`, `optional`
         a possible buffer size determining how many data points that should be
-        used. Defaults to 0 which is interepreted as no buffered signals.
-
+        used. Defaults to 0 which is interpreted as no buffered signals.
+    delta: `float`
+        a regularization parameter for the recursive least squares algorithm, defaults to 1e-3.
     """
 
     def __init__(
-        self, initial_filter: FIRFilter, reference_control_id: int, size: int = 0
+        self,
+        initial_filter: FIRFilter,
+        reference_control_id: int,
+        size: int = 0,
+        delta=1e6,
     ):
         self.K1 = initial_filter.K1
         self.K2 = initial_filter.K2
@@ -55,7 +60,7 @@ class AdaptiveFilter(FIRFilter):
         self.step_size_template = np.ones_like(self.h)
         self._G = None
         self._Delta_Theta = None
-
+        self._time_index = 0
         if size < 0:
             raise Exception("size must be nonnegative number.")
         if size > 0:
@@ -75,15 +80,22 @@ class AdaptiveFilter(FIRFilter):
             self.buffered_data = False
             self._gradient = self._gradient_unbuffered
 
+        # Recursive least squares
+        self._V = np.zeros(
+            (self.analog_system.L, self.analog_system.M, self.K3, self.K3)
+        )
+        #  one offset per input channel L
+        self._offset_V = np.zeros((self.analog_system.L, 1))
+
+        one_over_delta = 1 / delta
+        for l in range(self.analog_system.L):
+            self._offset_V[l] = one_over_delta
+            for m in range(self.analog_system.M):
+                self._V[l, m, :, :] = np.eye(self.K3) * one_over_delta
+
     def _gradient_buffered(self, stochastic_delay=0) -> Tuple[np.ndarray, float, float]:
         if not self._training_data_collected:
-            logger.info("Initializing training data")
-            for index in range(self.size):
-                self.__next__()
-                self._training_data_s[index, :, :] = self._control_signal_valued[:, :]
-                if stochastic_delay > 0:
-                    for _ in range(np.random.randint(0, stochastic_delay)):
-                        error_signal = self.__next__()
+            self._fill_up_sample_buffer(stochastic_delay)
             self._training_data_collected = True
 
         error_signal = (
@@ -101,6 +113,15 @@ class AdaptiveFilter(FIRFilter):
         # self._index = (self._index + 1) % self.size
 
         return (gradient, error_signal, offset_gradient)
+
+    def _fill_up_sample_buffer(self, stochastic_delay):
+        logger.info("Initializing training data")
+        for index in range(self.size):
+            self.__next__()
+            self._training_data_s[index, :, :] = self._control_signal_valued[:, :]
+            if stochastic_delay > 0:
+                for _ in range(np.random.randint(0, stochastic_delay)):
+                    error_signal = self.__next__()
         # self.h.shape -> (L, K3, M)
         # self._control_signal_valued.shape -> (K3, M)
 
@@ -109,15 +130,70 @@ class AdaptiveFilter(FIRFilter):
     ) -> Tuple[np.ndarray, float, float]:
         # self.h.shape -> (L, K3, M)
         # self._control_signal_valued.shape -> (K3, M)
-        error_signal = self.__next__()
-        if stochastic_delay > 0:
-            for _ in range(np.random.randint(0, stochastic_delay)):
-                error_signal = self.__next__()
+        error_signal = self.sample(stochastic_delay)
         return (
             2 * error_signal * self._control_signal_valued[:, self.mask],
             error_signal,
             2 * error_signal,
         )
+
+    def sample(self, delay: int = 0):
+        error_signal = self.__next__()
+        if delay > 0:
+            for _ in range(np.random.randint(0, delay)):
+                error_signal = self.__next__()
+        return error_signal
+
+    def _recursive_least_squares_unbuffered(self, s, estimate, forgetting_factor):
+        for l in range(self.analog_system.L):
+            # First compute update for offset
+            alpha = self._offset_V[l]
+            g = alpha / (forgetting_factor + alpha)
+            self._offset_V[l] = (self._offset_V[l] - g * alpha) / forgetting_factor
+            self.offset[l] = self.offset[l] - np.sum(estimate) * g
+            # Second compute update for h
+            for m in range(self.analog_system.M):
+                if not m == self.ref_id:
+                    alpha = np.dot(self._V[l, m, :, :], s[:, m])
+                    g = alpha / (forgetting_factor + np.dot(s[:, m], alpha))
+                    self._V[l, m, :, :] = (
+                        self._V[l, m, :, :] - np.outer(g, alpha)
+                    ) / forgetting_factor
+                    self.h[l, :, m] = self.h[l, :, m] - estimate[l] * g
+        return np.tensordot(self.h, s, axes=((1, 2), (0, 1))) + self.offset
+
+    def recursive_least_squares(
+        self,
+        batch_size: int,
+        forgetting_factor: float,
+        stochastic_delay: int = 0,
+    ):
+        """A recursive least squares algorithm for adaptive filters.
+
+        Parameters
+        ----------
+        batch_size : int
+            The number of samples to use for the batch.
+        forgetting factor: `float`
+            a forgetting factor.
+        stochastic_delay: `int`
+            a stochastic delay to add to the collection of buffered samples.
+        """
+        if not self._training_data_collected:
+            self._fill_up_sample_buffer(stochastic_delay)
+            self._training_data_collected = True
+
+        sample_index = 0
+        error_signals = np.zeros((batch_size, self.analog_system.L))
+        for batch_index in range(batch_size):
+            sample_index = np.random.randint(0, self.size)
+            # sample_index = (sample_index + 1) % self.size
+            s = self._training_data_s[sample_index, :, :]
+            estimate = np.tensordot(self.h, s, axes=((1, 2), (0, 1))) + self.offset
+            error_signals[batch_index, :] = self._recursive_least_squares_unbuffered(
+                s, estimate, forgetting_factor
+            )
+        return error_signals
 
     def stochastic_gradient_decent(
         self,
@@ -146,11 +222,11 @@ class AdaptiveFilter(FIRFilter):
         batch = np.zeros_like(self.h)
         offset_batch = 0.0
         for index in range(batch_size):
-            gradient, error_signals[index], offset_graident = self._gradient(
+            gradient, error_signals[index], offset_gradient = self._gradient(
                 stochastic_delay
             )
             batch[:, :, self.mask] += gradient
-            offset_batch += offset_graident
+            offset_batch += offset_gradient
             self._number_of_gradient_evaluations += 1
         gradient_step = step_sizes * batch / batch_size
         offset_gradient_step = step_size * offset_batch / batch_size

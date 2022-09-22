@@ -1,9 +1,7 @@
 """The digital FIR estimator"""
-from typing import Union
 import cbadc
 import logging
 import os
-import scipy.integrate
 import numpy as np
 from .batch_estimator import BatchEstimator
 from ._filter_coefficients import FilterComputationBackend
@@ -121,6 +119,7 @@ class FIRFilter(BatchEstimator):
         offset: np.ndarray = None,
         fixed_point: cbadc.utilities.FixedPoint = None,
         solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        modulation_frequency: float = None,
     ):
         """Initializes filter coefficients"""
         if K1 < 0:
@@ -197,6 +196,13 @@ class FIRFilter(BatchEstimator):
                 self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
         self._control_signal_valued = np.zeros((self.K3, self.analog_system.M))
+
+        # For modulation
+        self._time_index = 0
+        if modulation_frequency is not None:
+            self._modulation_frequency = modulation_frequency
+        else:
+            self._modulation_frequency = 0
 
     def __iter__(self):
         return self
@@ -590,6 +596,7 @@ class FIRFilter(BatchEstimator):
             np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1)))
             + self.offset
         )
+        self._time_index += 1
         if self.fixed_point:
             return self.__fixed_to_float(res)
         else:
