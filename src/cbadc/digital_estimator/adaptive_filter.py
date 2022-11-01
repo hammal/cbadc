@@ -121,7 +121,7 @@ class AdaptiveFilter(FIRFilter):
             self._training_data_s[index, :, :] = self._control_signal_valued[:, :]
             if stochastic_delay > 0:
                 for _ in range(np.random.randint(0, stochastic_delay)):
-                    error_signal = self.__next__()
+                    self.__next__()
         # self.h.shape -> (L, K3, M)
         # self._control_signal_valued.shape -> (K3, M)
 

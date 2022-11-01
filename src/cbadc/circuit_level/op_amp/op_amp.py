@@ -145,14 +145,14 @@ class FirstOrderPoleOpAmp(Module):
             Parameter("omega_p", omega_p, True),
         ]
         # Translate A0 and wp into component values
-        G = 100 # Output conductance
+        G = 100  # Output conductance
         C = G / omega_p
         Gm = A_DC * omega_p * C
         variables = [
             Variable("Gm", Gm, real=True, comment="Transconductance"),
             Variable("G", G, real=True, comment="Output conductance"),
             Variable("C", C, real=True, comment="Output capacitance"),
-            ]
+        ]
         analog_statements = [
             "I(out) <+ Gm * V(n_in, p_in) + G * V(out) + C * ddt(V(out));",
         ]

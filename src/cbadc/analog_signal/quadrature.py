@@ -92,7 +92,7 @@ class QuadratureSignal(_AnalogSignal):
         }
 
     def __str__(self):
-        return f"""
+        return """
 A quadrature signal.
         """
 

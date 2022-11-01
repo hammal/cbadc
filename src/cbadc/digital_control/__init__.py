@@ -11,6 +11,7 @@ from .multi_phase_control import MultiPhaseDigitalControl
 from .conservative_control import ConservativeControl
 from .utilities import overcomplete_set, unit_element_set
 from .dither_control import DitherControl
+from .modulator import ModulatorControl
 
 from . import calibration_control
 from . import conservative_control
@@ -27,4 +28,5 @@ _valid_digital_control_types = Union[
     ConservativeControl,
     MultiLevelDigitalControl,
     DitherControl,
+    ModulatorControl,
 ]
