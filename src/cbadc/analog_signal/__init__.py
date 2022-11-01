@@ -23,7 +23,6 @@ from . import impulse_responses
 from . import ramp
 from . import sinc_pulse
 from . import sinusoidal
-from . import gaussian_noise
 from . import quadrature
 
 _valid_input_signal_types = Union[ConstantSignal, Ramp, SincPulse, Sinusoidal, Clock]
