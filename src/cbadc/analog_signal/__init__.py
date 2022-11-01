@@ -25,9 +25,7 @@ from . import sinc_pulse
 from . import sinusoidal
 from . import quadrature
 
-_valid_input_signal_types = Union[
-    ConstantSignal, Ramp, SincPulse, Sinusoidal, Clock, GaussianNoise
-]
+_valid_input_signal_types = Union[ConstantSignal, Ramp, SincPulse, Sinusoidal, Clock]
 
 _valid_impulse_response_types = Union[StepResponse, RCImpulseResponse]
 
