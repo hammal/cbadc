@@ -19,7 +19,7 @@ jobs:
   doc_and_unit_tests:
     strategy:
       matrix:
-        python-version: ["py38", "py39", "py310"]
+        python-version: ["py39", "py310"]
     runs-on: [self-hosted]
     # needs: check_lint
     steps:
