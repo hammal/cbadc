@@ -7,7 +7,7 @@ from ..__version__ import __version__
 import os.path
 
 _env = Environment(
-    loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
+    loader=PackageLoader("cbadc", package_path="circuit/templates"),
     autoescape=select_autoescape(),
     trim_blocks=True,
     lstrip_blocks=True,

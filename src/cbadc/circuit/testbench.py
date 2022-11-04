@@ -1,6 +1,6 @@
 """testbench implementations"""
 from jinja2 import Environment, PackageLoader, select_autoescape
-from cbadc.circuit_level.analog_frontend import AnalogFrontend
+from cbadc.circuit.analog_frontend import AnalogFrontend
 from cbadc.analog_signal import Clock, Sinusoidal
 from cbadc.simulator import SimulatorType, get_simulator
 from datetime import datetime
@@ -8,7 +8,7 @@ from cbadc.__version__ import __version__
 import os.path
 
 _env = Environment(
-    loader=PackageLoader("cbadc", package_path="circuit_level/templates"),
+    loader=PackageLoader("cbadc", package_path="circuit/templates"),
     autoescape=select_autoescape(),
     trim_blocks=True,
     lstrip_blocks=True,

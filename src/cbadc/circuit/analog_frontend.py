@@ -5,15 +5,15 @@ an analog system and a digital control.
 
 """
 from typing import List, Type, Union
-from cbadc.circuit_level.module import Module, Wire, SubModules
-from cbadc.circuit_level.state_space_equations import AnalogSystem
-from cbadc.circuit_level.analog_system import (
+from cbadc.circuit.module import Module, Wire, SubModules
+from cbadc.circuit.state_space_equations import AnalogSystem
+from cbadc.circuit.analog_system import (
     # AnalogSystemFiniteGainOpAmp,
     AnalogSystemIdealOpAmp,
     # AnalogSystemHigherOrderOpAmp,
     AnalogSystemFirstOrderPoleOpAmp,
 )
-from cbadc.circuit_level.digital_control import DigitalControl, SwitchCapacitorControl
+from cbadc.circuit.digital_control import DigitalControl, SwitchCapacitorControl
 from cbadc.digital_estimator import (
     FIRFilter,
     BatchEstimator,

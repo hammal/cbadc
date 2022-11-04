@@ -1,5 +1,5 @@
 """state space equations expressed in verilog-ams modules."""
-from cbadc.circuit_level.module import Module, Wire
+from cbadc.circuit.module import Module, Wire
 from cbadc.analog_system.analog_system import AnalogSystem
 import numpy as np
 

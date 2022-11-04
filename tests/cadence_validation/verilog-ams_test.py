@@ -67,10 +67,10 @@ DEBUG = False
 @pytest.mark.parametrize(
     'analog_circuit_implementation',
     [
-        pytest.param(cbadc.circuit_level.AnalogSystemStateSpaceEquations, id="ssm"),
-        pytest.param(cbadc.circuit_level.AnalogSystemIdealOpAmp, id="ideal_opamp"),
+        pytest.param(cbadc.circuit.AnalogSystemStateSpaceEquations, id="ssm"),
+        pytest.param(cbadc.circuit.AnalogSystemIdealOpAmp, id="ideal_opamp"),
         pytest.param(
-            cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp,
+            cbadc.circuit.AnalogSystemFirstOrderPoleOpAmp,
             id="first_order_pole_opamp",
         ),
     ],
@@ -96,31 +96,22 @@ def test_verilog_ams_in_cadence(
     else:
         raise ValueError("Unknown analog system")
     C = 1e-12
-    if analog_circuit_implementation == cbadc.circuit_level.AnalogSystemIdealOpAmp:
-        verilog_analog_system = cbadc.circuit_level.AnalogSystemIdealOpAmp(
+    if analog_circuit_implementation == cbadc.circuit.AnalogSystemIdealOpAmp:
+        verilog_analog_system = cbadc.circuit.AnalogSystemIdealOpAmp(
             analog_system=AF.analog_system, C=C
         )
-    elif (
-        analog_circuit_implementation
-        == cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp
-    ):
+    elif analog_circuit_implementation == cbadc.circuit.AnalogSystemFirstOrderPoleOpAmp:
         A_DC = 1e3
         GBWP = 2 * np.pi * BW * A_DC
 
-        verilog_analog_system = cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(
+        verilog_analog_system = cbadc.circuit.AnalogSystemFirstOrderPoleOpAmp(
             analog_system=AF.analog_system, C=C, A_DC=A_DC, GBWP=GBWP
         )
-    elif (
-        analog_circuit_implementation
-        == cbadc.circuit_level.AnalogSystemStateSpaceEquations
-    ):
-        verilog_analog_system = cbadc.circuit_level.AnalogSystemStateSpaceEquations(
+    elif analog_circuit_implementation == cbadc.circuit.AnalogSystemStateSpaceEquations:
+        verilog_analog_system = cbadc.circuit.AnalogSystemStateSpaceEquations(
             analog_system=AF.analog_system
         )
-    elif (
-        analog_circuit_implementation
-        == cbadc.circuit_level.AnalogSystemHigherOrderOpAmp
-    ):
+    elif analog_circuit_implementation == cbadc.circuit.AnalogSystemHigherOrderOpAmp:
         amplifier_order = 2
         cutoff_freq = BW / 2
         pass_band_ripple = 3
@@ -137,17 +128,17 @@ def test_verilog_ams_in_cadence(
         for amp in amplifiers:
             amp.B = -amplification * amp.B
 
-        verilog_analog_system = cbadc.circuit_level.AnalogSystemHigherOrderOpAmp(
+        verilog_analog_system = cbadc.circuit.AnalogSystemHigherOrderOpAmp(
             analog_system=AF.analog_system, C=C, amplifiers=amplifiers
         )
     else:
         raise ValueError("Unknown analog_circuit_implementation")
 
-    verilog_digital_control = cbadc.circuit_level.DigitalControl(
+    verilog_digital_control = cbadc.circuit.DigitalControl(
         copy.deepcopy(AF.digital_control)
     )
 
-    verilog_analog_frontend = cbadc.circuit_level.AnalogFrontend(
+    verilog_analog_frontend = cbadc.circuit.AnalogFrontend(
         verilog_analog_system, verilog_digital_control
     )
 
@@ -164,8 +155,8 @@ def test_verilog_ams_in_cadence(
     size = 1 << 14
 
     # Instantiate testbench and write to file
-    VS = cbadc.analog_signal.Sinusoidal(vi, fi, offset=vdd/2)
-    TB = cbadc.circuit_level.TestBench(
+    VS = cbadc.analog_signal.Sinusoidal(vi, fi, offset=vdd / 2)
+    TB = cbadc.circuit.TestBench(
         verilog_analog_frontend, VS, CLK, number_of_samples=size
     )
     tb_filename = "verilog_testbench.txt"
@@ -249,7 +240,6 @@ def test_verilog_ams_in_cadence(
         # plt.plot(u_0, label="vin")
         # plt.legend()
         # plt.savefig('debug_time.png')
-
 
         # print("s array:")
         # print(s_array)

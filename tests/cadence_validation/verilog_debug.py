@@ -46,15 +46,15 @@ if __name__ == '__main__':
     # AF.analog_system.B *= -1
     # AF.analog_system.Gamma *= -1
 
-    verilog_analog_system = cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp(
+    verilog_analog_system = cbadc.circuit.AnalogSystemFirstOrderPoleOpAmp(
         analog_system=AF.analog_system, C=C, A_DC=A_DC, GBWP=GBWP
-        )
+    )
 
-    verilog_digital_control = cbadc.circuit_level.DigitalControl(
+    verilog_digital_control = cbadc.circuit.DigitalControl(
         copy.deepcopy(AF.digital_control)
     )
 
-    verilog_analog_frontend = cbadc.circuit_level.AnalogFrontend(
+    verilog_analog_frontend = cbadc.circuit.AnalogFrontend(
         verilog_analog_system, verilog_digital_control
     )
 
@@ -71,8 +71,8 @@ if __name__ == '__main__':
     size = 1 << 14
 
     # Instantiate testbench and write to file
-    VS = cbadc.analog_signal.Sinusoidal(vi, fi, offset=vdd/2)
-    TB = cbadc.circuit_level.TestBench(
+    VS = cbadc.analog_signal.Sinusoidal(vi, fi, offset=vdd / 2)
+    TB = cbadc.circuit.TestBench(
         verilog_analog_frontend, VS, CLK, number_of_samples=size
     )
     tb_filename = "verilog_testbench.txt"
@@ -83,8 +83,9 @@ if __name__ == '__main__':
 
     # Simulate
     if RERUN_SIM:
-        simulate_netlist(logger, shlib.to_path(work_dir, tb_filename), work_dir=work_dir)
-
+        simulate_netlist(
+            logger, shlib.to_path(work_dir, tb_filename), work_dir=work_dir
+        )
 
     if DEBUG:
         logger.info('DEBUG active, terminating')
@@ -130,7 +131,6 @@ if __name__ == '__main__':
     f, psd = cbadc.utilities.compute_power_spectral_density(
         u_hat_cut[:], fs=1 / CLK.T, nperseg=u_hat_cut.size
     )
-
 
     signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
     noise_index = np.ones(psd.size, dtype=bool)

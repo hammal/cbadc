@@ -1,6 +1,6 @@
 """op-amp implementations."""
 from typing import List
-from cbadc.circuit_level.module import Module, Wire, Parameter, Variable
+from cbadc.circuit.module import Module, Wire, Parameter, Variable
 import logging
 
 

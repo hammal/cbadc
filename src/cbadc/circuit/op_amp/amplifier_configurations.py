@@ -1,8 +1,8 @@
 """op-amp configurations"""
 from typing import List, Union, Type
-from cbadc.circuit_level.module import Module, Parameter, Wire, SubModules
-from cbadc.circuit_level.state_space_equations import StateSpaceLinearSystem
-from cbadc.circuit_level.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
+from cbadc.circuit.module import Module, Parameter, Wire, SubModules
+from cbadc.circuit.state_space_equations import StateSpaceLinearSystem
+from cbadc.circuit.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
 import logging
 
 
