@@ -1,6 +1,7 @@
 """the calibration control"""
 from typing import Union
 import numpy as np
+from copy import copy
 from . import DigitalControl
 from .conservative_control import ConservativeControl
 from .multi_phase_control import MultiPhaseDigitalControl
@@ -40,21 +41,23 @@ class DitherControl(DigitalControl):
         ],
         t0: float = 0.0,
         impulse_response: _ImpulseResponse = StepResponse(),
+        ternary: bool = False,
     ):
-        self._deterministic_control = digital_control
+        self._deterministic_control = copy(digital_control)
         self.number_of_random_control = number_of_random_controls
-        self.clock = digital_control.clock
+        self.clock = copy(digital_control.clock)
         self.M = digital_control.M + self.number_of_random_control
-        self.M_tilde = digital_control.M_tilde
+        self.M_tilde = self._deterministic_control.M_tilde
         self._t_next = t0
         self._t_last_update = self._t_next * np.ones(self.M)
         self._s = np.zeros(self.M, dtype=np.int8)
         self._s[:] = False
         self._impulse_response = [
-            *[impulse_response for _ in range(self.number_of_random_control)],
+            *[copy(impulse_response) for _ in range(self.number_of_random_control)],
             *self._deterministic_control._impulse_response,
         ]
-        self._control_descisions = np.zeros(self.M, dtype=np.double)
+        self._control_decisions = np.zeros(self.M, dtype=np.double)
+        self.ternary = bool(ternary)
         # initialize dac values
         self.control_update(
             self._t_next, np.zeros(self.M - self.number_of_random_control)
@@ -94,13 +97,18 @@ class DitherControl(DigitalControl):
             self._s[self.number_of_random_control :] = self._deterministic_control._s[:]
 
             # Random controls
-            self._s[: self.number_of_random_control] = np.random.randint(
-                2, size=(self.number_of_random_control,)
-            )
+            if self.ternary:
+                self._s[: self.number_of_random_control] = (
+                    np.random.randint(3, size=(self.number_of_random_control,)) / 2.0
+                )
+            else:
+                self._s[: self.number_of_random_control] = np.random.randint(
+                    2, size=(self.number_of_random_control,)
+                )
 
             self._t_last_update[:] = t
-            self._t_next += self.clock.T
-            self._control_descisions = np.asarray(2 * self._s - 1, dtype=np.double)
+            self._t_next = self._t_next + self.clock.T
+            self._control_decisions = np.asarray(2 * self._s - 1, dtype=np.double)
 
     def control_contribution(self, t: float) -> np.ndarray:
         """Evaluates the control contribution at time t.
@@ -122,7 +130,7 @@ class DitherControl(DigitalControl):
             self.number_of_random_control :
         ] = self._deterministic_control.control_contribution(t)
         for m in range(self.number_of_random_control):
-            impulse_response[m] = self._control_descisions[m] * self._impulse_response[
+            impulse_response[m] = self._control_decisions[m] * self._impulse_response[
                 m
             ](t - self._t_last_update[m])
 

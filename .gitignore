@@ -28,3 +28,11 @@ tests/performance_validation/digital_estimator_filter_coefficients_numpy.txt
 tests/profiling/.prof_stats
 tests/profiling/profiling_stats.prof
 tests/profiling/profiling_stats.txt
+tests/cadence_validation/simulation_output/
+verilog_testbench.txt.tran.srf
+debug_time.png
+debug_psd.png
+tests/cadence_validation/verilog_testbench.txt
+tests/cadence_validation/spectre_sim.log
+tests/cadence_validation/analog_frontend.vams
+tests/cadence_validation/.cadence/

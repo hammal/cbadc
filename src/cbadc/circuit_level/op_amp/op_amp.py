@@ -1,8 +1,7 @@
 """op-amp implementations."""
 from typing import List
-from ..module import Module, Wire, Parameter
+from cbadc.circuit_level.module import Module, Wire, Parameter, Variable
 import logging
-import numpy as np
 
 
 logger = logging.getLogger(__name__)
@@ -50,61 +49,61 @@ class IdealOpAmp(Module):
         ]
 
 
-class FiniteGainOpAmp(Module):
-    """A finite gain op-amp implementation
+# class FiniteGainOpAmp(Module):
+#     """A finite gain op-amp implementation
 
-    Specifically, the op-amps transfer function is
-    determined as
+#     Specifically, the op-amps transfer function is
+#     determined as
 
-    :math:`V_{\\text{out}} = A_{\\text{DC}} * V_{\\text{in}}`
+#     :math:`V_{\\text{out}} = A_{\\text{DC}} * V_{\\text{in}}`
 
-    Note that the default parameter values for A_DC and omega_0 are
-    typically overwritten by a parent module by using the same name for the parameter
-    in the same parent module.
+#     Note that the default parameter values for A_DC and omega_0 are
+#     typically overwritten by a parent module by using the same name for the parameter
+#     in the same parent module.
 
-    Parameters
-    ----------
-    name: `str`
-        the instance name of the module.
-    A_DC: `float`
-        the finite gain of the op-amp.
-    """
+#     Parameters
+#     ----------
+#     name: `str`
+#         the instance name of the module.
+#     A_DC: `float`
+#         the finite gain of the op-amp.
+#     """
 
-    def __init__(self, name: str, A_DC: float, **kwargs):
-        instance_name = name
-        self._vdd = Wire("vdd", True, False, True, comment="positive supply")
-        self._gnd = Wire("vgd", True, False, True, comment="ground")
-        ports = [
-            self._vdd,
-            self._gnd,
-            Wire("p_in", True, False, True, comment="positive input"),
-            Wire("n_in", True, True, True, comment="negative input"),
-            Wire("out", False, True, True, comment="output"),
-        ]
-        nets = ports
-        parameters = [Parameter('A_DC', A_DC, True)]
-        analog_statements = [
-            "V(out) <+  A_DC * V(p_in, n_in);",
-        ]
-        super().__init__(
-            "finite_gain_op_amp",
-            nets,
-            ports,
-            instance_name,
-            analog_statements=analog_statements,
-            parameters=parameters,
-        )
+#     def __init__(self, name: str, A_DC: float, **kwargs):
+#         instance_name = name
+#         self._vdd = Wire("vdd", True, False, True, comment="positive supply")
+#         self._gnd = Wire("vgd", True, False, True, comment="ground")
+#         ports = [
+#             self._vdd,
+#             self._gnd,
+#             Wire("p_in", True, False, True, comment="positive input"),
+#             Wire("n_in", True, True, True, comment="negative input"),
+#             Wire("out", False, True, True, comment="output"),
+#         ]
+#         nets = ports
+#         parameters = [Parameter('A_DC', A_DC, True)]
+#         analog_statements = [
+#             "V(out) <+  A_DC * V(p_in, n_in);",
+#         ]
+#         super().__init__(
+#             "finite_gain_op_amp",
+#             nets,
+#             ports,
+#             instance_name,
+#             analog_statements=analog_statements,
+#             parameters=parameters,
+#         )
 
-    def _module_comment(self) -> List[str]:
-        return [
-            *super()._module_comment(),
-            "",
-            "Functional Description:",
-            "",
-            "A finite gain op-amp implementation",
-            "where",
-            "V(out) = A_DC * (V(p_in) - V(n_in))",
-        ]
+#     def _module_comment(self) -> List[str]:
+#         return [
+#             *super()._module_comment(),
+#             "",
+#             "Functional Description:",
+#             "",
+#             "A finite gain op-amp implementation",
+#             "where",
+#             "V(out) = A_DC * (V(p_in) - V(n_in))",
+#         ]
 
 
 class FirstOrderPoleOpAmp(Module):
@@ -145,8 +144,17 @@ class FirstOrderPoleOpAmp(Module):
             Parameter("A_DC", A_DC, True),
             Parameter("omega_p", omega_p, True),
         ]
+        # Translate A0 and wp into component values
+        G = 100  # Output conductance
+        C = G / omega_p
+        Gm = A_DC * omega_p * C
+        variables = [
+            Variable("Gm", Gm, real=True, comment="Transconductance"),
+            Variable("G", G, real=True, comment="Output conductance"),
+            Variable("C", C, real=True, comment="Output capacitance"),
+        ]
         analog_statements = [
-            "V(out) <+ A_DC * laplace_qp(V(p_in, n_in), , {-omega_p, 0});",
+            "I(out) <+ Gm * V(n_in, p_in) + G * V(out) + C * ddt(V(out));",
         ]
         super().__init__(
             "first_order_pole_op_amp",
@@ -154,6 +162,7 @@ class FirstOrderPoleOpAmp(Module):
             ports,
             instance_name,
             parameters=parameters,
+            variables=variables,
             analog_statements=analog_statements,
         )
 

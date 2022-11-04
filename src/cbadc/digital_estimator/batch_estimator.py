@@ -1,8 +1,7 @@
 """The digital batch estimator
 """
-from typing import Iterator, List
+from typing import Iterator
 
-from scipy.misc import derivative
 import cbadc
 from cbadc.digital_estimator._filter_coefficients import (
     compute_filter_coefficients,
@@ -15,6 +14,10 @@ import sympy as sp
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _rotation_matrix(phi):
+    return np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]])
 
 
 class BatchEstimator(Iterator[np.ndarray]):
@@ -131,6 +134,7 @@ class BatchEstimator(Iterator[np.ndarray]):
         mid_point: bool = False,
         downsample: int = 1,
         solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        modulation_frequency: float = None,
     ):
         # Check inputs
         if K1 < 1:
@@ -180,6 +184,13 @@ class BatchEstimator(Iterator[np.ndarray]):
         self._allocate_memory_buffers()
         self._ntf_lambda = None
         self._stf_lambda = None
+
+        # For modulation
+        self._time_index = 0
+        if modulation_frequency is not None:
+            self._modulation_frequency = modulation_frequency
+        else:
+            self._modulation_frequency = 0
 
     def filter_lag(self):
         """Return the lag of the filter.
@@ -343,6 +354,7 @@ class BatchEstimator(Iterator[np.ndarray]):
         if self._estimate_pointer < self.K1:
             temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
+            self._time_index += 1
             return temp
         # Check if stop iteration has been raised in previous batch
         if self._stop_iteration:
@@ -371,6 +383,21 @@ class BatchEstimator(Iterator[np.ndarray]):
 
         # recursively call itself to return new estimate
         return self.__next__()
+
+    def demodulate(self) -> np.ndarray:
+        """Demodulate the received signal.
+
+        Returns:
+            np.ndarray: Demodulated signal.
+        """
+        if self.analog_system.L % 2 != 0:
+            raise Exception("L must be an even number.")
+
+        modulation_matrix = np.kron(
+            _rotation_matrix(-self._modulation_frequency * self._time_index),
+            np.eye(self.analog_system.L // 2),
+        )
+        return np.dot(modulation_matrix, self.__next__())
 
     def _lazy_initialise_ntf(self):
         logger.info("Computing analytical noise-transfer function")
@@ -466,9 +493,11 @@ class BatchEstimator(Iterator[np.ndarray]):
             )
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
-            result[:, index] = np.abs(
-                np.dot(GH, np.dot(np.linalg.pinv(GGH + self.eta2Matrix), G))
-            )
+            STF_temp = np.dot(np.linalg.pinv(GGH + self.eta2Matrix), G)
+            for l_index in range(self.analog_system.L):
+                result[l_index, index] = np.abs(
+                    np.dot(GH[l_index, :], STF_temp[:, l_index])
+                )
             # result[:, index] = self._stf_lambda(o)
         return result
 

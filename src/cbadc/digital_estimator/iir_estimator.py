@@ -109,6 +109,7 @@ class IIRFilter(BatchEstimator):
         mid_point: bool = False,
         downsample: int = 1,
         solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        modulation_frequency: float = None,
         *args,
         **kwargs,
     ):
@@ -155,6 +156,13 @@ class IIRFilter(BatchEstimator):
         self._control_signal_valued = np.zeros((self.K2, self.analog_system.M))
         self._mean = np.zeros(self.analog_system.N, dtype=np.double)
 
+        # For modulation
+        self._time_index = 0
+        if modulation_frequency is not None:
+            self._modulation_frequency = modulation_frequency
+        else:
+            self._modulation_frequency = 0
+
     def __iter__(self):
         return self
 
@@ -187,6 +195,7 @@ class IIRFilter(BatchEstimator):
             self.Bf, self._control_signal_valued[0, :]
         )
         if ((self._iteration - 1) % self.downsample) == 0:
+            self._time_index += 1
             return (
                 np.tensordot(self.h, self._control_signal_valued, axes=((1, 2), (0, 1)))
                 + result

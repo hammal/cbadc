@@ -167,5 +167,5 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
         OSR = kwargs['OSR']
         BW = 1.0 / (2 * OSR * T)
 
-        return get_leap_frog(N=N, OSR=OSR, BW=BW, **kwargs)
+        return get_leap_frog(N=N, OSR=OSR, BW=BW)
     raise NotImplementedError

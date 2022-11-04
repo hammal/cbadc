@@ -1,6 +1,5 @@
 """Numerical solvers."""
 import logging
-from operator import index
 import cbadc.analog_system
 import cbadc.digital_control
 import cbadc.analog_signal
@@ -9,8 +8,8 @@ import scipy.integrate
 import scipy.linalg
 import math
 from typing import Dict, List
-from ._base_simulator import _BaseSimulator
-from ..simulation_event import SimulationEvent
+from cbadc.simulator._base_simulator import _BaseSimulator
+from cbadc.simulation_event import SimulationEvent
 from scipy.special import factorial
 from scipy.integrate._ivp.ivp import OdeResult
 
@@ -97,8 +96,8 @@ class FullSimulator(_BaseSimulator):
 
         t_end: float = self.t + self.clock.T
         t_span = np.array((self.t, t_end))
-        if t_end >= self.t_stop:
-            raise StopIteration
+        # if t_end >= self.t_stop:
+        # raise StopIteration
         # Solve full diff equation.
         self._state_vector = self._full_ordinary_differential_solution(t_span)
         self.t = t_end
@@ -168,6 +167,7 @@ class FullSimulator(_BaseSimulator):
                         y_new, u, self.digital_control.control_signal()
                     ),
                 )
+                event_list = (*self.digital_control.event_list(), *self.event_list)
         if self.noise:
             y_new += self._noise_sample()
         return y_new
@@ -294,7 +294,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         the control contributions. Furthermore, :math:`\mathbf{d}(\tau)` is the DAC waveform
         (or impulse response) of the digital control.
         """
-        logger.info("Executing precomputations.")
+        logger.info("Executing pre-computations.")
         # expm(A T_s)
         self._pre_computed_state_transition_matrix = (
             self._analog_system_matrix_exponential(self.clock.T)

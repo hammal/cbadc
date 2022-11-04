@@ -1,23 +1,24 @@
 """modules relating to turning analog-frontends into Verilog-ams models."""
 
-from . import module
-from . import analog_frontend
-from . import op_amp
-from . import state_space_equations
-from . import testbench
-from . import noise_models
+from cbadc.circuit_level import module
+from cbadc.circuit_level import analog_frontend
+from cbadc.circuit_level import op_amp
+from cbadc.circuit_level import state_space_equations
+from cbadc.circuit_level import testbench
+from cbadc.circuit_level import noise_models
 
-from .module import Module, Wire, Parameter
-from .state_space_equations import AnalogSystem as AnalogSystemStateSpaceEquations
-from .analog_frontend import AnalogFrontend
-from .op_amp import (
-    AnalogSystemFiniteGainOpAmp,
+from cbadc.circuit_level.module import Module, Wire, Parameter
+from cbadc.circuit_level.state_space_equations import (
+    AnalogSystem as AnalogSystemStateSpaceEquations,
+)
+from cbadc.circuit_level.analog_frontend import AnalogFrontend
+from cbadc.circuit_level.analog_system import (
     AnalogSystemFirstOrderPoleOpAmp,
     AnalogSystemIdealOpAmp,
-    AnalogSystemStateSpaceOpAmp,
+    # AnalogSystemHigherOrderOpAmp,
 )
-from .digital_control import DigitalControl
-from .testbench import TestBench
+from cbadc.circuit_level.digital_control import DigitalControl
+from cbadc.circuit_level.testbench import TestBench
 
 # TODO
 #

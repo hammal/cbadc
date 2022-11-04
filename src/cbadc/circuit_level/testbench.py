@@ -1,10 +1,10 @@
 """testbench implementations"""
 from jinja2 import Environment, PackageLoader, select_autoescape
-from .analog_frontend import AnalogFrontend
-from ..analog_signal import Clock, Sinusoidal
-from ..simulator import SimulatorType, get_simulator
+from cbadc.circuit_level.analog_frontend import AnalogFrontend
+from cbadc.analog_signal import Clock, Sinusoidal
+from cbadc.simulator import SimulatorType, get_simulator
 from datetime import datetime
-from ..__version__ import __version__
+from cbadc.__version__ import __version__
 import os.path
 
 _env = Environment(
@@ -26,8 +26,6 @@ class TestBench:
         an input signal.
     clock: :py:class:`cbadc.analog_signal.clock.Clock`
         a simulation clock that determines the sample times of the simulation.
-    t_stop: `float`
-        end time [s] of simulation, the simulation always starts at 0.
     name: `str`
         name of the testbench
     vdd: `float`
@@ -36,7 +34,8 @@ class TestBench:
         negative supply and ground voltage [V].
     vsgd: `float`
         signal ground voltage, defaults to centered between vdd and vgd.
-
+    number_of_samples: `int`
+        number of samples to simulate in the testbench.
     """
 
     strobe_freq: float
@@ -48,11 +47,11 @@ class TestBench:
         analog_frontend: AnalogFrontend,
         input_signal: Sinusoidal,
         clock: Clock,
-        t_stop: float,
         name: str = "",
         vdd: float = 1.0,
         vgd: float = 0.0,
         vsgd: float = None,
+        number_of_samples: int = 1 << 12,
     ):
         if not isinstance(input_signal, Sinusoidal):
             raise NotImplementedError("Currently only supported for sinusodials.")
@@ -62,7 +61,7 @@ class TestBench:
         self.strobe_freq = 1 / clock.T
         # quarter clock phase delay until readout
         self.strobe_delay = clock.T / 4.0
-        self._t_stop = t_stop
+        self._t_stop = (number_of_samples + 1) * clock.T
         self._name = name
         if vdd < vgd:
             raise Exception("Must be postive supply")
@@ -116,14 +115,22 @@ class TestBench:
                 'strobefreq': self.strobe_freq,
                 'strobedelay': self.strobe_delay,
                 'save_variables': [
-                    v.name
-                    for v in [
-                        *self.analog_frontend.inputs,
-                        *self.analog_frontend.outputs,
-                        *self.analog_frontend.analog_system._x,
-                        *self.analog_frontend.analog_system.inputs,
-                        *self.analog_frontend.analog_system.outputs,
-                    ]
+                    [
+                        v.name
+                        for v in [
+                            *self.analog_frontend.inputs,
+                            *self.analog_frontend.outputs,
+                            *self.analog_frontend.analog_system._x,
+                            *self.analog_frontend.analog_system.inputs,
+                            *self.analog_frontend.analog_system.outputs,
+                        ]
+                    ],
+                    [
+                        v.name
+                        for v in [
+                            *self.analog_frontend.outputs,
+                        ]
+                    ],
                 ],
             }
         )
@@ -148,7 +155,7 @@ class TestBench:
             self.analog_frontend.digital_control.digital_control,
             [self._input_signal],
             self._simulation_clock,
-            self._t_stop,
+            # self._t_stop,
             simulator_type=simulator_type,
             **kwargs,
         )

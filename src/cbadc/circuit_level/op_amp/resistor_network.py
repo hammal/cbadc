@@ -50,6 +50,12 @@ class ResistorNetwork(Module):
         )
 
     def _module_comment(self) -> List[str]:
+        def _check_for_divide_by_zero(value: float) -> str:
+            if value == 0:
+                return "inf"
+            else:
+                return f"{1.0/value:.2e}"
+
         return [
             *super()._module_comment(),
             "",
@@ -58,7 +64,7 @@ class ResistorNetwork(Module):
             "Resistor network connecting inputs and outputs according to the following matrix",
             "",
             *[
-                f"[out_{i}] \u2248 [{', '.join([f'{1.0/a:.2e}' for a in self.G[i, :]])}] [in_{i}]"
+                f"[out_{i}] \u2248 [{', '.join([_check_for_divide_by_zero(a) for a in self.G[i, :]])}] [in_{i}]"
                 for i in range(self.G.shape[0])
             ],
             "",

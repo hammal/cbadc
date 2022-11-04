@@ -2,7 +2,6 @@
 """
 from typing import Callable, Union
 import numpy as np
-from cbadc.digital_estimator import BatchEstimator
 import logging
 
 import matplotlib.pyplot as plt
@@ -59,7 +58,7 @@ class Calibration:
         step_size: Callable[[int], float],
         batch_size: int,
         stochastic_delay=0,
-        gradient_method='sgd',
+        method='sgd',
         **kwargs,
     ):
         """train the adaptive filter on the training data
@@ -77,9 +76,9 @@ class Calibration:
             interval [0, stochastic_delay), between data points used
             in the gradient descent. Defaults to 0. Note that this only
             applies the first time a gradient method is run if the data is buffered.
-        gradient_method: 'str'
-            a string determining if the 'sgd' or 'adadelta' gradient method should be
-            used, defaults to 'sgd'.
+        method: 'str'
+            a string determining if the 'sgd' or 'adadelta' gradient method or `rls` (recursive least squares)
+            method should be used, defaults to 'sgd'.
         epsilon: `float`, `optional`
             a lower bound on step size, defaults to 1e-12.
         gamma: `float`, `optional`
@@ -91,7 +90,7 @@ class Calibration:
         data_points = epochs * batch_size
         logger.info(f"Starting training round for {data_points} additional data points")
         for index in show_status(range(epochs)):
-            if gradient_method == 'sgd':
+            if method == 'sgd':
                 self.batch_error.append(
                     np.average(
                         np.array(
@@ -103,7 +102,7 @@ class Calibration:
                         )
                     )
                 )
-            elif gradient_method == 'adadelta':
+            elif method == 'adadelta':
                 epsilon = kwargs.get('epsilon', 1e-12)
                 gamma = kwargs.get('gamma', 1 - 1e-2)
                 self.batch_error.append(
@@ -118,8 +117,23 @@ class Calibration:
                         )
                     )
                 )
+            elif method == 'rls':
+                self.batch_error.append(
+                    np.average(
+                        np.array(
+                            self.filter.recursive_least_squares(
+                                batch_size=batch_size,
+                                forgetting_factor=kwargs.get(
+                                    'forgetting_factor',
+                                    kwargs.get('forgetting_factor', 1e0 - 1e-9),
+                                ),
+                                stochastic_delay=stochastic_delay,
+                            )
+                        )
+                    )
+                )
             else:
-                raise Exception(f"gradient method: {gradient_method} not supported.")
+                raise Exception(f"gradient method: {method} not supported.")
 
         self.total_number_of_data_points += data_points
 

@@ -303,11 +303,11 @@ def test_testbench(get_simulator, pickle_unpickle):
     digital_control_module = cbadc.circuit_level.digital_control.DigitalControl(
         get_simulator.digital_control
     )
-    ADC = 1e5
+    A_DC = 1e5
     C = 1e-12
     analog_system_module = (
-        cbadc.circuit_level.op_amp.analog_system.AnalogSystemFiniteGainOpAmp(
-            analog_system=get_simulator.analog_system, C=C, A_DC=ADC
+        cbadc.circuit_level.op_amp.analog_system.AnalogSystemFirstOrderPoleOpAmp(
+            analog_system=get_simulator.analog_system, C=C, GBWP=1e8, A_DC=A_DC
         )
     )
     analog_frontend_module = cbadc.circuit_level.analog_frontend.AnalogFrontend(
@@ -321,6 +321,6 @@ def test_testbench(get_simulator, pickle_unpickle):
     t_stop = digital_control_module.digital_control.clock.T * 1e5
     sinusoidal = Sinusoidal(400e-3, 50e0, 0, vsgd)
     testbench = cbadc.circuit_level.testbench.TestBench(
-        analog_frontend_module, sinusoidal, clock, t_stop, "my_testbench", vdd, vgd
+        analog_frontend_module, sinusoidal, clock, "my_testbench", vdd, vgd
     )
     pickle_unpickle(testbench)

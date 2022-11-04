@@ -55,6 +55,44 @@ class Parameter:
         self.comment = comment
 
 
+class Variable:
+    """A verilog-ams variable class
+
+    Describes the necessary data to constitute a
+    verilog-ams variable.
+
+    Parameters
+    ----------
+    name: `str`
+        the name of the variable.
+    initial_value: Union[`float`, `int`, `str`, `None`], `optional`
+        an initial value, defaults to `None`.
+    real: `bool`, `optional`
+        a bool determining if the variable is real valued. If false
+        the variable will be assumed to be integer valued. Defafults
+        to True.
+    comment: `str`
+        a descriptive comment.
+    """
+
+    real: bool
+    name: str
+    initial_value: Union[float, int, str, None]
+    comment: str
+
+    def __init__(
+        self,
+        name: str,
+        initial_value: Union[float, int, str, None] = None,
+        real: bool = True,
+        comment: str = "",
+    ):
+        self.name = name
+        self.initial_value = initial_value
+        self.real = real
+        self.comment = comment
+
+
 class Wire:
     """A verilog-ams wire class
 
@@ -106,6 +144,7 @@ class _SubModule:
     ports: List[Wire]
     nets: List[Wire]
     parameters: List[Parameter]
+    variables: List[Variable]
     analog_statements: List[str]
     analog_initial: List[str]
     description: List[str]
@@ -118,15 +157,18 @@ class _SubModule:
         ports: List[Wire],
         instance_name='',
         parameters: List[Parameter] = [],
+        variables: List[Variable] = [],
         analog_statements: List[str] = [],
         analog_initial: List[str] = [],
     ):
         self.module_name = module_name
-        self.instance_name = instance_name
+        # Hack to force a nonempty instance name:
+        self.instance_name = self.module_name if instance_name == '' else instance_name
         self.nets = nets
         self.ports = ports
         self._check_ports()
         self.parameters = parameters
+        self.variables = variables
         self.analog_statements = analog_statements
         self.analog_initial = analog_initial
 
@@ -140,6 +182,10 @@ class _SubModule:
 
     def _get_parameter(self, key: Parameter):
         if key.name in [p.name for p in self.parameters]:
+            return key
+
+    def _get_variable(self, key: Variable):
+        if key.name in [p.name for p in self.variables]:
             return key
 
     def __getitem__(self, key: Wire):
@@ -174,6 +220,9 @@ class _SubModule:
         def real_parameters(key: Parameter):
             return key.real
 
+        def real_variables(key: Variable):
+            return key.real
+
         def define_parameters(key: Parameter):
             if key.initial_value is not None:
                 return f"{key.name} = {key.initial_value}"
@@ -194,6 +243,10 @@ class _SubModule:
                 ],
                 "electricals": [
                     w.name for w in filter(lambda x: x.electrical, self.nets)
+                ],
+                "real_variables": [p for p in filter(real_variables, self.variables)],
+                "int_variables": [
+                    p for p in filter(lambda x: not real_variables(x), self.variables)
                 ],
                 "analog_initial": self.analog_initial,
                 "analog": self.analog_statements,
@@ -229,6 +282,8 @@ class SubModules:
         are connected to the parent module.
     parameters: List[:py:class:`cbadc.circuit_level.Parameter`]
         number of parameters shared between module and submodule.
+    variables: List[:py:class:`cbadc.circuit_level.Variable`]
+        number of variables shared between module and submodule.
     number_of_connections: `int`
         the number of connecting ports.
 
@@ -237,6 +292,7 @@ class SubModules:
     module: _SubModule
     connections: List[Wire]
     parameters: List[Parameter]
+    variables: List[Variable]
     number_of_connections: int
 
     def __init__(self, submodule: _SubModule, connections: List[Wire]) -> None:
@@ -244,6 +300,7 @@ class SubModules:
         self.connections = connections
         self.number_of_connections = len(self.connections)
         self.parameters = []
+        self.variables = []
 
 
 class Module(_SubModule):
@@ -264,10 +321,12 @@ class Module(_SubModule):
     instance_name: `str`, `optional`
         a specific name for this instance of the module. usefull when
         having multiple submodules of the same type embedded inside a
-        parent module.
+        parent module. Will be equal to model_name if not specified.
     parameters: List[ :py:class:`cbadc.circuit_level.Parameter` ]
         a list of parameters. Note that parameter names must be unique since
         modules/submodules with same names get connected.
+    variables: List[ :py:class:`cbadc.circuit_level.Variable` ]
+        a list of variables.
     analog_statements: List[`str`]
         a list of analog statements defining the inner analog functions of the
         module.
@@ -297,6 +356,8 @@ class Module(_SubModule):
     parameters: List[ :py:class:`cbadc.circuit_level.Parameter` ]
         the list of parameters. Note that parameter names must be unique since
         modules/submodules with same names get connected.
+    variables: List[ :py:class:`cbadc.circuit_level.Variable` ]
+        the list of variables.
     analog_statements: List[`str`]
         the list of analog statements defining the inner analog functions of the
         module.
@@ -316,6 +377,7 @@ class Module(_SubModule):
         ports: List[Wire],
         instance_name='',
         parameters: List[Parameter] = [],
+        variables: List[Variable] = [],
         analog_statements: List[str] = [],
         analog_initial: List[str] = [],
         submodules: List[SubModules] = [],
@@ -327,6 +389,7 @@ class Module(_SubModule):
             ports,
             instance_name,
             parameters,
+            variables,
             analog_statements,
             analog_initial,
         )
@@ -415,6 +478,9 @@ class Module(_SubModule):
         def real_parameters(key: Parameter):
             return key.real
 
+        def real_variables(key: Variable):
+            return key.real
+
         rendered_modules_strings.append(
             template.render(
                 {
@@ -433,7 +499,14 @@ class Module(_SubModule):
                         )
                     ],
                     "electricals": [
-                        w.name for w in filter(lambda x: x.electrical, self.nets)
+                        w for w in filter(lambda x: x.electrical, self.nets)
+                    ],
+                    "real_variables": [
+                        p for p in filter(real_variables, self.variables)
+                    ],
+                    "int_variables": [
+                        p
+                        for p in filter(lambda x: not real_variables(x), self.variables)
                     ],
                     "analog_initial": self.analog_initial,
                     "submodules": self.submodules,

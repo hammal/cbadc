@@ -1,8 +1,8 @@
 """The default digital control."""
 import numpy as np
-from ..analog_signal import StepResponse, _valid_clock_types, Clock
-from ..analog_signal.impulse_responses import _ImpulseResponse
-from ..simulation_event import TimeEvent
+from cbadc.analog_signal import StepResponse, _valid_clock_types, Clock
+from cbadc.analog_signal.impulse_responses import _ImpulseResponse
+from cbadc.simulation_event import TimeEvent
 
 
 class DigitalControl:
@@ -105,7 +105,7 @@ class DigitalControl:
             # print(f"digital_control set for {t} and {s_tilde}")
             self._s = s_tilde >= 0
             self._t_last_update[:] = t
-            self._t_next += self.clock.T
+            self._t_next = self._t_next + self.clock.T
             # DAC
             self._control_descisions = np.asarray(2 * self._s - 1, dtype=np.double)
         # return self._dac_values * self._impulse_response(t - self._t_next + self.T)
