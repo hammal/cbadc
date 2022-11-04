@@ -15,6 +15,7 @@ jobs:
       matrix:
         part: [
           "full-test",
+          "full-test-switch-cap-control",
           "full-test-simulator",
           "full-test-fir-filter"
         ]
