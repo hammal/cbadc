@@ -59,13 +59,14 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
 
     if kwargs.get('modulator', False):
         logger.info("Using modulator")
-        analog_system.Gamma = np.eye(2 * N) * kappa
-        analog_system.Gamma_tildeT = -np.sign(kappa) * np.eye(2 * N)
-        digital_control = digital_control = ModulatorControl(
-            Clock(T, tt=1 / fc * 1e-3),
-            2 * digital_control_baseband.M,
-            fc,
-        )
+        raise NotImplementedError
+        # analog_system.Gamma = np.eye(2 * N) * kappa
+        # analog_system.Gamma_tildeT = -np.sign(kappa) * np.eye(2 * N)
+        # digital_control = digital_control = ModulatorControl(
+        #     Clock(T, tt=1 / fc * 1e-3),
+        #     2 * digital_control_baseband.M,
+        #     fc,
+        # )
     else:
         logger.info("Using non-modulator")
         kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.cos(phi)
