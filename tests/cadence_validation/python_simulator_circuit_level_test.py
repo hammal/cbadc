@@ -64,14 +64,14 @@ DEBUG = True
 @pytest.mark.parametrize(
     'analog_circuit_implementation',
     [
-        pytest.param(cbadc.circuit_level.AnalogSystemStateSpaceEquations, id="ssm"),
-        pytest.param(cbadc.circuit_level.AnalogSystemIdealOpAmp, id="ideal_opamp"),
+        pytest.param(cbadc.circuit.AnalogSystemStateSpaceEquations, id="ssm"),
+        pytest.param(cbadc.circuit.AnalogSystemIdealOpAmp, id="ideal_opamp"),
         # pytest.param(
-        #     cbadc.circuit_level.AnalogSystemFirstOrderPoleOpAmp,
+        #     cbadc.circuit.AnalogSystemFirstOrderPoleOpAmp,
         #     id="first_order_pole_opamp",
         # ),
         # pytest.param(
-        #     cbadc.circuit_level.AnalogSystemHigherOrderOpAmp,
+        #     cbadc.circuit.AnalogSystemHigherOrderOpAmp,
         #     id="general_order_pole_opamp",
         # ),
     ],
