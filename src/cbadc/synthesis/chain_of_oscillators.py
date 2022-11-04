@@ -3,7 +3,6 @@ from cbadc.analog_frontend import AnalogFrontend
 from cbadc.analog_system import AnalogSystem
 from cbadc.synthesis.leap_frog import g_i
 from cbadc.digital_control.digital_control import DigitalControl, StepResponse, Clock
-from cbadc.digital_control.modulator import ModulatorControl
 from cbadc.analog_system.topology import stack
 from cbadc.fom import enob_to_snr, snr_from_dB, snr_to_enob
 
