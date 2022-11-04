@@ -1,4 +1,3 @@
-import pytest
 import cbadc
 from pade.utils import init_logger
 from pade.spectre import simulate_netlist
