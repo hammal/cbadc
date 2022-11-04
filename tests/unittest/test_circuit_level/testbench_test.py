@@ -1,9 +1,9 @@
 from tests.fixture.chain_of_integrators import get_simulator, chain_of_integrators
-import cbadc.circuit_level.digital_control
-import cbadc.circuit_level.op_amp
-import cbadc.circuit_level.analog_frontend
+import cbadc.circuit.digital_control
+import cbadc.circuit.op_amp
+import cbadc.circuit.analog_frontend
 from cbadc.analog_signal import Clock, Sinusoidal
-import cbadc.circuit_level.testbench
+import cbadc.circuit.testbench
 import os
 
 

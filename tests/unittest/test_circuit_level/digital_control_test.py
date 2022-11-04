@@ -1,4 +1,4 @@
-import cbadc.circuit_level.digital_control
+import cbadc.circuit.digital_control
 
 
 # def test_ComparatorModule():

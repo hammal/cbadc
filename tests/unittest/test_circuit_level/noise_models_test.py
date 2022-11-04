@@ -1,5 +1,5 @@
 import numpy as np
-import cbadc.circuit_level.noise_models as nm
+import cbadc.circuit.noise_models as nm
 
 
 def test_resistor_voltage_noise_formula():

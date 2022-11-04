@@ -1,15 +1,15 @@
 """Analog systems implemented with op-amps"""
 from typing import Dict, List, Tuple
-from cbadc.circuit_level.module import Module, Wire, SubModules
+from cbadc.circuit.module import Module, Wire, SubModules
 from cbadc.analog_system.analog_system import AnalogSystem
 from cbadc.analog_system.topology import chain
-from cbadc.circuit_level.op_amp.resistor_network import ResistorNetwork
-from cbadc.circuit_level.op_amp.amplifier_configurations import (
+from cbadc.circuit.op_amp.resistor_network import ResistorNetwork
+from cbadc.circuit.op_amp.amplifier_configurations import (
     InvertingAmplifierCapacitiveFeedback,
 )
-from cbadc.circuit_level.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
-from cbadc.circuit_level.state_space_equations import StateSpaceLinearSystem
-from cbadc.circuit_level.noise_models import resistor_sizing_voltage_source
+from cbadc.circuit.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
+from cbadc.circuit.state_space_equations import StateSpaceLinearSystem
+from cbadc.circuit.noise_models import resistor_sizing_voltage_source
 import logging
 import numpy as np
 

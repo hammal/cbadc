@@ -64,8 +64,8 @@ DEBUG = False
 @pytest.mark.parametrize(
     "digital_control",
     [
-        pytest.param('default', id="default_dc"),
-        # pytest.param('switch-cap', id="switch_cap_dc"),
+        # pytest.param('default', id="default_dc"),
+        pytest.param('switch-cap', id="switch_cap_dc"),
     ],
 )
 @pytest.mark.parametrize(
