@@ -6,45 +6,6 @@ name: performance validation, compiling tutorials, and benchmarking
 on: [pull_request]
 
 jobs:
-  # check_lint:
-  #   name: "Check if PEP8"
-  #   runs-on: [self-hosted]
-  #   steps:
-  #     - name: Checkout github repo
-  #       uses: actions/checkout@v2
-
-  #     - name: Linting
-  #       run: python3.8 -m tox -e linters
-
-  # doc_and_unit_tests:
-  #   strategy:
-  #     matrix:
-  #       python-version: ["py38", "py39", "py310"]
-  #   runs-on: [self-hosted]
-  #   needs: check_lint
-  #   steps:
-  #     - name: Checkout github repo
-  #       uses: actions/checkout@v2
-
-  #     - name: Run doctests
-  #       run: python3.8 -m tox -e doc-test
-
-  #     - name: Run unittests
-  #       run: python3.8 -m tox -e ${{ matrix.python-version }}
-
-  #     - name: Upload Unit Test Results
-  #       if: always()
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: Unit Test Results (Python ${{ matrix.python-version }})
-  #         path: pytest-unittests.xml
-
-  #     - name: Upload Doc Test Results
-  #       if: always()
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: Unit Test Results (Python ${{ matrix.python-version }})
-  #         path: pytest-doctests.xml
 
   performance_validation:
     timeout-minutes: 3000
@@ -86,12 +47,3 @@ jobs:
 
       - name: Benchmarking
         run: tox -e benchmark
-
-  # docs:
-  #   runs-on: ubuntu-latest
-  #  # needs: doc_and_unit_tests
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - uses: ammaraskar/sphinx-action@master
-  #       with:
-  #         docs-folder: "docs/"
