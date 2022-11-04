@@ -1,6 +1,6 @@
 """The digital FIR estimator"""
 from dataclasses import dataclass
-from typing import Iterator, Union
+from typing import Iterator, Union, List
 import cbadc
 import logging
 import os
@@ -558,7 +558,7 @@ StepSize = Union[FixedStepSize, ExponentialStepSize, PolynomialStepSize]
 
 class Training:
     training_iterations: int = 0
-    training_error: list[float] = [np.inf, np.inf]
+    training_error: List[float] = [np.inf, np.inf]
     active: bool = False
     V: np.ndarray = None
     batch_size: int = 0
@@ -583,7 +583,7 @@ class Training:
 class ControlSignalBuffer:
 
     M: int
-    K: list[int]
+    K: List[int]
     buffer_size: int
     downsample: int
     randomized_order: bool
@@ -592,7 +592,7 @@ class ControlSignalBuffer:
     def __init__(
         self,
         M: int,
-        K: list[int],
+        K: List[int],
         buffer_size: int = 0,
         downsample: int = 1,
         dtype: type = np.float64,
@@ -636,7 +636,7 @@ class ControlSignalBuffer:
             raise ValueError("Stochastic delay must be >= 1.")
         self.stochastic_delay = stochastic_delay
 
-    def __next__(self) -> list[np.ndarray]:
+    def __next__(self) -> List[np.ndarray]:
         if self.buffer:
             # with buffer
             if self._full_buffer:
@@ -712,7 +712,7 @@ class ControlSignalBuffer:
         # if self.buffer:
         #     self.fill_buffer()
 
-    def _receive_data(self) -> list[np.ndarray]:
+    def _receive_data(self) -> List[np.ndarray]:
 
         temp = np.zeros((self.M, self.downsample))
 
@@ -763,8 +763,8 @@ def initial_wiener_filter(h_wiener: np.ndarray):
 
 
 def initial_filter(
-    h0: list[np.ndarray], K: list[int], reference_index: list[int]
-) -> list[list[np.ndarray]]:
+    h0: List[np.ndarray], K: List[int], reference_index: List[int]
+) -> List[List[np.ndarray]]:
     h = [
         [np.zeros(K[m], dtype=np.float64) for m in range(len(K))]
         for _ in range(len(h0))
@@ -788,16 +788,16 @@ class AdaptiveFIRFilter:
     _index: int = 0
     downsample: int
     analog_system: cbadc.analog_system.AnalogSystem
-    h: list[list[np.ndarray]]
+    h: List[List[np.ndarray]]
     offset: np.ndarray
     training: Training
     control_signal_buffer: np.ndarray
 
     def __init__(
         self,
-        h: list[list[np.ndarray]],
-        K: list[int],
-        reference_index: list[int],
+        h: List[List[np.ndarray]],
+        K: List[int],
+        reference_index: List[int],
         downsample: int = 1,
         method='rls',
         **kwargs,
@@ -1052,7 +1052,7 @@ class AdaptiveFIRFilter:
         # return self.estimate(next(self.training_signals))
         return self.estimate(next(self.testing_signals))
 
-    def estimate(self, control_signal: list[np.ndarray]) -> np.ndarray:
+    def estimate(self, control_signal: List[np.ndarray]) -> np.ndarray:
         res = np.zeros_like(self.offset)
         for l in range(self.analog_system.L):
             for m in range(self.analog_system.M):
@@ -1090,7 +1090,7 @@ class AdaptiveFIRFilter:
         return training_error / training_iterations
 
     def _gradient(
-        self, control_signal: list[np.ndarray], observation_signal: np.ndarray
+        self, control_signal: List[np.ndarray], observation_signal: np.ndarray
     ):
         return (
             [
@@ -1271,7 +1271,7 @@ class AdaptiveFIRFilter:
 
         return training_error
 
-    def _vectorize_control_signal(self, control_signal: list[np.ndarray]):
+    def _vectorize_control_signal(self, control_signal: List[np.ndarray]):
         # ones such that offset is included
         vectorized_control_signal = np.ones(
             np.sum([self.K[m] for m in self.calibration_indexes[0]]) + 1,
