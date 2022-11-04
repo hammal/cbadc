@@ -10,7 +10,6 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-from sphinx_gallery.sorting import FileNameSortKey
 import os
 import sys
 import warnings
@@ -29,7 +28,7 @@ print(f"system path: {sys.path}")
 
 # -- Project information -----------------------------------------------------
 
-project = "Control-Bounded A/D Conversion Toolbox"
+project = "cbadc"
 copyright = "2022, Hampus Malmberg"
 author = "Hampus Malmberg"
 
@@ -51,11 +50,18 @@ extensions = [
     "nbsphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
-    "sphinx_gallery.gen_gallery",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.doctest",
+    "sphinx.ext.todo",
+    "sphinx.ext.coverage",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.inheritance_diagram",
+    "sphinx.ext.graphviz",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.extlinks",
 ]
-
-if os.getenv('RTDS', False):
-    extensions.append("rtds_action")
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -86,53 +92,5 @@ intersphinx_mapping = {
 }
 
 
-# Sphinx-gallery
-sphinx_gallery_conf = {
-    # path to your example scripts
-    "examples_dirs": ["../code_examples"],  # , "../datasets"],
-    # path to where to save gallery generated output
-    "gallery_dirs": ["tutorials"],  # , "datasets"],
-    "compress_images": ("images", "thumbnails", "-o7"),
-    # directory where function/class granular galleries are stored
-    "backreferences_dir": "backreferences",
-    # Modules for which function/class level galleries are created. In
-    # this case sphinx_gallery and numpy in a tuple of strings.
-    "doc_module": (
-        "cbadc"
-        # "cbadc.analog_signal.clock",
-        # "cbadc.analog_signal.constant_signal",
-        # "cbadc.analog_signal.impulse_responses",
-        # "cbadc.analog_signal.ramp",
-        # "cbadc.analog_signal.sinc_pulse",
-        # "cbadc.analog_signal.sinusoidal",
-        # "cbadc.analog_system",
-        # "cbadc.digital_control",
-        # "cbadc.digital_estimator",
-        # "cbadc.simulator",
-        # "cbadc.utilities",
-        # "cbadc.datasets",
-    ),
-    "line_numbers": False,
-    "remove_config_comments": True,
-    "within_subsection_order": FileNameSortKey,
-    'reference_url': {
-        # The module you locally document uses None
-        'sphinx_gallery': None,
-    },
-}
-
 # generate autosummary even if no references
 autosummary_generate = True
-
-# The name of your GitHub repository
-rtds_action_github_repo = "hammal/cbadc"
-
-# The path where the artifact should be extracted
-# Note: this is relative to the conf.py file!
-rtds_action_path = "../../docs"
-
-# The "prefix" used in the `upload-artifact` step of the action
-rtds_action_artifact_prefix = "notebooks-for-"
-
-# A GitHub personal access token is required, more info below
-rtds_action_github_token = os.environ.get("GITHUB_TOKEN", '')
