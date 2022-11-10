@@ -506,62 +506,93 @@ class ExponentialStepSize(FixedStepSize):
         return self.step_size * (self.decay_rate ** (iteration // self.decay_steps))
 
 
-@dataclass
-class PolynomialStepSize:
-    """Polynomial decay step size class
+# @dataclass
+# class PolynomialStepSize:
+#     """Polynomial decay step size class
 
-    Parameters
-    ----------
-    step_size: `float`
-        step size
-    decay: `float`
-        decay rate
-    """
+#     Parameters
+#     ----------
+#     step_size: `float`
+#         step size
+#     decay: `float`
+#         decay rate
+#     """
 
-    initial_step_size: float = 1.0 - 1e-5
-    final_step_size: float = 1.0 - 1e-7
-    power: int = 2
-    decay_steps: int = 1000
+#     initial_step_size: float = 1.0 - 1e-5
+#     final_step_size: float = 1.0 - 1e-7
+#     power: int = 2
+#     decay_steps: int = 1000
 
-    def __init__(
-        self,
-        initial_step_size: float,
-        final_step_size: float,
-        power: int,
-        decay_steps: int,
-    ):
-        self.initial_step_size = float(initial_step_size)
-        self.final_step_size = float(final_step_size)
-        self.power = int(power)
-        self.decay_steps = int(decay_steps)
+#     def __init__(
+#         self,
+#         initial_step_size: float,
+#         final_step_size: float,
+#         power: int,
+#         decay_steps: int,
+#     ):
+#         self.initial_step_size = float(initial_step_size)
+#         self.final_step_size = float(final_step_size)
+#         self.power = int(power)
+#         self.decay_steps = int(decay_steps)
 
-    def __call__(self, iteration: int) -> float:
-        """Return the step size
+#     def __call__(self, iteration: int) -> float:
+#         """Return the step size
 
-        Parameters
-        ----------
-        iteration: `int`
-            iteration number
+#         Parameters
+#         ----------
+#         iteration: `int`
+#             iteration number
 
-        Returns
-        -------
-        `float`
-            step size
-        """
-        return (self.initial_step_size - self.final_step_size) * (
-            1 - iteration // self.decay_steps
-        ) ** self.power + self.final_step_size
+#         Returns
+#         -------
+#         `float`
+#             step size
+#         """
+#         return (self.initial_step_size - self.final_step_size) * (
+#             1 - iteration // self.decay_steps
+#         ) ** self.power + self.final_step_size
 
 
-StepSize = Union[FixedStepSize, ExponentialStepSize, PolynomialStepSize]
+StepSize = Union[FixedStepSize, ExponentialStepSize]
 
 
 class Training:
+    """
+    A utility class for training parameters of a digital estimator
+
+    Attributes
+    ----------
+    training_iterations: `int`
+        number of training iterations
+    V: `array_like`, shape=(K_sum, K_sum)
+        covariance matrix for RLS training
+    k_sum: `int`
+        total number of filter coefficients
+    method: `str`
+        training method, possible choices are: 'rls', 'lms', and 'adam'
+    rls_lambda: :py:class:`cbadc.digital_estimator.fir_estimator.StepSize`
+        step size for RLS training
+    rls_delta: `float`
+        regularization parameter for RLS training
+    lms_learning_rate: :py:class:`cbadc.digital_estimator.fir_estimator.StepSize`
+        step size for LMS training
+    lms_momentum: `float`
+        momentum parameter for LMS training
+    adam_learning_rate: :py:class:`cbadc.digital_estimator.fir_estimator.StepSize`
+        step size for Adam training
+    adam_beta1: `float`
+        beta1 parameter for Adam training
+    adam_beta2: `float`
+        beta2 parameter for Adam training
+    adam_epsilon: `float`
+        epsilon parameter for Adam training
+    adam_t: `int`
+        iteration number for Adam training
+    """
+
     training_iterations: int = 0
-    training_error: List[float] = [np.inf, np.inf]
-    active: bool = False
     V: np.ndarray = None
-    batch_size: int = 0
+    k_sum: int = 0
     # methods for training
     method: str = "rls"
     # RLS parameters
@@ -581,6 +612,26 @@ class Training:
 
 
 class ControlSignalBuffer:
+    """Buffer for storing control signals when training and testing calibration of a digital estimator
+
+    Parameters
+    ----------
+    M: `int`
+        number of control signals
+    K: [int]
+        number of filter coefficients for each control signal
+    buffer_size: `int`
+        size of the buffer
+    downsample: `int`
+        downsample factor. Used when filling up buffer
+    dtype: `type`
+        data type of the buffer
+    randomized_order: `bool`
+        if True, the order of the control signals is randomized when filling up the buffer, defaults to False
+    stochastic_delay: `int`
+        use a stochastic delay when filling up the buffer, defaults to 1, i.e., no stochastic delay
+
+    """
 
     M: int
     K: List[int]
@@ -599,15 +650,6 @@ class ControlSignalBuffer:
         randomized_order: bool = False,
         stochastic_delay: int = 1,
     ):
-        """Buffer for storing control signals
-
-        Parameters
-        ----------
-        buffer_size: `int`
-            size of buffer
-        M: `int`
-            number of control signals
-        """
         self.M = M
         self.K = [k for k in K]
         self._K_max = max(self.K)
@@ -699,18 +741,6 @@ class ControlSignalBuffer:
         for _ in range(self._K_max):
             self._receive_data()
             self.reset()
-        # if self.buffer:
-        #     self.fill_buffer()
-
-        # for m in range(self.M):
-        #     # Rotate control_signal vector
-        #     self._buffer[m][: -self._K_max + 1, :] = self._buffer[m][
-        #         self._K_max - 1 :, :
-        #     ]
-        # self._index = self.buffer_size - self._K_max
-        # self._full_buffer = False
-        # if self.buffer:
-        #     self.fill_buffer()
 
     def _receive_data(self) -> List[np.ndarray]:
 
@@ -751,7 +781,19 @@ class ControlSignalBuffer:
 
 
 def initial_wiener_filter(h_wiener: np.ndarray):
-    # (self.analog_system.L, self.K3, self.analog_system.M)
+    """Reformat an initial Wiener filter into an initial reference filter
+    used for calibration of a digital estimator
+
+    Parameters
+    ----------
+    h_wiener: `np.ndarray`
+        initial Wiener filter as FIR filter
+
+    Returns
+    -------
+    h: `List[List[np.ndarray]]`
+        an initialized reference filter for calibration
+    """
     L = h_wiener.shape[0]
     K = h_wiener.shape[1]
     M = h_wiener.shape[2]
@@ -765,6 +807,23 @@ def initial_wiener_filter(h_wiener: np.ndarray):
 def initial_filter(
     h0: List[np.ndarray], K: List[int], reference_index: List[int]
 ) -> List[List[np.ndarray]]:
+    """
+    Factory function for initial reference filters
+
+    Parameters
+    ----------
+    h0: `List[np.ndarray]`
+        Initial reference filters
+    K: `List[int]`
+        number of filter coefficients per control signal
+    reference_index: `List[int]`
+        index of reference signal(s)
+
+    Returns
+    -------
+    h: `List[List[np.ndarray]]`
+        an initialized reference filter for calibration
+    """
     h = [
         [np.zeros(K[m], dtype=np.float64) for m in range(len(K))]
         for _ in range(len(h0))
@@ -777,13 +836,42 @@ def initial_filter(
     return h
 
 
-def elliptic_reference_filter(
-    N: int, rp: float, rs: float, Wn: np.ndarray, btype: str = 'lowpass'
-):
-    pass
-
-
 class AdaptiveFIRFilter:
+    """Adaptive FIR filter which can be used for both calibration and estimation
+
+    Parameters
+    ----------
+    h: `List[List[np.ndarray]]`
+        initial reference filter
+    K: `List[int]`
+        number of filter coefficients per control signal
+    reference_index: `List[int]`
+        index of reference signal(s)
+    downsample: `int`
+        downsampling factor, default: 1
+    method: `str`
+        method for calibration, default: 'rls'
+    projection: `bool`
+        use projection when calibrating using gradient approaches, default: False
+    randomized_order: `bool`
+        use randomized sample order when calibrating, default: False
+    stochastic_delay: `int`
+        use stochastic delay when calibrating, default: 1, i.e., no stochastic delay
+
+    Attributes
+    ----------
+    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
+        analog system
+    K: `List[int]`
+        number of filter coefficients per control signal
+    downsample: `int`
+        downsampling factor
+    offset: `np.ndarray`
+        offset of the analog system
+    h: `List[List[np.ndarray]]`
+        estimated filter coefficients
+
+    """
 
     _index: int = 0
     downsample: int
@@ -895,9 +983,12 @@ class AdaptiveFIRFilter:
             self.training.rls_lambda = kwargs.get(
                 "learning_rate", FixedStepSize(0.99999)
             )
+            self.training.k_sum = (
+                np.sum([self.K[m] for m in self.calibration_indexes[0]]) + 1
+            ) * self.analog_system.L
             self.training.V = (
                 np.eye(
-                    np.sum([self.K[m] for m in self.calibration_indexes[0]]) + 1,
+                    self.training.k_sum,
                     dtype=np.float64,
                 )
                 / self.training.rls_delta
@@ -960,9 +1051,6 @@ class AdaptiveFIRFilter:
         # (self.analog_system.L, self.analog_system.M, self.K[m])
         return self.h[:][:][::-1]
 
-    def write_rust_module(self, filename: str):
-        raise NotImplementedError
-
     def convolve(self, filter: np.ndarray):
         """Shape :math:`\mathbf{h}` filter by convolving with filter
 
@@ -1014,45 +1102,14 @@ class AdaptiveFIRFilter:
     def __iter__(self):
         return self
 
-    # def _reset_control_signal_buffer(self):
-    #     self.control_signal_buffer = np.zeros((self.analog_system.M, self._K_max))
-
-    # def _increment_control_signals(self, testing: bool):
-    #     if testing:
-    #         if self.training.active:
-    #             logger.info("Switching to testing, emptying control signal buffer")
-    #             self._reset_control_signal_buffer()
-    #             self.training.active = False
-    #         self._increment_control_signals_by_iterator(self.testing_signals)
-    #     else:
-    #         if not self.training.active:
-    #             logger.info("Switching to training, emptying control signal buffer")
-    #             self._reset_control_signal_buffer()
-    #             self.training.active = True
-    #             # Make sure not to train without data
-    #             for _ in range(self._K_max // self.downsample - 1):
-    #                 self._increment_control_signals_by_iterator(self.training_signals)
-
-    #         if self.training.buffer:
-    #             raise NotImplementedError
-    #         else:
-    #             for _ in range(
-    #                 np.random.randint(1, self.training.stochastic_delay + 1)
-    #             ):
-    #                 self._increment_control_signals_by_iterator(self.training_signals)
-
     def __next__(self) -> np.ndarray:
         # Check if control signal iterator is set.
         if self.training_signals is None or self.testing_signals is None:
             raise Exception("No iterators set.")
-
-        # if self.training.training_iterations == 0:
-        #     logger.warning("No training iterations set, using testing signals only. Adaptive filter has not been trained")
-
-        # return self.estimate(next(self.training_signals))
         return self.estimate(next(self.testing_signals))
 
     def estimate(self, control_signal: List[np.ndarray]) -> np.ndarray:
+        """Estimate the input signal from the control signal."""
         res = np.zeros_like(self.offset)
         for l in range(self.analog_system.L):
             for m in range(self.analog_system.M):
@@ -1067,11 +1124,6 @@ class AdaptiveFIRFilter:
         training_iterations: `int`
             number of training iterations
         """
-        # if self.training.training_iterations == 0:
-        #     logger.info("Starting training")
-        # else:
-        #     logger.info("Continuing training")
-
         # Check if control signal iterator is set.
         if self.training_signals is None:
             raise Exception("No training iterator set.")
@@ -1087,6 +1139,7 @@ class AdaptiveFIRFilter:
 
         self.training.training_iterations += training_iterations
 
+        # return average training error
         return training_error / training_iterations
 
     def _gradient(
@@ -1104,13 +1157,6 @@ class AdaptiveFIRFilter:
         )
 
     def _lms(self, batch_size: int):
-        """Train the adaptive filter using stochastic gradient descent
-
-        Parameters
-        ----------
-        training_iterations: `int`
-            number of training iterations
-        """
         training_error = np.zeros(self.analog_system.L)
         batch = [
             [np.zeros(self.K[m]) for m in self.calibration_indexes[l]]
@@ -1281,6 +1327,10 @@ class AdaptiveFIRFilter:
         for m in self.calibration_indexes[0]:
             vectorized_control_signal[k_sum : k_sum + self.K[m]] = control_signal[m][:]
             k_sum += self.K[m]
+        if self.analog_system.L > 1:
+            return np.hstack(
+                [vectorized_control_signal for _ in range(self.analog_system.L)]
+            )
         return vectorized_control_signal
 
     def _de_vectorize_g(self, vectorize_g):

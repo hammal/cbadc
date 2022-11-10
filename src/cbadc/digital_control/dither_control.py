@@ -27,6 +27,12 @@ class DitherControl(DigitalControl):
         number of dithering controls
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         a digital control to be extended
+    t0: `float`, `optional`
+        time to set next update at, defaults to 0.
+    impulse_response: :py:class:`cbadc.analog_signal.impulse_responses._ImpulseResponse`, `optional`
+        the impulse response of the dithering controls, defaults to a step response
+    dynamic_type: `str`, `optional`
+        the type of dithering signal, options are binary, ternary or uniform, defaults to binary
 
     """
 
@@ -41,7 +47,7 @@ class DitherControl(DigitalControl):
         ],
         t0: float = 0.0,
         impulse_response: _ImpulseResponse = StepResponse(),
-        ternary: bool = False,
+        dynamic_type: str = "binary",
     ):
         self._deterministic_control = copy(digital_control)
         self.number_of_random_control = number_of_random_controls
@@ -57,7 +63,9 @@ class DitherControl(DigitalControl):
             *self._deterministic_control._impulse_response,
         ]
         self._control_decisions = np.zeros(self.M, dtype=np.double)
-        self.ternary = bool(ternary)
+        if dynamic_type not in ['binary', 'ternary', 'uniform']:
+            raise ValueError("dynamic_type must be binary, ternary or uniform")
+        self.dynamic_type = dynamic_type
         # initialize dac values
         self.control_update(
             self._t_next, np.zeros(self.M - self.number_of_random_control)
@@ -97,11 +105,15 @@ class DitherControl(DigitalControl):
             self._s[self.number_of_random_control :] = self._deterministic_control._s[:]
 
             # Random controls
-            if self.ternary:
+            if self.dynamic_type == 'ternary':
                 self._s[: self.number_of_random_control] = (
                     np.random.randint(3, size=(self.number_of_random_control,)) / 2.0
                 )
-            else:
+            elif self.dynamic_type == 'uniform':
+                self._s[: self.number_of_random_control] = np.random.rand(
+                    self.number_of_random_control
+                )
+            else:  # default binary
                 self._s[: self.number_of_random_control] = np.random.randint(
                     2, size=(self.number_of_random_control,)
                 )

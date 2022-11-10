@@ -8,7 +8,7 @@ from .fir_estimator import (
     initial_wiener_filter,
     FixedStepSize,
     ExponentialStepSize,
-    PolynomialStepSize,
+    # PolynomialStepSize,
     StepSize,
 )
 from .iir_estimator import IIRFilter

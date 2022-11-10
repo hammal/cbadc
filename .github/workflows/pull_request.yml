@@ -17,7 +17,8 @@ jobs:
           "full-test",
           "full-test-switch-cap-control",
           "full-test-simulator",
-          "full-test-fir-filter"
+          "full-test-fir-filter",
+          "full-test-calibration",
         ]
     # needs: doc_and_unit_tests
     steps:
