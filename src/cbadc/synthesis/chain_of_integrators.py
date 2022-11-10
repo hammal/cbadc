@@ -1,5 +1,5 @@
 """Synthesise functions for chain-of-integrators control-bounded ADCs."""
-from cbadc.fom import snr_from_dB, enob_to_snr
+from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_enob
 from cbadc.analog_system.chain_of_integrators import ChainOfIntegrators
 from cbadc.digital_control.digital_control import DigitalControl
 from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepResponse

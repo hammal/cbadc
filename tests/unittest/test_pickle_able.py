@@ -292,25 +292,25 @@ def get_simulator(chain_of_integrators):
     return simulator
 
 
-import cbadc.circuit_level.digital_control
-import cbadc.circuit_level.op_amp
-import cbadc.circuit_level.analog_frontend
+import cbadc.circuit.digital_control
+import cbadc.circuit.op_amp
+import cbadc.circuit.analog_frontend
 from cbadc.analog_signal import Clock, Sinusoidal
-import cbadc.circuit_level.testbench
+import cbadc.circuit.testbench
 
 
 def test_testbench(get_simulator, pickle_unpickle):
-    digital_control_module = cbadc.circuit_level.digital_control.DigitalControl(
+    digital_control_module = cbadc.circuit.digital_control.DigitalControl(
         get_simulator.digital_control
     )
-    ADC = 1e5
+    A_DC = 1e5
     C = 1e-12
     analog_system_module = (
-        cbadc.circuit_level.op_amp.analog_system.AnalogSystemFiniteGainOpAmp(
-            analog_system=get_simulator.analog_system, C=C, A_DC=ADC
+        cbadc.circuit.op_amp.analog_system.AnalogSystemFirstOrderPoleOpAmp(
+            analog_system=get_simulator.analog_system, C=C, GBWP=1e8, A_DC=A_DC
         )
     )
-    analog_frontend_module = cbadc.circuit_level.analog_frontend.AnalogFrontend(
+    analog_frontend_module = cbadc.circuit.analog_frontend.AnalogFrontend(
         analog_system_module, digital_control_module
     )
     clock = Clock(digital_control_module.digital_control.clock.T * 1e-2)
@@ -320,7 +320,7 @@ def test_testbench(get_simulator, pickle_unpickle):
     # 10000 control cycles
     t_stop = digital_control_module.digital_control.clock.T * 1e5
     sinusoidal = Sinusoidal(400e-3, 50e0, 0, vsgd)
-    testbench = cbadc.circuit_level.testbench.TestBench(
-        analog_frontend_module, sinusoidal, clock, t_stop, "my_testbench", vdd, vgd
+    testbench = cbadc.circuit.testbench.TestBench(
+        analog_frontend_module, sinusoidal, clock, "my_testbench", vdd, vgd
     )
     pickle_unpickle(testbench)

@@ -96,8 +96,8 @@ class FullSimulator(_BaseSimulator):
 
         t_end: float = self.t + self.clock.T
         t_span = np.array((self.t, t_end))
-        if t_end >= self.t_stop:
-            raise StopIteration
+        # if t_end >= self.t_stop:
+        # raise StopIteration
         # Solve full diff equation.
         self._state_vector = self._full_ordinary_differential_solution(t_span)
         self.t = t_end
@@ -294,7 +294,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         the control contributions. Furthermore, :math:`\mathbf{d}(\tau)` is the DAC waveform
         (or impulse response) of the digital control.
         """
-        logger.info("Executing precomputations.")
+        logger.info("Executing pre-computations.")
         # expm(A T_s)
         self._pre_computed_state_transition_matrix = (
             self._analog_system_matrix_exponential(self.clock.T)
