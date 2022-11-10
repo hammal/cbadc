@@ -18,17 +18,4 @@ from cbadc.circuit.analog_system import (
     # AnalogSystemHigherOrderOpAmp,
 )
 from cbadc.circuit.digital_control import DigitalControl
-from cbadc.circuit.testbench import TestBench
-
-# TODO
-#
-# - OP-amp analog_system
-# - switched-cap control
-# - gm-C analog_system
-# - get_simulator_function
-# - get_estimator_function
-# - get_analog_system, digital_control
-# - Spice testbench
-# - Documentation
-# - Tutorial
-#
+from cbadc.circuit.testbench import TestBench, get_opamp_testbench, get_testbench

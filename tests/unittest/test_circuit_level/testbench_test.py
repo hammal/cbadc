@@ -1,11 +1,4 @@
-from tests.fixture.chain_of_integrators import get_simulator, chain_of_integrators
-import cbadc.circuit.digital_control
-import cbadc.circuit.op_amp
-import cbadc.circuit.analog_frontend
-from cbadc.analog_signal import Clock, Sinusoidal
-import cbadc.circuit.testbench
-import os
-
+import cbadc
 
 # def test_AnalogFrontend(get_simulator):
 #     digital_control_module = cbadc.circuit_level.digital_control.DigitalControl(
@@ -35,3 +28,38 @@ import os
 #     if not os.path.exists(path_here):
 #         os.mkdir(path_here)
 #     testbench.to_file("this_file", path=path_here)
+
+
+def test_get_testbench():
+    ENOB = 12
+    N = 5
+    BW = 1e6
+    analog_frontend_target = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    amplitude = 1.0
+    frequency = 1.0 / analog_frontend_target.digital_control.clock.T
+    while frequency > BW:
+        frequency /= 2
+    input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
+    testbench = cbadc.circuit.get_testbench(analog_frontend_target, [input_signal])
+
+
+def test_get_opamp_testbench():
+    ENOB = 12
+    N = 5
+    BW = 1e6
+    analog_frontend_target = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    amplitude = 1.0
+    frequency = 1.0 / analog_frontend_target.digital_control.clock.T
+    while frequency > BW:
+        frequency /= 2
+    input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
+    C = 1e-12
+    A_DC = 1e2
+    GBWP = BW * A_DC
+
+    testbench = cbadc.circuit.get_opamp_testbench(
+        analog_frontend_target, [input_signal], C
+    )
+    testbench = cbadc.circuit.get_opamp_testbench(
+        analog_frontend_target, [input_signal], C, GBWP=GBWP, A_DC=A_DC
+    )

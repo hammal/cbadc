@@ -321,6 +321,6 @@ def test_testbench(get_simulator, pickle_unpickle):
     t_stop = digital_control_module.digital_control.clock.T * 1e5
     sinusoidal = Sinusoidal(400e-3, 50e0, 0, vsgd)
     testbench = cbadc.circuit.testbench.TestBench(
-        analog_frontend_module, sinusoidal, clock, "my_testbench", vdd, vgd
+        analog_frontend_module, [sinusoidal], clock, "my_testbench", vdd, vgd
     )
     pickle_unpickle(testbench)

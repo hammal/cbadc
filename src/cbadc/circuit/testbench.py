@@ -1,11 +1,18 @@
 """testbench implementations"""
 from typing import List
 from jinja2 import Environment, PackageLoader, select_autoescape
-from cbadc.circuit.analog_frontend import AnalogFrontend
+from cbadc.circuit.analog_frontend import AnalogFrontend as CircuitAnalogFrontend
+from cbadc.circuit.analog_system import (
+    AnalogSystemFirstOrderPoleOpAmp,
+    AnalogSystemIdealOpAmp,
+)
+from cbadc.circuit.digital_control import DigitalControl
+from cbadc.circuit.state_space_equations import AnalogSystem
 from cbadc.analog_signal import Clock, Sinusoidal
 from cbadc.simulator import SimulatorType, get_simulator
 from datetime import datetime
 from cbadc.__version__ import __version__
+from cbadc.analog_frontend import AnalogFrontend as AnalogFrontend
 import os.path
 
 _env = Environment(
@@ -41,11 +48,11 @@ class TestBench:
 
     strobe_freq: float
     strobe_delay: float
-    analog_frontend: AnalogFrontend
+    analog_frontend: CircuitAnalogFrontend
 
     def __init__(
         self,
-        analog_frontend: AnalogFrontend,
+        analog_frontend: CircuitAnalogFrontend,
         input_signal_list: List[Sinusoidal],
         clock: Clock,
         name: str = "",
@@ -53,8 +60,8 @@ class TestBench:
         vgd: float = 0.0,
         vsgd: float = None,
         number_of_samples: int = 1 << 12,
-        tran_options = {},
-        sim_options = {},
+        tran_options={},
+        sim_options={},
     ):
         for input_signal in input_signal_list:
             if not isinstance(input_signal, Sinusoidal):
@@ -109,13 +116,14 @@ class TestBench:
                     'fall_time': self.analog_frontend.digital_control.digital_control.clock.tt,
                 },
                 'input_signals': [
-                            {
+                    {
                         'offset': self._input_signal_list[i].offset,
                         'amplitude': self._input_signal_list[i].amplitude,
                         'freq': self._input_signal_list[i].frequency,
                         'phase': self._input_signal_list[i].phase,
-                    } for i in range(len(self._input_signal_list))
-                    ],
+                    }
+                    for i in range(len(self._input_signal_list))
+                ],
                 'analog_frontend': {
                     'inputs': [inp.name for inp in self.analog_frontend.inputs],
                     'outputs': [out.name for out in self.analog_frontend.outputs],
@@ -197,3 +205,140 @@ class TestBench:
             filename = f"{filename}.txt"
         with open(os.path.join(path, filename), 'w') as f:
             f.write(res)
+
+
+def get_testbench(
+    analog_frontend: AnalogFrontend,
+    input_signal_list: List[Sinusoidal],
+    name: str = "",
+    vdd: float = 1.0,
+    vgd: float = 0.0,
+    vsgd: float = None,
+):
+    """Return an ideal state space model testbench for the specified analog frontend
+
+    Parameters
+    ----------
+    analog_frontend: :py:class:`cbadc.analog_frontend.AnalogFrontend`
+        the analog frontend to be tested.
+    input_signal_list: `List`[`Sinusoidal`]
+        a list of input signals to be applied to the analog frontend.
+    name: `str`
+        the name of the testbench, defaults to empty string.
+    vdd: `float`
+        the positive supply voltage, defaults to 1.0.
+    vgd: `float`
+        the ground voltage, defaults to 0.0.
+    vsgd: `float`
+        the signal ground voltage, defaults to None.
+
+    Returns
+    -------
+    : :py:class:`cbadc.circuit.testbench.Testbench`
+        an instantiated testbench.
+    """
+    circuit_analog_frontend = CircuitAnalogFrontend(
+        AnalogSystem(
+            analog_frontend.analog_system,
+        ),
+        DigitalControl(analog_frontend.digital_control),
+    )
+    simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    return TestBench(
+        circuit_analog_frontend,
+        input_signal_list,
+        simulation_clock,
+        name=name,
+        vdd=vdd,
+        vgd=vgd,
+        vsgd=vsgd,
+    )
+
+
+def get_opamp_testbench(
+    analog_frontend: AnalogFrontend,
+    input_signal_list: List[Sinusoidal],
+    C: float,
+    GBWP: float = None,
+    A_DC: float = None,
+    omega_p: float = None,
+    name: str = "",
+    vdd: float = 1.0,
+    vgd: float = 0.0,
+    vsgd: float = None,
+):
+    """Return an op-amp model testbench for the specified analog frontend
+
+    Parameters
+    ----------
+    analog_frontend: :py:class:`cbadc.analog_frontend.AnalogFrontend`
+        the analog frontend to be tested.
+    input_signal_list: `List`[`Sinusoidal`]
+        a list of input signals to be applied to the analog frontend.
+    C: `float`
+        the capacitance of the time constant of the op-amp.
+    GBWP: `float`, optional
+        the GBWP of the op-amp, defaults to None.
+    A_DC: `float`, optional
+        the DC gain of the op-amp, defaults to None.
+    omega_p: `float`, optional
+        the pole frequency of the op-amp, defaults to None.
+    name: `str`
+        the name of the testbench, defaults to empty string.
+    vdd: `float`
+        the positive supply voltage, defaults to 1.0.
+    vgd: `float`
+        the ground voltage, defaults to 0.0.
+    vsgd: `float`
+        the signal ground voltage, defaults to None.
+
+
+    Returns
+    -------
+    : :py:class:`cbadc.circuit.testbench.Testbench`
+        an instantiated testbench.
+    """
+    if GBWP is None and A_DC is None and omega_p is None:
+        circuit_analog_system = AnalogSystemIdealOpAmp(
+            analog_system=analog_frontend.analog_system,
+            C=C,
+        )
+    else:
+        if GBWP is None:
+            circuit_analog_system = AnalogSystemFirstOrderPoleOpAmp(
+                analog_system=analog_frontend.analog_system,
+                C=C,
+                A_DC=A_DC,
+                omega_p=omega_p,
+            )
+        elif A_DC is None:
+            circuit_analog_system = AnalogSystemFirstOrderPoleOpAmp(
+                analog_system=analog_frontend.analog_system,
+                C=C,
+                GBWP=GBWP,
+                omega_p=omega_p,
+            )
+        elif omega_p is None:
+            circuit_analog_system = AnalogSystemFirstOrderPoleOpAmp(
+                analog_system=analog_frontend.analog_system,
+                C=C,
+                GBWP=GBWP,
+                A_DC=A_DC,
+            )
+        else:
+            raise ValueError("Only two of GBWP, A_DC and omega_p can be specified.")
+    circuit_analog_frontend = CircuitAnalogFrontend(
+        circuit_analog_system,
+        DigitalControl(analog_frontend.digital_control),
+    )
+
+    simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    return TestBench(
+        circuit_analog_frontend,
+        input_signal_list,
+        simulation_clock,
+        name=name,
+        vdd=vdd,
+        vgd=vgd,
+        vsgd=vsgd,
+    )
