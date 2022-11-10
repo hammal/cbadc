@@ -242,6 +242,8 @@ class AnalogSystemIdealOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
             raise Exception("both Gammas must be defined.")
         super().__init__(analog_system, **kwargs)
 
+        # Feedback resistor for summation of s_tilde
+
         self._A_G_matrix = ResistorNetwork(
             "resistor_network_a",
             "A",

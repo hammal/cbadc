@@ -18,7 +18,9 @@ VSG vsgd 0 vsource dc= {{ vsgd }} type=dc
 VCLK clk vgd vsource type=pulse val0={{ vgd }} val1={{ vdd }} period={{ clock['period'] }} rise={{ clock['rise_time'] }} fall={{ clock['fall_time'] }}
 
 * Input Signal
-VS u_0 vgd vsource type=sine sinedc={{  input['offset'] }} ampl={{ input['amplitude'] }} freq={{ input["freq"] }} mag=1
+{% for i in range(input_signals|length) %}
+VS{{i}} u_{{i}} vgd vsource type=sine sinedc={{  input_signals[i]['offset'] }} ampl={{ input_signals[i]['amplitude'] }} freq={{ input_signals[i]["freq"] }} sinephase={{ input_signals[i]["phase"] }}
+{% endfor %}
 
 * Analog frontend
 analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }} {% endfor %}{% for output in analog_frontend['outputs'] %}{{ output }} {% endfor %}{{ analog_frontend['name'] }}
@@ -29,7 +31,11 @@ analog_frontend {% for input in analog_frontend['inputs'] %}{{ input }} {% endfo
 // strobefreq = 1 / clock_period
 // strobedelay = clock_period / 4
 //
-tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ strobedelay }} skipdc=yes
+tran tran cmin=0 stop={{ t_stop }} strobefreq={{ strobefreq }} strobedelay={{ strobedelay }} skipdc=yes {% for param, value in tran_options.items() %}{{param}}={{value}} {% endfor %}
+
+{% for key, value in sim_options.items() %}
+{{key}} options {% for param, value in sim_options[key].items() %}{{param}}={{value}} {% endfor %}
+{% endfor %}
 
 // Save analog frontend outputs
 //save {% for var in save_variables[0] %}{{ var }} {% endfor %}

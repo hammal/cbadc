@@ -1,4 +1,5 @@
 """testbench implementations"""
+from typing import List
 from jinja2 import Environment, PackageLoader, select_autoescape
 from cbadc.circuit_level.analog_frontend import AnalogFrontend
 from cbadc.analog_signal import Clock, Sinusoidal
@@ -45,18 +46,21 @@ class TestBench:
     def __init__(
         self,
         analog_frontend: AnalogFrontend,
-        input_signal: Sinusoidal,
+        input_signal_list: List[Sinusoidal],
         clock: Clock,
         name: str = "",
         vdd: float = 1.0,
         vgd: float = 0.0,
         vsgd: float = None,
         number_of_samples: int = 1 << 12,
+        tran_options = {},
+        sim_options = {},
     ):
-        if not isinstance(input_signal, Sinusoidal):
-            raise NotImplementedError("Currently only supported for sinusodials.")
+        for input_signal in input_signal_list:
+            if not isinstance(input_signal, Sinusoidal):
+                raise NotImplementedError("Currently only supported for sinusodials.")
         self.analog_frontend = analog_frontend
-        self._input_signal = input_signal
+        self._input_signal_list = input_signal_list
         self._simulation_clock = clock
         self.strobe_freq = 1 / clock.T
         # quarter clock phase delay until readout
@@ -73,6 +77,9 @@ class TestBench:
             self._vsgd = vsgd
         else:
             self._vsgd = (self._vdd - self._vgd) / 2 + self._vgd
+
+        self.tran_options = tran_options
+        self.sim_options = sim_options
 
     def render(self, verilog_path: str = ".") -> str:
         """Generate a rendered testbench file
@@ -101,11 +108,14 @@ class TestBench:
                     'rise_time': self.analog_frontend.digital_control.digital_control.clock.tt,
                     'fall_time': self.analog_frontend.digital_control.digital_control.clock.tt,
                 },
-                'input': {
-                    'offset': self._input_signal.offset,
-                    'amplitude': self._input_signal.amplitude,
-                    'freq': self._input_signal.frequency,
-                },
+                'input_signals': [
+                            {
+                        'offset': self._input_signal_list[i].offset,
+                        'amplitude': self._input_signal_list[i].amplitude,
+                        'freq': self._input_signal_list[i].frequency,
+                        'phase': self._input_signal_list[i].phase,
+                    } for i in range(len(self._input_signal_list))
+                    ],
                 'analog_frontend': {
                     'inputs': [inp.name for inp in self.analog_frontend.inputs],
                     'outputs': [out.name for out in self.analog_frontend.outputs],
@@ -132,6 +142,8 @@ class TestBench:
                         ]
                     ],
                 ],
+                'tran_options': self.tran_options,
+                'sim_options': self.sim_options,
             }
         )
 
