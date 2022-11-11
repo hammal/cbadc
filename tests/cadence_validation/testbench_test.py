@@ -127,7 +127,7 @@ def test_full():
         C=1e-12,
         GBWP=1e3 * BW,
         A_DC=1e3,
-        save_all_variables=True,
+        save_all_variables=False,
         save_to_filename=observation_filename,
     )
     testbench.run_spectre_simulation(
@@ -150,3 +150,9 @@ def test_full():
     for i in range(size):
         u_hat[i] = next(estimator)
     plt.plot(u_hat)
+    plt.savefig('testbench_uhat.png')
+
+
+if __name__ == '__main__':
+
+    test_full()
