@@ -48,7 +48,7 @@ class Observer(Module):
             "end",
             "",
             "@(final_step) begin",
-            f'\t$fclose(fd);',
+            "\t$fclose(fd);",
             "end",
             "",
             "@(cross(V(clk) - V(vsgd), -1)) begin",
