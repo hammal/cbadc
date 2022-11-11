@@ -223,7 +223,6 @@ class TestBench:
             process = subprocess.Popen(
                 popen_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
             )
-            p0 = 0
             line_s = None
             for line in iter(process.stdout.readline, b''):
                 f.write(line)
@@ -231,21 +230,18 @@ class TestBench:
 
             if line_s is None:
                 RuntimeError('Spectre simulation did not return any output')
-            try:
-                status_list = line_s.split(' ')
-                err_idx = (
-                    int(
-                        [
-                            i
-                            for i in range(0, len(status_list))
-                            if "error" in status_list[i]
-                        ][0]
-                    )
-                    - 1
+            status_list = line_s.split(' ')
+            err_idx = (
+                int(
+                    [
+                        i
+                        for i in range(0, len(status_list))
+                        if "error" in status_list[i]
+                    ][0]
                 )
-                errors = int(status_list[err_idx])
-            except:
-                errors = True
+                - 1
+            )
+            errors = int(status_list[err_idx])
             if errors:
                 raise RuntimeError(f'Error occurred. See: {log_file}')
 
