@@ -1,5 +1,5 @@
 """"digital control implementations."""
-from typing import List, Union
+from typing import List
 from .module import Module, Variable, Wire, Parameter, SubModules
 from ..analog_signal.impulse_responses import StepResponse, RCImpulseResponse
 from ..digital_control.digital_control import DigitalControl as IdealDigitalControl
@@ -110,18 +110,18 @@ class RandomControl(Module):
         variables = [
             Variable("vout", real=True, comment="Output voltage value"),
             Variable("rval", real=True, comment="Random value"),
-            ]
+        ]
         analog_statements = [
             "@(cross(V(clk) - V(vsgd), -1)) begin",
-	        "\t// Generate random val",
-			"\trval = $rdist_uniform(0, -1, 1);",
-			"\tif (rval >= 0) begin",
-			"\t\tvout=V(vdd, vgd);",
+            "\t// Generate random val",
+            "\trval = $rdist_uniform(0, -1, 1);",
+            "\tif (rval >= 0) begin",
+            "\t\tvout=V(vdd, vgd);",
             "\tend",
             "\telse begin",
             "\t\tvout = V(vgd);",
             "\tend",
-		    "end",
+            "end",
             "V(s, vgd) <+ vout * transition(1.0, dly, ttime);",
         ]
         # analog_initial = ["V(s) = 0"]
@@ -153,8 +153,6 @@ class RandomControl(Module):
             # "Furthermore, dly and ttime specifies how quickly the",
             # "comparator can switch its output.",
         ]
-
-
 
 
 class DigitalControl(Module):
