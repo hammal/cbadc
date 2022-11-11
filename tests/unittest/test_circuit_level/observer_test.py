@@ -10,7 +10,5 @@ def test_observer_initialization():
     nets = [*local, *ports]
 
     observer = cbadc.circuit.Observer(ports, filename="observations.csv")
-
-    # print(observer.to_file('test_observer.vams'))
-
+    observer.to_file('test_observer.vams')
     # assert False
