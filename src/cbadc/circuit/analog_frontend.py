@@ -108,6 +108,8 @@ class AnalogFrontend(Module):
             *s_tilde,
         ]
 
+        self.save_all_variables = save_all_variables
+
         if save_all_variables:
             save_variables = [*u, *self.outputs, *s_tilde]
         else:

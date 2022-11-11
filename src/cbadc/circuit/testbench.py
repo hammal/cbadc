@@ -13,11 +13,13 @@ from cbadc.simulator import SimulatorType, get_simulator
 from datetime import datetime
 from cbadc.__version__ import __version__
 from cbadc.analog_frontend import AnalogFrontend as AnalogFrontend
+from cbadc.simulator import NumpySimulator
+from pandas import read_csv
 import os.path
 import subprocess
 import logging
+
 logger = logging.getLogger(__name__)
-import tqdm
 
 _env = Environment(
     loader=PackageLoader("cbadc", package_path="circuit/templates"),
@@ -184,17 +186,43 @@ class TestBench:
             **kwargs,
         )
 
-    def _run_spectre_simulation(self, filename: str, path: str = ".", raw_data_dir=".", log_file="spectre_sim.log"):
+    def run_spectre_simulation(
+        self,
+        filename: str,
+        path: str = ".",
+        raw_data_dir=".",
+        log_file="spectre_sim.log",
+    ):
         """Simulate using Spectre
+
+        Parameters
+        ----------
+        filename: `str`
+            name of the output file to be generated.
+        path: `str`
+            path to the output file.
+        raw_data_dir: `str`
+            path to the raw data directory.
+        log_file: `str`
+            path to the log file.
+
+        Info
+        ----
+        This function requires that the spectre simulator is installed and configured.
+
         """
         self.to_file(filename, path)
         log_file = os.path.abspath(log_file)
 
-        popen_cmd = [f'spectre {os.path.join(path, filename)} -format psfascii -raw {os.path.abspath(raw_data_dir)} ++aps -ahdllibdir {os.path.abspath(raw_data_dir)} -log']
+        popen_cmd = [
+            f'spectre {os.path.join(path, filename)} -format psfascii -raw {os.path.abspath(raw_data_dir)} ++aps -ahdllibdir {os.path.abspath(raw_data_dir)} -log'
+        ]
 
         logger.info(f'Starting spectre simulation.\nCommand: {popen_cmd}')
         with open(log_file, 'wb') as f:
-            process = subprocess.Popen(popen_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            process = subprocess.Popen(
+                popen_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+            )
             p0 = 0
             line_s = None
             for line in iter(process.stdout.readline, b''):
@@ -205,7 +233,16 @@ class TestBench:
                 RuntimeError('Spectre simulation did not return any output')
             try:
                 status_list = line_s.split(' ')
-                err_idx = int([i for i in range(0, len(status_list)) if "error" in status_list[i]][0])-1
+                err_idx = (
+                    int(
+                        [
+                            i
+                            for i in range(0, len(status_list))
+                            if "error" in status_list[i]
+                        ][0]
+                    )
+                    - 1
+                )
                 errors = int(status_list[err_idx])
             except:
                 errors = True
@@ -215,6 +252,28 @@ class TestBench:
         logger.info("SPECTRE SIMULATION COMPLETE")
         logger.info(f"Raw data directory: {raw_data_dir}")
 
+    def get_spectre_simulator(self, filename: str):
+        """Return a simulator instance with the data
+        from a spectre simulation
+
+        Parameters
+        ----------
+        filename: `str`
+            name of the Spectre simulation output file.
+
+        Returns
+        -------
+        : :py:class:`cbadc.simulator.get_simulator`
+            an instantiated simulator.
+
+        """
+        if self.analog_frontend.save_all_variables:
+            s = read_csv(filename).to_numpy()[
+                :, : self.analog_frontend.analog_system.analog_system.M
+            ]
+        else:
+            s = read_csv(filename).to_numpy()
+        return NumpySimulator("", array=s)
 
     def to_file(self, filename: str, path: str = "."):
         """Write the testbench to file
