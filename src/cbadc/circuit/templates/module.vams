@@ -46,7 +46,7 @@ module {{ module_name }}({% for p in ports %}{{ p.name }}{% if loop.last %}{% el
 {% if int_variables %}
     {% for val in int_variables %}
 
-    int {{ val.name }}{% if val.initial_value is not none %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
+    integer {{ val.name }}{% if val.initial_value is not none %} = {{ val.initial_value }}{% endif %};{% if val.comment %} {{ '//' }} {{ val.comment }}{% endif %}
 {% endfor %}{% endif %}
 
 {% if submodules %}
