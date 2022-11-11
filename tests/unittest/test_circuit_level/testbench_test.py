@@ -41,6 +41,23 @@ def test_get_testbench():
         frequency /= 2
     input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
     testbench = cbadc.circuit.get_testbench(analog_frontend_target, [input_signal])
+    testbench.to_file('testbench')
+
+
+def test_testbench_save_all():
+    ENOB = 12
+    N = 5
+    BW = 1e6
+    analog_frontend_target = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    amplitude = 1.0
+    frequency = 1.0 / analog_frontend_target.digital_control.clock.T
+    while frequency > BW:
+        frequency /= 2
+    input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
+    testbench = cbadc.circuit.get_testbench(
+        analog_frontend_target, [input_signal], save_all_variables=True
+    )
+    testbench.to_file('testbench')
 
 
 def test_get_opamp_testbench():
@@ -60,6 +77,37 @@ def test_get_opamp_testbench():
     testbench = cbadc.circuit.get_opamp_testbench(
         analog_frontend_target, [input_signal], C
     )
+    testbench.to_file('testbench1')
     testbench = cbadc.circuit.get_opamp_testbench(
         analog_frontend_target, [input_signal], C, GBWP=GBWP, A_DC=A_DC
     )
+    testbench.to_file('testbench2')
+
+
+def test_opamp_testbench_save_all():
+    ENOB = 12
+    N = 5
+    BW = 1e6
+    analog_frontend_target = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    amplitude = 1.0
+    frequency = 1.0 / analog_frontend_target.digital_control.clock.T
+    while frequency > BW:
+        frequency /= 2
+    input_signal = cbadc.analog_signal.Sinusoidal(amplitude, frequency)
+    C = 1e-12
+    A_DC = 1e2
+    GBWP = BW * A_DC
+
+    testbench = cbadc.circuit.get_opamp_testbench(
+        analog_frontend_target, [input_signal], C, save_all_variables=True
+    )
+    testbench.to_file('testbench1')
+    testbench = cbadc.circuit.get_opamp_testbench(
+        analog_frontend_target,
+        [input_signal],
+        C,
+        GBWP=GBWP,
+        A_DC=A_DC,
+        save_all_variables=True,
+    )
+    testbench.to_file('testbench2')

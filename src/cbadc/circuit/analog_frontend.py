@@ -6,6 +6,7 @@ an analog system and a digital control.
 """
 from typing import List, Type, Union
 from cbadc.circuit.module import Module, Wire, SubModules
+from cbadc.circuit.observer import Observer
 from cbadc.circuit.state_space_equations import AnalogSystem
 from cbadc.circuit.analog_system import (
     # AnalogSystemFiniteGainOpAmp,
@@ -42,6 +43,10 @@ class AnalogFrontend(Module):
         an analog system verilog-ams module
     digital_control: :py:class`cbadc.circuit_level.DigitalControl`
         a digital control verilog-ams module
+    save_all_variables: bool
+        if True, all variables are saved to a csv file, if False only the control signals are saved.
+    save_to_filename: str
+        the filename to save the observations to.
 
     Attributes
     ----------
@@ -60,6 +65,8 @@ class AnalogFrontend(Module):
         self,
         analog_system: _Analog_systems,
         digital_control: _Digital_controls,
+        save_all_variables: bool = False,
+        save_to_filename: str = "observations.csv",
     ) -> None:
         self.analog_system = analog_system
         self.digital_control = digital_control
@@ -100,6 +107,14 @@ class AnalogFrontend(Module):
             *ports,
             *s_tilde,
         ]
+
+        if save_all_variables:
+            save_variables = [*u, *self.outputs, *s_tilde]
+        else:
+            save_variables = self.outputs
+
+        observer = Observer(save_variables, filename=save_to_filename)
+
         submodules = [
             SubModules(
                 analog_system, [self._vdd, self._gnd, self._sgd, *u, *s, *s_tilde]
@@ -108,7 +123,12 @@ class AnalogFrontend(Module):
                 digital_control,
                 [self._vdd, self._gnd, self._sgd, self._clk, *s_tilde, *s],
             ),
+            SubModules(
+                observer,
+                [self._vdd, self._gnd, self._sgd, self._clk, *save_variables],
+            ),
         ]
+
         super().__init__(
             "analog_frontend",
             nets,

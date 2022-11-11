@@ -210,10 +210,13 @@ class TestBench:
 def get_testbench(
     analog_frontend: AnalogFrontend,
     input_signal_list: List[Sinusoidal],
+    clock: Clock = None,
     name: str = "",
     vdd: float = 1.0,
     vgd: float = 0.0,
     vsgd: float = None,
+    save_all_variables: bool = False,
+    save_to_filename: str = "observations.csv",
 ):
     """Return an ideal state space model testbench for the specified analog frontend
 
@@ -223,6 +226,8 @@ def get_testbench(
         the analog frontend to be tested.
     input_signal_list: `List`[`Sinusoidal`]
         a list of input signals to be applied to the analog frontend.
+    clock: :py:class:`cbadc.digital_control.Clock`, optional
+        the clock to be used for the simulation, defaults to the clock
     name: `str`
         the name of the testbench, defaults to empty string.
     vdd: `float`
@@ -231,6 +236,11 @@ def get_testbench(
         the ground voltage, defaults to 0.0.
     vsgd: `float`
         the signal ground voltage, defaults to None.
+    save_all_variables: `bool`
+        if True, all variables are saved to file, if False, only control
+        signals are saved to file, defaults to False.
+    save_to_filename: `str`
+        the filename to save the observations to, defaults to "observations.csv".
 
     Returns
     -------
@@ -242,8 +252,13 @@ def get_testbench(
             analog_frontend.analog_system,
         ),
         DigitalControl(analog_frontend.digital_control),
+        save_all_variables=save_all_variables,
+        save_to_filename=save_to_filename,
     )
-    simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    if clock is None:
+        simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    else:
+        simulation_clock = clock
     return TestBench(
         circuit_analog_frontend,
         input_signal_list,
@@ -262,10 +277,13 @@ def get_opamp_testbench(
     GBWP: float = None,
     A_DC: float = None,
     omega_p: float = None,
+    clock: Clock = None,
     name: str = "",
     vdd: float = 1.0,
     vgd: float = 0.0,
     vsgd: float = None,
+    save_all_variables: bool = False,
+    save_to_filename: str = "observations.csv",
 ):
     """Return an op-amp model testbench for the specified analog frontend
 
@@ -283,6 +301,8 @@ def get_opamp_testbench(
         the DC gain of the op-amp, defaults to None.
     omega_p: `float`, optional
         the pole frequency of the op-amp, defaults to None.
+    clock: :py:class:`cbadc.digital_control.Clock`, optional
+        the clock to be used for the simulation, defaults to the clock
     name: `str`
         the name of the testbench, defaults to empty string.
     vdd: `float`
@@ -291,6 +311,11 @@ def get_opamp_testbench(
         the ground voltage, defaults to 0.0.
     vsgd: `float`
         the signal ground voltage, defaults to None.
+    save_all_variables: `bool`
+        if True, all variables are saved to file, if False, only control
+        signals are saved to file, defaults to False.
+    save_to_filename: `str`
+        the filename to save the observations to, defaults to "observations.csv".
 
 
     Returns
@@ -330,9 +355,13 @@ def get_opamp_testbench(
     circuit_analog_frontend = CircuitAnalogFrontend(
         circuit_analog_system,
         DigitalControl(analog_frontend.digital_control),
+        save_all_variables=save_all_variables,
+        save_to_filename=save_to_filename,
     )
-
-    simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    if clock is None:
+        simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    else:
+        simulation_clock = clock
     return TestBench(
         circuit_analog_frontend,
         input_signal_list,

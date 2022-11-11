@@ -19,3 +19,4 @@ from cbadc.circuit.analog_system import (
 )
 from cbadc.circuit.digital_control import DigitalControl
 from cbadc.circuit.testbench import TestBench, get_opamp_testbench, get_testbench
+from cbadc.circuit.observer import Observer
