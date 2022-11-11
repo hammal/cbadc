@@ -1,5 +1,4 @@
 """Filter coefficient computations."""
-
 import cbadc
 import logging
 import time
