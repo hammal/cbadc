@@ -14,6 +14,10 @@ from datetime import datetime
 from cbadc.__version__ import __version__
 from cbadc.analog_frontend import AnalogFrontend as AnalogFrontend
 import os.path
+import subprocess
+import logging
+logger = logging.getLogger(__name__)
+import tqdm
 
 _env = Environment(
     loader=PackageLoader("cbadc", package_path="circuit/templates"),
@@ -180,6 +184,38 @@ class TestBench:
             **kwargs,
         )
 
+    def _run_spectre_simulation(self, filename: str, path: str = ".", raw_data_dir=".", log_file="spectre_sim.log"):
+        """Simulate using Spectre
+        """
+        self.to_file(filename, path)
+        log_file = os.path.abspath(log_file)
+
+        popen_cmd = [f'spectre {os.path.join(path, filename)} -format psfascii -raw {os.path.abspath(raw_data_dir)} ++aps -ahdllibdir {os.path.abspath(raw_data_dir)} -log']
+
+        logger.info(f'Starting spectre simulation.\nCommand: {popen_cmd}')
+        with open(log_file, 'wb') as f:
+            process = subprocess.Popen(popen_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            p0 = 0
+            line_s = None
+            for line in iter(process.stdout.readline, b''):
+                f.write(line)
+                line_s = line.decode('ascii')
+
+            if line_s is None:
+                RuntimeError('Spectre simulation did not return any output')
+            try:
+                status_list = line_s.split(' ')
+                err_idx = int([i for i in range(0, len(status_list)) if "error" in status_list[i]][0])-1
+                errors = int(status_list[err_idx])
+            except:
+                errors = True
+            if errors:
+                raise RuntimeError(f'Error occurred. See: {log_file}')
+
+        logger.info("SPECTRE SIMULATION COMPLETE")
+        logger.info(f"Raw data directory: {raw_data_dir}")
+
+
     def to_file(self, filename: str, path: str = "."):
         """Write the testbench to file
 
@@ -201,8 +237,7 @@ class TestBench:
         )
         self.analog_frontend.to_file(filename=os.path.join(path, "analog_frontend"))
         res = "\n\n\n".join([preamble, self.render()])
-        if not filename.endswith('.txt'):
-            filename = f"{filename}.txt"
+
         with open(os.path.join(path, filename), 'w') as f:
             f.write(res)
 

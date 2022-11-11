@@ -1,5 +1,5 @@
 from typing import List
-from .module import Module, Wire
+from .module import Module, Wire, Variable
 from ..digital_control.digital_control import DigitalControl as IdealDigitalControl
 
 
@@ -27,6 +27,8 @@ class Observer(Module):
                 for x in inputs
             ],
         ]
+        variables = [Variable('fp', real=False, comment='For observer')]
+
         self.outputs = []
         ports = [*self.inputs, *self.outputs]
         nets = [*ports]
@@ -44,15 +46,15 @@ class Observer(Module):
         analog_statements = [
             "@(initial_step) begin",
             f'\tfp=$fopen("{self._filename}","w");',
-            f'\t$fwrite(fd,"{csv_header}\\n");',
+            f'\t$fwrite(fp,"{csv_header}\\n");',
             "end",
             "",
             "@(final_step) begin",
-            "\t$fclose(fd);",
+            "\t$fclose(fp);",
             "end",
             "",
-            "@(cross(V(clk) - V(vsgd), -1)) begin",
-            f'\t$fstrobe(fd, "{csv_format_type}\\n", {csv_value});',
+            "@(cross(V(clk) - V(vsgd), 1)) begin",
+            f'\t$fstrobe(fp, "{csv_format_type}", {csv_value});',
             "end",
         ]
 
@@ -62,6 +64,7 @@ class Observer(Module):
             ports,
             instance_name=name,
             analog_statements=analog_statements,
+            variables=variables
         )
 
     def _module_comment(self) -> List[str]:
