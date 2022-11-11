@@ -7,7 +7,6 @@ attributes. Additionally, several derived convenience classes are defined
 to quickly initialize analog systems of particular structures.
 """
 import numpy as np
-import numpy.typing as npt
 import scipy.signal
 import logging
 from typing import Union
@@ -558,6 +557,24 @@ class AnalogSystem:
             z,p,k the zeros, poles and gain of the system
         """
         return scipy.signal.ss2zpk(self.A, self.B, self.CT, self.D, input=0)
+
+    def eta2(self, BW):
+        """Compute the eta2 parameter of the system.
+
+        Parameters
+        ----------
+        BW: `float`
+            bandwidth of the system
+
+        Returns
+        -------
+        `float`
+            eta2 parameter of the system at bandwidth BW
+        """
+        return (
+            np.linalg.norm(self.transfer_function_matrix(np.array([2 * np.pi * BW])))
+            ** 2
+        )
 
     def __str__(self):
         np.set_printoptions(formatter={'float': '{: 0.2e}'.format})
