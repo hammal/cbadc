@@ -1,6 +1,5 @@
 """The analog frontend"""
 import cbadc
-import numpy as np
 
 
 class AnalogFrontend:
@@ -28,11 +27,3 @@ class AnalogFrontend:
     ):
         self.analog_system = analog_system
         self.digital_control = digital_control
-
-    def eta2(self, BW):
-        return (
-            np.linalg.norm(
-                self.analog_system.transfer_function_matrix(np.array([2 * np.pi * BW]))
-            )
-            ** 2
-        )
