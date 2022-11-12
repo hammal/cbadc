@@ -126,7 +126,7 @@ class RandomControl(Module):
             ports,
             instance_name=instance_name,
             parameters=parameters,
-            # variables=variables,
+            variables=variables,
             analog_statements=analog_statements,
             analog_initial=analog_initial,
         )

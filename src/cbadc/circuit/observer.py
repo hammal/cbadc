@@ -64,7 +64,7 @@ class Observer(Module):
             ports,
             instance_name=name,
             analog_statements=analog_statements,
-            # variables=variables
+            variables=variables,
         )
 
     def _module_comment(self) -> List[str]:

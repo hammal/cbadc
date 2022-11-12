@@ -5,7 +5,7 @@ from ...analog_system.analog_system import AnalogSystem
 from ...analog_system.topology import chain
 from .resistor_network import ResistorNetwork
 from .amplifier_configurations import InvertingAmplifierCapacitiveFeedback
-from .op_amp import FirstOrderPoleOpAmp, IdealOpAmp
+from .op_amp import FiniteGainOpAmp, FirstOrderPoleOpAmp, IdealOpAmp
 from ..state_space_equations import StateSpaceLinearSystem
 import logging
 import numpy as np
