@@ -1,11 +1,25 @@
 """testbench implementations"""
+from typing import List
 from jinja2 import Environment, PackageLoader, select_autoescape
-from cbadc.circuit.analog_frontend import AnalogFrontend
+from cbadc.circuit.analog_frontend import AnalogFrontend as CircuitAnalogFrontend
+from cbadc.circuit.analog_system import (
+    AnalogSystemFirstOrderPoleOpAmp,
+    AnalogSystemIdealOpAmp,
+)
+from cbadc.circuit.digital_control import DigitalControl
+from cbadc.circuit.state_space_equations import AnalogSystem
 from cbadc.analog_signal import Clock, Sinusoidal
 from cbadc.simulator import SimulatorType, get_simulator
 from datetime import datetime
 from cbadc.__version__ import __version__
+from cbadc.analog_frontend import AnalogFrontend as AnalogFrontend
+from cbadc.simulator import NumpySimulator
+from pandas import read_csv
 import os.path
+import subprocess
+import logging
+
+logger = logging.getLogger(__name__)
 
 _env = Environment(
     loader=PackageLoader("cbadc", package_path="circuit/templates"),
@@ -20,7 +34,7 @@ class TestBench:
 
     Parameters
     ----------
-    analog_frontend: :py:class:`cbadc.circuit_level.analog_frontend.AnalogFrontend`
+    analog_frontend: :py:class:`cbadc.circuit.analog_frontend.AnalogFrontend`
         an analog frontend to be simulated.
     input_signal: :py:class:`cbadc.analog_signal.sinusoidal.Sinusoidal`
         an input signal.
@@ -40,23 +54,26 @@ class TestBench:
 
     strobe_freq: float
     strobe_delay: float
-    analog_frontend: AnalogFrontend
+    analog_frontend: CircuitAnalogFrontend
 
     def __init__(
         self,
-        analog_frontend: AnalogFrontend,
-        input_signal: Sinusoidal,
+        analog_frontend: CircuitAnalogFrontend,
+        input_signal_list: List[Sinusoidal],
         clock: Clock,
         name: str = "",
         vdd: float = 1.0,
         vgd: float = 0.0,
         vsgd: float = None,
         number_of_samples: int = 1 << 12,
+        tran_options={},
+        sim_options={},
     ):
-        if not isinstance(input_signal, Sinusoidal):
-            raise NotImplementedError("Currently only supported for sinusodials.")
+        for input_signal in input_signal_list:
+            if not isinstance(input_signal, Sinusoidal):
+                raise NotImplementedError("Currently only supported for sinusodials.")
         self.analog_frontend = analog_frontend
-        self._input_signal = input_signal
+        self._input_signal_list = input_signal_list
         self._simulation_clock = clock
         self.strobe_freq = 1 / clock.T
         # quarter clock phase delay until readout
@@ -73,6 +90,9 @@ class TestBench:
             self._vsgd = vsgd
         else:
             self._vsgd = (self._vdd - self._vgd) / 2 + self._vgd
+
+        self.tran_options = tran_options
+        self.sim_options = sim_options
 
     def render(self, verilog_path: str = ".") -> str:
         """Generate a rendered testbench file
@@ -101,11 +121,15 @@ class TestBench:
                     'rise_time': self.analog_frontend.digital_control.digital_control.clock.tt,
                     'fall_time': self.analog_frontend.digital_control.digital_control.clock.tt,
                 },
-                'input': {
-                    'offset': self._input_signal.offset,
-                    'amplitude': self._input_signal.amplitude,
-                    'freq': self._input_signal.frequency,
-                },
+                'input_signals': [
+                    {
+                        'offset': self._input_signal_list[i].offset,
+                        'amplitude': self._input_signal_list[i].amplitude,
+                        'freq': self._input_signal_list[i].frequency,
+                        'phase': self._input_signal_list[i].phase,
+                    }
+                    for i in range(len(self._input_signal_list))
+                ],
                 'analog_frontend': {
                     'inputs': [inp.name for inp in self.analog_frontend.inputs],
                     'outputs': [out.name for out in self.analog_frontend.outputs],
@@ -132,6 +156,8 @@ class TestBench:
                         ]
                     ],
                 ],
+                'tran_options': self.tran_options,
+                'sim_options': self.sim_options,
             }
         )
 
@@ -160,6 +186,91 @@ class TestBench:
             **kwargs,
         )
 
+    def run_spectre_simulation(
+        self,
+        filename: str,
+        path: str = ".",
+        raw_data_dir=".",
+        log_file="spectre_sim.log",
+    ):
+        """Simulate using Spectre
+
+        Parameters
+        ----------
+        filename: `str`
+            name of the output file to be generated.
+        path: `str`
+            path to the output file.
+        raw_data_dir: `str`
+            path to the raw data directory.
+        log_file: `str`
+            path to the log file.
+
+        Info
+        ----
+        This function requires that the spectre simulator is installed and configured.
+
+        """
+        self.to_file(filename, path)
+        log_file = os.path.abspath(log_file)
+
+        popen_cmd = [
+            f'spectre {os.path.join(path, filename)} -format psfascii -raw {os.path.abspath(raw_data_dir)} ++aps -ahdllibdir {os.path.abspath(raw_data_dir)} -log'
+        ]
+
+        logger.info(f'Starting spectre simulation.\nCommand: {popen_cmd}')
+        with open(log_file, 'wb') as f:
+            process = subprocess.Popen(
+                popen_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+            )
+            line_s = None
+            for line in iter(process.stdout.readline, b''):
+                f.write(line)
+                line_s = line.decode('ascii')
+
+            if line_s is None:
+                RuntimeError('Spectre simulation did not return any output')
+            status_list = line_s.split(' ')
+            err_idx = (
+                int(
+                    [
+                        i
+                        for i in range(0, len(status_list))
+                        if "error" in status_list[i]
+                    ][0]
+                )
+                - 1
+            )
+            errors = int(status_list[err_idx])
+            if errors:
+                raise RuntimeError(f'Error occurred. See: {log_file}')
+
+        logger.info("SPECTRE SIMULATION COMPLETE")
+        logger.info(f"Raw data directory: {raw_data_dir}")
+
+    def get_spectre_simulator(self, filename: str):
+        """Return a simulator instance with the data
+        from a spectre simulation
+
+        Parameters
+        ----------
+        filename: `str`
+            name of the Spectre simulation output file.
+
+        Returns
+        -------
+        : :py:class:`cbadc.simulator.get_simulator`
+            an instantiated simulator.
+
+        """
+        if self.analog_frontend.save_all_variables:
+            s = read_csv(filename).to_numpy()[
+                :, : self.analog_frontend.analog_system.analog_system.M
+            ]
+        else:
+            s = read_csv(filename).to_numpy()
+        return NumpySimulator("", array=s)
+
     def to_file(self, filename: str, path: str = "."):
         """Write the testbench to file
 
@@ -181,7 +292,172 @@ class TestBench:
         )
         self.analog_frontend.to_file(filename=os.path.join(path, "analog_frontend"))
         res = "\n\n\n".join([preamble, self.render()])
-        if not filename.endswith('.txt'):
-            filename = f"{filename}.txt"
+
         with open(os.path.join(path, filename), 'w') as f:
             f.write(res)
+
+
+def get_testbench(
+    analog_frontend: AnalogFrontend,
+    input_signal_list: List[Sinusoidal],
+    clock: Clock = None,
+    name: str = "",
+    vdd: float = 1.0,
+    vgd: float = 0.0,
+    vsgd: float = None,
+    save_all_variables: bool = False,
+    save_to_filename: str = "observations.csv",
+):
+    """Return an ideal state space model testbench for the specified analog frontend
+
+    Parameters
+    ----------
+    analog_frontend: :py:class:`cbadc.analog_frontend.AnalogFrontend`
+        the analog frontend to be tested.
+    input_signal_list: `List`[`Sinusoidal`]
+        a list of input signals to be applied to the analog frontend.
+    clock: :py:class:`cbadc.digital_control.Clock`, optional
+        the clock to be used for the simulation, defaults to the clock
+    name: `str`
+        the name of the testbench, defaults to empty string.
+    vdd: `float`
+        the positive supply voltage, defaults to 1.0.
+    vgd: `float`
+        the ground voltage, defaults to 0.0.
+    vsgd: `float`
+        the signal ground voltage, defaults to None.
+    save_all_variables: `bool`
+        if True, all variables are saved to file, if False, only control
+        signals are saved to file, defaults to False.
+    save_to_filename: `str`
+        the filename to save the observations to, defaults to "observations.csv".
+
+    Returns
+    -------
+    : :py:class:`cbadc.circuit.testbench.Testbench`
+        an instantiated testbench.
+    """
+    circuit_analog_frontend = CircuitAnalogFrontend(
+        AnalogSystem(
+            analog_frontend.analog_system,
+        ),
+        DigitalControl(analog_frontend.digital_control),
+        save_all_variables=save_all_variables,
+        save_to_filename=save_to_filename,
+    )
+    if clock is None:
+        simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    else:
+        simulation_clock = clock
+    return TestBench(
+        circuit_analog_frontend,
+        input_signal_list,
+        simulation_clock,
+        name=name,
+        vdd=vdd,
+        vgd=vgd,
+        vsgd=vsgd,
+    )
+
+
+def get_opamp_testbench(
+    analog_frontend: AnalogFrontend,
+    input_signal_list: List[Sinusoidal],
+    C: float,
+    GBWP: float = None,
+    A_DC: float = None,
+    omega_p: float = None,
+    clock: Clock = None,
+    name: str = "",
+    vdd: float = 1.0,
+    vgd: float = 0.0,
+    vsgd: float = None,
+    save_all_variables: bool = False,
+    save_to_filename: str = "observations.csv",
+):
+    """Return an op-amp model testbench for the specified analog frontend
+
+    Parameters
+    ----------
+    analog_frontend: :py:class:`cbadc.analog_frontend.AnalogFrontend`
+        the analog frontend to be tested.
+    input_signal_list: `List`[`Sinusoidal`]
+        a list of input signals to be applied to the analog frontend.
+    C: `float`
+        the capacitance of the time constant of the op-amp.
+    GBWP: `float`, optional
+        the GBWP of the op-amp, defaults to None.
+    A_DC: `float`, optional
+        the DC gain of the op-amp, defaults to None.
+    omega_p: `float`, optional
+        the pole frequency of the op-amp, defaults to None.
+    clock: :py:class:`cbadc.digital_control.Clock`, optional
+        the clock to be used for the simulation, defaults to the clock
+    name: `str`
+        the name of the testbench, defaults to empty string.
+    vdd: `float`
+        the positive supply voltage, defaults to 1.0.
+    vgd: `float`
+        the ground voltage, defaults to 0.0.
+    vsgd: `float`
+        the signal ground voltage, defaults to None.
+    save_all_variables: `bool`
+        if True, all variables are saved to file, if False, only control
+        signals are saved to file, defaults to False.
+    save_to_filename: `str`
+        the filename to save the observations to, defaults to "observations.csv".
+
+
+    Returns
+    -------
+    : :py:class:`cbadc.circuit.testbench.Testbench`
+        an instantiated testbench.
+    """
+    if GBWP is None and A_DC is None and omega_p is None:
+        circuit_analog_system = AnalogSystemIdealOpAmp(
+            analog_system=analog_frontend.analog_system,
+            C=C,
+        )
+    else:
+        if GBWP is None:
+            circuit_analog_system = AnalogSystemFirstOrderPoleOpAmp(
+                analog_system=analog_frontend.analog_system,
+                C=C,
+                A_DC=A_DC,
+                omega_p=omega_p,
+            )
+        elif A_DC is None:
+            circuit_analog_system = AnalogSystemFirstOrderPoleOpAmp(
+                analog_system=analog_frontend.analog_system,
+                C=C,
+                GBWP=GBWP,
+                omega_p=omega_p,
+            )
+        elif omega_p is None:
+            circuit_analog_system = AnalogSystemFirstOrderPoleOpAmp(
+                analog_system=analog_frontend.analog_system,
+                C=C,
+                GBWP=GBWP,
+                A_DC=A_DC,
+            )
+        else:
+            raise ValueError("Only two of GBWP, A_DC and omega_p can be specified.")
+    circuit_analog_frontend = CircuitAnalogFrontend(
+        circuit_analog_system,
+        DigitalControl(analog_frontend.digital_control),
+        save_all_variables=save_all_variables,
+        save_to_filename=save_to_filename,
+    )
+    if clock is None:
+        simulation_clock = Clock(analog_frontend.digital_control.clock.T)
+    else:
+        simulation_clock = clock
+    return TestBench(
+        circuit_analog_frontend,
+        input_signal_list,
+        simulation_clock,
+        name=name,
+        vdd=vdd,
+        vgd=vgd,
+        vsgd=vsgd,
+    )

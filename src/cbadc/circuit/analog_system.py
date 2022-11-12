@@ -2,13 +2,11 @@
 from typing import Dict, List, Tuple
 from cbadc.circuit.module import Module, Wire, SubModules
 from cbadc.analog_system.analog_system import AnalogSystem
-from cbadc.analog_system.topology import chain
 from cbadc.circuit.op_amp.resistor_network import ResistorNetwork
 from cbadc.circuit.op_amp.amplifier_configurations import (
     InvertingAmplifierCapacitiveFeedback,
 )
 from cbadc.circuit.op_amp.op_amp import FirstOrderPoleOpAmp, IdealOpAmp
-from cbadc.circuit.state_space_equations import StateSpaceLinearSystem
 from cbadc.circuit.noise_models import resistor_sizing_voltage_source
 import logging
 import numpy as np
@@ -242,6 +240,8 @@ class AnalogSystemIdealOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
             raise Exception("both Gammas must be defined.")
         super().__init__(analog_system, **kwargs)
 
+        # Feedback resistor for summation of s_tilde
+
         self._A_G_matrix = ResistorNetwork(
             "resistor_network_a",
             "A",
@@ -463,7 +463,7 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 
     :math:`G_{g_k} = \sum_{n=1}^N G_{\mathbf{A}_{k,n}} + \sum_{l=1}^{L} G_{\mathbf{B}_{k,\\ell}} + \sum_{l=m}^{M} G_{\mathbf{\Gamma}_{k,m}}`.
 
-    To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit_level.op_amp.AnalogSystemFiniteGainOpAmp`.
+    To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit.op_amp.AnalogSystemFiniteGainOpAmp`.
     Namely, we match the integration slope at DC, i.e., we fix
 
     :math:`V_{g_k}(t) = - \\frac{1}{\\text{A}_{\\text{DC}}} V_{\mathbf{x}_k}(t)`
@@ -648,7 +648,7 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 #     op-amp are described with polynomial transfer function.
 #     The interconnections between different states are manifested using
 #     resistive networks. This is essentially a generic
-#     extension of the concepts demonstrated in :py:class:`cbadc.circuit_level.op_amp.AnalogSystemFirstOrderPoleOpAmp`
+#     extension of the concepts demonstrated in :py:class:`cbadc.circuit.op_amp.AnalogSystemFirstOrderPoleOpAmp`
 
 #     Specifically, the integrators will be as modeled in the figure below.
 
@@ -669,7 +669,7 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 
 #     :math:`G_{g_k} = \sum_{n=1}^N G_{\mathbf{A}_{k,n}} + \sum_{l=1}^{L} G_{\mathbf{B}_{k,\\ell}} + \sum_{l=m}^{M} G_{\mathbf{\Gamma}_{k,m}}`.
 
-#     To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit_level.op_amp.AnalogSystemFiniteGainOpAmp`.
+#     To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit.op_amp.AnalogSystemFiniteGainOpAmp`.
 #     Namely, we match the integration slope at DC, i.e., :math:`s = 0`
 
 
@@ -694,7 +694,7 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 #         the capacitance of the feedback capacitor.
 #     A_DC: `float`
 #         the DC gain of the amplifier.
-#     amplifiers: List[ :py:class:`cbadc.circuit_level.state_space_equations.StateSpaceLinearSystem ]
+#     amplifiers: List[ :py:class:`cbadc.circuit.state_space_equations.StateSpaceLinearSystem ]
 #         a list of amplifier models. If the list only contains one element, this system specification will be
 #         used for all amplifiers.
 #     """

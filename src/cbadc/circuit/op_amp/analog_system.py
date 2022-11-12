@@ -5,7 +5,7 @@ from ...analog_system.analog_system import AnalogSystem
 from ...analog_system.topology import chain
 from .resistor_network import ResistorNetwork
 from .amplifier_configurations import InvertingAmplifierCapacitiveFeedback
-from .op_amp import FiniteGainOpAmp, FirstOrderPoleOpAmp, IdealOpAmp
+from .op_amp import FirstOrderPoleOpAmp, IdealOpAmp
 from ..state_space_equations import StateSpaceLinearSystem
 import logging
 import numpy as np
@@ -405,7 +405,7 @@ class AnalogSystemFirstOrderPoleOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 
     :math:`G_{g_k} = \sum_{n=1}^N G_{\mathbf{A}_{k,n}} + \sum_{l=1}^{L} G_{\mathbf{B}_{k,\\ell}} + \sum_{l=m}^{M} G_{\mathbf{\Gamma}_{k,m}}`.
 
-    To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit_level.op_amp.AnalogSystemFiniteGainOpAmp`.
+    To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit.op_amp.AnalogSystemFiniteGainOpAmp`.
     Namely, we match the integration slope at DC, i.e., we fix
 
     :math:`V_{g_k}(t) = - \\frac{1}{\\text{A}_{\\text{DC}}} V_{\mathbf{x}_k}(t)`
@@ -563,7 +563,7 @@ class AnalogSystemStateSpaceOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
     op-amp are described with polynomial transfer function.
     The interconnections between different states are manifested using
     resistive networks. This is essentially a generic
-    extension of the concepts demonstrated in :py:class:`cbadc.circuit_level.op_amp.AnalogSystemFirstOrderPoleOpAmp`
+    extension of the concepts demonstrated in :py:class:`cbadc.circuit.op_amp.AnalogSystemFirstOrderPoleOpAmp`
 
     Specifically, the integrators will be as modeled in the figure below.
 
@@ -584,7 +584,7 @@ class AnalogSystemStateSpaceOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
 
     :math:`G_{g_k} = \sum_{n=1}^N G_{\mathbf{A}_{k,n}} + \sum_{l=1}^{L} G_{\mathbf{B}_{k,\\ell}} + \sum_{l=m}^{M} G_{\mathbf{\Gamma}_{k,m}}`.
 
-    To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit_level.op_amp.AnalogSystemFiniteGainOpAmp`.
+    To match the ideal analog system specification we follow the steps made in :py:class:`cbadc.circuit.op_amp.AnalogSystemFiniteGainOpAmp`.
     Namely, we match the integration slope at DC, i.e., :math:`s = 0`
 
 
@@ -609,7 +609,7 @@ class AnalogSystemStateSpaceOpAmp(_AnalogSystemOpAmpWithoutIntegrators):
         the capacitance of the feedback capacitor.
     A_DC: `float`
         the DC gain of the amplifier.
-    amplifiers: List[ :py:class:`cbadc.circuit_level.state_space_equations.StateSpaceLinearSystem ]
+    amplifiers: List[ :py:class:`cbadc.circuit.state_space_equations.StateSpaceLinearSystem ]
         a list of amplifier models. If the list only contains one element, this system specification will be
         used for all amplifiers.
     """

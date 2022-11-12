@@ -162,7 +162,7 @@ class FirstOrderPoleOpAmp(Module):
             ports,
             instance_name,
             parameters=parameters,
-            variables=variables,
+            # variables=variables,
             analog_statements=analog_statements,
         )
 

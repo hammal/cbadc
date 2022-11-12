@@ -1,8 +1,9 @@
 """"digital control implementations."""
-from typing import List, Union
+from typing import List
 from .module import Module, Variable, Wire, Parameter, SubModules
 from ..analog_signal.impulse_responses import StepResponse, RCImpulseResponse
 from ..digital_control.digital_control import DigitalControl as IdealDigitalControl
+from ..digital_control.dither_control import DitherControl as IdealDitherControl
 
 
 class Comparator(Module):
@@ -31,30 +32,24 @@ class Comparator(Module):
         ports = [*self.inputs, *self.outputs]
         nets = [*ports]
         parameters = [
-            Parameter("dly", 0.0),
+            Parameter('dly', 0.0),
             Parameter("ttime", "10p"),
         ]
-        variables = [Variable("vout", real=True, comment="Output voltage value")]
         analog_statements = [
-            "@(cross(V(clk) - V(vsgd), -1)) begin",
-            "\tif(V(s_tilde) > V(vsgd)) begin",
-            "\t\tvout=V(vdd, vgd);",
-            "\tend",
-            "\telse begin",
-            "\t\tvout = V(vgd);",
-            "\tend",
+            "@(cross(V(clk) - V(sgd), -1)) begin",
+            "\tif(V(s_tilde) > V(sgd))",
+            "\t\tV(s, vgd) <+ V(vdd, vgd) * transition(1, dly, ttime);",
+            "\telse",
+            "\t\tV(s, vgd) <+ V(vdd, vgd) * transition(0, dly, ttime);",
             "end",
-            "V(s, vgd) <+ vout * transition(1.0, dly, ttime);",
         ]
-        # analog_initial = ["V(s) = 0"]
-        analog_initial = []
+        analog_initial = ["V(s) = 0"]
         super().__init__(
             "comparator",
             nets,
             ports,
             instance_name=instance_name,
             parameters=parameters,
-            variables=variables,
             analog_statements=analog_statements,
             analog_initial=analog_initial,
         )
@@ -74,6 +69,83 @@ class Comparator(Module):
             "threshold determines the descision threshold.",
             "Furthermore, dly and ttime specifies how quickly the",
             "comparator can switch its output.",
+        ]
+
+
+class RandomControl(Module):
+    """A verilog-ams module representing a random 1bit control
+
+    Parameters
+    ----------
+    name: `str`
+        the name of the instance to be used.
+    """
+
+    def __init__(self, name: str):
+        instance_name = name
+        self._vdd = Wire("vdd", True, False, True, comment="positive supply")
+        self._gnd = Wire("vgd", True, False, True, comment="ground")
+        self._sgd = Wire("vsgd", True, False, True, comment="signal ground")
+        self._clk = Wire("clk", True, False, True, comment="clock signal")
+        self.inputs = [
+            self._vdd,
+            self._gnd,
+            self._sgd,
+            self._clk,
+        ]
+        self.outputs = [Wire("s", False, True, True)]
+        ports = [*self.inputs, *self.outputs]
+        nets = [*ports]
+        parameters = [
+            Parameter("dly", 0.0),
+            Parameter("ttime", "10p"),
+            Parameter("seed", 555),
+        ]
+        variables = [
+            Variable("vout", real=True, comment="Output voltage value"),
+            Variable("rval", real=True, comment="Random value"),
+        ]
+        analog_statements = [
+            "@(cross(V(clk) - V(vsgd), -1)) begin",
+            "\t// Generate random val",
+            "\trval = $rdist_uniform(0, -1, 1);",
+            "\tif (rval >= 0) begin",
+            "\t\tvout=V(vdd, vgd);",
+            "\tend",
+            "\telse begin",
+            "\t\tvout = V(vgd);",
+            "\tend",
+            "end",
+            "V(s, vgd) <+ vout * transition(1.0, dly, ttime);",
+        ]
+        # analog_initial = ["V(s) = 0"]
+        analog_initial = []
+        super().__init__(
+            "random_control",
+            nets,
+            ports,
+            instance_name=instance_name,
+            parameters=parameters,
+            # variables=variables,
+            analog_statements=analog_statements,
+            analog_initial=analog_initial,
+        )
+
+    def _module_comment(self) -> List[str]:
+        return [
+            *super()._module_comment(),
+            "",
+            "Functional Description:",
+            "",
+            "Random bit generator",
+            # "the output signal s(t) is updated at the",
+            # "falling edge of the V(clk) signal depending",
+            # "on the input signal V(s_tilde) is above or",
+            # "below a given threshold.",
+            # "",
+            # "threshold determines the descision threshold.",
+            # "Furthermore, dly and ttime specifies how quickly the",
+            # "comparator can switch its output.",
         ]
 
 
@@ -103,6 +175,10 @@ class DigitalControl(Module):
             ):
                 raise Exception("This digital control only works for step responses.")
         self.digital_control = digital_control
+        self.number_of_random_control = 0
+        if isinstance(digital_control, IdealDitherControl):
+            self.number_of_random_control = digital_control.number_of_random_control
+
         self._vdd = Wire("vdd", True, False, True, comment="positive supply")
         self._gnd = Wire("vgd", True, False, True, comment="ground")
         self._sgd = Wire("vsgd", True, False, True, comment="signal ground")
@@ -123,7 +199,23 @@ class DigitalControl(Module):
         ports = [*self.inputs, *self.outputs]
         nets = [*ports]
 
+        # Instantiate dither control
         submodules = [
+            SubModules(
+                RandomControl(f"q_{m}"),
+                [
+                    self._vdd,
+                    self._gnd,
+                    self._sgd,
+                    self._clk,
+                    self.outputs[m],
+                ],
+            )
+            for m in range(self.number_of_random_control)
+        ]
+
+        # Instantiate Comparators
+        submodules += [
             SubModules(
                 Comparator(f"q_{m}"),
                 [
@@ -131,12 +223,13 @@ class DigitalControl(Module):
                     self._gnd,
                     self._sgd,
                     self._clk,
-                    self.inputs[m + 4],
+                    self.inputs[m + 4 - self.number_of_random_control],
                     self.outputs[m],
                 ],
             )
-            for m in range(digital_control.M)
+            for m in range(self.number_of_random_control, digital_control.M)
         ]
+
         super().__init__("digital_control", nets, ports, submodules=submodules)
 
     def _module_comment(self) -> List[str]:
