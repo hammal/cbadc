@@ -1,5 +1,6 @@
 import cbadc
 import os
+from tests.fixture.chain_of_integrators import get_simulator, chain_of_integrators
 
 
 def test_AnalogFrontend(get_simulator):
