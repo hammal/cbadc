@@ -179,7 +179,7 @@ class TestBench:
         return get_simulator(
             self.analog_frontend.analog_system.analog_system,
             self.analog_frontend.digital_control.digital_control,
-            [self._input_signal],
+            self._input_signal_list,
             self._simulation_clock,
             # self._t_stop,
             simulator_type=simulator_type,

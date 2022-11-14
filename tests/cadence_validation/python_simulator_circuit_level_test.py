@@ -159,7 +159,7 @@ def test_verilog_ams_in_cadence(
     # Instantiate testbench and write to file
     VS = cbadc.analog_signal.Sinusoidal(vi, fi)
     TB = cbadc.circuit.TestBench(
-        verilog_analog_frontend, VS, CLK, number_of_samples=size
+        verilog_analog_frontend, [VS], CLK, number_of_samples=size
     )
 
     if DEBUG:
