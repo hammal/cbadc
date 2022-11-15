@@ -534,7 +534,7 @@ class BatchEstimator(Iterator[np.ndarray]):
             ).reshape((self.analog_system.N_tilde, self.analog_system.M))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
-            result[:, index] = np.abs(
+            result[:, :, index] = np.abs(
                 np.dot(GH, np.dot(np.linalg.inv(GGH + self.eta2Matrix), G_bar))
             )
         return result

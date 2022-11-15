@@ -447,9 +447,14 @@ class AnalogSystem:
         self._ctf_lambda = sp.lambdify((self.omega), self._ctf_s_matrix)
 
     def _ctf(self, _omega: float) -> np.ndarray:
-        if self._atf_lambda is None:
-            self._lazy_initialize_CTF()
-        return np.array(self._ctf_lambda(_omega)).astype(np.float128)
+        tf = np.dot(
+            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
+            self.Gamma,
+        )
+        return tf
+        # if self._atf_lambda is None:
+        #     self._lazy_initialize_CTF()
+        # return np.array(self._ctf_lambda(_omega)).astype(np.float128)
         # return np.dot(
         #     np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
         #     self.Gamma,
@@ -483,8 +488,8 @@ class AnalogSystem:
         result = np.zeros((self.N, self.M, size), dtype=complex)
         for index in range(size):
             result[:, :, index] = self._ctf(omega[index])
-        resp = np.einsum("ij,jkl", self.CT, result)
-        return np.asarray(resp)
+        # resp = np.einsum("ij,jkl", self.CT, result)
+        return np.asarray(result)
 
     def transfer_function_matrix(
         self,
