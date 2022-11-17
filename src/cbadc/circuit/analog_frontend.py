@@ -107,7 +107,6 @@ class AnalogFrontend(Module):
             *ports,
             *s_tilde,
         ]
-
         self.save_all_variables = save_all_variables
 
         if save_all_variables:
