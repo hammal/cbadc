@@ -32,15 +32,21 @@ def test_comparator_ngspice():
     )
 
     print(subckt.Xcc.get_ngspice(subckt._internal_connections))
-    assert subckt.Xcc.get_ngspice(subckt._internal_connections) == 'Xcc CLK VCM IN OUT comp'
+    assert (
+        subckt.Xcc.get_ngspice(subckt._internal_connections)
+        == 'Xcc CLK VCM IN OUT comp'
+    )
     print(subckt.get_ngspice(subckt._internal_connections))
-    assert subckt.get_ngspice(subckt._internal_connections) == 'Xsub CLK IN OUT VCM subckt'
+    assert (
+        subckt.get_ngspice(subckt._internal_connections) == 'Xsub CLK IN OUT VCM subckt'
+    )
     print([model.get_ngspice() for model in subckt._get_model_set()][0])
     print('\n\n')
     for subckt_definition in subckt.get_sub_circuit_definitions():
         print(subckt_definition)
         print('\n\n')
     assert True
+
 
 # def test_comparator_spectre():
 #     vdd = 1.2

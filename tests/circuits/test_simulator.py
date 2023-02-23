@@ -1447,7 +1447,10 @@ def test_ngspice_ota_simulator_calibration():
     noise_index[f < (BW * 1e-2)] = False
     noise_index[f > BW] = False
     fom = snr_spectrum_computation_extended(
-        psd, signal_index, noise_index, fs=1 / analog_frontend_modified.digital_control.clock.T
+        psd,
+        signal_index,
+        noise_index,
+        fs=1 / analog_frontend_modified.digital_control.clock.T,
     )
     est_SNR = snr_to_dB(fom['snr'])
     est_ENOB = snr_to_enob(est_SNR)
@@ -1687,7 +1690,10 @@ def test_ngspice_opamp_simulator_calibration():
     noise_index[f < (BW * 1e-2)] = False
     noise_index[f > BW] = False
     fom = snr_spectrum_computation_extended(
-        psd, signal_index, noise_index, fs=1 / analog_frontend_modified.digital_control.clock.T
+        psd,
+        signal_index,
+        noise_index,
+        fs=1 / analog_frontend_modified.digital_control.clock.T,
     )
     est_SNR = snr_to_dB(fom['snr'])
     est_ENOB = snr_to_enob(est_SNR)

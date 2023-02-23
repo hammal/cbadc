@@ -14,10 +14,12 @@ jobs:
       fail-fast: true
       matrix:
         part: [
-          "full-test",
-          "full-test-switch-cap-control",
-          "full-test-simulator",
-          "full-test-fir-filter"
+          "tests/performance_validation/full_test.py",
+          "tests/performance_validation/full_test_switch_cap.py",
+          "tests/performance_validation/simulator_test.py",
+          "tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py",
+          "tests/performance_validation/digital_estimator_implementation_comparision_test.py",
+          "tests/performance_validation/digital_estimator_test.py"
         ]
     # needs: doc_and_unit_tests
     steps:
@@ -25,7 +27,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Full performance validation
-        run: tox -e ${{ matrix.part }}
+        run: pytest --workers auto ${{ matrix.part }}
 
   circuit_level_validation:
     timeout-minutes: 3000
@@ -36,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Validate python circuit-level simulations
-        run: tox -e circuit-level-python
+        run: pytest --workers auto tests/circuits
 
   benchmarks:
     timeout-minutes: 3000
@@ -47,4 +49,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Benchmarking
-        run: tox -e benchmark
+        run: pytest --workers auto --benchmark-compare --benchmark-histogram --benchmark-save-data benchmark

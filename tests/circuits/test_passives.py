@@ -97,7 +97,7 @@ def test_PULSE_voltage_source_ngspice():
     fall_time = 1e-5
     period = 1e-2
     subckt = SubCircuitElement('Xsub', 'subckt', three_terminals)
-    subckt.add(PulseVoltageSource('V2', low, high, period, rise_time, fall_time, delay))
+    subckt.add(PulseVoltageSource('V2', low, high, period, rise_time, fall_time))
 
     subckt.connects(
         (subckt[0], subckt.V2[0]),
@@ -106,7 +106,7 @@ def test_PULSE_voltage_source_ngspice():
 
     assert (
         subckt.V2.get_ngspice(subckt._internal_connections)
-        == 'V2 P N PULSE(-1 1 0.0 0.0001 1e-05 0.005 0.01 ) DC 0.0'
+        == 'V2 P N PULSE(-1 1 0.0 0.0001 1e-05 0.0049900000000000005 0.01) DC 0.0'
     )
 
 

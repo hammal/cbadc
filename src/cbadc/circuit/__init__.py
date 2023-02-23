@@ -3,8 +3,7 @@ from typing import Any, List, Dict, Set, Tuple, Union
 from jinja2 import Environment, PackageLoader, select_autoescape
 import itertools
 import logging
-import numpy as np
-from os import path
+
 
 logger = logging.getLogger(__name__)
 
@@ -743,3 +742,15 @@ This Circuit Element is a NetlistElement with the following definition:
 
 # SPICE_VALUE = Union[float, str, int]
 SPICE_VALUE = float
+
+from . import (
+    analog_frontend,
+    digital_control,
+    opamp,
+    ota,
+    simulator,
+    testbench,
+    state_space,
+    components,
+    models,
+)

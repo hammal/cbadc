@@ -3,6 +3,7 @@ from cbadc.digital_control import DigitalControl
 from cbadc.analog_signal import Clock
 from cbadc.synthesis.leap_frog import get_leap_frog
 
+
 def test_opamp_analog_frontend_ngspice():
     N = 4
     ENOB = 16
@@ -14,10 +15,11 @@ def test_opamp_analog_frontend_ngspice():
     in_high = vdd
     in_low = 0.0
 
-
     analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
 
-    opamp_analog_frontend = OpAmpFrontend(analog_frontend, GBWP, DC_gain, vdd, in_high, in_low)
+    opamp_analog_frontend = OpAmpFrontend(
+        analog_frontend, GBWP, DC_gain, vdd, in_high, in_low
+    )
 
     print('\n')
     print(opamp_analog_frontend.get_ngspice())
@@ -25,7 +27,6 @@ def test_opamp_analog_frontend_ngspice():
 
     # for subckt in opamp_analog_frontend.subckt_components:
     #     print(subckt.get_ngspice({}))
-
 
     for subckt_definition in opamp_analog_frontend.get_sub_circuit_definitions():
         print(subckt_definition)

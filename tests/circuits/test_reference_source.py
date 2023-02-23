@@ -20,11 +20,9 @@ def test_comparator_ngspice():
         (subckt[2], subckt.Ars[2]),
     )
 
-
     print(subckt.Ars.get_ngspice(subckt._internal_connections))
     assert (
-        subckt.Ars.get_ngspice(subckt._internal_connections)
-        == 'Ars [CLK IN OUT] ref'
+        subckt.Ars.get_ngspice(subckt._internal_connections) == 'Ars [CLK IN OUT] ref'
     )
     print(subckt.get_ngspice(subckt._internal_connections))
     assert subckt.get_ngspice(subckt._internal_connections) == 'Xsub CLK IN OUT subckt'
