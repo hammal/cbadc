@@ -1,0 +1,24 @@
+{% extends 'verilog_ams/module.vams.j2' %}
+
+{% block inputs %}
+    input in;
+
+{% endblock inputs %}
+
+{% block outputs %}
+    output out;
+
+{% endblock outputs %}
+
+{% block electricals %}
+    electrical in out;
+
+{% endblock electricals %}
+
+{% block analog_initial_command %}
+        V(out) = {{ parameters.out_ic.sign }}{{parameters.out_ic.magnitude }};
+{% endblock analog_initial_command %}
+
+{% block analog_command %}
+        V(out) <+ {{ parameters["gain"] }} * idt(V(in){% if parameters.in_offset.active %}{{ parameters.in_offset.sign }}{{ parameters.in_offset.magnitude }}{% endif %});
+{% endblock analog_command %}

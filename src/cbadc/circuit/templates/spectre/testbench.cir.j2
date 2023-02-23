@@ -1,0 +1,55 @@
+{% extends 'testbench.cir.j2' %}
+
+{% block global %}
+simulator lang=spectre
+
+* globals
+global gnd 0{% for global in globals %} {{ global }}{% endfor %}
+{% endblock global %}
+
+{% block include %}
+{% if includes %}
+* included files
+{% for filename in includes %}
+include  {{ filename }}
+{% endfor -%}
+{%- endif %}
+{%- endblock include %}
+
+{% block power_supply %}
+{% for source in power_supplies %}
+{{ source.get_spectre(connections) }}
+{% endfor %}
+{% endblock power_supply %}
+
+{% block clock %}
+{{ clock.get_spectre(connections) }}
+{% endblock clock %}
+
+{% block input_signal %}
+{% for signal in input_signals %}
+{{ signal.get_spectre(connections) }}
+{% endfor %}
+{% endblock input_signal %}
+
+{% block observer %}
+* observer
+{{ observer.get_spectre(connections) }}
+{% endblock observer %}
+
+
+{% block analog_frontend %}
+{{ analog_frontend.get_spectre(connections)}}
+
+* sub circuits
+{% for sub_circuit in analog_frontend.sub_circuit_definition_get_spectre() %}
+{{ sub_circuit }}
+
+{% endfor %}
+{% if models -%}
+* model definitions
+{% for model in models %}
+{{ model.get_ngspice() }}
+{% endfor %}
+{%- endif %}
+{%- endblock analog_frontend %}

@@ -1,0 +1,12 @@
+{% block description %}{% endblock description %}
+
+module {{ module_instance_name }}({% for t in terminals %}{{ t }}{% if loop.last %}{% else %}, {% endif %}{% endfor %});
+{% block inputs %}{% endblock inputs %}
+{% block outputs %}{% endblock outputs %}
+{% block inouts %}{% endblock inouts %}
+{% block electricals %}{% endblock electricals %}
+{% block parameters %}{% endblock parameters %}
+{% block analog_initial %}{% endblock analog_initial %}
+
+{% block analog %}{% endblock analog %}
+endmodule

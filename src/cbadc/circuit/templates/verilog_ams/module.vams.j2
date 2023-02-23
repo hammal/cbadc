@@ -1,0 +1,49 @@
+{% extends 'verilog_ams/base_module.vams.j2' %}
+{% macro declaration(type, list_of_variables) %}
+{% if inputs %}
+{% for val in list_of_variables %}
+type {{ val }};
+{% endfor %}
+{% endif %}
+{% endmacro %}
+
+{% block description %}
+// {{ description|wordwrap(78, True, '//', True) }}
+{% endblock description %}
+
+{% block inputs %}
+    {{ declaration('input', inputs) }}
+{% endblock inputs %}
+
+{% block outputs %}
+    {{ declaration('output', outputs) }}
+{% endblock outputs %}
+
+{% block inouts %}
+    {{ declaration('inout', inouts) }}
+{% endblock inouts %}
+
+{% block electricals %}
+    {{ declaration('electrical', electricals) }}
+{% endblock electricals %}
+
+{% block analog_initial %}
+    analog initial begin
+{% block analog_initial_command %}
+{% for a in analog_initial %}
+    {{ a }};
+{% endfor %}
+{% endblock analog_initial_command %}
+end
+{% endblock analog_initial %}
+
+{% block analog %}
+    analog begin
+{% block analog_command %}
+{% for a in analog %}
+        {{ a }}
+{% endfor %}
+{% endblock analog_command %}
+    end
+{% endblock analog %}
+
