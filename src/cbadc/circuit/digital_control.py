@@ -153,7 +153,7 @@ class MultiInputComparator(SubCircuitElement):
         out_high: float = 1.0,
         out_low: float = 0.0,
     ):
-        STILDE = Terminal(f'STILDE')
+        STILDE = Terminal('STILDE')
 
         super().__init__(
             instance_name,

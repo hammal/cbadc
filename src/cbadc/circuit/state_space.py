@@ -221,7 +221,7 @@ class StateSpaceFrontend(CircuitAnalogFrontend):
         in_low=0.0,
     ):
         self.analog_frontend = analog_frontend
-        vcm = vdd_voltage / 2.0
+        # vcm = vdd_voltage / 2.0
         super().__init__(
             analog_frontend,
             vdd_voltage,

@@ -131,7 +131,7 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
 
     def get_input_signals(self):
         """Get the input signals from the simulation"""
-        if not 'input' in self.testbench.highlighted_terminals:
+        if 'input' not in self.testbench.highlighted_terminals:
             raise ValueError('No input signals to plot')
         time = self.raw_file.get_time()
         headers = ['t']
@@ -180,7 +180,7 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
         # time = raw_file.get_time()
         clk = np.array(self.raw_file.get_data('V(CLK)'))
 
-        if not 'control' in self.testbench.highlighted_terminals:
+        if 'control' not in self.testbench.highlighted_terminals:
             raise ValueError('No control signals highlighted in testbench')
 
         control_signal_terminals = [

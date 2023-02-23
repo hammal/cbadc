@@ -88,7 +88,7 @@ class MultiInputOTA(SubCircuitElement):
                 )
 
         # Finite DC gain
-        if not DC_gain is np.inf:
+        if DC_gain is not np.inf:
             R_DC = DC_gain / (float(np.max(np.abs(analog_system.B))) * C)
             _RP = Resistor('Rp', 2 * R_DC)
             _RN = Resistor('Rn', 2 * R_DC)

@@ -84,7 +84,7 @@ class OpAmpFrontend(CircuitAnalogFrontend):
         opamps = [
             OpAmp(
                 f'Xop_{n}',
-                f'opamp',
+                'opamp',
                 GBWP=GBWP,
                 DC_gain=DC_gain,
                 C=C_amp,

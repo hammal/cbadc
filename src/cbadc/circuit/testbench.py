@@ -273,10 +273,10 @@ class StateSpaceTestBench(TestBench):
             verilog_ams_library_name=verilog_ams_library_name,
         )
 
-        in_high = vdd_voltage / 2.0
-        in_low = vdd_voltage / 2.0
+        # in_high = vdd_voltage / 2.0
+        # in_low = vdd_voltage / 2.0
 
-        self.Xaf = StateSpaceFrontend(analog_frontend, vdd_voltage, in_high, in_low)
+        # self.Xaf = StateSpaceFrontend(analog_frontend, vdd_voltage, in_high, in_low)
         # Connect gnd, power supply, and clock to analog frontend
         self.connects(
             (self['0'], self.Xaf['VSS']),

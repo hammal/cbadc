@@ -476,10 +476,10 @@ class SubCircuitElement(CircuitElement):
 
     def __setattr__(self, __name: Any, __value: Any) -> None:
         if not isinstance(__name, str):
-            raise ValueError(f"Subcircuit instance name must be a string")
+            raise ValueError("Subcircuit instance name must be a string")
         if isinstance(__value, CircuitElement):
             # Check if a new subcircuit is being added
-            if not __name in self._subckts:
+            if __name not in self._subckts:
                 if __name != __value.instance_name:
                     raise ValueError(
                         f"Instance name of {__value.instance_name} is not {__name}"
@@ -668,7 +668,7 @@ class SubCircuitElement(CircuitElement):
                     self.connect(terminal, self.terminals[-1])
 
     def __str__(self):
-        return f"""
+        return """
 This Circuit Element is a SubCircuitElement with the following subcircuit components:
 --------------------
 
@@ -711,7 +711,7 @@ class NetlistElement(SubCircuitElement):
             if line.split()[0].lower() == '.ends':
                 _endc_statement = True
         if not _endc_statement:
-            raise ValueError(f'Netlist does have a required .ends statement')
+            raise ValueError('Netlist does have a required .ends statement')
 
         # Extract subcircuit and terminal names.
         subckt_name = first_line[1].lower()
