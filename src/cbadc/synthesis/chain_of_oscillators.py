@@ -245,7 +245,7 @@ def get_parallel_leapfrog(**kwargs) -> AnalogSystem:
     : (:py:class:`cbadc.analog_system.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
         returns an analog system and digital control tuple
     """
-    finite_gain = kwargs.get("finite_gain", False)
+    # finite_gain = kwargs.get("finite_gain", False)
 
     if all(param in kwargs for param in ('ENOB', 'N', 'M', 'BW', 'fp')):
         ENOB = kwargs['ENOB']
