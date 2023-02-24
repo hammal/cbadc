@@ -30,13 +30,7 @@ jobs:
 
       - name: Full performance validation
         run: >
-          pytest --workers auto
-          tests/performance_validation/full_test.py
-          tests/performance_validation/full_test_switch_cap.py
-          tests/performance_validation/simulator_test.py
-          tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py
-          tests/performance_validation/digital_estimator_implementation_comparision_test.py
-          tests/performance_validation/digital_estimator_test.py
+          pytest --workers auto tests/performance_validation/full_test.py tests/performance_validation/full_test_switch_cap.py tests/performance_validation/simulator_test.py tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py tests/performance_validation/digital_estimator_implementation_comparision_test.py tests/performance_validation/digital_estimator_test.py
 
   circuit_level_validation:
     timeout-minutes: 3000

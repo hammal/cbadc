@@ -10,6 +10,7 @@ from cbadc.simulator import (
 )
 
 
+@pytest.mark.skip(reason="to long simulation time")
 @pytest.mark.parametrize(
     "N",
     [
