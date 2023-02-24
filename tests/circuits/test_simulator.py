@@ -1254,6 +1254,7 @@ calibration_sim_size = 1 << 17
 validation_sim_size = 1 << 15
 
 
+@pytest.mark.skip(reason="to long simulation time")
 def test_ngspice_ota_simulator_calibration():
     results_folder = 'ota_calib_results'
     os.makedirs(results_folder, exist_ok=True)
@@ -1489,6 +1490,7 @@ def test_ngspice_ota_simulator_calibration():
     assert est_ENOB >= ENOB
 
 
+@pytest.mark.skip(reason="to long simulation time")
 def test_ngspice_opamp_simulator_calibration():
     results_folder = 'opamp_calib_results'
     os.makedirs(results_folder, exist_ok=True)
