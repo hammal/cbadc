@@ -30,10 +30,10 @@ jobs:
         run: python3 -m pip install . && python3 -m pip install -r requirements.txt
 
       - name: Run doctests
-        run: pytest --workers auto --cov=cbadc --doctest-modules --junitxml=pytest-doctests.xml src/cbadc
+        run: pytest --cov=cbadc --doctest-modules --junitxml=pytest-doctests.xml src/cbadc
 
       - name: Run unittests
-        run: pytest --workers auto --cov-append --junitxml=pytest-unittests.xml --cov=cbadc tests/unittest
+        run: pytest --cov-append --junitxml=pytest-unittests.xml --cov=cbadc tests/unittest
 
       - name: Upload Unit Test Results
         if: always()
