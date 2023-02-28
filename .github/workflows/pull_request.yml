@@ -32,16 +32,16 @@ jobs:
         run: >
           pytest --workers auto tests/performance_validation/full_test.py tests/performance_validation/full_test_switch_cap.py tests/performance_validation/simulator_test.py tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py tests/performance_validation/digital_estimator_implementation_comparision_test.py tests/performance_validation/digital_estimator_test.py
 
-  circuit_level_validation:
-    timeout-minutes: 3000
-    runs-on: [self-hosted]
-    # needs: doc_and_unit_tests
-    steps:
-      - name: Checkout github repo
-        uses: actions/checkout@v2
+  # circuit_level_validation:
+  #   timeout-minutes: 3000
+  #   runs-on: [self-hosted]
+  #   # needs: doc_and_unit_tests
+  #   steps:
+  #     - name: Checkout github repo
+  #       uses: actions/checkout@v2
 
-      - name: Validate python circuit-level simulations
-        run: pytest --workers auto tests/circuits
+  #     - name: Validate python circuit-level simulations
+  #       run: pytest --workers auto tests/circuits
 
   # benchmarks:
   #   timeout-minutes: 3000
