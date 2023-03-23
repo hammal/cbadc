@@ -29,7 +29,7 @@ print(f"system path: {sys.path}")
 # -- Project information -----------------------------------------------------
 
 project = "cbadc"
-copyright = "2022, Hampus Malmberg"
+copyright = "2023, Hampus Malmberg"
 author = "Hampus Malmberg"
 
 # The full version, including alpha/beta/rc tags
