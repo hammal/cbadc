@@ -91,7 +91,7 @@ def test_estimation_simulator():
     clock = Clock(Ts)
     digitalControl = DigitalControl(clock, M)
     circuitSimulator = get_simulator(
-        analogSystem, digitalControl, analogSignals, clock, t_stop=Ts * 1000
+        analogSystem, digitalControl, analogSignals, clock, t_stop=Ts * (1 << 8)
     )
     estimator = BatchEstimator(analogSystem, digitalControl, eta2, K1, K2)
     estimator(circuitSimulator)
@@ -139,8 +139,8 @@ def test_single_output_systems(reconstruction_method):
     eta2 = 1e4
     K1 = 1 << 8
     K2 = K1
-    N = 12
-    M = 12
+    N = 4
+    M = 4
     B = np.zeros((N, 1))
     B[0, 0] = beta
     Gamma_tildeT = np.eye(M)

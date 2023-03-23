@@ -25,7 +25,7 @@ def test_evaluate_with_offset_and_phase():
     t = 3.0
     sinusoidal = Sinusoidal(amplitude, frequency, phase, offset)
     assert sinusoidal.evaluate(t) == (
-        amplitude * math.sin(2 * math.pi * frequency * t + phase) + offset
+        float(amplitude * math.sin(2 * math.pi * frequency * t + phase) + offset)
     )
 
 
