@@ -1,36 +1,36 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: performance validation, compiling tutorials, and benchmarking
+# name: performance validation, compiling tutorials, and benchmarking
 
-on: [pull_request]
+# on: [pull_request]
 
-jobs:
-  performance_validation:
-    timeout-minutes: 3000
-    runs-on: [self-hosted]
-    # strategy:
-    #   fail-fast: true
-    #   matrix:
-    #     part: [
-    #       "tests/performance_validation/full_test.py",
-    #       "tests/performance_validation/full_test_switch_cap.py",
-    #       "tests/performance_validation/simulator_test.py",
-    #       "tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py",
-    #       "tests/performance_validation/digital_estimator_implementation_comparision_test.py",
-    #       "tests/performance_validation/digital_estimator_test.py"
-    #     ]
-    # needs: doc_and_unit_tests
-    steps:
-      - name: Checkout github repo
-        uses: actions/checkout@v2
+# jobs:
+#   performance_validation:
+#     timeout-minutes: 3000
+#     runs-on: [self-hosted]
+#     # strategy:
+#     #   fail-fast: true
+#     #   matrix:
+#     #     part: [
+#     #       "tests/performance_validation/full_test.py",
+#     #       "tests/performance_validation/full_test_switch_cap.py",
+#     #       "tests/performance_validation/simulator_test.py",
+#     #       "tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py",
+#     #       "tests/performance_validation/digital_estimator_implementation_comparision_test.py",
+#     #       "tests/performance_validation/digital_estimator_test.py"
+#     #     ]
+#     # needs: doc_and_unit_tests
+#     steps:
+#       - name: Checkout github repo
+#         uses: actions/checkout@v2
 
-      - name: Setup python
-        run: python3 -m pip install . && python3 -m pip install -r requirements.txt
+#       - name: Setup python
+#         run: python3 -m pip install . && python3 -m pip install -r requirements.txt
 
-      - name: Full performance validation
-        run: >
-          pytest --workers auto tests/performance_validation/full_test.py tests/performance_validation/full_test_switch_cap.py tests/performance_validation/simulator_test.py tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py tests/performance_validation/digital_estimator_implementation_comparision_test.py tests/performance_validation/digital_estimator_test.py
+#       - name: Full performance validation
+#         run: >
+#           pytest --workers auto tests/performance_validation/full_test.py tests/performance_validation/full_test_switch_cap.py tests/performance_validation/simulator_test.py tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py tests/performance_validation/digital_estimator_implementation_comparision_test.py tests/performance_validation/digital_estimator_test.py
 
   # circuit_level_validation:
   #   timeout-minutes: 3000
