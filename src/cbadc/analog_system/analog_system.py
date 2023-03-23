@@ -7,7 +7,6 @@ attributes. Additionally, several derived convenience classes are defined
 to quickly initialize analog systems of particular structures.
 """
 import numpy as np
-import numpy.typing as npt
 import scipy.signal
 import logging
 from typing import Union
@@ -114,15 +113,29 @@ class AnalogSystem:
         For faulty analog system parametrization.
     """
 
+    A: np.ndarray
+    B: np.ndarray
+    CT: np.ndarray
+    Gamma: np.ndarray
+    Gamma_tildeT: np.ndarray
+    D: np.ndarray
+    D_tilde: np.ndarray
+    A_tilde: np.ndarray
+    N: int
+    N_tilde: int
+    M: int
+    M_tilde: int
+    L: int
+
     def __init__(
         self,
         A: np.ndarray,
         B: np.ndarray,
         CT: np.ndarray,
-        Gamma: Union[np.ndarray, None],
-        Gamma_tildeT: Union[np.ndarray, None],
+        Gamma: Union[np.ndarray, None] = None,
+        Gamma_tildeT: Union[np.ndarray, None] = None,
         D: Union[np.ndarray, None] = None,
-        D_tilde: Union[np.ndarray, None] = None,
+        B_tilde: Union[np.ndarray, None] = None,
         A_tilde: Union[np.ndarray, None] = None,
     ):
         """Create an analog system.
@@ -141,8 +154,10 @@ class AnalogSystem:
             control observation matrix.
         D : `array_like`, shape=(N_tilde, L), optional
             the direct matrix, defaults to None
-        D_tilde : `array_like`, shape=(M_tilde, L), optional
+        B_tilde : `array_like`, shape=(M_tilde, L), optional
             the direct control observation matrix, defaults to None
+        A_tilde : `array_like`, shape=(M_tilde, M), optional
+            the self control observation matrix, defaults to None
         """
 
         self.A = np.array(A, dtype=np.double)
@@ -219,26 +234,21 @@ class AnalogSystem:
             raise InvalidAnalogSystemError(
                 self, "D matrix has wrong dimensions. Should be N_tilde x L"
             )
-        if D_tilde is not None:
-            self.D_tilde = np.array(D_tilde, dtype=np.double)
+
+        if B_tilde is not None:
+            self.B_tilde = np.array(B_tilde, dtype=np.double)
         else:
-            self.D_tilde = np.zeros((self.M_tilde, self.L))
-        self._D_tilde_s = sp.Matrix(self.D_tilde)
+            self.B_tilde = np.zeros((self.M_tilde, self.L))
+        self._B_tilde_s = sp.Matrix(self.B_tilde)
 
-        if self.D is not None and (
-            self.D.shape[0] != self.N_tilde or self.D.shape[1] != self.L
+        if self.B_tilde is not None and (
+            self.B_tilde.shape[0] != self.M_tilde or self.B_tilde.shape[1] != self.L
         ):
             raise InvalidAnalogSystemError(
-                self, "D matrix has wrong dimensions. Should be N_tilde x L"
+                self, "B_tilde matrix has wrong dimensions. Should be M_tilde x L"
             )
 
-        if self.D_tilde is not None and (
-            self.D_tilde.shape[0] != self.M_tilde or self.D_tilde.shape[1] != self.L
-        ):
-            raise InvalidAnalogSystemError(
-                self, "D_tilde matrix has wrong dimensions. Should be M_tilde x L"
-            )
-
+        # A_tilde
         if A_tilde is not None:
             self.A_tilde = np.array(A_tilde, dtype=np.double)
         else:
@@ -249,7 +259,7 @@ class AnalogSystem:
             self.A_tilde.shape[0] != self.M_tilde or self.A_tilde.shape[1] != self.M
         ):
             raise InvalidAnalogSystemError(
-                self, "D_tilde matrix has wrong dimensions. Should be M_tilde x L"
+                self, "A_tilde matrix has wrong dimensions. Should be M_tilde x L"
             )
 
         self.t = sp.Symbol('t', real=True)
@@ -392,10 +402,10 @@ class AnalogSystem:
         if u is None:
             return np.dot(self.Gamma_tildeT, x)
         if s is None:
-            np.dot(self.Gamma_tildeT, x) + np.dot(self.D_tilde, u)
+            np.dot(self.Gamma_tildeT, x) + np.dot(self.B_tilde, u)
         return (
             np.dot(self.Gamma_tildeT, x)
-            + np.dot(self.D_tilde, u)
+            + np.dot(self.B_tilde, u)
             + np.dot(self.A_tilde, s)
         )
 
@@ -448,9 +458,14 @@ class AnalogSystem:
         self._ctf_lambda = sp.lambdify((self.omega), self._ctf_s_matrix)
 
     def _ctf(self, _omega: float) -> np.ndarray:
-        if self._atf_lambda is None:
-            self._lazy_initialize_CTF()
-        return np.array(self._ctf_lambda(_omega)).astype(np.float128)
+        tf = np.dot(
+            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
+            self.Gamma,
+        )
+        return tf
+        # if self._atf_lambda is None:
+        #     self._lazy_initialize_CTF()
+        # return np.array(self._ctf_lambda(_omega)).astype(np.float128)
         # return np.dot(
         #     np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
         #     self.Gamma,
@@ -484,8 +499,8 @@ class AnalogSystem:
         result = np.zeros((self.N, self.M, size), dtype=complex)
         for index in range(size):
             result[:, :, index] = self._ctf(omega[index])
-        resp = np.einsum("ij,jkl", self.CT, result)
-        return np.asarray(resp)
+        # resp = np.einsum("ij,jkl", self.CT, result)
+        return np.asarray(result)
 
     def transfer_function_matrix(
         self,
@@ -558,6 +573,24 @@ class AnalogSystem:
             z,p,k the zeros, poles and gain of the system
         """
         return scipy.signal.ss2zpk(self.A, self.B, self.CT, self.D, input=0)
+
+    def eta2(self, BW):
+        """Compute the eta2 parameter of the system.
+
+        Parameters
+        ----------
+        BW: `float`
+            bandwidth of the system
+
+        Returns
+        -------
+        `float`
+            eta2 parameter of the system at bandwidth BW
+        """
+        return (
+            np.linalg.norm(self.transfer_function_matrix(np.array([2 * np.pi * BW])))
+            ** 2
+        )
 
     def __str__(self):
         np.set_printoptions(formatter={'float': '{: 0.2e}'.format})

@@ -111,8 +111,8 @@ def byte_stream_2_control_signal(
     format_marker = format["format_marker"]
     mask = 1
     for bs in byte_stream:
-        if not bs:
-            raise StopIteration
+        # if not bs:
+        #     raise StopIteration
         sum = struct.unpack(format_marker, bs)[0]
         s = np.zeros(M, dtype=np.int8)
         for m in range(M):

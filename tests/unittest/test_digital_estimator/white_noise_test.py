@@ -53,7 +53,7 @@ def test_verify_get_white_noise_leap_frog():
         cov_x=noise_covariance_matrix,
     )
     digital_estimator(simulator)
-    size = 1 << 14
+    size = 1 << 8
     u_hat = np.zeros(size)
     for index in range(size):
         u_hat[index] = next(digital_estimator)

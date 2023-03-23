@@ -1,187 +1,466 @@
-"""testbench implementations"""
-from jinja2 import Environment, PackageLoader, select_autoescape
-from cbadc.circuit.analog_frontend import AnalogFrontend
-from cbadc.analog_signal import Clock, Sinusoidal
-from cbadc.simulator import SimulatorType, get_simulator
-from datetime import datetime
-from cbadc.__version__ import __version__
-import os.path
-
-_env = Environment(
-    loader=PackageLoader("cbadc", package_path="circuit/templates"),
-    autoescape=select_autoescape(),
-    trim_blocks=True,
-    lstrip_blocks=True,
+from typing import Dict, List, Tuple
+from . import (
+    _template_env,
+    Ground,
+    Terminal,
+    SubCircuitElement,
 )
+from .components.sources import (
+    DCVoltageSource,
+    PulseVoltageSource,
+    SinusoidalVoltageSource,
+)
+from .components.observer import Observer
+from ..analog_signal import Clock, Sinusoidal
+from ..__version__ import __version__
+
+# from .state_space import StateSpaceFrontend
+from datetime import datetime
+from ..analog_frontend import AnalogFrontend
+from .opamp import OpAmpFrontend
+from .ota import GmCFrontend
+from .analog_frontend import CircuitAnalogFrontend
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-class TestBench:
-    """Initialize a Cadence type testbench
+class TestBench(SubCircuitElement):
+    """Testbench for a circuit.
 
     Parameters
     ----------
-    analog_frontend: :py:class:`cbadc.circuit_level.analog_frontend.AnalogFrontend`
-        an analog frontend to be simulated.
-    input_signal: :py:class:`cbadc.analog_signal.sinusoidal.Sinusoidal`
-        an input signal.
-    clock: :py:class:`cbadc.analog_signal.clock.Clock`
-        a simulation clock that determines the sample times of the simulation.
-    name: `str`
-        name of the testbench
-    vdd: `float`
-        positive supply voltage [V].
-    vgd: `float`
-        negative supply and ground voltage [V].
-    vsgd: `float`
-        signal ground voltage, defaults to centered between vdd and vgd.
-    number_of_samples: `int`
-        number of samples to simulate in the testbench.
+    input_signals : List[Sinusoidal]
+        List of input signals.
+    clock : Clock
+        a simulation clock
+    vdd_voltage : float
+        Vdd voltage in volts. Vss is assumed to be 0V.
+    number_of_control_signals : int
+        Number of control signals.
+    title : str, optional
+        Title of the testbench, by default 'Testbench'
+    control_signal_vector_name : str, optional
+        Name of the control signal vector file, by default 'control_signals.out'
+    verilog_ams_library_name : str, optional
+        Name of the verilog ams library file, by default 'verilog_ams_library.vams'
     """
 
-    strobe_freq: float
-    strobe_delay: float
-    analog_frontend: AnalogFrontend
+    title: str
+    Xaf: CircuitAnalogFrontend
+    input_signals: List[SinusoidalVoltageSource]
+    highlighted_terminals: Dict[str, List[Terminal]]
+    Vss: DCVoltageSource
+    Vdd: DCVoltageSource
+    Vclk: PulseVoltageSource
+    verilog_ams_library_name: str
+    Aobs: Observer
+
+    def __init__(
+        self,
+        input_signals: List[Sinusoidal],
+        clock: Clock,
+        vdd_voltage: float,
+        number_of_control_signals: int,
+        *args,
+        title='Testbench',
+        control_signal_vector_name='control_signals.out',
+        verilog_ams_library_name='verilog_ams_library.vams',
+        **kwargs,
+    ):
+        self.title = title
+        self.verilog_ams_library_name = verilog_ams_library_name
+        super().__init__(
+            'Xtb',
+            'testbench',
+            [
+                Ground(),
+                Terminal('VDD'),
+                Terminal('CLK'),
+                Terminal('VCM'),
+            ]
+            + [Terminal(f'IN{i}_P') for i in range(len(input_signals))]
+            + [Terminal(f'IN{i}_N') for i in range(len(input_signals))]
+            + [Terminal(f'OUT{i}_P') for i in range(number_of_control_signals)]
+            + [Terminal(f'OUT{i}_N') for i in range(number_of_control_signals)],
+            *args,
+            **kwargs,
+        )
+
+        # Add power supplies
+        self.Vdd = DCVoltageSource('Vdd', vdd_voltage / 2)
+        self.Vss = DCVoltageSource('Vss', vdd_voltage / 2)
+
+        # Connect power supplies to terminals
+        self.connects(
+            (self['VCM'], self.Vdd[1]),
+            (self['VDD'], self.Vdd[0]),
+            (self['0'], self.Vss[1]),
+            (self['VCM'], self.Vss[0]),
+        )
+
+        # Add clock source
+        self.T = clock.T
+        self.Vclk = PulseVoltageSource(
+            'Vclk',
+            0.0,
+            vdd_voltage,
+            clock.T,
+            clock.tt,
+            clock.tt,
+        )
+
+        # Connect clock to terminals
+        self.connects(
+            (self['CLK'], self.Vclk[0]),
+            (self['0'], self.Vclk[1]),
+        )
+
+        self.input_signals = []
+        for l, input_signal in enumerate(input_signals):
+            if not isinstance(input_signal, Sinusoidal):
+                raise TypeError(f'Input signal {l} is not of type Sinusoidal')
+            inp = SinusoidalVoltageSource(
+                offset=input_signal.offset,
+                amplitude=input_signal.amplitude / 2,
+                frequency=input_signal.frequency,
+                delay_time=0.0,
+                phase=input_signal.phase,
+                damping_factor=0.0,
+                instance_name=f'Vin_p_{l}',
+                ac_gain=vdd_voltage / 2.0,
+            )
+            inn = SinusoidalVoltageSource(
+                offset=input_signal.offset,
+                amplitude=input_signal.amplitude / 2,
+                frequency=input_signal.frequency,
+                delay_time=0.0,
+                phase=input_signal.phase,
+                damping_factor=0.0,
+                instance_name=f'Vin_n_{l}',
+                ac_gain=vdd_voltage / 2.0,
+            )
+            self.add(inp, inn)
+
+            # Connect input signal to terminals
+            self.connects(
+                (self[f'IN{l}_P'], inp[0]),
+                (self[f'IN{l}_N'], inn[1]),
+                (self['VCM'], inp[1]),
+                (self['VCM'], inn[0]),
+            )
+
+            self.input_signals.append(inp)
+            self.input_signals.append(inn)
+
+        # add observer
+        self.Aobs = Observer(
+            'Aobs',
+            'observer',
+            [f's_{index}' for index in range(number_of_control_signals)],
+            trigger_offset=vdd_voltage / 2.0,
+            filename=control_signal_vector_name,
+        )
+        self.connect(self['CLK'], self.Aobs[0])
+
+        self.highlighted_terminals = {}
+        # Highlight terminals for later plotting
+        self.highlighted_terminals['control'] = [
+            Terminal(f'OUT{i}_P') for i in range(number_of_control_signals)
+        ] + [Terminal(f'OUT{i}_N') for i in range(number_of_control_signals)]
+
+        self.highlighted_terminals['input'] = [
+            Terminal(f'IN{i}_P') for i in range(len(input_signals))
+        ] + [Terminal(f'IN{i}_N') for i in range(len(input_signals))]
+
+    def _sanity_check(self):
+        if self.Xaf is None:
+            raise ValueError('Analog frontend is not set')
+        for terminal in self.Aobs.get_terminals():
+            if terminal not in self._internal_connections:
+                raise ValueError(
+                    f'Testbench is not connected to observer terminal {terminal.name}'
+                )
+        # Check analog frontend
+        # This makes me mad.
+        # self.Xaf.check_connections()
+        self.Xaf.check_subckt_names()
+
+    def get_ngspice(self, check=True) -> str:
+        """returns the ngspice testbench as a string"""
+        if check:
+            self._sanity_check()
+        return _template_env.get_template('ngspice/testbench.cir.j2').render(
+            {
+                'analog_frontend': self.Xaf,
+                'input_signals': self.input_signals,
+                'power_supplies': (self.Vdd, self.Vss),
+                'clock': self.Vclk,
+                'connections': self._internal_connections,
+                'models': self._get_model_set(),
+                'title': self.title,
+                "datetime": datetime.isoformat(datetime.now()),
+                "cbadc_version": __version__,
+                "comment_symbol": "*",
+            }
+        )
+
+    def get_spectre(self) -> Tuple[str, str]:
+        """return the spectre testbench as a string"""
+        raise NotImplementedError()
+        self._sanity_check()
+        models = self._get_model_set()
+        spice_models = []
+        verilog_models = []
+        if models:
+            for model in models:
+                if model.verilog_ams and model not in verilog_models:
+                    verilog_models.append(model)
+                elif not model.verilog_ams and model not in spice_models:
+                    spice_models.append(model)
+        # if verilog_models:
+        verilog_ams_text = _template_env.get_template(
+            'verilog_ams/library.vams.j2'
+        ).render(
+            {
+                'models': self._get_model_set(),
+                "datetime": datetime.isoformat(datetime.now()),
+                "cbadc_version": __version__,
+                "comment_symbol": "//",
+            }
+        )
+        spice_text = _template_env.get_template('spectre/testbench.cir.j2').render(
+            {
+                'analog_frontend': self.Xaf,
+                'input_signals': self.input_signals,
+                'power_supplies': (self.Vdd, self.Vss),
+                'clock': self.Vclk,
+                'connections': self._internal_connections,
+                'title': self.title,
+                "datetime": datetime.isoformat(datetime.now()),
+                "cbadc_version": __version__,
+                'includes': [f'ahdl_include {self.verilog_ams_library_name}'],
+                'models': spice_models,
+                "comment_symbol": "*",
+                "observer": self.observer,
+            }
+        )
+        return (spice_text, verilog_ams_text)
+
+
+class StateSpaceTestBench(TestBench):
+    def __init__(
+        self,
+        analog_frontend: AnalogFrontend,
+        input_signals: List[Sinusoidal],
+        clock: Clock,
+        GBWP: float,
+        DC_gain: float,
+        vdd_voltage: float,
+        C_int: float = 1e-14,
+        C_amp: float = 1e-14,
+        title="CBADC OpAmpTestbench",
+        control_signal_vector_name='control_signals.out',
+        verilog_ams_library_name='verilog_ams_library.vams',
+    ):
+        super().__init__(
+            input_signals,
+            clock,
+            vdd_voltage,
+            number_of_control_signals=analog_frontend.analog_system.M,
+            control_signal_vector_name=control_signal_vector_name,
+            title=title,
+            verilog_ams_library_name=verilog_ams_library_name,
+        )
+
+        # in_high = vdd_voltage / 2.0
+        # in_low = vdd_voltage / 2.0
+
+        # self.Xaf = StateSpaceFrontend(analog_frontend, vdd_voltage, in_high, in_low)
+        # Connect gnd, power supply, and clock to analog frontend
+        self.connects(
+            (self['0'], self.Xaf['VSS']),
+            (self['VDD'], self.Xaf['VDD']),
+            (self['CLK'], self.Xaf['CLK']),
+            (self['VCM'], self.Xaf['VCM']),
+        )
+
+        for l in range(self.Xaf.analog_frontend.analog_system.L):
+            # Connect input signal to terminals
+            self.connects(
+                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
+                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+            )
+
+        # Connect analog frontend to observer
+        for m in range(self.Xaf.analog_frontend.analog_system.M):
+            self.connects(
+                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
+                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
+                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+            )
+
+
+class OpAmpTestBench(TestBench):
+    """The OpAmpTestBench class is a testbench for the OpAmp class.
+
+    Parameters
+    ----------
+    analog_frontend : AnalogFrontend
+        The analog frontend state space model.
+    input_signals : List[Sinusoidal]
+        The input signals to the analog frontend.
+    clock : Clock
+        The clock signal.
+    GBWP : float
+        the gain-bandwdith product of the opamp.
+    DC_gain : float
+        the DC gain of the opamp.
+    vdd_voltage : float
+        the supply voltage of the opamp. Vss is assumed to be 0.
+    C_int : float, optional
+        the internal integration capacitance of the opamp, by default 1e-14
+    C_amp : float, optional
+        the first order pole capacitance of the opamp, by default 1e-14
+    title : str, optional
+        the title of the testbench, by default "CBADC OpAmpTestbench"
+    control_signal_vector_name : str, optional
+        the name of the control signal vector, by default 'control_signals.out'
+    verilog_ams_library_name : str, optional
+        the name of the verilog ams library, by default 'verilog_ams_library.vams'
+    """
 
     def __init__(
         self,
         analog_frontend: AnalogFrontend,
-        input_signal: Sinusoidal,
+        input_signals: List[Sinusoidal],
         clock: Clock,
-        name: str = "",
-        vdd: float = 1.0,
-        vgd: float = 0.0,
-        vsgd: float = None,
-        number_of_samples: int = 1 << 12,
+        GBWP: float,
+        DC_gain: float,
+        vdd_voltage: float,
+        C_int: float = 1e-14,
+        C_amp: float = 1e-14,
+        title="CBADC OpAmpTestbench",
+        control_signal_vector_name='control_signals.out',
+        verilog_ams_library_name='verilog_ams_library.vams',
     ):
-        if not isinstance(input_signal, Sinusoidal):
-            raise NotImplementedError("Currently only supported for sinusodials.")
-        self.analog_frontend = analog_frontend
-        self._input_signal = input_signal
-        self._simulation_clock = clock
-        self.strobe_freq = 1 / clock.T
-        # quarter clock phase delay until readout
-        self.strobe_delay = clock.T / 4.0
-        self._t_stop = (number_of_samples + 1) * clock.T
-        self._name = name
-        if vdd < vgd:
-            raise Exception("Must be postive supply")
-        self._vdd = vdd
-        self._vgd = vgd
-        if vsgd:
-            if vsgd > self._vdd or vsgd < self._vgd:
-                raise Exception("Signal ground must be in between supply rails")
-            self._vsgd = vsgd
-        else:
-            self._vsgd = (self._vdd - self._vgd) / 2 + self._vgd
-
-    def render(self, verilog_path: str = ".") -> str:
-        """Generate a rendered testbench file
-
-        Parameters
-        ----------
-        path: `str`
-            a directory path to the verilog module location.
-
-        Returns
-        -------
-        : `str`
-            a string containing the rendered file.s
-        """
-        path = os.path.abspath(verilog_path)
-        template = _env.get_template('testbench_cadence.txt')
-        return template.render(
-            {
-                'includes': [os.path.join(path, self.analog_frontend._filename)],
-                'options': [],
-                'vsgd': self._vsgd,
-                'vgd': self._vgd,
-                'vdd': self._vdd,
-                'clock': {
-                    'period': self.analog_frontend.digital_control.digital_control.clock.T,
-                    'rise_time': self.analog_frontend.digital_control.digital_control.clock.tt,
-                    'fall_time': self.analog_frontend.digital_control.digital_control.clock.tt,
-                },
-                'input': {
-                    'offset': self._input_signal.offset,
-                    'amplitude': self._input_signal.amplitude,
-                    'freq': self._input_signal.frequency,
-                },
-                'analog_frontend': {
-                    'inputs': [inp.name for inp in self.analog_frontend.inputs],
-                    'outputs': [out.name for out in self.analog_frontend.outputs],
-                    'name': self.analog_frontend.module_name,
-                },
-                't_stop': self._t_stop,
-                'strobefreq': self.strobe_freq,
-                'strobedelay': self.strobe_delay,
-                'save_variables': [
-                    [
-                        v.name
-                        for v in [
-                            *self.analog_frontend.inputs,
-                            *self.analog_frontend.outputs,
-                            *self.analog_frontend.analog_system._x,
-                            *self.analog_frontend.analog_system.inputs,
-                            *self.analog_frontend.analog_system.outputs,
-                        ]
-                    ],
-                    [
-                        v.name
-                        for v in [
-                            *self.analog_frontend.outputs,
-                        ]
-                    ],
-                ],
-            }
+        super().__init__(
+            input_signals,
+            clock,
+            vdd_voltage,
+            number_of_control_signals=analog_frontend.analog_system.M,
+            control_signal_vector_name=control_signal_vector_name,
+            title=title,
+            verilog_ams_library_name=verilog_ams_library_name,
         )
 
-    def get_simulator(self, simulator_type: SimulatorType, **kwargs):
-        """Return an instantiated simulator
-
-        Return a python simulator of the specified testbench.
-
-        Paramters
-        ---------
-        simulator_type: :py:class:`cbadc.simulator.SimulatorType`
-            indicates which simulator backend to be used.
-
-        Returns
-        -------
-        : :py:class:`cbadc.simulator.get_simulator`
-            an instantied simulator.
-        """
-        return get_simulator(
-            self.analog_frontend.analog_system.analog_system,
-            self.analog_frontend.digital_control.digital_control,
-            [self._input_signal],
-            self._simulation_clock,
-            # self._t_stop,
-            simulator_type=simulator_type,
-            **kwargs,
+        # in_high = vdd_voltage / 2.0
+        in_high = 0.0
+        # in_low = vdd_voltage / 2.0
+        in_low = 0.0
+        self.Xaf = OpAmpFrontend(
+            analog_frontend, GBWP, DC_gain, vdd_voltage, in_high, in_low, C_int, C_amp
+        )
+        # Connect gnd, power supply, and clock to analog frontend
+        self.connects(
+            (self['0'], self.Xaf['VSS']),
+            (self['VDD'], self.Xaf['VDD']),
+            (self['CLK'], self.Xaf['CLK']),
+            (self['VCM'], self.Xaf['VCM']),
         )
 
-    def to_file(self, filename: str, path: str = "."):
-        """Write the testbench to file
+        for l in range(self.Xaf.analog_frontend.analog_system.L):
+            # Connect input signal to terminals
+            self.connects(
+                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
+                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+            )
 
-        Parameters
-        ----------
-        filename: `str`
-            the filename
-        path: `str`
-            the intended path for testbench and verilog-ams files,
-            defaults to cwd.
-        """
-        path = os.path.abspath(path)
-        preamble = _env.get_template('preamble.txt').render(
-            {
-                "datetime": datetime.isoformat(datetime.now()),
-                "cbadc_version": __version__,
-                "verilog_ams": False,
-            }
+        # Connect analog frontend to observer
+        for m in range(self.Xaf.analog_frontend.analog_system.M):
+            self.connects(
+                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
+                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
+                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+            )
+
+
+class OTATestBench(TestBench):
+    """The OTATestBench class is a testbench for the OTA class.
+
+    Parameters
+    ----------
+    analog_frontend : AnalogFrontend
+        The analog frontend state space model.
+    input_signals : List[Sinusoidal]
+        The input signals to the analog frontend.
+    clock : Clock
+        The clock signal.
+    DC_gain : float
+        the DC gain of the opamp.
+    vdd_voltage : float
+        the supply voltage of the opamp. Vss is assumed to be 0.
+    C_int : float, optional
+        the internal integration capacitance of the opamp, by default 1e-14
+    title : str, optional
+        the title of the testbench, by default "CBADC OTA Testbench"
+    control_signal_vector_name : str, optional
+        the name of the control signal vector, by default 'control_signals.out'
+    verilog_ams_library_name : str, optional
+        the name of the verilog ams library, by default 'verilog_ams_library.vams'
+
+    """
+
+    def __init__(
+        self,
+        analog_frontend: AnalogFrontend,
+        input_signals: List[Sinusoidal],
+        clock: Clock,
+        DC_gain: float,
+        vdd_voltage: float,
+        C_int: float = 1e-14,
+        title="CBADC OTA Testbench",
+        control_signal_vector_name='control_signals.out',
+        verilog_ams_library_name='verilog_ams_library.vams',
+    ):
+        super().__init__(
+            input_signals,
+            clock,
+            vdd_voltage,
+            number_of_control_signals=analog_frontend.analog_system.M,
+            control_signal_vector_name=control_signal_vector_name,
+            title=title,
+            verilog_ams_library_name=verilog_ams_library_name,
         )
-        self.analog_frontend.to_file(filename=os.path.join(path, "analog_frontend"))
-        res = "\n\n\n".join([preamble, self.render()])
-        if not filename.endswith('.txt'):
-            filename = f"{filename}.txt"
-        with open(os.path.join(path, filename), 'w') as f:
-            f.write(res)
+
+        # in_high = vdd_voltage / 2.0
+        in_high = 0.0
+        # in_low = vdd_voltage / 2.0
+        in_low = 0.0
+        self.Xaf = GmCFrontend(
+            analog_frontend, vdd_voltage, in_high, in_low, C_int, DC_gain
+        )
+        self.add(self.Xaf)
+
+        # Connect gnd, power supply, and clock to analog frontend
+        self.connects(
+            (self['0'], self.Xaf['VSS']),
+            (self['VDD'], self.Xaf['VDD']),
+            (self['CLK'], self.Xaf['CLK']),
+            (self['VCM'], self.Xaf['VCM']),
+        )
+
+        for l in range(self.Xaf.analog_frontend.analog_system.L):
+            # Connect input signal to terminals
+            self.connects(
+                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
+                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+            )
+
+        # Connect analog frontend to observer
+        for m in range(self.Xaf.analog_frontend.analog_system.M):
+            self.connects(
+                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
+                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
+                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+            )

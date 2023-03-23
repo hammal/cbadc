@@ -1,0 +1,22 @@
+{% extends 'verilog_ams/module.vams.j2' %}
+
+{% block inputs %}
+    input in_p, in_n, vdd, vss;
+
+{% endblock inputs %}
+
+{% block outputs %}
+    output out_p, out_n;
+
+{% endblock outputs %}
+
+{% block electricals %}
+    electrical in_p, in_n out_p, out_n vdd, vss;
+
+{% endblock electricals %}
+
+{% block analog_initial_command %}{% endblock analog_initial_command %}
+
+{% block analog_command %}
+        I(out_p, out_n) <+ {{ parameters["gm"] }} * V(in_p, in_n);
+{% endblock analog_command %}

@@ -54,7 +54,7 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
     BW: `float`
         target bandwidth
     xi: `float`, `optional`
-        a proportionality constant, defaults to 0.022.
+        a proportionality constant, defaults to 4e-3.
     local_feedback: `bool`, `optional`
         include local feedback, defaults to False.
     excess_delay: `float`, `optional`

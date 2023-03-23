@@ -2,9 +2,10 @@ numpy >= 1.21.5
 scipy >= 1.8.0
 tqdm >= 4.61.0
 requests >= 2.25.1
-pytest
+pytest>=7.2.1
 pytest-benchmark
 pytest-cov
+pytest-parallel>=0.1.1
 tox
 typing-extensions
 flake8
@@ -19,4 +20,5 @@ pre-commit >= 2.17.0
 Pillow >= 9.1.1
 pyarrow >= 8.0.0
 inform >= 1.26.0
+ltspice >= 1.0.6
 git+https://git@github.com/fredrief/pade.git@v0.1.0#egg=pade

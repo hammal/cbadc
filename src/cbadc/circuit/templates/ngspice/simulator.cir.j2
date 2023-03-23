@@ -1,0 +1,27 @@
+{{ testbench }}
+
+********************************************
+********** spice analysis command **********
+********************************************
+
+* AC analysis of analog system
+* .ac dec {{ ac_analysis['number_of_points'] }} {{ ac_analysis['start_frequency'] }} {{ ac_analysis['stop_frequency'] }}
+* .control
+* run
+* plot{% for state_tuple in state_variables %} vdb({{ state_tuple[0] }}, {{ state_tuple[1] }}){% endfor %} xlog
+* .endc
+
+* Transient analysis of state trajectories
+.tran {{ transient_analysis['step'] }} {{ transient_analysis['stop_time'] }} {{ transient_analysis['start_time'] }} {{ transient_analysis['max_step'] }} UIC
+* .control
+* run
+* plot{% for state_tuple in state_variables %} v({{ state_tuple[0] }}, {{ state_tuple[1] }}){% endfor %} 
+* .endc
+
+{% for key, value in options.items() %}
+.option {{ key }}{% if value %}={{ value }}{% endif %} 
+{% endfor %}
+
+.save V(CLK){% for var in save_variables %} V({{ var }}){% endfor %}
+
+.end

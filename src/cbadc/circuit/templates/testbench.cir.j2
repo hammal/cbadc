@@ -1,0 +1,20 @@
+{{ title }}
+{% include 'preamble.txt.j2' %}
+
+{% block global %}{% endblock global %}
+
+{% block include %}{% endblock include %}
+
+* power supply
+{% block power_supply required %}{% endblock power_supply %}
+
+* system clock
+{% block clock required %}{% endblock clock %}
+
+* input signal(s)
+{% block input_signal required %}{% endblock input_signal %}
+
+{% block observer %}{% endblock observer %}
+
+* analog frontend
+{% block analog_frontend required %}{% endblock analog_frontend %}

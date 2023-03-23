@@ -11,4 +11,8 @@ from .leap_frog import get_leap_frog
 
 from . import leap_frog
 from . import chain_of_integrators
-from .chain_of_oscillators import get_chain_of_oscillators, get_bandpass
+from .chain_of_oscillators import (
+    get_chain_of_oscillators,
+    get_bandpass,
+    get_parallel_leapfrog,
+)

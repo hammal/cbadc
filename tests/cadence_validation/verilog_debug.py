@@ -45,15 +45,15 @@ if __name__ == '__main__':
     # AF.analog_system.B *= -1
     # AF.analog_system.Gamma *= -1
 
-    verilog_analog_system = cbadc.circuit.AnalogSystemFirstOrderPoleOpAmp(
+    verilog_analog_system = cbadc.old_circuit.AnalogSystemFirstOrderPoleOpAmp(
         analog_system=AF.analog_system, C=C, A_DC=A_DC, GBWP=GBWP
     )
 
-    verilog_digital_control = cbadc.circuit.DigitalControl(
+    verilog_digital_control = cbadc.old_circuit.DigitalControl(
         copy.deepcopy(AF.digital_control)
     )
 
-    verilog_analog_frontend = cbadc.circuit.AnalogFrontend(
+    verilog_analog_frontend = cbadc.old_circuit.AnalogFrontend(
         verilog_analog_system, verilog_digital_control
     )
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     # Instantiate testbench and write to file
     VS = cbadc.analog_signal.Sinusoidal(vi, fi, offset=vdd / 2)
-    TB = cbadc.circuit.TestBench(
+    TB = cbadc.old_circuit.TestBench(
         verilog_analog_frontend, VS, CLK, number_of_samples=size
     )
     tb_filename = "verilog_testbench.txt"

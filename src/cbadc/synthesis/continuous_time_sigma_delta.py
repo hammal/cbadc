@@ -131,7 +131,7 @@ def ctsd_dict2af(
     (M_tilde, _) = Gamma_tildeT.shape
     (_, M) = Gamma.shape
     # Init AS
-    AS = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT, D_tilde=D_tilde)
+    AS = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT, B_tilde=D_tilde)
     # Init DC
     Qlevels = ctsd_dict['quantizer']['level'] if qlev is None else qlev
     number_of_levels = [Qlevels for i in range(M_tilde)]

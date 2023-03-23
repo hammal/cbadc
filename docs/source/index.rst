@@ -22,7 +22,7 @@ The cbadc Root Modules
     cbadc.digital_estimator
     cbadc.analog_frontend
     cbadc.simulator
-    cbadc.circuit_level
+    cbadc.circuit
     cbadc.utilities
     cbadc.fom
     cbadc.digital_calibration

@@ -1,0 +1,43 @@
+{% extends 'verilog_ams/module.vams.j2' %}
+
+{% block inputs %}
+    input clk;
+    input in;
+    inpup vgnd;
+
+{% endblock inputs %}
+
+{% block outputs %}
+    output out;
+
+{% endblock outputs %}
+
+{% block electricals %}
+    electrical clk;
+    electrical in;
+    electrical out;
+    electrical vgnd;
+
+{% endblock electricals %}
+
+{% block parameters %}
+    real vout
+
+{% endblock parameters %}
+
+{% block analog_initial %}{% endblock analog_initial %}
+
+{% block analog_command %}
+        @(cross(V(clk, vgnd), -1)) begin
+            if(V(in, vgnd) >= {{ parameters['in_high'] }}) begin
+                vout = {{ parameters['out_high'] }};
+            end
+            else if(V(in, vgnd) < {{ parameters['in_low'] }}) begin
+                vout = {{ parameters['out_undef'] }};
+            end
+            else begin
+                vout = {{ parameters['out_low'] }};
+            end
+        end
+        V(out) <+ transition(vout, {{ parameters['delay'] }}, {{ parameters['t_rise'] }}, {{ parameters['t_fall']}}, {{ parameters['t_tolerance']}})
+{% endblock analog_command %}

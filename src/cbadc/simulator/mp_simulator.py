@@ -100,7 +100,7 @@ class MPSimulator(_BaseSimulator):
         self.Af = tmp_Af
         self.Gamma_f = tmp_Gamma_f
         self.Gamma_tilde_f = mp.matrix(analog_system.Gamma_tildeT)
-        self.D_tilde = mp.matrix(analog_system.D_tilde)
+        self.D_tilde = mp.matrix(analog_system.B_tilde)
         self._state_vector = mp.matrix(self._state_vector)
         mp.dps = tmp_dps
 
