@@ -529,7 +529,7 @@ class SubCircuitElement(CircuitElement):
                 raise ValueError(f"Element {element} is not a CircuitElement")
             self.__setattr__(element.instance_name, element)
 
-    def connects(self, *connections: tuple[Terminal, Terminal]):
+    def connects(self, *connections: Tuple[Terminal, Terminal]):
         """Add connections to the subcircuit
 
         Parameters
@@ -625,7 +625,7 @@ class SubCircuitElement(CircuitElement):
                 #     f"Terminal {terminal} named {self.instance_name} not connected"
                 # )
 
-    def _check_subckt_names(self) -> list[str]:
+    def _check_subckt_names(self) -> List[str]:
         # Lazy evaluation of subckt names
         if not self._subckt_names:
             self._subckt_names = [self.subckt_name]
