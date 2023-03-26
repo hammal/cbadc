@@ -51,19 +51,19 @@ jobs:
           name: Unit Test Results (Python ${{ matrix.python-version }})
           path: pytest-doctests.xml
 
-  publish-test-results:
-    name: "Publish Unit Tests Results"
-    needs: lint_and_unit_tests
-    runs-on: ubuntu-latest
-    if: always()
+  # publish-test-results:
+  #   name: "Publish Unit Tests Results"
+  #   needs: lint_and_unit_tests
+  #   runs-on: ubuntu-latest
+  #   if: always()
 
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          path: artifacts
+  #   steps:
+  #     - name: Download Artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         path: artifacts
 
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          files: artifacts/**/*.xml
+  #     - name: Publish Unit Test Results
+  #       uses: EnricoMi/publish-unit-test-result-action@v1
+  #       with:
+  #         files: artifacts/**/*.xml
