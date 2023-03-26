@@ -56,6 +56,33 @@ class StepResponse(_ImpulseResponse):
         return sp.Float(self.amplitude)
 
 
+class NonReturnToZeroDAC(StepResponse):
+    def __init__(self, t_start: float, t_end: float, amplitude=1.0):
+        super().__init__(t0=t_start, amplitude=amplitude)
+        self.t_end = t_end
+
+    def evaluate(self, t: float) -> float:
+        """Returns the step response function
+
+        :math:`x(t) = \\begin{cases} 1 & \\mathrm{if} \\,\\, t > 0  \\\ 0 & \\mathrm{otherwise} \\end{cases}`
+
+        Parameters
+        ----------
+        t: `float`
+            evaluated at time
+        t0: `float`, `optional`
+            starting time
+        amplitude: `float`, `optional`
+            the amplitude of the impulse response
+
+        Returns
+        -------
+        `float`:
+            the step response evaluated at t.
+        """
+        return super().evaluate(t) if t < self.t_end else 0.0
+
+
 class RCImpulseResponse(_ImpulseResponse):
     def __init__(self, tau: float, t0: float = 0, amplitude=1.0):
         super().__init__()
