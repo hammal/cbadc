@@ -1,5 +1,5 @@
-from typing import Iterator, Union
-from .testbench import TestBench
+from typing import Iterator
+from ..circuit.testbench import TestBench
 from jinja2 import Environment, PackageLoader, select_autoescape
 from ltspice import Ltspice
 from pandas import read_csv
