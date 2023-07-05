@@ -19,6 +19,7 @@ from datetime import datetime
 from ..analog_frontend import AnalogFrontend
 from .opamp import OpAmpFrontend
 from .ota import GmCFrontend
+from .lc_tank import LCFrontend
 from .analog_frontend import CircuitAnalogFrontend
 import logging
 
@@ -440,6 +441,65 @@ class OTATestBench(TestBench):
         self.Xaf = GmCFrontend(
             analog_frontend, vdd_voltage, in_high, in_low, C_int, DC_gain
         )
+        self.add(self.Xaf)
+
+        # Connect gnd, power supply, and clock to analog frontend
+        self.connects(
+            (self['0'], self.Xaf['VSS']),
+            (self['VDD'], self.Xaf['VDD']),
+            (self['CLK'], self.Xaf['CLK']),
+            (self['VCM'], self.Xaf['VCM']),
+        )
+
+        for l in range(self.Xaf.analog_frontend.analog_system.L):
+            # Connect input signal to terminals
+            self.connects(
+                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
+                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+            )
+
+        # Connect analog frontend to observer
+        for m in range(self.Xaf.analog_frontend.analog_system.M):
+            self.connects(
+                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
+                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
+                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+            )
+
+
+class LCTestBench(TestBench):
+    def __init__(
+        self,
+        input_signals: List[Sinusoidal],
+        M: int,
+        omega_p: float,
+        clock: Clock,
+        vdd_voltage: float,
+        C: float = 10e-12,
+        gm: float = 1e-3,
+        Rin: float = 1e0,
+        title="CBADC LC Testbench",
+        control_signal_vector_name='control_signals.out',
+        verilog_ams_library_name='verilog_ams_library.vams',
+    ):
+        super().__init__(
+            input_signals,
+            clock,
+            vdd_voltage,
+            number_of_control_signals=M,
+            control_signal_vector_name=control_signal_vector_name,
+            title=title,
+            verilog_ams_library_name=verilog_ams_library_name,
+        )
+        in_high = 0.0
+        in_low = 0.0
+
+        L = 2 / (omega_p**2 * C)
+
+        self.Xaf = LCFrontend(
+            M, L, C, gm, 1 / clock.T, Rin, vdd_voltage, in_high, in_low
+        )
+
         self.add(self.Xaf)
 
         # Connect gnd, power supply, and clock to analog frontend

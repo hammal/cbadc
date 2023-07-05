@@ -594,7 +594,7 @@ class AnalogSystem:
 
     def __str__(self):
         np.set_printoptions(formatter={'float': '{: 0.2e}'.format})
-        return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nGamma_tildeT =\n{np.array(self.Gamma_tildeT)}, and D={self.D}"
+        return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nGamma_tildeT =\n{np.array(self.Gamma_tildeT)},\nD=\n{self.D},\nA_tilde=\n{self.A_tilde},\nand B_tilde=\n{self.B_tilde}\n"
 
 
 class InvalidAnalogSystemError(Exception):

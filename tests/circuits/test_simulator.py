@@ -14,34 +14,38 @@ from cbadc.utilities import (
 )
 from cbadc.fom import snr_to_dB, snr_to_enob
 from cbadc.analog_signal import Sinusoidal
-from cbadc.digital_control import DitherControl
+from cbadc.digital_control import DitherControl, MultiPhaseDigitalControl
 from cbadc.analog_system import AnalogSystem
-from cbadc.analog_frontend import AnalogFrontend
+from cbadc.analog_frontend import AnalogFrontend, get_global_control
 from cbadc.simulator import get_simulator
+from cbadc.analog_signal import Clock
+from . import plot_state_dist
 import os
 import pytest
 import matplotlib.pyplot as plt
 import numpy as np
 import subprocess
 
+
 two_terminals = [Terminal() for _ in range(2)]
 three_terminals = two_terminals + [Terminal()]
-N = 8
+N = 6
 ENOB = 15
 BW = 1e6
 
-analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW, xi=1e-2)
+xi = 5e-2
+analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW, xi=xi)
 
 
 max_input_frequency = BW / 2.0
 estimate_simulation_length = 1 << 15
 K1 = 1 << 11
 K2 = K1
-show_state_plots = False
+show_state_plots = True
 
 
-vdd = 3.7
-# vdd = 1.0
+# vdd = 3.7
+vdd = 1.0
 
 global_amplitude = vdd * 1e-0
 # amplitude = 0.0
@@ -432,7 +436,7 @@ def test_nominal():
 
 
 def test_ngspice_simulator_with_opamp_testbench():
-    number_of_simulated_samples = 1 << 6
+    number_of_simulated_samples = 1 << 12
     # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
     # vdd = 1.2
     # amplitude = vdd
@@ -476,16 +480,16 @@ def test_ngspice_simulator_with_opamp_testbench():
             data[:, i] - data[:, i + analog_frontend.analog_system.N],
             label=f"{headers[i]}-{headers[i + analog_frontend.analog_system.N]}",
         )
-        plt.plot(
-            data[:, 0],
-            data[:, i],
-            label=f"{headers[i]}",
-        )
-        plt.plot(
-            data[:, 0],
-            data[:, i + analog_frontend.analog_system.N],
-            label=f"{headers[i + analog_frontend.analog_system.N]}",
-        )
+        # plt.plot(
+        #     data[:, 0],
+        #     data[:, i],
+        #     label=f"{headers[i]}",
+        # )
+        # plt.plot(
+        #     data[:, 0],
+        #     data[:, i + analog_frontend.analog_system.N],
+        #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+        # )
 
     plt.xlabel('time [s]')
     plt.ylabel('amplitude')
@@ -523,9 +527,19 @@ def test_ngspice_simulator_with_opamp_testbench():
     # plt.ylabel('amplitude')
     # plt.legend()
     # plt.savefig(figure_name_3)
-    os.remove(figure_name)
-    os.remove(figure_name_2)
+    # os.remove(figure_name)
+    # os.remove(figure_name_2)
     # os.remove(figure_name_3)
+    diff_states = (
+        data[:, 1 : 1 + analog_frontend.analog_system.N]
+        - data[
+            :,
+            1
+            + analog_frontend.analog_system.N : 1
+            + 2 * analog_frontend.analog_system.N,
+        ]
+    )
+    plot_state_dist(diff_states.transpose(), 'ngspice_opamp_ref_state_dist.png')
     ngspice_simulator.cleanup()
     assert True
 
@@ -723,9 +737,9 @@ def test_ngspice_simulator_with_ota_testbench():
 
 
 def test_ngspice_ota_simulator_estimate():
+    analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW, xi=xi)
+
     number_of_simulated_samples = estimate_simulation_length
-    # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
-    print(analog_frontend.analog_system.B[0, 0])
     # vdd = 2.4
     # amplitude = vdd
     # amplitude = 0.0
@@ -796,16 +810,20 @@ def test_ngspice_ota_simulator_estimate():
     )
     est_SNR = snr_to_dB(fom['snr'])
     est_ENOB = snr_to_enob(est_SNR)
-
-    plt.title(f"Power spectral density:\nN={N},ENOB={ENOB}")
+    OSR = 1 / (2 * analog_frontend.digital_control.clock.T * BW)
+    gamma = OSR / (2 * np.pi)
+    plt.title(
+        f"Power spectral density:\nN={N}, ENOB={ENOB}, BW={BW:.0e}, OSR={OSR:.2f}, $\gamma$={gamma:.2f}"
+    )
     plt.semilogx(
         f,
         10 * np.log10(np.abs(psd)),
-        label=f"est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB, BW={BW:.0e}, s_time={ngspice_simulator.simulation_time}",
+        label=f"est_ENOB={est_ENOB:.1f} bits,\nest_SNR={est_SNR:.1f} dB,\nsim_time={ngspice_simulator.simulation_time}",
     )
     plt.xlabel('Hz')
     plt.ylabel('V^2 / Hz dB')
     plt.legend()
+    plt.grid(True)
     figure_name = 'ngspice_ota_estimate.png'
     plt.savefig(figure_name)
 

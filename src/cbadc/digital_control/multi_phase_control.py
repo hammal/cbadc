@@ -73,7 +73,7 @@ class MultiPhaseDigitalControl(DigitalControl):
                 for m in range(self.M)
             ]
 
-        self._control_descisions = np.zeros(self.M, dtype=np.double)
+        self._control_decisions = np.zeros(self.M, dtype=np.double)
         # initialize dac values
         self.control_update(self._t_next, np.zeros(self.M))
 
@@ -124,7 +124,7 @@ class MultiPhaseDigitalControl(DigitalControl):
                     self._t_next = self._next_update()
                     self._t_last_update[m] = t
                     # DAC
-                    self._control_descisions = np.asarray(
+                    self._control_decisions = np.asarray(
                         2 * self._s - 1, dtype=np.double
                     )
                     # print(f"m = {m}, t = {t}, s = {self._dac_values}")

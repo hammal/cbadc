@@ -68,7 +68,7 @@ class DigitalControl:
         self._s = np.zeros(self.M, dtype=np.int8)
         self._s[:] = False
         self._impulse_response = [impulse_response for _ in range(self.M)]
-        self._control_descisions = np.zeros(self.M, dtype=np.double)
+        self._control_decisions = np.zeros(self.M, dtype=np.double)
         # initialize dac values
         self.control_update(self._t_next, np.zeros(self.M))
 
@@ -107,7 +107,7 @@ class DigitalControl:
             self._t_last_update[:] = t
             self._t_next = self._t_next + self.clock.T
             # DAC
-            self._control_descisions = np.asarray(2 * self._s - 1, dtype=np.double)
+            self._control_decisions = np.asarray(2 * self._s - 1, dtype=np.double)
         # return self._dac_values * self._impulse_response(t - self._t_next + self.T)
 
     def event_list(self):
@@ -177,7 +177,7 @@ class DigitalControl:
         impulse_response = np.zeros(self.M)
         for m in range(self.M):
             impulse_response[m] = self._impulse_response[m](t - self._t_last_update[m])
-        return self._control_descisions * impulse_response
+        return self._control_decisions * impulse_response
 
     def impulse_response(self, m: int, t: float) -> np.ndarray:
         """The impulse response of the corresponding DAC waveform

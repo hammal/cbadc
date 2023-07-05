@@ -95,6 +95,6 @@ class MultiLevelDigitalControl(DigitalControl):
 
             self._t_last_update[:] = t
             self._t_next += self.clock.T
-            self._control_descisions = (
+            self._control_decisions = (
                 np.asarray(2.0 * self._s - 1.0, dtype=np.double) + self.offsets
             )

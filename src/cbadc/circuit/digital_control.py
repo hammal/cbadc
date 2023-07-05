@@ -3,11 +3,16 @@ from .components.comparator import (
     DifferentialOutputClockedComparator,
 )
 from ..digital_control import DigitalControl as NominalDigitalControl
+from ..digital_control import (
+    MultiPhaseDigitalControl as NominalMultiPhaseDigitalControl,
+)
 from ..digital_control import DitherControl as NominalDitherControl
+from ..digital_control.modulator import ModulatorControl as NominalModulatorControl
 from ..analog_system import AnalogSystem
 from .components.summer import DifferentialSummer
 from .components.reference_source import ReferenceSource
 from .components.comparator import DAC_Bridge, D_FLIP_FLOP, ADCBridgeAbsolute
+from .components.analog_delay import AnalogDelay
 
 
 class DigitalControl(SubCircuitElement):
@@ -480,16 +485,30 @@ class DitherControl(SubCircuitElement):
         out_high: float,
         out_low: float,
     ):
-        self.Xdc = DigitalControl(
-            'Xdc',
-            analog_system,
-            digital_control,
-            in_high,
-            in_low,
-            out_high,
-            out_low,
-            dither_offset=dither_control_offset,
-        )
+        if isinstance(digital_control, NominalDigitalControl):
+            self.Xdc = DigitalControl(
+                'Xdc',
+                analog_system,
+                digital_control,
+                in_high,
+                in_low,
+                out_high,
+                out_low,
+                dither_offset=dither_control_offset,
+            )
+        elif isinstance(digital_control, MultiPhaseDigitalControl):
+            self.Xdc = MultiPhaseDigitalControl(
+                'Xdc',
+                analog_system,
+                digital_control,
+                in_high,
+                in_low,
+                out_high,
+                out_low,
+                dither_offset=dither_control_offset,
+            )
+        else:
+            raise ValueError(f'Unknown digital control type {type(digital_control)}')
 
         self.connects(
             (self['VSS'], self.Xdc['VSS']),
@@ -518,3 +537,245 @@ class DitherControl(SubCircuitElement):
                 (self[f'S{m}_P'], self.Xdc[f'S{m}_P']),
                 (self[f'S{m}_N'], self.Xdc[f'S{m}_N']),
             )
+
+
+class MultiPhaseDigitalControl(SubCircuitElement):
+    """The default digital control circuit.
+
+    Parameters
+    ----------
+    instance_name : str
+        The instance name of the digital control circuit.
+    analog_system : AnalogSystem
+        The analog system to which this digital control circuit belongs.
+    digital_control : MultiPhaseDigitalControl
+        The digital control circuit to which this digital control circuit belongs.
+    in_high : float
+        The high input voltage of the comparator.
+    in_low : float
+        The low input voltage of the comparator.
+    out_high : float
+        The high output voltage of the comparator.
+    out_low : float
+        The low output voltage of the comparator.
+    dither_offset : int
+        The offset of the dither control circuit.
+
+    """
+
+    def __init__(
+        self,
+        instance_name: str,
+        analog_system: AnalogSystem,
+        digital_control: NominalMultiPhaseDigitalControl,
+        in_high: float,
+        in_low: float,
+        out_high: float,
+        out_low: float,
+        dither_offset: int = 0,
+    ):
+        super().__init__(
+            instance_name,
+            'digital_control',
+            [Terminal('VSS'), Terminal('VDD'), Terminal('CLK'), Terminal('VCM')]
+            + [Terminal(f'X{i}_P') for i in range(analog_system.N)]
+            + [Terminal(f'X{i}_N') for i in range(analog_system.N)]
+            + [Terminal(f'IN{i}_P') for i in range(analog_system.L)]
+            + [Terminal(f'IN{i}_N') for i in range(analog_system.L)]
+            + [Terminal(f'S{i}_P') for i in range(analog_system.M)]
+            + [Terminal(f'S{i}_N') for i in range(analog_system.M)],
+        )
+
+        multi_input_comparator_names = [
+            f'Xmic_{m}' for m in range(dither_offset, analog_system.M)
+        ]
+
+        self.add(
+            *[
+                MultiInputComparator(
+                    multi_input_comparator_names[m - dither_offset],
+                    analog_system,
+                    digital_control,
+                    m,
+                    m - dither_offset,
+                    in_high,
+                    in_low,
+                    out_high,
+                    out_low,
+                )
+                for m in range(dither_offset, analog_system.M)
+            ]
+        )
+
+        phase_clock_names = [
+            Terminal(f'CLK_{m}') for m in range(dither_offset, analog_system.M)
+        ]
+        delay_names = [f'A_delay_{m}' for m in range(dither_offset, analog_system.M)]
+
+        self.add(
+            *[
+                AnalogDelay(
+                    delay_names[m - dither_offset],
+                    f'analog_delay_{m}',
+                    digital_control._phi_1[m],
+                )
+                for m in range(dither_offset, analog_system.M)
+            ]
+        )
+
+        for m_tilde in range(analog_system.M_tilde):
+            comparator: MultiInputComparator = self.__getattr__(
+                multi_input_comparator_names[m_tilde]
+            )
+            delay: AnalogDelay = self.__getattr__(delay_names[m_tilde])
+
+            self.connects(
+                (self['CLK'], delay['IN']),
+                (self['VDD'], delay['CNTRL']),
+                (phase_clock_names[m_tilde], delay['OUT']),
+                (phase_clock_names[m_tilde], comparator['CLK']),
+                (self['VSS'], comparator['VSS']),
+                (self['VDD'], comparator['VDD']),
+                (self['VCM'], comparator['VCM']),
+            )
+            # Connect States
+            for n in range(analog_system.N):
+                self.connects(
+                    (self[f'X{n}_P'], comparator[f'X{n}_P']),
+                    (self[f'X{n}_N'], comparator[f'X{n}_N']),
+                )
+
+            # Connect inputs
+            for l in range(analog_system.L):
+                self.connects(
+                    (self[f'IN{l}_P'], comparator[f'IN{l}_P']),
+                    (self[f'IN{l}_N'], comparator[f'IN{l}_N']),
+                )
+
+            # Connect outputs (control signals)
+            for m in range(analog_system.M):
+                self.connects(
+                    (self[f'S{m}_P'], comparator[f'S{m}_P']),
+                    (self[f'S{m}_N'], comparator[f'S{m}_N']),
+                )
+
+
+class ModulatorDigitalControl(SubCircuitElement):
+    """The default digital control circuit.
+
+    Parameters
+    ----------
+    instance_name : str
+        The instance name of the digital control circuit.
+    analog_system : AnalogSystem
+        The analog system to which this digital control circuit belongs.
+    digital_control : MultiPhaseDigitalControl
+        The digital control circuit to which this digital control circuit belongs.
+    in_high : float
+        The high input voltage of the comparator.
+    in_low : float
+        The low input voltage of the comparator.
+    out_high : float
+        The high output voltage of the comparator.
+    out_low : float
+        The low output voltage of the comparator.
+    dither_offset : int
+        The offset of the dither control circuit.
+
+    """
+
+    def __init__(
+        self,
+        instance_name: str,
+        analog_system: AnalogSystem,
+        digital_control: NominalModulatorControl,
+        in_high: float,
+        in_low: float,
+        out_high: float,
+        out_low: float,
+        dither_offset: int = 0,
+    ):
+        super().__init__(
+            instance_name,
+            'digital_control',
+            [Terminal('VSS'), Terminal('VDD'), Terminal('CLK'), Terminal('VCM')]
+            + [Terminal(f'X{i}_P') for i in range(analog_system.N)]
+            + [Terminal(f'X{i}_N') for i in range(analog_system.N)]
+            + [Terminal(f'IN{i}_P') for i in range(analog_system.L)]
+            + [Terminal(f'IN{i}_N') for i in range(analog_system.L)]
+            + [Terminal(f'S{i}_P') for i in range(analog_system.M)]
+            + [Terminal(f'S{i}_N') for i in range(analog_system.M)],
+        )
+
+        multi_input_comparator_names = [
+            f'Xmic_{m}' for m in range(dither_offset, analog_system.M)
+        ]
+
+        self.add(
+            *[
+                MultiInputComparator(
+                    multi_input_comparator_names[m - dither_offset],
+                    analog_system,
+                    digital_control,
+                    m,
+                    m - dither_offset,
+                    in_high,
+                    in_low,
+                    out_high,
+                    out_low,
+                )
+                for m in range(dither_offset, analog_system.M)
+            ]
+        )
+
+        phase_clock_names = [
+            Terminal(f'CLK_{m}') for m in range(dither_offset, analog_system.M)
+        ]
+        delay_names = [f'A_delay_{m}' for m in range(dither_offset, analog_system.M)]
+
+        self.add(
+            *[
+                AnalogDelay(
+                    delay_names[m - dither_offset],
+                    f'analog_delay_{m}',
+                    digital_control._phi_1[m],
+                )
+                for m in range(dither_offset, analog_system.M)
+            ]
+        )
+
+        for m_tilde in range(analog_system.M_tilde):
+            comparator: MultiInputComparator = self.__getattr__(
+                multi_input_comparator_names[m_tilde]
+            )
+            delay: AnalogDelay = self.__getattr__(delay_names[m_tilde])
+
+            self.connects(
+                (self['CLK'], delay['IN']),
+                (self['VDD'], delay['CNTRL']),
+                (phase_clock_names[m_tilde], delay['OUT']),
+                (phase_clock_names[m_tilde], comparator['CLK']),
+                (self['VSS'], comparator['VSS']),
+                (self['VDD'], comparator['VDD']),
+                (self['VCM'], comparator['VCM']),
+            )
+            # Connect States
+            for n in range(analog_system.N):
+                self.connects(
+                    (self[f'X{n}_P'], comparator[f'X{n}_P']),
+                    (self[f'X{n}_N'], comparator[f'X{n}_N']),
+                )
+
+            # Connect inputs
+            for l in range(analog_system.L):
+                self.connects(
+                    (self[f'IN{l}_P'], comparator[f'IN{l}_P']),
+                    (self[f'IN{l}_N'], comparator[f'IN{l}_N']),
+                )
+
+            # Connect outputs (control signals)
+            for m in range(analog_system.M):
+                self.connects(
+                    (self[f'S{m}_P'], comparator[f'S{m}_P']),
+                    (self[f'S{m}_N'], comparator[f'S{m}_N']),
+                )

@@ -87,7 +87,6 @@ class ModulatorControl(DigitalControl):
         # print(f"check closeness ({t}, {self._t_next})")
         # Check if time t has passed the next control update
         if np.allclose(t, self._t_next, atol=self.clock._tt_2) or t > self._t_next:
-
             # Down-modulate the control decisions
             modulation_matrix = np.kron(
                 _rotation_matrix(-self.omega_c * t), np.eye(self.M // 2)
@@ -98,7 +97,7 @@ class ModulatorControl(DigitalControl):
             self._t_last_update[:] = t
             self._t_next += self.clock.T
             # DAC
-            self._control_descisions = np.asarray(2 * self._s - 1, dtype=np.double)
+            self._control_decisions = np.asarray(2 * self._s - 1, dtype=np.double)
         # return self._dac_values * self._impulse_response(t - self._t_next + self.T)
 
     def event_list(self):
@@ -162,7 +161,7 @@ class ModulatorControl(DigitalControl):
         for m in range(self.M):
             impulse_response[m] = self._impulse_response[m](t - self._t_last_update[m])
         modulated = np.dot(
-            modulation_matrix, self._control_descisions * impulse_response
+            modulation_matrix, self._control_decisions * impulse_response
         )
         # print(modulated)
         return modulated
