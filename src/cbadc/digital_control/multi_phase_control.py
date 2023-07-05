@@ -1,6 +1,6 @@
 """A multi-phase digital control"""
 import numpy as np
-from ..analog_signal.impulse_responses import StepResponse
+from ..analog_signal.impulse_responses import NonReturnToZeroDAC
 from ..analog_signal import _valid_clock_types
 from .digital_control import DigitalControl
 
@@ -68,11 +68,26 @@ class MultiPhaseDigitalControl(DigitalControl):
                 raise Exception("must be M impulse responses for M phases")
             self._impulse_response = impulse_response
         else:
-            self._impulse_response = [StepResponse() for _ in range(self.M)]
+            self._impulse_response = [
+                NonReturnToZeroDAC(self._phi_1[m], clock.T + self._phi_1[m])
+                for m in range(self.M)
+            ]
 
-        self._dac_values = np.zeros(self.M, dtype=np.double)
+        self._control_decisions = np.zeros(self.M, dtype=np.double)
         # initialize dac values
         self.control_update(self._t_next, np.zeros(self.M))
+
+    def reset(self, t0: float = 0.0):
+        """Reset the digital control clock
+
+        Parameters
+        ----------
+        t0: `float`, `optional`
+            time to set next update at, defaults to 0.
+        """
+        self._t_next = t0
+        self._t_next_phase = self._t_next + self._phi_1
+        self._t_last_update = t0 * np.ones(self.M)
 
     def _next_update(self):
         t_next = np.inf
@@ -109,8 +124,11 @@ class MultiPhaseDigitalControl(DigitalControl):
                     self._t_next = self._next_update()
                     self._t_last_update[m] = t
                     # DAC
-                    self._dac_values = np.asarray(2 * self._s - 1, dtype=np.double)
+                    self._control_decisions = np.asarray(
+                        2 * self._s - 1, dtype=np.double
+                    )
                     # print(f"m = {m}, t = {t}, s = {self._dac_values}")
+                    break
 
     def impulse_response(self, m: int, t: float) -> np.ndarray:
         """The impulse response of the corresponding DAC waveform
@@ -130,6 +148,6 @@ class MultiPhaseDigitalControl(DigitalControl):
 
         """
         temp = np.zeros(self.M, dtype=np.double)
-        if t >= 0 and t <= self.clock.T:
-            temp[m] = self._impulse_response[m](t - self._phi_1[m])
+        # temp[m] = self._impulse_response[m](t - self._phi_1[m])
+        temp[m] = self._impulse_response[m](t)
         return temp

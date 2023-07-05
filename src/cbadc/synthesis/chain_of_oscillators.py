@@ -3,6 +3,7 @@ from cbadc.analog_frontend import AnalogFrontend
 from cbadc.analog_system import AnalogSystem
 from cbadc.synthesis.leap_frog import g_i, get_leap_frog
 from cbadc.digital_control.digital_control import DigitalControl, StepResponse, Clock
+from cbadc.digital_control import ModulatorControl
 from cbadc.analog_system.topology import stack
 from cbadc.fom import enob_to_snr, snr_from_dB, snr_to_enob
 
@@ -59,14 +60,13 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
 
     if kwargs.get('modulator', False):
         logger.info("Using modulator")
-        raise NotImplementedError
-        # analog_system.Gamma = np.eye(2 * N) * kappa
-        # analog_system.Gamma_tildeT = -np.sign(kappa) * np.eye(2 * N)
-        # digital_control = digital_control = ModulatorControl(
-        #     Clock(T, tt=1 / fc * 1e-3),
-        #     2 * digital_control_baseband.M,
-        #     fc,
-        # )
+        analog_system.Gamma = np.eye(2 * N) * kappa
+        analog_system.Gamma_tildeT = -np.sign(kappa) * np.eye(2 * N)
+        digital_control = digital_control = ModulatorControl(
+            Clock(T, tt=1 / fc * 1e-3),
+            2 * digital_control_baseband.M,
+            fc,
+        )
     else:
         logger.info("Using non-modulator")
         kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.cos(phi)

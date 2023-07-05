@@ -8,6 +8,7 @@ from .. import (
 )
 from ..models.reference_source import ReferenceSourceModel
 import numpy as np
+import os
 
 
 class ReferenceSource(CircuitElement):
@@ -77,10 +78,13 @@ class ReferenceSource(CircuitElement):
             ).reshape((t.size, number_of_sources))
         data = np.hstack((t, random_signals))
 
-        with open(input_filename, 'w') as f:
-            f.write(
-                '\n'.join([f"{' '.join([value for value in row])}" for row in data])
-            )
+        if not os.path.isfile(input_filename):
+            with open(input_filename, 'w') as f:
+                f.write(
+                    '\n'.join([f"{' '.join([value for value in row])}" for row in data])
+                )
+        else:
+            print(f"{input_filename} already exists and has not been replaced.")
 
     def get_ngspice(self, connections: Dict[Terminal, Port]) -> str:
         return _template_env.get_template('ngspice/xspice.cir.j2').render(

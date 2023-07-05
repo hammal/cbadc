@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from . import (
     Terminal,
     SubCircuitElement,
@@ -6,7 +6,10 @@ from . import (
 from ..analog_frontend import AnalogFrontend
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control import DitherControl as NominalDitherControl
-from .digital_control import DigitalControl, DitherControl
+from ..digital_control import (
+    MultiPhaseDigitalControl as NominalMultiPhaseDigitalControl,
+)
+from .digital_control import DigitalControl, DitherControl, MultiPhaseDigitalControl
 from ..analog_system import AnalogSystem
 
 
@@ -54,7 +57,9 @@ class CircuitAnalogFrontend(SubCircuitElement):
     def _generate_digital_control(
         self,
         analog_system: AnalogSystem,
-        digital_control: NominalDigitalControl,
+        digital_control: Union[
+            NominalDigitalControl, NominalDitherControl, NominalMultiPhaseDigitalControl
+        ],
         in_high: float,
         in_low: float,
         out_high: float,
@@ -62,6 +67,16 @@ class CircuitAnalogFrontend(SubCircuitElement):
     ):
         if isinstance(digital_control, NominalDitherControl):
             self.Xdc = DitherControl(
+                'dc',
+                analog_system,
+                digital_control,
+                in_high,
+                in_low,
+                out_high,
+                out_low,
+            )
+        elif isinstance(digital_control, NominalMultiPhaseDigitalControl):
+            self.Xdc = MultiPhaseDigitalControl(
                 'dc',
                 analog_system,
                 digital_control,

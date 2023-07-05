@@ -1,40 +1,26 @@
-# install dependencies
-apt update && apt install -y \
-    git \
-    curl \
-    build-essential \
+# Hampus Malmberg, 2023-03-26
+
+# install ngspice dependencies
+apt-get update && apt-get install -y \
     bison \
-    flex  \
+    flex \
+    build-essential \
     autoconf \
     automake \
     libtool \
-    libx11-dev \
     libxaw7-dev \
-    libxmu-dev \
-    libxi-dev \
-    libxcursor-dev \
-    libxext-dev \
-    libxft-dev \
-    libxinerama-dev \
-    libxrandr-dev \
-    libxpm-dev \
-    libxrender-dev \
-    libxt-dev \
-    libxv-dev \
-    libxss-dev \
-    libxtst-dev \
-    libxkbfile-dev \
-    libxkbcommon-d \
-    adms \
-    xorg \
-    fftw-3 \
-    xserver-xorg-input-evdev  \
-    xserver-xorg-input-all \
-apt autoremove -y
-apt clean -y
-# Install ngspice
+    libreadline-dev \
+    git
+
+# Retrive the ngspice source code from sourceforge
 git clone git://git.code.sf.net/p/ngspice/ngspice
 cd ngspice
-./compile_linux.sh
+./autogen.sh
+./configure --enable-xspice --enable-cider --disable-debug --with-readline=yes --enable-openmp
+cat config.log
+make clean
+make
+make install
+
 cd ..
 rm -rf ngspice

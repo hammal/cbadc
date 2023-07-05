@@ -161,12 +161,13 @@ class FullSimulator(_BaseSimulator):
             for l in range(self.analog_system.L):
                 u[l] = self.input_signals[l].evaluate(t)
             if self.res.status == 1 or t == t_span[1]:
-                self.digital_control.control_update(
-                    t,
-                    self.analog_system.control_observation(
-                        y_new, u, self.digital_control.control_signal()
-                    ),
-                )
+                for _ in range(self.analog_system.M):
+                    self.digital_control.control_update(
+                        t,
+                        self.analog_system.control_observation(
+                            y_new, u, self.digital_control.control_signal()
+                        ),
+                    )
                 event_list = (*self.digital_control.event_list(), *self.event_list)
         if self.noise:
             y_new += self._noise_sample()
@@ -410,12 +411,13 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             u[l] = self.input_signals[l].evaluate(t_span[1])
 
         # Update controls for next period if necessary
-        self.digital_control.control_update(
-            t_span[1],
-            self.analog_system.control_observation(
-                self._temp_state_vector, u, self.digital_control.control_signal()
-            ),
-        )
+        for _ in range(self.analog_system.M):
+            self.digital_control.control_update(
+                t_span[1],
+                self.analog_system.control_observation(
+                    self._temp_state_vector, u, self.digital_control.control_signal()
+                ),
+            )
 
         return self._temp_state_vector
 

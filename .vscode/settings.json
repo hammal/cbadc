@@ -16,6 +16,9 @@
     "ylabel",
     "ylim"
   ],
-  "python.formatting.provider": "black",
-  "python.linting.banditEnabled": true
+  "python.formatting.provider": "none",
+  "python.linting.banditEnabled": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
