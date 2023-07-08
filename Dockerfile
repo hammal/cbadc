@@ -49,7 +49,7 @@ RUN cd calib && \
     RUSTFLAGS="-C target-cpu=native" cargo install --path .
 
 # copy cbadc
-COPY . cbadc
+COPY . ${HOME}/cbadc
 # install cbadc
 RUN cd cbadc && \
     python3 -m pip install -e . 
