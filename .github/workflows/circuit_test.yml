@@ -10,7 +10,7 @@ on: workflow_call
 jobs:
   lint_and_unit_tests:
     runs-on: ubuntu-latest
-    container: ghcr.io/hammal/cbadc:latest
+    container: ghcr.io/hammal/cbadc:dev
     steps:
       - uses: actions/checkout@v3
       - name: update pip and install dependencies
