@@ -7,7 +7,7 @@
   "context": "..",
 
   // Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-  "dockerFile": "../docker/dev/Dockerfile",
+  "dockerFile": "../Dockerfile",
 
   // Set *default* container specific settings.json values on container create.
   "settings": {
@@ -35,7 +35,7 @@
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [22],
+  "forwardPorts": [22, 8888],
 
   // Uncomment the next line to run commands after the container is created - for example installing curl.
   "postCreateCommand": "python3 -m pip install --editable .",

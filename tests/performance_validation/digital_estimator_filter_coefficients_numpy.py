@@ -6,7 +6,7 @@ import sys
 from cbadc.digital_estimator import BatchEstimator
 from cbadc.digital_estimator._filter_coefficients import FilterComputationBackend
 from cbadc.fom import snr_from_dB, enob_to_snr
-from fixtures import setup_filter
+from .fixtures import setup_filter
 
 
 def run_script_under_test():
