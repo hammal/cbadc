@@ -48,8 +48,8 @@ RUN git clone https://github.com/hammal/calib.git
 RUN cd calib && \
     RUSTFLAGS="-C target-cpu=native" cargo install --path .
 
-# clone cbadc
-RUN git clone https://github.com/hammal/cbadc.git 
+# copy cbadc
+COPY . cbadc
 # install cbadc
 RUN cd cbadc && \
     python3 -m pip install -e . 

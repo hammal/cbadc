@@ -1,0 +1,27 @@
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Create and publish a Docker image
+
+on:
+  pull_request:
+    branches: ["develop"]
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  linting:
+    uses: ./.github/workflows/linting.yml
+  doctest:
+    uses: ./.github/workflows/doctest.yml
+    needs: linting
+  unittest:
+    needs: doctest
+    uses: ./.github/workflows/unittest.yml
+  performance_validation:
+    needs: unittest
+    uses: ./.github/workflows/performance_validation.yml
+  circuit_test:
+    needs: performance_validation
+    uses: ./.github/workflows/circuit_test.yml
+  

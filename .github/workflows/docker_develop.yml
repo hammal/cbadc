@@ -1,19 +1,13 @@
-# You can also reference a tag or branch, but the action may change without warning.
-
-name: Create and publish a Docker image
-
+name: Publish docker dev image
 on:
-  pull_request:
+  push:
     branches: ["develop"]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  test:
-    uses: ./.github/workflows/lint_doc_and_unittest.yml
-
-  publish_package:
+  build-and-push-image:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,5 +35,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: dev
+        #   tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
