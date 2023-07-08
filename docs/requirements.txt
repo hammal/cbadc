@@ -1,5 +1,5 @@
 numpy == 1.22.0
-scipy == 1.8.0
+scipy == 1.10.0
 tqdm == 4.61.0
 requests == 2.25.1
 sphinx == 5.1.1
