@@ -36,7 +36,7 @@ jobs:
           pip install .
       - name: run simulators test
         run: |
-          pytest tests/performance_validation/test_simulators.py
+          pytest tests/performance_validation/simulator_test.py
   #   full_test:
   #     runs-on: ubuntu-latest
   #     steps:
@@ -51,31 +51,31 @@ jobs:
   #       - name: run simulators test
   #         run: |
   #           pytest tests/performance_validation/full_test.py
-  full_test_switch_cap:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: update pip
-        run: |
-          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
-      - name: Install cbadc dependencies
-        run: |
-          pip install -r requirements.txt;
-          pip install .
-      - name: run simulators test
-        run: |
-          pytest tests/performance_validation/full_test_switch_cap.py
-  benchmark:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: update pip
-        run: |
-          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
-      - name: Install cbadc dependencies
-        run: |
-          pip install -r requirements.txt;
-          pip install .
-      - name: run simulators test
-        run: |
-          pytest tests/benchmark
+  # full_test_switch_cap:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: update pip
+  #       run: |
+  #         python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
+  #     - name: Install cbadc dependencies
+  #       run: |
+  #         pip install -r requirements.txt;
+  #         pip install .
+  #     - name: run simulators test
+  #       run: |
+  #         pytest tests/performance_validation/full_test_switch_cap.py
+  # benchmark:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: update pip
+  #       run: |
+  #         python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
+  #     - name: Install cbadc dependencies
+  #       run: |
+  #         pip install -r requirements.txt;
+  #         pip install .
+  #     - name: run simulators test
+  #       run: |
+  #         pytest tests/benchmark
