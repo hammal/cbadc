@@ -22,6 +22,6 @@ jobs:
     needs: unittest
     uses: ./.github/workflows/performance_validation.yml
   circuit_test:
-    needs: performance_validation
+    needs: unittest
     uses: ./.github/workflows/circuit_test.yml
   
