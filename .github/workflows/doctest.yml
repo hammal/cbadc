@@ -25,4 +25,4 @@ jobs:
           pip install -r requirements.txt;
           pip install .
       - name: Run doctests
-        run: pytest  --workers auto --doctest-modules src/cbadc
+        run: pytest --doctest-modules src/cbadc

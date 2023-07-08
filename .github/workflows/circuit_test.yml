@@ -17,7 +17,7 @@ jobs:
         run: |
             python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
       - name: Run circuit test
-        run: pytest --workers auto --cov-append --junitxml=pytest-unittests.xml --cov=cbadc tests/circuit
+        run: pytest tests/circuit
 
     #   - name: Upload Unit Test Results
     #     if: always()
