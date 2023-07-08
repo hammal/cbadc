@@ -11,7 +11,7 @@ pandas == 1.4.1
 matplotlib == 3.5.1
 xlrd == 2.0.1
 sympy == 1.9
-mpmath == 1.1
+mpmath == 1.3.0
 jinja2 == 3.0.3
 pyarrow == 8.0.0
 rtds_action == 1.0.3
