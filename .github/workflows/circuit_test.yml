@@ -13,6 +13,9 @@ jobs:
     container: ghcr.io/hammal/cbadc:latest
     steps:
       - uses: actions/checkout@v3
+      - name: update pip and install dependencies
+        run: |
+            python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
       - name: Run circuit test
         run: pytest --workers auto --cov-append --junitxml=pytest-unittests.xml --cov=cbadc tests/circuit
 
