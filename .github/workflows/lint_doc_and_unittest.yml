@@ -3,7 +3,7 @@
 
 name: linting, doc, and unit testing
 
-on: pull_request
+on: workflow_call
 
 jobs:
   lint_and_unit_tests:

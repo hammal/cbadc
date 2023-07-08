@@ -3,14 +3,17 @@
 name: Create and publish a Docker image
 
 on:
-  push:
+  pull_request:
     branches: ["develop"]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  test:
+    uses: ./.github/workflows/lint_doc_and_unittest.yml
+
+  publish_package:
     runs-on: ubuntu-latest
     permissions:
       contents: read
