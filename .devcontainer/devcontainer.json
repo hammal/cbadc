@@ -10,29 +10,33 @@
   "dockerFile": "../Dockerfile",
 
   // Set *default* container specific settings.json values on container create.
-  "settings": {
-    "terminal.integrated.shell.linux": null
-  },
 
   // Add the IDs of extensions you want installed when the container is created.
-  "extensions": [
-    "eamodio.gitlens",
-    "lochbrunner.vscode-hdf5-viewer",
-    "wholroyd.jinja",
-    "esbenp.prettier-vscode",
-    "ms-python.python",
-    "ms-python.vscode-pylance",
-    "donjayamanne.python-extension-pack",
-    "xuanli.spice",
-    "vscode-icons-team.vscode-icons",
-    "redhat.vscode-yaml",
-    "VisualStudioExptTeam.vscodeintellicode",
-    "VisualStudioExptTeam.intellicode-api-usage-examples",
-    "ms-python.isort",
-    "streetsidesoftware.code-spell-checker",
-    "mutantdino.resourcemonitor",
-    "mshr-h.veriloghdl"
-  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": null
+      },
+      "extensions": [
+        "eamodio.gitlens",
+        "lochbrunner.vscode-hdf5-viewer",
+        "wholroyd.jinja",
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "donjayamanne.python-extension-pack",
+        "xuanli.spice",
+        "vscode-icons-team.vscode-icons",
+        "redhat.vscode-yaml",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "VisualStudioExptTeam.intellicode-api-usage-examples",
+        "ms-python.isort",
+        "streetsidesoftware.code-spell-checker",
+        "mutantdino.resourcemonitor",
+        "mshr-h.veriloghdl"
+      ]
+    }
+  },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [22, 8888],
@@ -42,13 +46,4 @@
     "python -m pip install --editable .",
     "python -m pip install black"
   ]
-
-  // Uncomment when using a ptrace-based debugger like C++, Go, and Rust
-  // "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
-
-  // Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
-  // "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
-
-  // Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
-  // "remoteUser": "joyvan"
 }

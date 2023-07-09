@@ -33,10 +33,3 @@ jobs:
         with:
           name: Unit Test Results (Python ${{ matrix.python-version }})
           path: pytest-unittests.xml
-
-    #   - name: Upload Doc Test Results
-    #     if: always()
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: Unit Test Results (Python ${{ matrix.python-version }})
-    #       path: pytest-doctests.xml

@@ -52,4 +52,5 @@ RUN cd calib && \
 COPY --chown=${NB_UID} . ${HOME}/cbadc
 # install cbadc
 RUN cd cbadc && \
-    python -m pip install -e . 
+    python -m pip install -e . && \
+    python -m pip install black pytest
