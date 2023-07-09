@@ -276,10 +276,7 @@ def get_parallel_leapfrog(**kwargs) -> AnalogSystem:
 
         if M == 3:
             analog_system.A[N : 2 * N, 0:N] = poles[0] * np.eye(N)
-            analog_system.A[
-                0:N,
-                N : 2 * N,
-            ] = -poles[
+            analog_system.A[0:N, N : 2 * N,] = -poles[
                 0
             ] * np.eye(N)
 
@@ -290,10 +287,7 @@ def get_parallel_leapfrog(**kwargs) -> AnalogSystem:
             analog_system.A[N : 2 * N, 2 * N : 3 * N] = -poles[2] * np.eye(N)
         elif M == 4:
             analog_system.A[N : 2 * N, 0:N] = poles[0] * np.eye(N)
-            analog_system.A[
-                0:N,
-                N : 2 * N,
-            ] = -poles[
+            analog_system.A[0:N, N : 2 * N,] = -poles[
                 0
             ] * np.eye(N)
 

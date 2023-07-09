@@ -1,4 +1,5 @@
 ![cbadc](https://github.com/hammal/cbadc/actions/workflows/lint_doc_and_unittest.yml/badge.svg?branch=develop)![cbadc](https://github.com/hammal/cbadc/actions/workflows/pull_request.yml/badge.svg?branch=master)![pypi](https://github.com/hammal/cbadc/actions/workflows/pypi-deployment.yml/badge.svg)[![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/hammal/cbadc)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Control-Bounded A/D Conversion (cbadc) Toolbox
 
@@ -10,14 +11,13 @@ Specifically, it is capable of:
 - **Simulating** analog system and digital control interactions.
 
 # Documentation
-
-The projects official documentation can be found at [Read the Docs](https://cbadc.readthedocs.io/en/latest/).
+The project's official documentation can be found at [Read the Docs](https://cbadc.readthedocs.io/en/latest/).
 
 <!-- # Background & References
 
-For a in depth description of the control-bounded conversion concept consider the following publications
+For a in-depth description of the control-bounded conversion concept consider the following publications
 - [Control-bounded analog-to-digital conversion, circuits, systems, and signal processing, 2021](https://doi.org/10.1007/s00034-021-01837-z)
-- [Control-bounded converters, PhD Thesis, 2020](https://doi.org/10.3929/ethz-b-000469192).
+- [Control-bounded converters, Ph.D. Thesis, 2020](https://doi.org/10.3929/ethz-b-000469192).
 - [Control-bounded analog-to-digital conversion: transfer functions analysis, proof of concept, and digital filter implementation, arXiv:2001.05929, 2020](https://arxiv.org/abs/2001.05929)
 - [Control-based analog-to-digital conversion without sampling and quantization, information theory & applications workshop, 2015](https://ieeexplore.ieee.org/document/7308975)
 - [Analog-to-digital conversion using unstable filters, information theory & applications workshop, 2011](https://ieeexplore.ieee.org/abstract/document/5743620) -->
@@ -33,7 +33,9 @@ pip install cbadc
 into your console. Note that, currently cbadc is only supported for Python3.8 and later.
 
 ## Develop Version
+
 Alternatively, the latest develop branch can be installed by
+
 ```bash
 git clone --branch develop https://github.com/hammal/cbadc.git && \
 cd cbadc && \
@@ -43,9 +45,11 @@ rm -rf cbadc
 ```
 
 # Source Code
+
 The source code is hosted on [https://github.com/hammal/cbadc](https://github.com/hammal/cbadc).
 
 # Bugs and Issues
+
 Please report problems at [https://github.com/hammal/cbadc/issues](https://github.com/hammal/cbadc/issues)
 
 # Changelog
@@ -59,6 +63,7 @@ Added first calibration tools.
 Major structural changes. Mainly motivated by improving simulators and filter coefficient computations to support switch-cap digital control simulations.
 
 Specifically,
+
 - [digital clock](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.analog_signal.clock.Clock.html#cbadc.analog_signal.clock.Clock) to aid the simulator and digital estimator computation
 - [digital control](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.digital_control.digital_control.DigitalControl.html#cbadc.digital_control.digital_control.DigitalControl) and derived classes have a new interface to support [digital clock](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.analog_signal.clock.Clock.html#cbadc.analog_signal.clock.Clock), i.e, `DigitalControl(..., clock, ...)`.
 - [Simulator](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.simulator.html)
@@ -78,6 +83,7 @@ Specifically,
 Added verilog-ams circuit-level submodule
 
 Such that circuit-level implementations can be
+
 - constructed in Verilog-ams
 - the resulting filter coefficients can be computed
 - the resulting analog frontends can be simulated.
