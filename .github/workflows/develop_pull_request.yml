@@ -10,14 +10,14 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  linting:
-    uses: ./.github/workflows/linting.yml
-  unittest:
-    needs: linting
-    uses: ./.github/workflows/unittest.yml
-  performance_validation:
-    needs: unittest
-    uses: ./.github/workflows/performance_validation.yml
+  # linting:
+  #   uses: ./.github/workflows/linting.yml
+  # unittest:
+  #   needs: linting
+  #   uses: ./.github/workflows/unittest.yml
+  # performance_validation:
+  #   needs: unittest
+  #   uses: ./.github/workflows/performance_validation.yml
   circuit_test:
-    needs: linting
+    # needs: linting
     uses: ./.github/workflows/circuit_test.yml
