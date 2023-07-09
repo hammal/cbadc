@@ -10,7 +10,7 @@ on: workflow_call
 jobs:
   ngspice-simulations:
     runs-on: ubuntu-latest
-    container: ghcr.io/hammal/cbadc:dev
+    container: ghcr.io/hammal/cbadc:devlop
     steps:
       - uses: actions/checkout@v3
       - name: update pip and install dependencies
@@ -19,16 +19,3 @@ jobs:
       - name: Run circuit test
         run: pytest tests/circuit
 
-    #   - name: Upload Unit Test Results
-    #     if: always()
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: Unit Test Results (Python ${{ matrix.python-version }})
-    #       path: pytest-unittests.xml
-
-    #   - name: Upload Doc Test Results
-    #     if: always()
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: Unit Test Results (Python ${{ matrix.python-version }})
-    #       path: pytest-doctests.xml
