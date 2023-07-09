@@ -1,4 +1,5 @@
 ![cbadc](https://github.com/hammal/cbadc/actions/workflows/lint_doc_and_unittest.yml/badge.svg?branch=develop)![cbadc](https://github.com/hammal/cbadc/actions/workflows/pull_request.yml/badge.svg?branch=master)![pypi](https://github.com/hammal/cbadc/actions/workflows/pypi-deployment.yml/badge.svg)[![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/hammal/cbadc)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Control-Bounded A/D Conversion (cbadc) Toolbox
 
@@ -33,7 +34,9 @@ pip install cbadc
 into your console. Note that, currently cbadc is only supported for Python3.8 and later.
 
 ## Develop Version
+
 Alternatively, the latest develop branch can be installed by
+
 ```bash
 git clone --branch develop https://github.com/hammal/cbadc.git && \
 cd cbadc && \
@@ -43,9 +46,11 @@ rm -rf cbadc
 ```
 
 # Source Code
+
 The source code is hosted on [https://github.com/hammal/cbadc](https://github.com/hammal/cbadc).
 
 # Bugs and Issues
+
 Please report problems at [https://github.com/hammal/cbadc/issues](https://github.com/hammal/cbadc/issues)
 
 # Changelog
@@ -59,6 +64,7 @@ Added first calibration tools.
 Major structural changes. Mainly motivated by improving simulators and filter coefficient computations to support switch-cap digital control simulations.
 
 Specifically,
+
 - [digital clock](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.analog_signal.clock.Clock.html#cbadc.analog_signal.clock.Clock) to aid the simulator and digital estimator computation
 - [digital control](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.digital_control.digital_control.DigitalControl.html#cbadc.digital_control.digital_control.DigitalControl) and derived classes have a new interface to support [digital clock](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.analog_signal.clock.Clock.html#cbadc.analog_signal.clock.Clock), i.e, `DigitalControl(..., clock, ...)`.
 - [Simulator](https://cbadc.readthedocs.io/en/latest/api/autosummary/cbadc.simulator.html)
@@ -78,6 +84,7 @@ Specifically,
 Added verilog-ams circuit-level submodule
 
 Such that circuit-level implementations can be
+
 - constructed in Verilog-ams
 - the resulting filter coefficients can be computed
 - the resulting analog frontends can be simulated.
