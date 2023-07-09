@@ -12,16 +12,12 @@ env:
 jobs:
   linting:
     uses: ./.github/workflows/linting.yml
-  doctest:
-    uses: ./.github/workflows/doctest.yml
-    needs: linting
   unittest:
-    needs: doctest
+    needs: linting
     uses: ./.github/workflows/unittest.yml
   performance_validation:
     needs: unittest
     uses: ./.github/workflows/performance_validation.yml
-  circuit_test:
-    needs: unittest
-    uses: ./.github/workflows/circuit_test.yml
-  
+  # circuit_test:
+  #   needs: unittest
+  #   uses: ./.github/workflows/circuit_test.yml

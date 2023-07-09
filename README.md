@@ -1,4 +1,4 @@
-![cbadc](https://github.com/hammal/cbadc/actions/workflows/lint_doc_and_unittest.yml/badge.svg?branch=develop)![cbadc](https://github.com/hammal/cbadc/actions/workflows/pull_request.yml/badge.svg?branch=master)![pypi](https://github.com/hammal/cbadc/actions/workflows/pypi-deployment.yml/badge.svg)[![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/hammal/cbadc)
+![cbadc](https://github.com/hammal/cbadc/actions/workflows/lint_doc_and_unittest.yml/badge.svg?branch=develop)![cbadc](https://github.com/hammal/cbadc/actions/workflows/pull_request.yml/badge.svg?branch=master)![pypi](https://github.com/hammal/cbadc/actions/workflows/pypi-deployment.yml/badge.svg)[![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Control-Bounded A/D Conversion (cbadc) Toolbox
@@ -11,6 +11,7 @@ Specifically, it is capable of:
 - **Simulating** analog system and digital control interactions.
 
 # Documentation
+
 The project's official documentation can be found at [Read the Docs](https://cbadc.readthedocs.io/en/latest/).
 
 <!-- # Background & References

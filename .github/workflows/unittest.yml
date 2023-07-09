@@ -24,19 +24,14 @@ jobs:
         run: |
           pip install -r requirements.txt;
           pip install .
+      - name: Run doctests
+        run: pytest --junitxml=pytest-unittests.xml --doctest-modules src/cbadc
       - name: Run unittests
-        run: pytest tests/unittest
+        run: pytest --junitxml=pytest-unittests.xml tests/unittest
 
-    #   - name: Upload Unit Test Results
-    #     if: always()
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: Unit Test Results (Python ${{ matrix.python-version }})
-    #       path: pytest-unittests.xml
-
-    #   - name: Upload Doc Test Results
-    #     if: always()
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: Unit Test Results (Python ${{ matrix.python-version }})
-    #       path: pytest-doctests.xml
+      - name: Upload Unit Test Results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Unit Test Results (Python ${{ matrix.python-version }})
+          path: pytest-unittests.xml
