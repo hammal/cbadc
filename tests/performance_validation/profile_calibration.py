@@ -60,6 +60,7 @@ def evaluate(u_hat: np.ndarray, fs: float, BW: float, iteration: int):
         "t": np.arange(u_hat.size) / fs,
     }
 
+
 def test_calibration(
     N,
     ENOB,
