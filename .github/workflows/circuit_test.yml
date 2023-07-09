@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/hammal/cbadc:develop
-      # options: --user root
+      options: --user root
     steps:
       - uses: actions/checkout@v3
       - name: update pip and install dependencies
