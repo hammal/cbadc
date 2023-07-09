@@ -18,4 +18,5 @@ jobs:
           python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
       - name: Run circuit test
         run: |
+          ls -lah . && \
           pytest tests/circuit
