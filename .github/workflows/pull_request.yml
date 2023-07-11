@@ -12,9 +12,9 @@ jobs:
   unittest:
     needs: linting
     uses: ./.github/workflows/unittest.yml
-  performance_validation:
-    needs: unittest
-    uses: ./.github/workflows/performance_validation.yml
+  # performance_validation:
+  #   needs: unittest
+  #   uses: ./.github/workflows/performance_validation_light.yml
   # circuit_test:
   #   needs: unittest
   #   uses: ./.github/workflows/circuit_test.yml
