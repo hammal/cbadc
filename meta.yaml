@@ -13,24 +13,17 @@ requirements:
 
   run:
     - python
-    - numpy>=1.20.1
-    - scipy>=1.7.1
+    # - numpy>=1.25.1
+    # - scipy>=1.11.1
+    - pip
     - tqdm>=4.61.0
     - requests>=2.25.1
-    - pytest
-    - pytest-benchmark
-    - pytest-cov
-    - typing-extensions
     - pandas>=1.3.4
     - matplotlib>=3.4.3
     - xlrd>=1.0.0
     - sympy>=1.9
     - mpmath>=1.1
     - jinja2>=3
-    - pre-commit>=2.17.0
-    - Pillow>=9.1.1
-    - pyarrow>=8.0.0
-    - inform>=1.26.0
     # - ltspice>=1.0.6
 
 test:
