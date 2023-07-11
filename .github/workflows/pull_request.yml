@@ -1,0 +1,20 @@
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Unittest and Performance test
+
+on:
+  pull_request:
+    branches: ["develop", "master"]
+
+jobs:
+  linting:
+    uses: ./.github/workflows/linting.yml
+  unittest:
+    needs: linting
+    uses: ./.github/workflows/unittest.yml
+  # performance_validation:
+  #   needs: unittest
+  #   uses: ./.github/workflows/performance_validation_light.yml
+  # circuit_test:
+  #   needs: unittest
+  #   uses: ./.github/workflows/circuit_test.yml

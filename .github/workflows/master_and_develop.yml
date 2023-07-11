@@ -1,10 +1,10 @@
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Create and publish a Docker image
+name: General Tests for master and develop
 
 on:
-  pull_request:
-    branches: ["develop"]
+    push:
+      branches: ["develop"]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
