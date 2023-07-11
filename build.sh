@@ -1,0 +1,1 @@
+$PYTHON -m pip install ltspice .     # Python command to install the script.
