@@ -9,3 +9,4 @@ matplotlib >= 3.5.1
 sympy >= 1.9
 mpmath >= 1.1
 ltspice >= 1.0.6
+pyarrow >= 12.0.1
