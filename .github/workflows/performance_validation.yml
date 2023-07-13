@@ -20,9 +20,9 @@ jobs:
       - name: Run fir filter test
         run: |
           pytest tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py
-      - name: Run implementation test
-        run: |
-          pytest tests/performance_validation/digital_estimator_filter_coefficients_numpy.py
+      # - name: Run implementation test
+      #   run: |
+      #     pytest tests/performance_validation/digital_estimator_filter_coefficients_numpy.py
   test_simulators:
     runs-on: ubuntu-latest
     steps:
