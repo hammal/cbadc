@@ -7,11 +7,16 @@ from cbadc.digital_estimator._filter_coefficients import (
     FilterComputationBackend,
 )
 import cbadc.utilities
+import scipy.integrate
 import numpy as np
 import sympy as sp
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _rotation_matrix(phi):
+    return np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]])
 
 
 class BatchEstimator(Iterator[np.ndarray]):
@@ -128,6 +133,7 @@ class BatchEstimator(Iterator[np.ndarray]):
         mid_point: bool = False,
         downsample: int = 1,
         solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        modulation_frequency: float = None,
     ):
         # Check inputs
         if K1 < 1:
@@ -140,11 +146,11 @@ class BatchEstimator(Iterator[np.ndarray]):
         self._filter_lag = -1
         self.analog_system = analog_system
 
-        if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
-            raise Exception(
-                """Can't compute filter coefficients for system with non-zero
-                D matrix. Consider chaining for removing D"""
-            )
+        # if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+        #     raise Exception(
+        #         """Can't compute filter coefficients for system with non-zero
+        #         D matrix. Consider chaining for removing D"""
+        # )
 
         self.digital_control = digital_control
         if eta2 < 0:
@@ -178,6 +184,13 @@ class BatchEstimator(Iterator[np.ndarray]):
         self._ntf_lambda = None
         self._stf_lambda = None
 
+        # For modulation
+        self._time_index = 0
+        if modulation_frequency is not None:
+            self._modulation_frequency = modulation_frequency
+        else:
+            self._modulation_frequency = 0
+
     def filter_lag(self):
         """Return the lag of the filter.
 
@@ -192,21 +205,31 @@ class BatchEstimator(Iterator[np.ndarray]):
 
         Returns
         -------
-        `int`
+        : `int`
             The filter lag.
 
         """
         return self._filter_lag
 
-    def warm_up(self):
+    def warm_up(self, samples=0):
         """Warm up filter by population control signals.
 
         Effectively removes the filter lag.
+
+        Parameters
+        ----------
+        samples: `int`, `optional`
+            number of warmup samples, defaults to filter_lag
         """
         logger.debug("Warming up estimator.")
-        while self._filter_lag > 0:
-            _ = self.__next__()
-            self._filter_lag -= 1
+
+        if samples > 0:
+            for _ in range(samples):
+                self.__next__()
+        else:
+            while self._filter_lag > 0:
+                _ = self.__next__()
+                self._filter_lag -= 1
 
     def set_iterator(self, control_signal_sequence: Iterator[np.ndarray]):
         """Set iterator of control signals
@@ -253,7 +276,7 @@ class BatchEstimator(Iterator[np.ndarray]):
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M), dtype=np.int8)
+        self._control_signal = np.zeros((self.K3, self.analog_system.M))
         self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
         self._control_signal_in_buffer = 0
         self._mean = np.zeros((self.K1 + 1, self.analog_system.N), dtype=np.double)
@@ -306,7 +329,7 @@ class BatchEstimator(Iterator[np.ndarray]):
             )
         for m in range(self.analog_system.M):
             self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
-                2 * s - 1, dtype=np.int8
+                2 * s - 1
             )
         self._control_signal_in_buffer += 1
         return self._control_signal_in_buffer > (self.K3 - 1)
@@ -330,6 +353,7 @@ class BatchEstimator(Iterator[np.ndarray]):
         if self._estimate_pointer < self.K1:
             temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
+            self._time_index += 1
             return temp
         # Check if stop iteration has been raised in previous batch
         if self._stop_iteration:
@@ -347,7 +371,7 @@ class BatchEstimator(Iterator[np.ndarray]):
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
+                control_signal_sample = np.zeros((self.analog_system.M))
             full = self._input(control_signal_sample)
 
         # Compute new batch of K1 estimates
@@ -358,6 +382,21 @@ class BatchEstimator(Iterator[np.ndarray]):
 
         # recursively call itself to return new estimate
         return self.__next__()
+
+    def demodulate(self) -> np.ndarray:
+        """Demodulate the received signal.
+
+        Returns:
+            np.ndarray: Demodulated signal.
+        """
+        if self.analog_system.L % 2 != 0:
+            raise Exception("L must be an even number.")
+
+        modulation_matrix = np.kron(
+            _rotation_matrix(-self._modulation_frequency * self._time_index),
+            np.eye(self.analog_system.L // 2),
+        )
+        return np.dot(modulation_matrix, self.__next__())
 
     def _lazy_initialise_ntf(self):
         logger.info("Computing analytical noise-transfer function")
@@ -453,9 +492,11 @@ class BatchEstimator(Iterator[np.ndarray]):
             )
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
-            result[:, index] = np.abs(
-                np.dot(GH, np.dot(np.linalg.pinv(GGH + self.eta2Matrix), G))
-            )
+            STF_temp = np.dot(np.linalg.pinv(GGH + self.eta2Matrix), G)
+            for l_index in range(self.analog_system.L):
+                result[l_index, index] = np.abs(
+                    np.dot(GH[l_index, :], STF_temp[:, l_index])
+                )
             # result[:, index] = self._stf_lambda(o)
         return result
 
@@ -493,10 +534,138 @@ class BatchEstimator(Iterator[np.ndarray]):
             ).reshape((self.analog_system.N_tilde, self.analog_system.M))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
-            result[:, index] = np.abs(
+            result[:, :, index] = np.abs(
                 np.dot(GH, np.dot(np.linalg.inv(GGH + self.eta2Matrix), G_bar))
             )
         return result
+
+    def general_transfer_function(self, omega: np.ndarray):
+        """Compute the general transfer functions from additive sources into each state varible
+         to the estimates.
+
+        Parameters
+        ----------
+        omega: `array_like`, shape=(K,)
+            an array_like object containing the angular frequencies for
+            evaluation.
+
+        Returns
+        -------
+        `array_like`, shape=(L, N, K)
+            return transfer function from each state N to each input estimate L for each frequency K.
+        """
+        #  shape=(N_tilde, N, K)
+        stf_array = self.analog_system.transfer_function_matrix(omega, general=True)
+        # shape=(L, N_tilde, K)
+        ntf_array = self.noise_transfer_function(omega)
+        return np.einsum('lnk,nxk->lxk', ntf_array, stf_array)
+
+    def max_transfer_function_peak(self, BW: np.ndarray):
+        omega = np.geomspace(BW[0], BW[1], 1000)
+        tfs = np.abs(self.general_transfer_function(omega)) ** 2
+        res = np.max(tfs, axis=2)
+        return res
+
+    def white_noise_balance(self, BW: np.ndarray, max=True):
+        """See the magnitude difference between different noise contributions.
+
+        Parameters
+        ----------
+        BW: `array_like`, `shape=(2,)`
+            the upper and lower bandwidth ranges as (BW_low, BW_high).
+        max: `bool`, `optional`
+            If to take the max value of the transferfunction or the squared integrated, defaults to True.
+
+        Returns
+        -------
+        : array_like, shape=(L, N)
+            white noise balance.
+        """
+        if max:
+            omega = np.geomspace(BW[0], BW[1], 1000)
+            tfs = np.abs(self.general_transfer_function(omega)) ** 2
+            res = np.max(tfs, axis=2)
+        else:
+
+            def _derivative(omega, x):
+                _omega = np.array([omega])
+                return (
+                    np.abs(self.general_transfer_function(_omega)).flatten(order="C")
+                    ** 2
+                )
+
+            res = (
+                scipy.integrate.solve_ivp(
+                    _derivative,
+                    (BW[0], BW[-1]),
+                    np.zeros(self.analog_system.L * self.analog_system.N),
+                )
+                .y[:, -1]
+                .reshape((self.analog_system.L, self.analog_system.N), order="C")
+            )
+        # for n, sigma_z_2 in enumerate(noise_variances):
+        #     integrated_tf[:, n] *= sigma_z_2
+        # return integrated_tf
+        return np.max(res, axis=1) / res / self.analog_system.N
+
+    def white_noise_sensitivities(
+        self,
+        BW: np.ndarray,
+        target_snr: float,
+        input_power: float = 0.5,
+        max=True,
+        spectrum=False,
+    ) -> np.ndarray:
+        """Compute per node white noise sensitivity
+
+        Parameters
+        ----------
+        BW: `array_like`, `shape=(2,)`
+            the upper and lower bandwidth ranges as (BW_low, BW_high).
+        target_snr: `float`
+            the target SNR expressed in a linear scale.
+        input_power: `float`, `optional`
+            the input power expressed in a linear scale, defaults to 1/2.
+        max: `bool`, `optional`
+            If to take the max value of the transferfunction or the squared integrated, defaults to True.
+        spectrum: `bool`, `optional`
+            express the returned noise variance as a power spectral density, i.e., V^2/Hz, for states
+            representing voltages. Defaults to False.
+
+        Returns
+        -------
+        : array_like, shape=(L, N)
+            admissable noise power to align with SNR requirement.
+        """
+        noise_variance = (
+            np.ones((self.analog_system.L, self.analog_system.N))
+            * input_power
+            / target_snr
+        )
+        balances = self.white_noise_balance(BW, max=max)
+        for l in range(self.analog_system.L):
+            for n in range(self.analog_system.N):
+                noise_variance[l, n] *= balances[l, n]
+        if spectrum:
+            return noise_variance / (BW[1] - BW[0])
+        return noise_variance
+
+    def max_harmonic_estimate(self, BW: np.ndarray, SFDR: float):
+
+        sfdr = cbadc.fom.snr_from_dB(SFDR)
+
+        num = 1000
+        _omega = np.logspace(np.log(BW[0]), np.log(BW[-1]), num)
+        tfs = np.abs(self.general_transfer_function(_omega))
+
+        max_input = np.max(tfs)
+        # value =
+
+        temp = np.max(tfs, axis=2) / max_input
+        # this could probably be normalized by somethings like np.linalg.norm(temp)
+        local_harmonics = 1.0 / temp
+        local_harmonics /= np.linalg.norm(local_harmonics, ord=1)
+        return local_harmonics / sfdr
 
     def __str__(self):
         return f"""Digital estimator is parameterized as

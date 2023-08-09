@@ -1,7 +1,4 @@
 """Filter coefficient computations."""
-from typing import List
-
-from mpmath.calculus.optimization import jacobian
 import cbadc
 import logging
 import time
@@ -14,7 +11,6 @@ import sympy as sp
 import mpmath as mp
 from mpmath import mp
 from numpy.linalg import LinAlgError
-from multiprocessing import Process, Queue
 from ..ode_solver.sympy import invariant_system_solver as analytical_system_solver
 from ..ode_solver.mpmath import invariant_system_solver as mp_system_solver
 
@@ -94,6 +90,7 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
     V = np.zeros_like(A)
 
     try:
+        logger.info("Computing CARE analytically")
         V = _analytical_care(A, B, Q, R)
     except (sp.PrecisionExhausted, TypeError):
         logger.warning(
@@ -107,7 +104,7 @@ def care(A: np.ndarray, B: np.ndarray, Q: np.ndarray, R: np.ndarray) -> np.ndarr
             Starting brute force"""
             )
             V = bruteForceCare(A, B, Q, R)
-    return np.array((V + V.transpose()) / 2, dtype=np.double)
+    return np.array((V + V.transpose()) / 2.0, dtype=np.double)
 
 
 def _analytical_care(
@@ -291,7 +288,7 @@ def _mp_solver(
     WT = mp.matrix(analog_system.L, analog_system.N)
     VfVb = Vf + Vb
     for l in range(analog_system.L):
-        WT[l, :] = mp.qr_solve(VfVb, mp.matrix(analog_system.B))[l].transpose()
+        WT[l, :] = mp.qr_solve(VfVb, mp.matrix(analog_system.B[:, l]))[0].transpose()
         # WT[l, :] = mp.lu_solve(VfVb, mp.matrix(analog_system.B))[l].transpose()
     mp.dps = tmp_dps
     return Af, Ab, Bf, Bb, WT

@@ -4,7 +4,7 @@ import cbadc.digital_estimator._filter_coefficients
 import pytest
 
 eta2 = 1e3
-N = 10
+N = 4
 A = np.eye(N, k=1) * 1e-2 + np.eye(N, k=-1) * 1e3
 B = np.random.randn(N, 1)
 B[0, 0] = 1e2

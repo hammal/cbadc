@@ -127,6 +127,7 @@ class ParallelEstimator(BatchEstimator):
         mid_point: bool = False,
         downsample: int = 1,
         solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
+        modulation_frequency: float = None,
     ):
         # Check inputs
         if K1 < 1:
@@ -169,6 +170,13 @@ class ParallelEstimator(BatchEstimator):
         self._compute_filter_coefficients(analog_system, digital_control, eta2)
         self._allocate_memory_buffers()
 
+        # For modulation
+        self._time_index = 0
+        if modulation_frequency is not None:
+            self._modulation_frequency = modulation_frequency
+        else:
+            self._modulation_frequency = 0
+
     def _compute_filter_coefficients(
         self,
         analog_system: cbadc.analog_system.AnalogSystem,
@@ -195,7 +203,7 @@ class ParallelEstimator(BatchEstimator):
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M), dtype=np.int8)
+        self._control_signal = np.zeros((self.K3, self.analog_system.M))
         self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
         self._control_signal_in_buffer = 0
         self._mean = np.zeros((self.analog_system.N), dtype=np.complex128)
@@ -240,9 +248,7 @@ class ParallelEstimator(BatchEstimator):
             raise Exception(
                 "Input buffer full. You must compute batch before adding more control signals"
             )
-        self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
-            s, dtype=np.int8
-        )
+        self._control_signal[self._control_signal_in_buffer, :] = np.asarray(s)
         self._control_signal_in_buffer += 1
         return self._control_signal_in_buffer > (self.K3 - 1)
 
@@ -263,6 +269,7 @@ class ParallelEstimator(BatchEstimator):
         if self._estimate_pointer < self.K1:
             temp = np.array(self._estimate[self._estimate_pointer, :], dtype=np.double)
             self._estimate_pointer += 1
+            self._time_index += 1
             return temp
         # Check if stop iteration has been raised in previous batch
         if self._stop_iteration:
@@ -280,7 +287,7 @@ class ParallelEstimator(BatchEstimator):
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
+                control_signal_sample = np.zeros((self.analog_system.M))
             full = self._input(control_signal_sample)
 
         # Compute new batch of K1 estimates

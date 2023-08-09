@@ -4,6 +4,7 @@ import numpy as np
 
 from cbadc.analog_system import AnalogSystem, InvalidAnalogSystemError
 
+_ = chain_of_integrators
 
 beta = 6250.0
 rho = -62.5

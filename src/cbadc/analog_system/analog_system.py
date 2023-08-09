@@ -7,7 +7,6 @@ attributes. Additionally, several derived convenience classes are defined
 to quickly initialize analog systems of particular structures.
 """
 import numpy as np
-import numpy.typing as npt
 import scipy.signal
 import logging
 from typing import Union
@@ -36,12 +35,14 @@ class AnalogSystem:
     The analog system also has two (possibly vector valued) outputs namely:
 
     * The control observation
-      :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)` and
-    * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{C} \mathbf{u}(t)`
+      :math:`\\tilde{\mathbf{s}}(t)=\\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t) + \\tilde{\mathbf{D}} \mathbf{u}(t)` and
+    * The signal observation :math:`\mathbf{y}(t) = \mathbf{C}^\mathsf{T} \mathbf{x}(t) + \mathbf{D} \mathbf{u}(t)`
 
     where
     :math:`\\tilde{\mathbf{\Gamma}}^\mathsf{T}\in\mathbb{R}^{\\tilde{M} \\times N}`
-    is the control observation matrix and
+    is the control observation matrix,
+    :math:`\\tilde{\mathbf{D}}\in\mathbb{R}^{\\tilde{M} \\times L}`
+    is the direct control observation matrix, and
     :math:`\mathbf{C}^\mathsf{T}\in\mathbb{R}^{\\tilde{N} \\times N}` is the
     signal observation matrix.
 
@@ -57,7 +58,12 @@ class AnalogSystem:
         control input matrix.
     Gamma_tildeT : `array_like`, shape=(M_tilde, N)
         control observation matrix.
-
+    D : `array_like`, shape=(N_tilde, L), optional
+        the direct matrix, defaults to None
+    D_tilde : `array_like`, shape=(M_tilde, L), optional
+        the direct control observation matrix, defaults to None
+    A_tilde : `array_like`, shape=(M_tilde, N), optional
+        the self control observation matrix, defaults to None
 
     Attributes
     ----------
@@ -107,14 +113,30 @@ class AnalogSystem:
         For faulty analog system parametrization.
     """
 
+    A: np.ndarray
+    B: np.ndarray
+    CT: np.ndarray
+    Gamma: np.ndarray
+    Gamma_tildeT: np.ndarray
+    D: np.ndarray
+    D_tilde: np.ndarray
+    A_tilde: np.ndarray
+    N: int
+    N_tilde: int
+    M: int
+    M_tilde: int
+    L: int
+
     def __init__(
         self,
         A: np.ndarray,
         B: np.ndarray,
         CT: np.ndarray,
-        Gamma: Union[np.ndarray, None],
-        Gamma_tildeT: Union[np.ndarray, None],
+        Gamma: Union[np.ndarray, None] = None,
+        Gamma_tildeT: Union[np.ndarray, None] = None,
         D: Union[np.ndarray, None] = None,
+        B_tilde: Union[np.ndarray, None] = None,
+        A_tilde: Union[np.ndarray, None] = None,
     ):
         """Create an analog system.
 
@@ -132,6 +154,10 @@ class AnalogSystem:
             control observation matrix.
         D : `array_like`, shape=(N_tilde, L), optional
             the direct matrix, defaults to None
+        B_tilde : `array_like`, shape=(M_tilde, L), optional
+            the direct control observation matrix, defaults to None
+        A_tilde : `array_like`, shape=(M_tilde, M), optional
+            the self control observation matrix, defaults to None
         """
 
         self.A = np.array(A, dtype=np.double)
@@ -208,11 +234,42 @@ class AnalogSystem:
             raise InvalidAnalogSystemError(
                 self, "D matrix has wrong dimensions. Should be N_tilde x L"
             )
+
+        if B_tilde is not None:
+            self.B_tilde = np.array(B_tilde, dtype=np.double)
+        else:
+            self.B_tilde = np.zeros((self.M_tilde, self.L))
+        self._B_tilde_s = sp.Matrix(self.B_tilde)
+
+        if self.B_tilde is not None and (
+            self.B_tilde.shape[0] != self.M_tilde or self.B_tilde.shape[1] != self.L
+        ):
+            raise InvalidAnalogSystemError(
+                self, "B_tilde matrix has wrong dimensions. Should be M_tilde x L"
+            )
+
+        # A_tilde
+        if A_tilde is not None:
+            self.A_tilde = np.array(A_tilde, dtype=np.double)
+        else:
+            self.A_tilde = np.zeros((self.M_tilde, self.M))
+        self._A_tilde_s = sp.Matrix(self.A_tilde)
+
+        if self.A_tilde is not None and (
+            self.A_tilde.shape[0] != self.M_tilde or self.A_tilde.shape[1] != self.M
+        ):
+            raise InvalidAnalogSystemError(
+                self, "A_tilde matrix has wrong dimensions. Should be M_tilde x L"
+            )
+
         self.t = sp.Symbol('t', real=True)
-        self.x = [sp.Function(f'x_{i+1}')(self.t) for i in range(self.N)]
+        # self.x = [sp.Function(f'x_{i+1}')(self.t) for i in range(self.N)]
         self.omega = sp.Symbol('omega')
         self._atf_lambda = None
         self._ctf_lambda = None
+
+    def _symbolic_x(self, n: int):
+        return sp.Function(f'x_{n}')(self.t)
 
     def derivative(
         self, x: np.ndarray, t: float, u: np.ndarray, s: np.ndarray
@@ -289,13 +346,13 @@ class AnalogSystem:
         for n in range(self.N):
             expr = sp.Float(0)
             for nn in range(self.N):
-                expr += self._A_s[n, nn] * self.x[nn]
+                expr += self._A_s[n, nn] * self._symbolic_x(nn + 1)
             if input_signal:
                 expr += self._B_s[n, dim] * input
             elif self._Gamma_s is not None:
                 expr += self._Gamma_s[n, dim] * input
-            equations.append(sp.Eq(self.x[n].diff(self.t), expr))
-        return equations, self.x
+            equations.append(sp.Eq(self._symbolic_x(n + 1).diff(self.t), expr))
+        return equations, self._symbolic_x(n + 1)
 
     def signal_observation(self, x: np.ndarray) -> np.ndarray:
         """Computes the signal observation for a given state vector
@@ -318,26 +375,39 @@ class AnalogSystem:
         """
         return np.dot(self.CT, x)
 
-    def control_observation(self, x: np.ndarray) -> np.ndarray:
+    def control_observation(
+        self, x: np.ndarray, u: np.ndarray = None, s: np.ndarray = None
+    ) -> np.ndarray:
         """Computes the control observation for a given state vector :math:`\mathbf{x}(t)`
         evaluated at time :math:`t`.
 
         Specifically, returns
 
-        :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t)`
+        :math:`\\tilde{\mathbf{s}}(t) = \\tilde{\mathbf{\Gamma}}^\mathsf{T} \mathbf{x}(t) + \\tilde{\mathbf{D}} \mathbf{u}(t)`
 
         Parameters
         ----------
         x : `array_like`, shape=(N,)
             the state vector.
-
+        u : `array_like`, shape=(L,)
+            the input vector
+        s : `array_like`, shape=(M,)
+            the control signal
         Returns
         -------
         `array_like`, shape=(M_tilde,)
             the control observation.
 
         """
-        return np.dot(self.Gamma_tildeT, x)
+        if u is None:
+            return np.dot(self.Gamma_tildeT, x)
+        if s is None:
+            np.dot(self.Gamma_tildeT, x) + np.dot(self.B_tilde, u)
+        return (
+            np.dot(self.Gamma_tildeT, x)
+            + np.dot(self.B_tilde, u)
+            + np.dot(self.A_tilde, s)
+        )
 
     def _lazy_initialize_ATF(self):
         logger.info("computing analytical transfer function matrix")
@@ -346,9 +416,11 @@ class AnalogSystem:
         #     (sp.I * self.omega * self._A_s_P_inv * self._A_s_P -
         #      self._A_s_D).inv() * self._A_s_P_inv * self._B_s
         # )
-        self._atf_s_matrix = sp.simplify(
-            (sp.I * self.omega * sp.eye(self.N) - self._A_s).inv() * self._B_s
+        self._general_atf_s_matrix = sp.simplify(
+            (sp.I * self.omega * sp.eye(self.N) - self._A_s).inv()
         )
+        self._atf_s_matrix = sp.simplify(self._general_atf_s_matrix * self._B_s)
+        self._general_atf_lambda = sp.lambdify((self.omega), self._general_atf_s_matrix)
         self._atf_lambda = sp.lambdify((self.omega), self._atf_s_matrix)
 
     def _atf_symbolic(self, _omega: float) -> np.ndarray:
@@ -361,6 +433,15 @@ class AnalogSystem:
             np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
             self.B,
         )
+        return tf
+
+    def _general_atf_symbolic(self, _omega: float) -> np.ndarray:
+        if self._atf_lambda is None:
+            self._lazy_initialize_ATF()
+        return np.array(self._general_atf_lambda(_omega)).astype(np.complex128)
+
+    def _general_atf(self, _omega: float) -> np.ndarray:
+        tf = np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300)
         return tf
 
     def _lazy_initialize_CTF(self):
@@ -377,9 +458,14 @@ class AnalogSystem:
         self._ctf_lambda = sp.lambdify((self.omega), self._ctf_s_matrix)
 
     def _ctf(self, _omega: float) -> np.ndarray:
-        if self._atf_lambda is None:
-            self._lazy_initialize_CTF()
-        return np.array(self._ctf_lambda(_omega)).astype(np.float128)
+        tf = np.dot(
+            np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A, rcond=1e-300),
+            self.Gamma,
+        )
+        return tf
+        # if self._atf_lambda is None:
+        #     self._lazy_initialize_CTF()
+        # return np.array(self._ctf_lambda(_omega)).astype(np.float128)
         # return np.dot(
         #     np.linalg.pinv(complex(0, _omega) * np.eye(self.N) - self.A),
         #     self.Gamma,
@@ -413,11 +499,14 @@ class AnalogSystem:
         result = np.zeros((self.N, self.M, size), dtype=complex)
         for index in range(size):
             result[:, :, index] = self._ctf(omega[index])
-        resp = np.einsum("ij,jkl", self.CT, result)
-        return np.asarray(resp)
+        # resp = np.einsum("ij,jkl", self.CT, result)
+        return np.asarray(result)
 
     def transfer_function_matrix(
-        self, omega: np.ndarray, symbolic: bool = True
+        self,
+        omega: np.ndarray,
+        symbolic: bool = True,
+        general=False,
     ) -> np.ndarray:
         """Evaluate the analog signal transfer function at the angular
         frequencies of the omega array.
@@ -437,6 +526,8 @@ class AnalogSystem:
             evaluation.
         symbolic: `bool`, `optional`
             solve using symbolic methods, defaults to True.
+        general: `bool`, `optional`
+            to return general transfer function or not, defaults to False.
 
         Returns
         -------
@@ -445,11 +536,22 @@ class AnalogSystem:
             frequencies.
         """
         size: int = omega.size
-        result = np.zeros((self.N, self.L, size), dtype=complex)
-        resp = np.zeros((self.N_tilde, self.L, size))
+        if not general:
+            resp = np.zeros((self.N_tilde, self.L, size))
+            result = np.zeros((self.N, self.L, size), dtype=complex)
+        else:
+            resp = np.zeros((self.N_tilde, self.N, size))
+            result = np.zeros((self.N, self.N, size), dtype=complex)
+
         for index in range(size):
-            if symbolic:
+            if not general:
+                resp[:, :, index] = self.D
+            if symbolic and not general:
                 result[:, :, index] = self._atf_symbolic(omega[index])
+            elif symbolic and general:
+                result[:, :, index] = self._general_atf_symbolic(omega[index])
+            elif not symbolic and general:
+                result[:, :, index] = self._general_atf(omega[index])
             else:
                 result[:, :, index] = self._atf(omega[index])
             resp[:, :, index] = self.D
@@ -472,9 +574,27 @@ class AnalogSystem:
         """
         return scipy.signal.ss2zpk(self.A, self.B, self.CT, self.D, input=0)
 
+    def eta2(self, BW):
+        """Compute the eta2 parameter of the system.
+
+        Parameters
+        ----------
+        BW: `float`
+            bandwidth of the system
+
+        Returns
+        -------
+        `float`
+            eta2 parameter of the system at bandwidth BW
+        """
+        return (
+            np.linalg.norm(self.transfer_function_matrix(np.array([2 * np.pi * BW])))
+            ** 2
+        )
+
     def __str__(self):
         np.set_printoptions(formatter={'float': '{: 0.2e}'.format})
-        return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nGamma_tildeT =\n{np.array(self.Gamma_tildeT)}, and D={self.D}"
+        return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nGamma_tildeT =\n{np.array(self.Gamma_tildeT)},\nD=\n{self.D},\nA_tilde=\n{self.A_tilde},\nand B_tilde=\n{self.B_tilde}\n"
 
 
 class InvalidAnalogSystemError(Exception):

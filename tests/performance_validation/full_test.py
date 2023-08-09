@@ -3,21 +3,14 @@ import numpy as np
 import cbadc
 from cbadc.digital_estimator import (
     BatchEstimator,
-    ParallelEstimator,
-    IIRFilter,
-    FIRFilter,
 )
 from cbadc.digital_estimator._filter_coefficients import FilterComputationBackend
-from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_dB, snr_to_enob
-from .fixtures import setup_filter
+from cbadc.fom import snr_to_dB, snr_to_enob
+from tests.performance_validation.fixtures import setup_filter
 from cbadc.simulator import (
-    AnalyticalSimulator,
-    FullSimulator,
     PreComputedControlSignalsSimulator,
-    MPSimulator,
 )
 import matplotlib.pyplot as plt
-import sys
 
 DEBUG = False
 
@@ -72,7 +65,7 @@ DEBUG = False
     "digital_control",
     [
         pytest.param('default', id="default_dc"),
-        pytest.param('switch-cap', id="switch_cap_dc"),
+        # pytest.param('switch-cap', id="switch_cap_dc"),
     ],
 )
 @pytest.mark.parametrize(

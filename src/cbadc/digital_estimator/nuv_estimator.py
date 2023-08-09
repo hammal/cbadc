@@ -104,11 +104,11 @@ class NUVEstimator:
         self.analog_system = analog_system
         self.covU = covU
         self.bound_y = bound_y
-        if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
-            raise Exception(
-                """Can't compute filter coefficients for system with non-zero
-                D matrix. Consider chaining for removing D"""
-            )
+        # if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+        #     raise Exception(
+        #         """Can't compute filter coefficients for system with non-zero
+        #         D matrix. Consider chaining for removing D"""
+        #     )
 
         self.digital_control = digital_control
         if Ts:
@@ -131,7 +131,7 @@ class NUVEstimator:
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M), dtype=np.int8)
+        self._control_signal = np.zeros((self.K3, self.analog_system.M))
         self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
         self._control_signal_in_buffer = 0
         self._forward_mean = np.zeros((self.K3, self.analog_system.N), dtype=np.double)
@@ -212,7 +212,7 @@ class NUVEstimator:
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M), dtype=np.int8)
+                control_signal_sample = np.zeros((self.analog_system.M))
             for _ in range(self._oversample):
                 full = self._input(control_signal_sample)
 
@@ -234,7 +234,7 @@ class NUVEstimator:
             )
         for _ in range(self.analog_system.M):
             self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
-                2 * s - 1, dtype=np.int8
+                2 * s - 1
             )
         self._control_signal_in_buffer += 1
         return self._control_signal_in_buffer > (self.K3 - 1)
@@ -287,7 +287,7 @@ class NUVEstimator:
             scipy.integrate.solve_ivp(
                 _derivative_input,
                 (0, self.Ts),
-                np.zeros(self.analog_system.N ** 2),
+                np.zeros(self.analog_system.N**2),
                 atol=atol,
                 rtol=rtol,
                 max_step=max_step,
@@ -360,20 +360,17 @@ class NUVEstimator:
             )
 
             if k < temp_K3:
-                self._forward_mean[k + 1, :] = (
-                    np.dot(
-                        self.Af,
-                        np.dot(self._F[k, :, :], self._forward_mean[k, :])
-                        + np.dot(
-                            self._forward_CoVariance[k, :, :],
-                            np.dot(
-                                self.analog_system.CT.transpose(),
-                                np.dot(self._G[k, :, :], self._y_mean[k, :]),
-                            ),
+                self._forward_mean[k + 1, :] = np.dot(
+                    self.Af,
+                    np.dot(self._F[k, :, :], self._forward_mean[k, :])
+                    + np.dot(
+                        self._forward_CoVariance[k, :, :],
+                        np.dot(
+                            self.analog_system.CT.transpose(),
+                            np.dot(self._G[k, :, :], self._y_mean[k, :]),
                         ),
-                    )
-                    + np.dot(self.Bf, self._control_signal[k, :])
-                )
+                    ),
+                ) + np.dot(self.Bf, self._control_signal[k, :])
 
                 self._forward_CoVariance[k + 1, :, :] = (
                     np.dot(

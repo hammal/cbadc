@@ -1,0 +1,47 @@
+{% extends 'testbench.cir.j2' %}
+
+{% block global %}
+* globals
+.GLOBAL gnd 0{% for global in globals %} {{ global }}{% endfor %}
+{% endblock global %}
+
+{% block include %}
+{% if includes %}
+* included files
+{% for filename in includes %}
+.INCLUDE  {{ filename }}
+{% endfor -%}
+{%- endif %}
+{%- endblock include %}
+
+{% block power_supply %}
+{% for source in power_supplies %}
+{{ source.get_ngspice(connections) }}
+{% endfor %}
+{% endblock power_supply %}
+
+{% block clock %}
+{{ clock.get_ngspice(connections) }}
+{% endblock clock %}
+
+{% block input_signal %}
+{% for signal in input_signals %}
+{{ signal.get_ngspice(connections) }}
+{% endfor %}
+{% endblock input_signal %}
+
+{% block analog_frontend %}
+{{ analog_frontend.get_ngspice(connections)}}
+
+* sub circuits
+{% for sub_circuit in analog_frontend.get_sub_circuit_definitions() %}
+{{ sub_circuit }}
+
+{% endfor %}
+{% if models -%}
+* model definitions
+{% for model in models %}
+{{ model.get_ngspice() }}
+{% endfor %}
+{%- endif %}
+{%- endblock analog_frontend %}
