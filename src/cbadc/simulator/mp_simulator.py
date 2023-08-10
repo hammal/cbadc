@@ -57,7 +57,7 @@ class MPSimulator(_BaseSimulator):
 
     Yields
     ------
-    `array_like`, shape=(M,), dtype=numpy.int8
+    `array_like`, shape=(M,)
     """
 
     def __init__(
@@ -100,6 +100,7 @@ class MPSimulator(_BaseSimulator):
         self.Af = tmp_Af
         self.Gamma_f = tmp_Gamma_f
         self.Gamma_tilde_f = mp.matrix(analog_system.Gamma_tildeT)
+        self.D_tilde = mp.matrix(analog_system.B_tilde)
         self._state_vector = mp.matrix(self._state_vector)
         mp.dps = tmp_dps
 
@@ -140,6 +141,12 @@ class MPSimulator(_BaseSimulator):
         mp.dps = tmp_dps
         return res
 
+    def _input_signal(self, t):
+        u = np.zeros(self.analog_system.L)
+        for l in range(self.analog_system.L):
+            u[l] = np.array(self.input_signals[l]._mpmath(t))
+        return u
+
     def __next__(self) -> np.ndarray:
         """Computes the next control signal :math:`\mathbf{s}[k]`"""
 
@@ -159,10 +166,17 @@ class MPSimulator(_BaseSimulator):
         )
 
         # Update controls for next period if necessary
-        self.digital_control.control_update(
-            t_span[1],
-            np.array(self.Gamma_tilde_f * self._state_vector, dtype=np.double),
+        temp = self.D_tilde * self.input_signals[0]._mpmath(t_end)
+        for l in range(1, self.analog_system.L):
+            temp += self.D_tilde * self.input_signals[l]._mpmath(t_end)
+
+        control_observation = self.analog_system.control_observation(
+            np.array(self._state_vector),
+            self._input_signal(t_end),
+            self.digital_control.control_signal(),
         )
+
+        self.digital_control.control_update(t_span[1], control_observation)
         self.t = t_end
         return self.digital_control.control_signal()
 

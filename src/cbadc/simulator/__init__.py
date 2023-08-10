@@ -1,4 +1,4 @@
-"""Analog System and Digital Control Simulator
+"""Analog frontend simulators
 
 This module provides simulator tools to simulate the hardware
 interaction between an analog system and digital control.
@@ -10,12 +10,18 @@ These are mainly intended to produce control signals
 """
 
 from typing import Union
-from .numerical_simulator import FullSimulator, PreComputedControlSignalsSimulator
+from .numerical_simulator import (
+    FullSimulator,
+    PreComputedControlSignalsSimulator,
+    NonLinearSimulator,
+)
 from .analytical_simulator import AnalyticalSimulator
 from .mp_simulator import MPSimulator
+from .numpy_simulator import NumpySimulator
 from .utilities import extended_simulation_result
 from .wrapper import get_simulator, SimulatorType
 
+from ..simulation_event import SimulationEvent, TimeEvent, OutOfBounds
 
 _valid_simulators = Union[
     FullSimulator, PreComputedControlSignalsSimulator, AnalyticalSimulator, MPSimulator

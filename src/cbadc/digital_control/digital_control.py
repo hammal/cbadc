@@ -1,7 +1,8 @@
 """The default digital control."""
 import numpy as np
-from ..analog_signal import StepResponse, _valid_clock_types, Clock
-from ..analog_signal.impulse_responses import _ImpulseResponse
+from cbadc.analog_signal import StepResponse, _valid_clock_types, Clock
+from cbadc.analog_signal.impulse_responses import _ImpulseResponse
+from cbadc.simulation_event import TimeEvent
 
 
 class DigitalControl:
@@ -67,7 +68,7 @@ class DigitalControl:
         self._s = np.zeros(self.M, dtype=np.int8)
         self._s[:] = False
         self._impulse_response = [impulse_response for _ in range(self.M)]
-        self._control_descisions = np.zeros(self.M, dtype=np.double)
+        self._control_decisions = np.zeros(self.M, dtype=np.double)
         # initialize dac values
         self.control_update(self._t_next, np.zeros(self.M))
 
@@ -96,16 +97,44 @@ class DigitalControl:
         s_tilde : `array_like`, shape=(M_tilde,)
             state vector evaluated at time t
         """
+        # print(f"check closeness ({t}, {self._t_next})")
         # Check if time t has passed the next control update
-        if np.allclose(t, self._t_next, atol=self.clock._tt_2):
+        if np.allclose(t, self._t_next, atol=self.clock._tt_2) or t > self._t_next:
+            # print("close")
             # if so update the control signal state
             # print(f"digital_control set for {t} and {s_tilde}")
             self._s = s_tilde >= 0
             self._t_last_update[:] = t
-            self._t_next += self.clock.T
+            self._t_next = self._t_next + self.clock.T
             # DAC
-            self._control_descisions = np.asarray(2 * self._s - 1, dtype=np.double)
+            self._control_decisions = np.asarray(2 * self._s - 1, dtype=np.double)
         # return self._dac_values * self._impulse_response(t - self._t_next + self.T)
+
+    def event_list(self):
+        """
+        Return the event list of the digital control.
+
+        Returns
+        -------
+        : [(t, x)->r]
+            the list of event functions.
+        """
+
+        # The next control update
+        control_update = TimeEvent(self._t_next, name='control_update', terminal=True)
+
+        event_list = [control_update]
+
+        # The start of delayed impulse responses
+        for m in range(self.M):
+            response = TimeEvent(
+                self._t_last_update[m] - self._impulse_response[m].t0,
+                name=f"impulse_response_{m}",
+                terminal=False,
+            )
+            event_list.append(response)
+
+        return event_list
 
     def control_signal(self) -> np.ndarray:
         """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
@@ -148,7 +177,7 @@ class DigitalControl:
         impulse_response = np.zeros(self.M)
         for m in range(self.M):
             impulse_response[m] = self._impulse_response[m](t - self._t_last_update[m])
-        return self._control_descisions * impulse_response
+        return self._control_decisions * impulse_response
 
     def impulse_response(self, m: int, t: float) -> np.ndarray:
         """The impulse response of the corresponding DAC waveform

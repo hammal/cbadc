@@ -94,7 +94,7 @@ class ConservativeControl(DigitalControl):
             self._t_last_update[:] = t
             self._t_next += self.clock.T
             # DAC
-            self._control_descisions = np.asarray(2 * self._s - 1, dtype=np.double)
+            self._control_decisions = np.asarray(2 * self._s - 1, dtype=np.double)
 
     def __str__(self):
         return f"""{super().__str__()}

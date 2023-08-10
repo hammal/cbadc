@@ -1,0 +1,1 @@
+$PYTHON -m pip install -r requirements.txt     # Python command to install the script.

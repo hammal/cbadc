@@ -1,0 +1,30 @@
+{% extends 'verilog_ams/module.vams.j2' %}
+
+{% block inputs %}
+{% for input in inputs %}
+    input {{ input }};
+{% endfor %}
+
+    integer fp;
+{% endblock inputs %}
+
+{% block outputs %}{% endblock outputs %}
+
+{% block electricals %}{% endblock electricals %}
+
+{% block analog_initial %}{% endblock analog_initial %}
+
+{% block analog_command %}
+        @(initial_step) begin
+            fp=$fopen("{{ filename }}","w");
+            $fwrite(fp,"{{ csv_header }}\n");
+        end
+
+        @(final_step) begin
+            $fclose(fp);
+        end
+
+        @(cross(V({{ inputs[0] }}) - {{ trigger_offset }}, {{ edge_direction }})) begin
+            $fstrobe(fp, "{% for _ in inputs[1:] %}%f{% if loop.last %}{% else %},{% endif %}{% endfor %}", {% for input in inputs[1:] %}V({{ input }}){% if loop.last %}{% else %}, {% endif %}{% endfor %});
+        end
+{% endblock analog_command %}

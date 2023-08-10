@@ -2,7 +2,7 @@ import cbadc
 import numpy as np
 from tests.fixture.chain_of_integrators import chain_of_integrators
 import pytest
-import cbadc.simulator.numerical_simulator
+import cbadc.simulator.numerical_simulator as numerical_simulator
 
 beta = 6250.0
 rho = -62.5
@@ -124,3 +124,37 @@ def test_Ts_multiple_of_T(chain_of_integrators):
     cbadc.simulator.FullSimulator(
         chain_of_integrators["system"], digitalControl, analogSignals, sim_clock
     )
+
+
+def test_noise_simulation_FullSimulator(chain_of_integrators):
+    analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
+    clock = cbadc.analog_signal.Clock(Ts)
+    digitalControl = cbadc.digital_control.DigitalControl(clock, M)
+    thermal_noise_covariance_matrix = 1e-5 * np.eye(N)
+    noise_simulator = cbadc.simulator.FullSimulator(
+        chain_of_integrators["system"],
+        digitalControl,
+        analogSignals,
+        cov_x=thermal_noise_covariance_matrix,
+    )
+
+    size = 1 << 8
+    for time_step in cbadc.utilities.show_status(range(size)):
+        next(noise_simulator)
+
+
+def test_noise_simulation_PreComputedSimulator(chain_of_integrators):
+    analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
+    clock = cbadc.analog_signal.Clock(Ts)
+    digitalControl = cbadc.digital_control.DigitalControl(clock, M)
+    thermal_noise_covariance_matrix = 1e-5 * np.eye(N)
+    noise_simulator = cbadc.simulator.PreComputedControlSignalsSimulator(
+        chain_of_integrators["system"],
+        digitalControl,
+        analogSignals,
+        cov_x=thermal_noise_covariance_matrix,
+    )
+
+    size = 1 << 8
+    for time_step in cbadc.utilities.show_status(range(size)):
+        next(noise_simulator)

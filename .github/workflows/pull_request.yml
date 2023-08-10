@@ -1,107 +1,20 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# You can also reference a tag or branch, but the action may change without warning.
 
-name: performance validation, compiling tutorials, and benchmarking
+name: Unittest and Performance test
 
-on: [pull_request]
+on:
+  pull_request:
+    branches: ["develop", "master"]
 
 jobs:
-  # check_lint:
-  #   name: "Check if PEP8"
-  #   runs-on: [self-hosted]
-  #   steps:
-  #     - name: Checkout github repo
-  #       uses: actions/checkout@v2
-
-  #     - name: Linting
-  #       run: python3.8 -m tox -e linters
-
-  # doc_and_unit_tests:
-  #   strategy:
-  #     matrix:
-  #       python-version: ["py38", "py39", "py310"]
-  #   runs-on: [self-hosted]
-  #   needs: check_lint
-  #   steps:
-  #     - name: Checkout github repo
-  #       uses: actions/checkout@v2
-
-  #     - name: Run doctests
-  #       run: python3.8 -m tox -e doc-test
-
-  #     - name: Run unittests
-  #       run: python3.8 -m tox -e ${{ matrix.python-version }}
-
-  #     - name: Upload Unit Test Results
-  #       if: always()
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: Unit Test Results (Python ${{ matrix.python-version }})
-  #         path: pytest-unittests.xml
-
-  #     - name: Upload Doc Test Results
-  #       if: always()
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: Unit Test Results (Python ${{ matrix.python-version }})
-  #         path: pytest-doctests.xml
-
-  performance_validation:
-    timeout-minutes: 3000
-    runs-on: [self-hosted]
-    # needs: doc_and_unit_tests
-    steps:
-      - name: Checkout github repo
-        uses: actions/checkout@v2
-
-      - name: Full performance validation
-        run: tox -e full-test
-
-  tutorials:
-    timeout-minutes: 3000
-    runs-on: [self-hosted]
-    strategy:
-      matrix:
-        tutorial:
-          [
-            "a_getting_started/plot_b_simulate_a_control_bounded_adc.py",
-            "a_getting_started/plot_c_digital_estimator.py",
-            "a_getting_started/plot_d_transfer_function.py",
-            "b_high_level_simulation/plot_a_compare_estimator.py",
-            "b_high_level_simulation/plot_b_FIR_Filtering.py",
-            "b_high_level_simulation/plot_d_fixed_point_aritmetics.py",
-            "b_high_level_simulation/plot_e_switched_capacitor_digital_control.py",
-            "b_high_level_simulation/plot_f_designing_a_leap_frog_to_specifications.py",
-            "c_circuit_level/plot_a_analog_system.py",
-            "c_circuit_level/plot_b_analog_frontend.py",
-            "c_circuit_level/plot_c_testbench.py",
-            "d_further/plot_a_Murmann_ADC_survey.py",
-            "d_further/plot_z_artsy_sine.py",
-          ]
-    # needs: doc_and_unit_tests
-    steps:
-      - name: Checkout github repo
-        uses: actions/checkout@v2
-
-      - name: Execute tutorial
-        run: python3.10 -m pip install . ; python3.10 docs/code_examples/${{ matrix.tutorial }}
-
-  benchmarks:
-    timeout-minutes: 3000
-    runs-on: [self-hosted]
-    # needs: doc_and_unit_tests
-    steps:
-      - name: Checkout github repo
-        uses: actions/checkout@v2
-
-      - name: Benchmarking
-        run: tox -e benchmark
-
-  # docs:
-  #   runs-on: ubuntu-latest
-  #  # needs: doc_and_unit_tests
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - uses: ammaraskar/sphinx-action@master
-  #       with:
-  #         docs-folder: "docs/"
+  linting:
+    uses: ./.github/workflows/linting.yml
+  unittest:
+    needs: linting
+    uses: ./.github/workflows/unittest.yml
+  # performance_validation:
+  #   needs: unittest
+  #   uses: ./.github/workflows/performance_validation_light.yml
+  # circuit_test:
+  #   needs: unittest
+  #   uses: ./.github/workflows/circuit_test.yml

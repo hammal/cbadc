@@ -1,0 +1,24 @@
+{% extends 'verilog_ams/module.vams.j2' %}
+
+{% block inputs %}
+{% for input in inputs %}
+    input {{ input.name }};
+{% endfor %}
+
+{% endblock inputs %}
+
+{% block outputs %}
+    output out;
+
+{% endblock outputs %}
+
+{% block electricals %}
+    electrical{% for input in inputs %} {{ input.name }}{% endfor %} out vgnd;
+
+{% endblock electricals %}
+
+{% block analog_initial %}{% endblock analog_initial %}
+
+{% block analog_command %}
+        V(out) <+ {{ out_gain }}*({% for input in inputs %}{% if input.active %}{{ input.sign }}{{ input.magnitude }}*(V({{ input.name }},vgnd){% if input.offset.active %} {{ input.offset.sign }}{{ input.offset.magnitude }}{% endif %}){% endif %}{% endfor %}) + {{ out_offset}};
+{% endblock analog_command %}

@@ -10,7 +10,6 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-from sphinx_gallery.sorting import FileNameSortKey
 import os
 import sys
 import warnings
@@ -29,8 +28,8 @@ print(f"system path: {sys.path}")
 
 # -- Project information -----------------------------------------------------
 
-project = "Control-Bounded A/D Conversion Toolbox"
-copyright = "2021, Hampus Malmberg"
+project = "cbadc"
+copyright = "2023, Hampus Malmberg"
 author = "Hampus Malmberg"
 
 # The full version, including alpha/beta/rc tags
@@ -51,7 +50,17 @@ extensions = [
     "nbsphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
-    "sphinx_gallery.gen_gallery",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.doctest",
+    "sphinx.ext.todo",
+    "sphinx.ext.coverage",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.inheritance_diagram",
+    "sphinx.ext.graphviz",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.extlinks",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -82,31 +91,6 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
 }
 
-
-# Sphinx-gallery
-sphinx_gallery_conf = {
-    # path to your example scripts
-    "examples_dirs": ["../code_examples", "../datasets"],
-    # path to where to save gallery generated output
-    "gallery_dirs": ["tutorials", "datasets"],
-    "compress_images": ("images", "thumbnails", "-o7"),
-    # directory where function/class granular galleries are stored
-    "backreferences_dir": "backreferences",
-    # Modules for which function/class level galleries are created. In
-    # this case sphinx_gallery and numpy in a tuple of strings.
-    "doc_module": (
-        "cbadc.analog_system",
-        "cbadc.analog_signal",
-        "cbadc.digital_control",
-        "cbadc.digital_estimator",
-        "cbadc.simulator",
-        "cbadc.utilities",
-        "cbadc.datasets",
-    ),
-    "line_numbers": False,
-    "remove_config_comments": True,
-    "within_subsection_order": FileNameSortKey,
-}
 
 # generate autosummary even if no references
 autosummary_generate = True

@@ -1,0 +1,81 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: performance validation full
+
+on: workflow_call
+
+jobs:
+  test_fir_filter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: update pip
+        run: |
+          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
+      - name: Install cbadc dependencies
+        run: |
+          pip install -r requirements.txt;
+          pip install .
+      - name: Run fir filter test
+        run: |
+          pytest tests/performance_validation/digital_estimator_FIR_filter_fixed_point_test.py
+      # - name: Run implementation test
+      #   run: |
+      #     pytest tests/performance_validation/digital_estimator_filter_coefficients_numpy.py
+  test_simulators:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: update pip
+        run: |
+          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
+      - name: Install cbadc dependencies
+        run: |
+          pip install -r requirements.txt;
+          pip install .
+      - name: run simulators test
+        run: |
+          pytest tests/performance_validation/simulator_test.py
+  full_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: update pip
+        run: |
+          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
+      - name: Install cbadc dependencies
+        run: |
+          pip install -r requirements.txt;
+          pip install .
+      - name: run simulators test
+        run: |
+          pytest tests/performance_validation/full_test.py
+  full_test_switch_cap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: update pip
+        run: |
+          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
+      - name: Install cbadc dependencies
+        run: |
+          pip install -r requirements.txt;
+          pip install .
+      - name: run simulators test
+        run: |
+          pytest tests/performance_validation/full_test_switch_cap.py
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: update pip
+        run: |
+          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
+      - name: Install cbadc dependencies
+        run: |
+          pip install -r requirements.txt;
+          pip install .
+      - name: run simulators test
+        run: |
+          pytest benchmark

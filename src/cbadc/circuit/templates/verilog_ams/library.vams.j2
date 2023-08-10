@@ -1,0 +1,5 @@
+{% include 'preamble.txt.j2' %}
+{% for model in models %}
+
+{{ model.get_verilog_ams() }}
+{% endfor %}

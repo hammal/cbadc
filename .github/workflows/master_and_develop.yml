@@ -1,0 +1,23 @@
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: General Tests for master and develop
+
+on:
+    push:
+      branches: ["develop"]
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  linting:
+    uses: ./.github/workflows/linting.yml
+  unittest:
+    needs: linting
+    uses: ./.github/workflows/unittest.yml
+  performance_validation:
+    needs: unittest
+    uses: ./.github/workflows/performance_validation.yml
+  # circuit_test:
+  #   needs: unittest
+  #   uses: ./.github/workflows/circuit_test.yml

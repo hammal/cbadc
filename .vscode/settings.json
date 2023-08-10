@@ -5,7 +5,7 @@
   "python.linting.flake8Args": ["--config=tox.ini"],
   "python.testing.unittestArgs": ["-v", "-s", "./tests", "-p", "*test.py"],
   "python.linting.pylintEnabled": false,
-  "python.linting.enabled": false,
+  "python.linting.enabled": true,
   "cSpell.words": [
     "arange",
     "cbadc",
@@ -16,5 +16,9 @@
     "ylabel",
     "ylim"
   ],
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "none",
+  "python.linting.banditEnabled": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }

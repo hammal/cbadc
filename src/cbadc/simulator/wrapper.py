@@ -33,6 +33,7 @@ def get_simulator(
     atol: float = 1e-9,
     rtol: float = 1e-6,
     simulator_type: SimulatorType = SimulatorType.pre_computed_numerical,
+    **kwargs
 ):
     if SimulatorType.full_numerical == simulator_type:
         logger.info("FullSimulator used for simulation.")
@@ -45,6 +46,7 @@ def get_simulator(
             initial_state_vector,
             atol,
             rtol,
+            **kwargs,
         )
     if SimulatorType.pre_computed_numerical == simulator_type:
         logger.info("PreComputedControlSignalSimulator used for simulation.")
@@ -57,6 +59,7 @@ def get_simulator(
             initial_state_vector,
             atol,
             rtol,
+            **kwargs,
         )
     if SimulatorType.analytical == simulator_type:
         logger.info("AnalyticalSimulator used for simulation.")
@@ -67,6 +70,7 @@ def get_simulator(
             clock,
             t_stop,
             initial_state_vector,
+            **kwargs,
         )
     if SimulatorType.mpmath == simulator_type:
         logger.info("MPSimulator used for simulation.")
@@ -78,5 +82,6 @@ def get_simulator(
             t_stop,
             initial_state_vector,
             tol=min(atol, rtol),
+            **kwargs,
         )
     raise NotImplementedError

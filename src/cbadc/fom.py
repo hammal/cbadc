@@ -147,7 +147,7 @@ def FoM_W(P, fs, ENOB):
     The Walden figure of merit.
 
     """
-    return P / (fs * 2 ** ENOB)
+    return P / (fs * 2**ENOB)
 
 
 def FoM_S(P, fs, SNR):
@@ -449,7 +449,7 @@ class MurmannSurvey:
 
     def _FoMW_SNDR_to_p_fs(self, FoMW, SNDR):
         ENOB = snr_to_enob(SNDR)
-        return FoMW * 2 ** ENOB
+        return FoMW * 2**ENOB
 
     def _FoMS_SNDR_to_p_fs(self, FoMS, SNDR):
         return (10 ** (-(FoMS - SNDR) / 10.0)) / 2.0
