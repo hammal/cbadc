@@ -12,6 +12,8 @@ import os
 
 
 class ReferenceSource(CircuitElement):
+    _input_filename: str
+
     def __init__(
         self,
         instance_name: str,
@@ -23,13 +25,13 @@ class ReferenceSource(CircuitElement):
         ternary: bool = True,
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'A':
-            instance_name = 'A' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "A":
+            instance_name = "A" + instance_name
 
         super().__init__(
             instance_name,
-            [Terminal(f'S_{i}') for i in range(number_of_sources)],
+            [Terminal(f"S_{i}") for i in range(number_of_sources)],
         )
         self.model = ReferenceSourceModel(
             model_name,
@@ -42,21 +44,21 @@ class ReferenceSource(CircuitElement):
 
         def ternary_mapper(x):
             if x == 0:
-                return 'Us'
+                return "Us"
             elif x == 1:
-                return '0s'
+                return "0s"
             elif x == 2:
-                return '1s'
+                return "1s"
             else:
-                raise ValueError(f'x = {x}')
+                raise ValueError(f"x = {x}")
 
         def binary_mapper(x):
             if x == 0:
-                return '0s'
+                return "0s"
             elif x == 1:
-                return '1s'
+                return "1s"
             else:
-                raise ValueError(f'x = {x}')
+                raise ValueError(f"x = {x}")
 
         if ternary:
             random_signals = np.array(
@@ -78,22 +80,24 @@ class ReferenceSource(CircuitElement):
             ).reshape((t.size, number_of_sources))
         data = np.hstack((t, random_signals))
 
-        if not os.path.isfile(input_filename):
-            with open(input_filename, 'w') as f:
+        self._input_filename = input_filename
+
+        if not os.path.isfile(self._input_filename):
+            with open(self._input_filename, "w") as f:
                 f.write(
-                    '\n'.join([f"{' '.join([value for value in row])}" for row in data])
+                    "\n".join([f"{' '.join([value for value in row])}" for row in data])
                 )
         else:
-            print(f"{input_filename} already exists and has not been replaced.")
+            print(f"{self._input_filename} already exists and has not been replaced.")
 
     def get_ngspice(self, connections: Dict[Terminal, Port]) -> str:
-        return _template_env.get_template('ngspice/xspice.cir.j2').render(
+        return _template_env.get_template("ngspice/xspice.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._reference_source_get_terminal_names(connections),
-                'parameters': self._parameters_dict,
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._reference_source_get_terminal_names(connections),
+                "parameters": self._parameters_dict,
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
@@ -105,3 +109,8 @@ class ReferenceSource(CircuitElement):
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
         raise NotImplementedError()
+
+    def __del__(self):
+        if os.path.isfile(self._input_filename):
+            os.remove(self._input_filename)
+        # super().__del__()
