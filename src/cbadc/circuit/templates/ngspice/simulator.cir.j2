@@ -15,7 +15,10 @@
 .tran {{ transient_analysis['step'] }} {{ transient_analysis['stop_time'] }} {{ transient_analysis['start_time'] }} {{ transient_analysis['max_step'] }} UIC
 * .control
 * run
-* plot{% for state_tuple in state_variables %} v({{ state_tuple[0] }}, {{ state_tuple[1] }}){% endfor %} 
+* plot the differential state trajectories
+* plot{% for state_tuple in state_variables[::-1] %} v({{ state_tuple[0] }}, {{ state_tuple[1] }}){% endfor %}
+* plot the single ended state trajectories
+* plot{% for state_tuple in state_variables[::-1] %} v({{ state_tuple[0] }}){% endfor %} 
 * .endc
 
 {% for key, value in options.items() %}
