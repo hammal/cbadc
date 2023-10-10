@@ -401,7 +401,7 @@ class DitherControl(SubCircuitElement):
             'Ars',
             'r_source',
             digital_control.number_of_random_control,
-            'dither_sequence.txt',
+            f'dither_sequence_{hash(self)}.txt',
             number_of_samples=1 << 22,
             time_step=digital_control.clock.T,
             ternary=False,
