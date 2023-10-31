@@ -3,8 +3,6 @@ from typing import List, Union
 import numpy as np
 from copy import copy
 from . import DigitalControl
-from .conservative_control import ConservativeControl
-from .switch_capacitor_control import SwitchedCapacitorControl
 from cbadc.analog_signal.impulse_responses import StepResponse
 from ..analog_signal.impulse_responses import _ImpulseResponse
 
@@ -32,11 +30,7 @@ class DitherControl(DigitalControl):
     def __init__(
         self,
         number_of_random_controls: int,
-        digital_control: Union[
-            DigitalControl,
-            ConservativeControl,
-            SwitchedCapacitorControl,
-        ],
+        digital_control: DigitalControl,
         impulse_response: List[_ImpulseResponse] = None,
         dithering=True,
         random_sequence_length=1 << 22,
