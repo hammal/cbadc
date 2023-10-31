@@ -31,7 +31,7 @@ Install [cbadc](https://pypi.org/project/cbadc/) by typing
 pip install cbadc
 ```
 
-into your console. Note that, currently cbadc is only supported for Python3.8 and later.
+into your console. Note that, currently cbadc is only supported for Python3.9 and later.
 
 ## Develop Version
 
