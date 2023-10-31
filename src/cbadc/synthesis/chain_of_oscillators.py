@@ -3,7 +3,6 @@ from cbadc.analog_frontend import AnalogFrontend
 from cbadc.analog_system import AnalogSystem
 from cbadc.synthesis.leap_frog import g_i, get_leap_frog
 from cbadc.digital_control.digital_control import DigitalControl, Clock
-from cbadc.digital_control import ModulatorControl
 from cbadc.analog_signal import StepResponse
 from cbadc.analog_system.topology import stack
 from cbadc.fom import enob_to_snr, snr_from_dB, snr_to_enob
@@ -33,10 +32,6 @@ def _analog_system_factory(N, beta, rho, kappa, gamma, omega_p):
     return AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
 
-def _rotation_matrix(phi):
-    return np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]])
-
-
 def get_bandpass(**kwargs) -> AnalogFrontend:
     if not all(param in kwargs for param in ("analog_frontend", "fc")):
         raise NotImplementedError
@@ -59,43 +54,32 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
     Gamma = np.zeros((2 * N, 2 * N))
     Gamma_tildeT = np.zeros((2 * N, 2 * N))
 
-    if kwargs.get("modulator", False):
-        logger.info("Using modulator")
-        analog_system.Gamma = np.eye(2 * N) * kappa
-        analog_system.Gamma_tildeT = -np.sign(kappa) * np.eye(2 * N)
-        digital_control = ModulatorControl(
-            Clock(T, tt=1 / fc * 1e-3),
-            2 * digital_control_baseband.M,
-            fc,
-        )
-    else:
-        logger.info("Using non-modulator")
-        kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.cos(phi)
-        bar_kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.sin(phi)
-        tilde_kappa = -1 / (beta * T) * np.cos(omega_c * (T / 2 + delta_DC) - phi)
-        bar_tilde_kappa = -1 / (beta * T) * np.sin(omega_c * (T / 2 + delta_DC) - phi)
-        # gamma_temp = kappa * _rotation_matrix(phi)
-        # gamma_tilde_temp = omega_c / (2 * kappa * np.sin(omega_c * T / 2)) * _rotation_matrix(omega_c * (T / 2 + delta_DC) - phi - np.pi)
-        for i in range(N):
-            # Gamma[2*i:2*i + 2, 2*i: 2 * i + 2] = kappa * _rotation_matrix(phi)
-            Gamma[i, i] = kappa
-            Gamma[i + N, i + N] = kappa
-            Gamma[i, i + N] = -bar_kappa
-            Gamma[i + N, i] = bar_kappa
+    kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.cos(phi)
+    bar_kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.sin(phi)
+    tilde_kappa = -1 / (beta * T) * np.cos(omega_c * (T / 2 + delta_DC) - phi)
+    bar_tilde_kappa = -1 / (beta * T) * np.sin(omega_c * (T / 2 + delta_DC) - phi)
+    # gamma_temp = kappa * _rotation_matrix(phi)
+    # gamma_tilde_temp = omega_c / (2 * kappa * np.sin(omega_c * T / 2)) * _rotation_matrix(omega_c * (T / 2 + delta_DC) - phi - np.pi)
+    for i in range(N):
+        # Gamma[2*i:2*i + 2, 2*i: 2 * i + 2] = kappa * _rotation_matrix(phi)
+        Gamma[i, i] = kappa
+        Gamma[i + N, i + N] = kappa
+        Gamma[i, i + N] = -bar_kappa
+        Gamma[i + N, i] = bar_kappa
 
-            Gamma_tildeT[i, i] = tilde_kappa
-            Gamma_tildeT[i + N, i + N] = tilde_kappa
-            Gamma_tildeT[i, i + N] = -bar_tilde_kappa
-            Gamma_tildeT[i + N, i] = bar_tilde_kappa
-        #     # Gamma_tildeT[2*i:2*i + 2, 2*i: 2 * i + 2] = omega_p / (2 * kappa * np.sin(omega_p * T / 2)) * _rotation_matrix(omega_p * T / 2 - phi - np.pi)
-        #     # Gamma_tildeT[2*i:2*i + 2, 2*i: 2 * i + 2] = _rotation_matrix(omega_p * T)
-        analog_system.Gamma = Gamma
-        analog_system.Gamma_tildeT = Gamma_tildeT
+        Gamma_tildeT[i, i] = tilde_kappa
+        Gamma_tildeT[i + N, i + N] = tilde_kappa
+        Gamma_tildeT[i, i + N] = -bar_tilde_kappa
+        Gamma_tildeT[i + N, i] = bar_tilde_kappa
+    #     # Gamma_tildeT[2*i:2*i + 2, 2*i: 2 * i + 2] = omega_p / (2 * kappa * np.sin(omega_p * T / 2)) * _rotation_matrix(omega_p * T / 2 - phi - np.pi)
+    #     # Gamma_tildeT[2*i:2*i + 2, 2*i: 2 * i + 2] = _rotation_matrix(omega_p * T)
+    analog_system.Gamma = Gamma
+    analog_system.Gamma_tildeT = Gamma_tildeT
 
-        digital_control = digital_control = DigitalControl(
-            digital_control_baseband.clock,
-            2 * digital_control_baseband.M,
-        )
+    digital_control = digital_control = DigitalControl(
+        digital_control_baseband.clock,
+        2 * digital_control_baseband.M,
+    )
 
     return AnalogFrontend(
         analog_system=AnalogSystem(
