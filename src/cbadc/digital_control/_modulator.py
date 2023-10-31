@@ -44,15 +44,6 @@ class ModulatorControl(DigitalControl):
     See also
     ---------
     :py:class:`cbadc.simulator.Simulator`
-
-    Examples
-    --------
-    >>> from cbadc.digital_control import DigitalControl
-    >>> from cbadc.analog_signal import Clock
-    >>> T = 1e-6
-    >>> clock = Clock(T)
-    >>> M = 4
-    >>> dc = DigitalControl(clock, M)
     """
 
     def __init__(
@@ -198,19 +189,6 @@ class ModulatorControl(DigitalControl):
 
     def control_signal(self) -> np.ndarray:
         """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
-
-        Examples
-        --------
-        >>> from cbadc.digital_control import DigitalControl
-        >>> from cbadc.analog_signal import Clock
-        >>> import numpy as np
-        >>> T = 1e-6
-        >>> M = 4
-        >>> dc = DigitalControl(Clock(T), M)
-        >>> _ = dc.control_contribution(T)
-        >>> dc.control_signal()
-        array([ True,  True,  True,  True])
-
 
         Returns
         -------

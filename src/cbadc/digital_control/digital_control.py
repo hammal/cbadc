@@ -64,7 +64,7 @@ class DigitalControl:
         self.clock = clock
         self.M = M
         self.M_tilde = M
-        self._s = np.zeros(self.M, dtype=np.int8)
+        self._s = np.zeros(self.M, dtype=float)
         self._s[:] = False
         self._initialize_impulse_response(clock, impulse_response)
         self._control_decisions = np.zeros(self.M, dtype=np.double)
@@ -162,7 +162,7 @@ class DigitalControl:
         >>> dc = DigitalControl(Clock(T), M)
         >>> _ = dc.control_contribution(T)
         >>> dc.control_signal()
-        array([ True,  True,  True,  True])
+        array([0., 0., 0., 0.])
 
 
         Returns

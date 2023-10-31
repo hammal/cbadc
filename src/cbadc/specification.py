@@ -45,18 +45,18 @@ def get_chain_of_integrator(**kwargs):
         returns an analog system and digital control tuple
     """
 
-    if all(param in kwargs for param in ('ENOB', 'N', 'BW')):
-        SNR = enob_to_snr(kwargs['ENOB'])
+    if all(param in kwargs for param in ("ENOB", "N", "BW")):
+        SNR = enob_to_snr(kwargs["ENOB"])
         snr = snr_from_dB(SNR)
-        N = kwargs['N']
-        omega_3dB = 2.0 * np.pi * kwargs['BW']
+        N = kwargs["N"]
+        omega_3dB = 2.0 * np.pi * kwargs["BW"]
         # xi = 1e-1 / (np.pi * (2 * N * 0 + 1))
         xi = 5e-3 / np.pi
-        if 'xi' in kwargs:
-            xi = kwargs['xi']
+        if "xi" in kwargs:
+            xi = kwargs["xi"]
         gamma = (xi * snr) ** (1.0 / (2.0 * N))
         beta = -gamma * omega_3dB
-        if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
+        if "local_feedback" in kwargs and kwargs["local_feedback"] is True:
             rho = -omega_3dB / gamma
         else:
             rho = 0
@@ -67,23 +67,13 @@ def get_chain_of_integrator(**kwargs):
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
         t0 = 0.0
-        if 'excess_delay' in kwargs:
-            t0 = kwargs['excess_delay'] * T
-        if kwargs.get('digital_control') == 'switch_cap':
-            scale = 5e1
-            tau = 1.0 / (np.abs(beta) * scale)
-            v_cap = 0.5
-            kappa = v_cap * beta * scale
-            impulse_response = RCImpulseResponse(tau, t0)
+        if "excess_delay" in kwargs:
+            t0 = kwargs["excess_delay"] * T
+            impulse_response = [StepResponse(t0) for _ in range(N)]
             digital_control = DigitalControl(
                 Clock(T), N, impulse_response=impulse_response
             )
-            # print(impulse_response.evaluate(T))
         else:
-            impulse_response = StepResponse(t0)
-            digital_control = DigitalControl(
-                Clock(T), N, impulse_response=impulse_response
-            )
             digital_control = DigitalControl(Clock(T), N)
 
         analog_system = ChainOfIntegrators(
@@ -146,39 +136,30 @@ def get_leap_frog(**kwargs):
         returns an analog system and digital control tuple
     """
 
-    if all(param in kwargs for param in ('ENOB', 'N', 'BW')):
-        SNR = enob_to_snr(kwargs['ENOB'])
+    if all(param in kwargs for param in ("ENOB", "N", "BW")):
+        SNR = enob_to_snr(kwargs["ENOB"])
         snr = snr_from_dB(SNR)
-        N = kwargs['N']
-        omega_BW = 2.0 * np.pi * kwargs['BW']
+        N = kwargs["N"]
+        omega_BW = 2.0 * np.pi * kwargs["BW"]
         xi = 7e-2 / np.pi
-        if 'xi' in kwargs:
-            xi = kwargs['xi']
+        if "xi" in kwargs:
+            xi = kwargs["xi"]
         gamma = (xi * snr) ** (1.0 / (2.0 * N))
         beta = -(omega_BW / 2.0) * gamma
         alpha = (omega_BW / 2.0) / gamma
         rho = 0
-        if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
+        if "local_feedback" in kwargs and kwargs["local_feedback"] is True:
             rho = -(omega_BW / 2.0) / gamma * 1e-2 * 0
         T = 1.0 / np.abs(2.0 * beta)
         kappa = beta
         t0 = 0.0
-        if 'excess_delay' in kwargs:
-            t0 = kwargs['excess_delay'] * T
-        if kwargs.get('digital_control') == 'switch-cap':
-            scale = 5e1
-            tau = 1.0 / (np.abs(beta) * scale)
-            v_cap = 0.5
-            kappa = v_cap * beta * scale
-            impulse_response = RCImpulseResponse(tau, t0)
+        if "excess_delay" in kwargs:
+            t0 = kwargs["excess_delay"] * T
+            impulse_response = [StepResponse(t0) for _ in range(N)]
             digital_control = DigitalControl(
                 Clock(T), N, impulse_response=impulse_response
             )
         else:
-            impulse_response = StepResponse(t0)
-            digital_control = DigitalControl(
-                Clock(T), N, impulse_response=impulse_response
-            )
             digital_control = DigitalControl(Clock(T), N)
 
         analog_system = LeapFrog(
