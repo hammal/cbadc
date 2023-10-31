@@ -22,7 +22,7 @@
 * .endc
 
 {% for key, value in options.items() %}
-.option {{ key }}{% if value %}={{ value }}{% endif %} 
+.options {{ key }}{% if value %}={{ value }}{% endif %} 
 {% endfor %}
 
 .save V(CLK){% for var in save_variables %} V({{ var }}){% endfor %}

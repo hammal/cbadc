@@ -1,9 +1,9 @@
-from .digital_control import (
+from cbadc.digital_control.digital_control import (
     DigitalControl,
     _ImpulseResponse,
-    StepResponse,
     _valid_clock_types,
 )
+from cbadc.analog_signal import StepResponse
 from typing import List
 import numpy as np
 
@@ -46,8 +46,7 @@ class MultiLevelDigitalControl(DigitalControl):
         clock: _valid_clock_types,
         M: int,
         number_of_levels: List[int],
-        t0: float = 0.0,
-        impulse_response: _ImpulseResponse = StepResponse(),
+        impulse_response: List[_ImpulseResponse] = None,
         offsets: List[float] = [],
     ):
         self.number_of_levels = number_of_levels
@@ -69,9 +68,8 @@ class MultiLevelDigitalControl(DigitalControl):
                 np.linspace(-1 + smallest_step, 1 - smallest_step, number_of_levels[m])
             )
             self._references.append(np.linspace(0, 1, number_of_levels[m] + 1))
-        super().__init__(clock, M, t0, impulse_response)
+        super().__init__(clock, M, impulse_response)
         self._s = np.zeros(self.M, dtype=np.double)
-        self.control_update(self._t_next, np.zeros(self.M))
 
     def control_update(self, t: float, s_tilde: np.ndarray):
         """Updates the control at time t if valid.
@@ -83,18 +81,36 @@ class MultiLevelDigitalControl(DigitalControl):
         s_tilde : `array_like`, shape=(M_tilde,)
             state vector evaluated at time t
         """
-        if np.allclose(t, self._t_next, atol=self.clock._tt_2) or t > self._t_next:
-            for m_tilde in range(self.M_tilde):
-                index_mask = s_tilde[m_tilde] >= self._levels[m_tilde]
-                for level in range(self.number_of_levels[m_tilde]):
-                    if not index_mask[level]:
-                        self._s[m_tilde] = self._references[m_tilde][level]
-                        break
-                    elif level == (self.number_of_levels[m_tilde] - 1):
-                        self._s[m_tilde] = self._references[m_tilde][-1]
+        for m_tilde in range(self.M_tilde):
+            if np.allclose(
+                t, self._impulse_response[m_tilde].t0, atol=self.clock._tt_2
+            ):
+                # quantize
+                self._s[m_tilde] = self.quantize(m_tilde, s_tilde[m_tilde])
+                # update control decisions
+                self._control_decisions[m_tilde] = (
+                    np.asarray(2.0 * self._s[m_tilde] - 1.0, dtype=np.double)
+                    + self.offsets[m_tilde]
+                )
 
-            self._t_last_update[:] = t
-            self._t_next += self.clock.T
-            self._control_decisions = (
-                np.asarray(2.0 * self._s - 1.0, dtype=np.double) + self.offsets
-            )
+    def quantize(self, m_tilde: int, s_tilde_m: np.array):
+        """Quantizes the state vector.
+
+        Parameters
+        ----------
+        m_tilde : `int`
+            index of the control.
+        s_tilde_m : `array_like`, shape=(M_tilde,)
+            state vector evaluated at time t
+
+        Returns
+        -------
+        `int`
+            quantized state vector.
+        """
+        index_mask = s_tilde_m >= self._levels[m_tilde]
+        for level in range(self.number_of_levels[m_tilde]):
+            if not index_mask[level]:
+                return self._references[m_tilde][level]
+            elif level == (self.number_of_levels[m_tilde] - 1):
+                return self._references[m_tilde][-1]

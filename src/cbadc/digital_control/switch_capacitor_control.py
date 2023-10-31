@@ -47,6 +47,7 @@ class SwitchedCapacitorControl(DigitalControl):
     """
 
     def __init__(self, T, T1, T2, M, A, t0=0, VCap=1.0):
+        raise DeprecationWarning("SwitchedCapacitorControl is deprecated.")
         if isinstance(T1, (list, tuple, np.ndarray)):
             self.T1 = np.array(T1, dtype=np.double)
         else:

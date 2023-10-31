@@ -1,4 +1,3 @@
-from cbadc.simulator import get_simulator
 from cbadc.digital_estimator import (
     BatchEstimator,
     ParallelEstimator,
@@ -8,6 +7,7 @@ from cbadc.digital_estimator import (
 from cbadc.analog_signal import ConstantSignal, Clock
 from cbadc.analog_system import AnalogSystem
 from cbadc.digital_control import DigitalControl
+from cbadc.simulator import Simulator
 import pytest
 import numpy as np
 from tests.fixture.chain_of_integrators import chain_of_integrators
@@ -90,14 +90,13 @@ def test_estimation_simulator():
     analogSignals = [ConstantSignal(0.25)]
     clock = Clock(Ts)
     digitalControl = DigitalControl(clock, M)
-    circuitSimulator = get_simulator(
-        analogSystem, digitalControl, analogSignals, clock, t_stop=Ts * (1 << 8)
-    )
+    circuitSimulator = Simulator(analogSystem, digitalControl, analogSignals)
     estimator = BatchEstimator(analogSystem, digitalControl, eta2, K1, K2)
     estimator(circuitSimulator)
-    for est in estimator:
+    for i, est in enumerate(estimator):
         print(est)
-    # raise "Temp"
+        if i > 1 << 8:
+            break
 
 
 def test_ntf():
@@ -127,7 +126,7 @@ def test_stf():
 
 
 @pytest.mark.parametrize(
-    'reconstruction_method',
+    "reconstruction_method",
     [
         pytest.param(BatchEstimator, id="batch_de"),
         pytest.param(ParallelEstimator, id="par-batch-de"),

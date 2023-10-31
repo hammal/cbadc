@@ -1,4 +1,4 @@
-from cbadc.digital_control import MultiLevelDigitalControl
+from cbadc.digital_control.multi_level_digital_control import MultiLevelDigitalControl
 from cbadc.analog_signal import Clock
 import numpy as np
 
@@ -16,7 +16,7 @@ def test_evaluate():
     clock = Clock(Ts)
     digitalControl = MultiLevelDigitalControl(clock, M, [1] * M)
     x = np.random.randn(4)
-    t = 0.1
+    t = 0.0
     digitalControl.control_update(t, x)
     res = digitalControl.control_contribution(t)
     for value in res:
@@ -29,7 +29,7 @@ def test_evaluate_2_levels():
     clock = Clock(Ts)
     digitalControl = MultiLevelDigitalControl(clock, M, [2] * M)
     x = np.array([-1, -0.45, 0.1, 0.55])
-    t = 0.1
+    t = 0.0
     digitalControl.control_update(t, x)
     res = digitalControl.control_contribution(t)
     bits = digitalControl.control_signal()
@@ -44,7 +44,7 @@ def test_evaluate_3_levels():
     clock = Clock(Ts)
     digitalControl = MultiLevelDigitalControl(clock, M, [3] * M)
     x = np.array([-1, -0.45, 0.1, 0.55])
-    t = 0.1
+    t = 0.0
     digitalControl.control_update(t, x)
     res = digitalControl.control_contribution(t)
     print(res)
@@ -63,7 +63,7 @@ def test_evaluate_4_levels():
     clock = Clock(Ts)
     digitalControl = MultiLevelDigitalControl(clock, M, [4] * M)
     x = np.array([-1, -0.45, 0.1, 0.55])
-    t = 0.1
+    t = 0.0
     digitalControl.control_update(t, x)
     res = digitalControl.control_contribution(t)
     print(res)

@@ -66,40 +66,18 @@ class _BaseSimulator(Iterator[np.ndarray]):
         analog_system: analog_system._valid_analog_system_types,
         digital_control: digital_control._valid_digital_control_types,
         input_signal: List[analog_signal._AnalogSignal],
-        clock: analog_signal._valid_clock_types = None,
-        t_stop: float = math.inf,
-        initial_state_vector=None,
-        cov_x: np.ndarray = None,
-        event_list: List[SimulationEvent] = [],
+        initial_state_vector: np.ndarray = None,
+        state_noise_covariance_matrix: np.ndarray = None,
     ):
-        if analog_system.L != len(input_signal):
+        if len(input_signal) > 0 and analog_system.L != len(input_signal):
             raise Exception(
                 """The analog system does not have as many inputs as in input
             list"""
             )
-        # if not np.allclose(analog_system.D, np.zeros_like(analog_system.D)):
-        #     raise Exception(
-        #         """Can't simulate system with non-zero
-        #         D matrix. Consider chaining systems to remove D."""
-        #     )
         self.analog_system = analog_system
         self.digital_control = digital_control
         self.input_signals = input_signal
         self.t: float = 0.0
-        self.t_stop = t_stop
-        if isinstance(clock, analog_signal.Clock):
-            self.clock = clock
-            if self.clock.T != self.digital_control.clock.T:
-                if self.clock.T > self.digital_control.clock.max_step():
-                    logger.critical(
-                        f"Ts={self.clock.T} is larger than the digital control's smallest allowed step. This might lead to missing control updates."
-                    )
-        else:
-            # Default is to delay readout until negative edge of clock
-            logger.info("No clock specified. Deriving one from digital control.")
-            self.clock = analog_signal.clock.delay_clock_by_duty_cycle(
-                self.digital_control.clock
-            )
 
         if initial_state_vector is not None:
             self._state_vector = np.array(initial_state_vector, dtype=np.float64)
@@ -112,48 +90,12 @@ class _BaseSimulator(Iterator[np.ndarray]):
         else:
             self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
         self._res = np.zeros(self.analog_system.N, dtype=np.double)
-        self.noise = False
-        if not (cov_x is None):
-            self.set_covariance_matrix(cov_x)
 
-        self.event_list = event_list
-
-    def set_covariance_matrix(self, cov_x: np.ndarray):
-        """Introduce a i.i.d. white noise process
-        with covariance matrix cov_x
-
-        Parameters
-        ----------
-        cov_x: array_like, shape=(N, N)
-            the covariance matrix
-        """
-        self._compute_noise_covariance(cov_x)
-        self.noise = True
-
-    def _compute_noise_covariance(self, cov_x):
-        noise_covariance_per_unit_time = cov_x / self.digital_control.clock.T
-
-        def derivative(t: float, y: np.ndarray):
-            A_exp = np.asarray(scipy.linalg.expm(np.asarray(self.analog_system.A) * t))
-            return np.dot(
-                A_exp, np.dot(noise_covariance_per_unit_time, A_exp.transpose())
-            ).flatten(order="C")
-
-        sol = scipy.integrate.solve_ivp(
-            derivative,
-            (0, self.digital_control.clock.T),
-            np.zeros(self.analog_system.N**2),
-        )
-        self.covariance_matrix = np.array(sol.y[:, -1]).reshape(
-            (self.analog_system.N, self.analog_system.N), order="C"
-        )
-        self._cholesky_covariance_matrix = np.linalg.cholesky(self.covariance_matrix)
-
-    def _noise_sample(self):
-        return np.dot(
-            self._cholesky_covariance_matrix,
-            np.random.normal(size=(self.analog_system.N)),
-        )
+        if state_noise_covariance_matrix is None:
+            self.noisy = False
+        else:
+            self.noisy = True
+            self._cov_deviation = np.linalg.cholesky(state_noise_covariance_matrix)
 
     def reset(self, t: float = 0.0):
         """reset initial time of simulator and digital control"""
@@ -212,12 +154,6 @@ Digital Control:
 
 Input signals:
 {_input_signals_string}
-
-Clock:
-{self.clock}
-
-t_stop:
-{self.t_stop}
 
 {80 * '-'}
 

@@ -64,6 +64,7 @@ class ModulatorControl(DigitalControl):
         t0: float = 0.0,
         impulse_response: _ImpulseResponse = StepResponse(),
     ):
+        raise DeprecationWarning("ModulatorControl is deprecated.")
         if not isinstance(clock, Clock):
             raise Exception("Clock must derive from cbadc.analog_signal.Clock")
         self.fc = fc
@@ -111,7 +112,7 @@ class ModulatorControl(DigitalControl):
         """
 
         # The next control update
-        control_update = TimeEvent(self._t_next, name='control_update', terminal=True)
+        control_update = TimeEvent(self._t_next, name="control_update", terminal=True)
 
         event_list = [control_update]
 
@@ -121,7 +122,7 @@ class ModulatorControl(DigitalControl):
                 event_list.append(
                     TimeEvent(
                         index / self.fc / 2 + self._t_last_update[0],
-                        name='modulation_frequency_tick',
+                        name="modulation_frequency_tick",
                         terminal=False,
                     )
                 )

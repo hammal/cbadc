@@ -262,14 +262,14 @@ class AnalogSystem:
                 self, "A_tilde matrix has wrong dimensions. Should be M_tilde x L"
             )
 
-        self.t = sp.Symbol('t', real=True)
+        self.t = sp.Symbol("t", real=True)
         # self.x = [sp.Function(f'x_{i+1}')(self.t) for i in range(self.N)]
-        self.omega = sp.Symbol('omega')
+        self.omega = sp.Symbol("omega")
         self._atf_lambda = None
         self._ctf_lambda = None
 
     def _symbolic_x(self, n: int):
-        return sp.Function(f'x_{n}')(self.t)
+        return sp.Function(f"x_{n}")(self.t)
 
     def derivative(
         self, x: np.ndarray, t: float, u: np.ndarray, s: np.ndarray
@@ -505,7 +505,7 @@ class AnalogSystem:
     def transfer_function_matrix(
         self,
         omega: np.ndarray,
-        symbolic: bool = True,
+        symbolic: bool = False,
         general=False,
     ) -> np.ndarray:
         """Evaluate the analog signal transfer function at the angular
@@ -593,7 +593,7 @@ class AnalogSystem:
         )
 
     def __str__(self):
-        np.set_printoptions(formatter={'float': '{: 0.2e}'.format})
+        np.set_printoptions(formatter={"float": "{: 0.2e}".format})
         return f"The analog system is parameterized as:\nA =\n{np.array(self.A)},\nB =\n{np.array(self.B)},\nCT = \n{np.array(self.CT)},\nGamma =\n{np.array(self.Gamma)},\nGamma_tildeT =\n{np.array(self.Gamma_tildeT)},\nD=\n{self.D},\nA_tilde=\n{self.A_tilde},\nand B_tilde=\n{self.B_tilde}\n"
 
 

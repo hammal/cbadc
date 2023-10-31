@@ -7,21 +7,17 @@ import logging
 import matplotlib.pyplot as plt
 from .digital_estimator import AdaptiveFilter
 
-from .simulator.analytical_simulator import AnalyticalSimulator
 from .simulator.numerical_simulator import (
     FullSimulator,
     PreComputedControlSignalsSimulator,
 )
-from .simulator.mp_simulator import MPSimulator
 from .simulator.numpy_simulator import NumpySimulator
 from .utilities import show_status
 
 logger = logging.getLogger(__name__)
 
 Simulators = Union[
-    AnalyticalSimulator,
     FullSimulator,
-    MPSimulator,
     PreComputedControlSignalsSimulator,
     NumpySimulator,
 ]
@@ -58,7 +54,7 @@ class Calibration:
         step_size: Callable[[int], float],
         batch_size: int,
         stochastic_delay=0,
-        method='sgd',
+        method="sgd",
         **kwargs,
     ):
         """train the adaptive filter on the training data
@@ -90,7 +86,7 @@ class Calibration:
         data_points = epochs * batch_size
         logger.info(f"Starting training round for {data_points} additional data points")
         for index in show_status(range(epochs)):
-            if method == 'sgd':
+            if method == "sgd":
                 self.batch_error.append(
                     np.average(
                         np.array(
@@ -102,9 +98,9 @@ class Calibration:
                         )
                     )
                 )
-            elif method == 'adadelta':
-                epsilon = kwargs.get('epsilon', 1e-12)
-                gamma = kwargs.get('gamma', 1 - 1e-2)
+            elif method == "adadelta":
+                epsilon = kwargs.get("epsilon", 1e-12)
+                gamma = kwargs.get("gamma", 1 - 1e-2)
                 self.batch_error.append(
                     np.average(
                         np.array(
@@ -117,15 +113,15 @@ class Calibration:
                         )
                     )
                 )
-            elif method == 'rls':
+            elif method == "rls":
                 self.batch_error.append(
                     np.average(
                         np.array(
                             self.filter.recursive_least_squares(
                                 batch_size=batch_size,
                                 forgetting_factor=kwargs.get(
-                                    'forgetting_factor',
-                                    kwargs.get('forgetting_factor', 1e0 - 1e-9),
+                                    "forgetting_factor",
+                                    kwargs.get("forgetting_factor", 1e0 - 1e-9),
                                 ),
                                 stochastic_delay=stochastic_delay,
                             )

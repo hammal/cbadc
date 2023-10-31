@@ -3,7 +3,7 @@ from . import Terminal, SubCircuitElement, Ground
 from ..analog_frontend import AnalogFrontend
 from ..analog_system import AnalogSystem
 from ..digital_control import DigitalControl as NominalDigitalControl
-from ..digital_control import DitherControl as NominalDitherControl
+from ..digital_control.dither_control import DitherControl as NominalDitherControl
 from .components.passives import Resistor, Capacitor
 import numpy as np
 from .components.opamp import OpAmp
@@ -51,10 +51,10 @@ class OpAmpFrontend(CircuitAnalogFrontend):
         self.analog_frontend = analog_frontend
 
         self.vgndp = [
-            Terminal(f'VGND_{i}_P') for i in range(analog_frontend.analog_system.N)
+            Terminal(f"VGND_{i}_P") for i in range(analog_frontend.analog_system.N)
         ]
         self.vgndn = [
-            Terminal(f'VGND_{i}_N') for i in range(analog_frontend.analog_system.N)
+            Terminal(f"VGND_{i}_N") for i in range(analog_frontend.analog_system.N)
         ]
 
         super().__init__(
@@ -62,8 +62,8 @@ class OpAmpFrontend(CircuitAnalogFrontend):
             vdd_voltage,
             in_high,
             in_low,
-            subckt_name='opamp_analog_frontend',
-            instance_name='Xaf',
+            subckt_name="opamp_analog_frontend",
+            instance_name="Xaf",
         )
 
         self._generate_state_resistor_network(analog_frontend, C_int)
@@ -83,8 +83,8 @@ class OpAmpFrontend(CircuitAnalogFrontend):
     ):
         opamps = [
             OpAmp(
-                f'Xop_{n}',
-                'opamp',
+                f"Xop_{n}",
+                "opamp",
                 GBWP=GBWP,
                 DC_gain=DC_gain,
                 C=C_amp,
@@ -96,25 +96,25 @@ class OpAmpFrontend(CircuitAnalogFrontend):
 
         for n in range(analog_system.N):
             self.connects(
-                (self.xp[n], opamps[n]['OUT_P']),
-                (self.xn[n], opamps[n]['OUT_N']),
-                (self.vgndp[n], opamps[n]['IN_P']),
-                (self.vgndn[n], opamps[n]['IN_N']),
-                (self['VSS'], opamps[n]['VSS']),
-                (self['VDD'], opamps[n]['VDD']),
-                (self['VCM'], opamps[n]['VCM']),
+                (self.xp[n], opamps[n]["OUT_P"]),
+                (self.xn[n], opamps[n]["OUT_N"]),
+                (self.vgndp[n], opamps[n]["IN_P"]),
+                (self.vgndn[n], opamps[n]["IN_N"]),
+                (self["VSS"], opamps[n]["VSS"]),
+                (self["VDD"], opamps[n]["VDD"]),
+                (self["VCM"], opamps[n]["VCM"]),
             )
 
         _caps_p = [
             Capacitor(
-                f'CP_{index}',
+                f"CP_{index}",
                 C_int,
             )
             for index in range(analog_system.N)
         ]
         _caps_n = [
             Capacitor(
-                f'CN_{index}',
+                f"CN_{index}",
                 C_int,
             )
             for index in range(analog_system.N)
@@ -138,8 +138,8 @@ class OpAmpFrontend(CircuitAnalogFrontend):
         t2: Tuple[Terminal, Terminal],
         C_int: float,
     ):
-        _RP = Resistor(f'RP_{instance_name}', 1.0 / (1 * C_int * np.abs(nominal_value)))
-        _RN = Resistor(f'RN_{instance_name}', 1.0 / (1 * C_int * np.abs(nominal_value)))
+        _RP = Resistor(f"RP_{instance_name}", 1.0 / (1 * C_int * np.abs(nominal_value)))
+        _RN = Resistor(f"RN_{instance_name}", 1.0 / (1 * C_int * np.abs(nominal_value)))
         self.add(_RP, _RN)
         if nominal_value < 0:
             # inverting connection
@@ -166,10 +166,10 @@ class OpAmpFrontend(CircuitAnalogFrontend):
                 if analog_frontend.analog_system.B[n, l] != 0.0:
                     self._generate_resistor_pair(
                         analog_frontend.analog_system.B[n, l],
-                        f'b_{n}_{l}',
+                        f"b_{n}_{l}",
                         (
-                            self[f'IN{l}_P'],
-                            self[f'IN{l}_N'],
+                            self[f"IN{l}_P"],
+                            self[f"IN{l}_N"],
                         ),
                         (self.vgndp[n], self.vgndn[n]),
                         C_int,
@@ -181,7 +181,7 @@ class OpAmpFrontend(CircuitAnalogFrontend):
                 if analog_frontend.analog_system.A[n, nn] != 0.0:
                     self._generate_resistor_pair(
                         analog_frontend.analog_system.A[n, nn],
-                        f'a_{n}_{nn}',
+                        f"a_{n}_{nn}",
                         (self.xp[nn], self.xn[nn]),
                         (self.vgndp[n], self.vgndn[n]),
                         C_int,
@@ -193,10 +193,10 @@ class OpAmpFrontend(CircuitAnalogFrontend):
                 if analog_frontend.analog_system.Gamma[n, m] != 0.0:
                     self._generate_resistor_pair(
                         analog_frontend.analog_system.Gamma[n, m],
-                        f'gamma_{n}_{m}',
+                        f"gamma_{n}_{m}",
                         (
-                            self[f'OUT{m}_P'],
-                            self[f'OUT{m}_N'],
+                            self[f"OUT{m}_P"],
+                            self[f"OUT{m}_N"],
                         ),
                         (self.vgndp[n], self.vgndn[n]),
                         C_int,

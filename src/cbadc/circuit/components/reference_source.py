@@ -20,9 +20,8 @@ class ReferenceSource(CircuitElement):
         model_name: str,
         number_of_sources: int,
         input_filename: str,
-        number_of_samples: int = 1 << 18,
+        pseudo_random_sequence: np.ndarray,
         time_step: SPICE_VALUE = 1e-9,
-        ternary: bool = True,
     ):
         if not instance_name or not isinstance(instance_name, str):
             raise TypeError(f"Expected str, got {type(instance_name)}")
@@ -39,45 +38,25 @@ class ReferenceSource(CircuitElement):
         )
         # generate random signals
         t = np.array(
-            np.arange(0, number_of_samples * time_step, time_step), dtype=str
-        ).reshape((number_of_samples, 1))
+            np.arange(0, pseudo_random_sequence.shape[0] * time_step, time_step),
+            dtype=str,
+        ).reshape((pseudo_random_sequence.shape[0], 1))
 
         def ternary_mapper(x):
-            if x == 0:
+            if x == 0.5:
                 return "Us"
-            elif x == 1:
-                return "0s"
-            elif x == 2:
-                return "1s"
-            else:
-                raise ValueError(f"x = {x}")
-
-        def binary_mapper(x):
-            if x == 0:
+            elif x == 0.0:
                 return "0s"
             elif x == 1:
                 return "1s"
             else:
                 raise ValueError(f"x = {x}")
 
-        if ternary:
-            random_signals = np.array(
-                list(
-                    map(
-                        ternary_mapper,
-                        np.random.randint(0, 3, number_of_sources * t.size),
-                    )
-                )
-            ).reshape((t.size, number_of_sources))
-        else:
-            random_signals = np.array(
-                list(
-                    map(
-                        binary_mapper,
-                        np.random.randint(0, 2, number_of_sources * t.size),
-                    )
-                )
-            ).reshape((t.size, number_of_sources))
+        random_signals = np.zeros_like(pseudo_random_sequence, dtype=object)
+        for i in range(pseudo_random_sequence.shape[1]):
+            for j in range(pseudo_random_sequence.shape[0]):
+                random_signals[j, i] = ternary_mapper(pseudo_random_sequence[j, i])
+
         data = np.hstack((t, random_signals))
 
         self._input_filename = input_filename
