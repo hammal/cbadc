@@ -17,7 +17,8 @@ class AdaptiveFIRFilter(tf.keras.Model):
     using the [Keras API](https://keras.io).
     Additionally, the model can be saved and loaded using the Keras API.
 
-    To better understand the usecase of this class see [this notebooke]().
+    To better understand the usecase of this class see
+    [this notebooke](https://github.com/hammal/cbadc/blob/develop/notebooks/calibrate_a_leapfrog_ADC.ipynb).
 
     """
 
