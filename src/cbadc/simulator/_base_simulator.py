@@ -1,10 +1,5 @@
-from ..simulation_event import SimulationEvent
-
 import logging
 import numpy as np
-import math
-import scipy.integrate
-import scipy.linalg
 from typing import Iterator, List
 
 # import digital_control

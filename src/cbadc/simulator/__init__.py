@@ -18,6 +18,4 @@ from .numerical_simulator import PreComputedControlSignalsSimulator as Simulator
 from .numpy_simulator import NumpySimulator
 from .utilities import extended_simulation_result
 
-from ..simulation_event import SimulationEvent, TimeEvent, OutOfBounds
-
 _valid_simulators = Union[FullSimulator, PreComputedControlSignalsSimulator]

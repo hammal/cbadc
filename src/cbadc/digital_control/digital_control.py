@@ -4,7 +4,6 @@ import numpy as np
 from cbadc.analog_signal import _valid_clock_types, Clock
 from cbadc.analog_signal.impulse_responses import StepResponse
 from cbadc.analog_signal.impulse_responses import _ImpulseResponse
-from cbadc.simulation_event import TimeEvent
 
 
 class DigitalControl:
