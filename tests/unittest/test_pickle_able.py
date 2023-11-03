@@ -153,49 +153,6 @@ def test_digital_estimator(reconstruction_method, pickle_unpickle):
     pickle_unpickle(reconstruction_method(analog_system, digitalControl, eta2, K1, K2))
 
 
-def test_adaptive_filter_and_calibrator(pickle_unpickle):
-    beta = 6250.0
-    rho = -62.5
-    N = 2
-    M = 2
-    A = np.eye(N) * rho + np.eye(N, k=-1) * beta
-    B = np.zeros((N, 1))
-    B[0, 0] = beta
-    # B[0, 1] = -beta
-    CT = np.eye(N)
-    Gamma_tildeT = np.eye(M)
-    Gamma = Gamma_tildeT * (-beta)
-    Ts = 1 / (2 * beta)
-    clock = cbadc.analog_signal.Clock(Ts)
-    digital_control = cbadc.digital_control.DigitalControl(clock, M)
-    digital_control = cbadc.digital_control.DitherControl(1, digital_control)
-    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    eta2 = 1.0
-    K1 = 100
-    K2 = K1
-    fir_filter = cbadc.digital_estimator.FIRFilter(
-        analog_system, digital_control, eta2, K1, K2
-    )
-    size = 1 << 13
-    adaptive_filter = cbadc.digital_estimator.AdaptiveFilter(
-        fir_filter,
-        0,
-        size - K1 - K2,
-    )
-    pickle_unpickle(adaptive_filter)
-
-    testing_control_signals = cbadc.simulator.NumpySimulator(
-        "", array=np.random.randint(0, 2, size=((M, size)))
-    )
-    training_control_signals = cbadc.simulator.NumpySimulator(
-        "", array=np.random.randint(0, 2, size=((M, size)))
-    )
-    calibrator = cbadc.digital_calibration.Calibration(
-        adaptive_filter, training_control_signals, testing_control_signals
-    )
-    pickle_unpickle(calibrator)
-
-
 @pytest.mark.parametrize(
     "simulation_method",
     [

@@ -1,57 +1,76 @@
 import cbadc
 from scipy.signal import firwin
 import pytest
+import numpy as np
+import tensorflow as tf
+import os
 
 
 @pytest.fixture()
 def setup():
-    L = 2
+    size = 1 << 12
+    R = 2
     M = 5
-    K = [1 << (10 - m) for m in range(M)]
-    h0 = [firwin(K[0], 0.1), firwin(K[0], 0.2)]
-    reference_index = [0, 0]
-    return L, M, K, h0, reference_index
+    K = 1 << 10
+    h = np.array([firwin(K, 0.1), firwin(K, 0.2)]).reshape((R, K))
+    s_control = np.random.randint(2, size=(size, M + R))
+    return R, M, K, h, s_control
 
 
 def test_init_filter(setup):
-    L, M, K, h0, reference_index = setup
-    h = cbadc.digital_estimator.initial_filter(h0, K, reference_index)
-    assert len(h) == L
-    assert len(h[0]) == len(K)
-    assert h[0][0].size == K[0]
+    R, _, K, h, _ = setup
+    assert h.shape[0] == R
+    assert h.shape[1] == K
 
 
 def test_initializer(setup):
-    L, M, K, h0, reference_index = setup
-    h = cbadc.digital_estimator.initial_filter(h0, K, reference_index)
-    filter = cbadc.digital_estimator.AdaptiveFIRFilter(h, K, reference_index)
-    assert filter.analog_system.L == L
-    assert filter.analog_system.M == M
-    assert filter.K == K
-    assert filter.reference_index == reference_index
+    R, M, K, h, _ = setup
+    filter = cbadc.digital_estimator.AdaptiveFIRFilter()
 
 
-def test_number_of_filter_coefficients(setup):
-    L, M, K, h0, reference_index = setup
-    h = cbadc.digital_estimator.initial_filter(h0, K, reference_index)
-    filter = cbadc.digital_estimator.AdaptiveFIRFilter(h, K, reference_index)
-    assert filter.number_of_filter_coefficients() == L * K[0]
-    epsilon = 1e-2
-    filter.h = [[hm + epsilon for hm in hl] for hl in filter.h]
-    assert filter.number_of_filter_coefficients() == L * sum(K)
+def test_filter_generate_data(setup):
+    R, M, K, h, s_control = setup
+    filter = cbadc.digital_estimator.AdaptiveFIRFilter()
+    x, y = filter.generate_dataset(s_control, h)
+    print(x.shape, y.shape)
+    assert x.shape[0] == y.shape[0]
+    assert x.shape[1] == M * K
 
 
-def test_impulse_response(setup):
-    L, M, K, h0, reference_index = setup
-    h = cbadc.digital_estimator.initial_filter(h0, K, reference_index)
-    filter = cbadc.digital_estimator.AdaptiveFIRFilter(h, K, reference_index)
-    impulse_response = filter.impulse_response()
-    assert impulse_response
+def test_filter_predict_full(setup):
+    R, M, K, h, s_control = setup
+    filter = cbadc.digital_estimator.AdaptiveFIRFilter()
+    x, y = filter.generate_dataset(s_control, h)
+    filter.compile(optimizer="adam", loss="mse")
+    filter.fit(x, y, epochs=1, batch_size=1)
+    y_hat = filter.predict_full(x, y)
+    assert y_hat.shape[0] == y.shape[0]
 
 
-def test_frequency_response(setup):
-    L, M, K, h0, reference_index = setup
-    h = cbadc.digital_estimator.initial_filter(h0, K, reference_index)
-    filter = cbadc.digital_estimator.AdaptiveFIRFilter(h, K, reference_index)
-    frequencies, frequency_response = filter.fir_filter_transfer_function()
-    assert frequency_response
+def test_plot_impulse_response(setup):
+    R, M, K, h, s_control = setup
+    filter = cbadc.digital_estimator.AdaptiveFIRFilter()
+    x, y = filter.generate_dataset(s_control, h)
+    filter.compile(optimizer="adam", loss="mse")
+    filter.fit(x, y, epochs=1, batch_size=1)
+    filter.plot_impulse_response(M)
+
+
+def test_bode_plot(setup):
+    R, M, K, h, s_control = setup
+    filter = cbadc.digital_estimator.AdaptiveFIRFilter()
+    x, y = filter.generate_dataset(s_control, h)
+    filter.compile(optimizer="adam", loss="mse")
+    filter.fit(x, y, epochs=1, batch_size=1)
+    filter.plot_bode(M)
+
+
+def test_save_load(setup):
+    R, M, K, h, s_control = setup
+    filter = cbadc.digital_estimator.AdaptiveFIRFilter()
+    x, y = filter.generate_dataset(s_control, h)
+    filter.compile(optimizer="adam", loss="mse")
+    filter.fit(x, y, epochs=1, batch_size=1)
+    filter.save("test.keras")
+    tf.keras.models.load_model("test.keras")
+    os.remove("test.keras")
