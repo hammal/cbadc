@@ -7,6 +7,20 @@ logger = logging.getLogger(__name__)
 
 
 class AdaptiveFIRFilter(tf.keras.Model):
+    """
+    Adaptive FIR filter model.
+
+    The model is a simple linear model with a single dense layer (in ML language).
+    Alternatively, a simple sum of FIR filters.
+
+    The model is implemented as a Keras model, which means that it can be trained
+    using the [Keras API](https://keras.io).
+    Additionally, the model can be saved and loaded using the Keras API.
+
+    To better understand the usecase of this class see [this notebooke]().
+
+    """
+
     def __init__(self):
         super().__init__()
         self.input_layer = tf.keras.layers.Flatten()
