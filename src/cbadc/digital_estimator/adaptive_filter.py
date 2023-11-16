@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import signal
 import logging
 
 logger = logging.getLogger(__name__)
@@ -60,10 +61,64 @@ class AdaptiveFIRFilter(tf.keras.Model):
         y = np.zeros((size, 1), dtype=float)
         for i in range(size):
             s_window = 2 * control_signals[i : i + K, :] - 1
-            x[i, :] = s_window[:, number_of_references:].flatten()
+            x[i, :] = s_window[:, number_of_references:].transpose().flatten()
             y[i, :] = np.sum(
                 np.multiply(s_window[:, :number_of_references].transpose(), h)
             )
+
+        logger.info(f"sizeof incoming data {control_signals.nbytes / (1 << 20)} MB")
+        logger.info(f"sizeof outgoing training features {x.nbytes / (1 << 20)} MB")
+        logger.info(f"sizeof outgoing training labels {y.nbytes / (1 << 20)} MB")
+
+        return x, y
+
+    def generate_decimated_dataset(
+        self,
+        control_signals: np.ndarray,
+        h: np.ndarray,
+        DSR: int,
+        K: int = 1 << 6,
+        number_of_references: int = 1,
+        BW: float = 0.5,
+    ):
+        """ """
+        DSR = int(np.floor(DSR))
+
+        # decimated_control_signals = signal.decimate(
+        #     2.0 * control_signals - 1.0,
+        #     DSR,
+        #     axis=0,
+        #     ftype="fir",
+        #     # n=1024,
+        #     zero_phase=True,
+        # )
+        decimated_control_signals = signal.resample(
+            2.0 * control_signals - 1.0, control_signals.shape[0] // DSR, axis=0
+        )
+
+        size = decimated_control_signals.shape[0] - K
+        M = decimated_control_signals.shape[1]
+
+        x = np.zeros((size, (M - number_of_references) * K), dtype=float)
+        y = np.zeros((size, 1), dtype=float)
+        K_sig = K >> 1
+        K_sig = K
+        K_sig = 6
+        K_sig = 2
+        h_sig = signal.firwin(K_sig, BW).flatten()
+        from_index = (K >> 1) - (K_sig >> 1)
+        to_index = (K >> 1) + (K_sig - (K_sig >> 1))
+
+        for i in range(size):
+            s_window = decimated_control_signals[i : i + K, :]
+            x[i, :] = s_window[:, number_of_references:].transpose().flatten()
+            # y[i, :] = np.sum(s_window[s_window.shape[0] // 2, :number_of_references])
+            y[i, :] = np.sum(
+                np.dot(
+                    s_window[from_index:to_index, :number_of_references].transpose(),
+                    h_sig,
+                )
+            ).flatten()
 
         logger.info(f"sizeof incoming data {control_signals.nbytes / (1 << 20)} MB")
         logger.info(f"sizeof outgoing training features {x.nbytes / (1 << 20)} MB")
@@ -103,7 +158,7 @@ class AdaptiveFIRFilter(tf.keras.Model):
         """
         weights = self.get_weights()
         K = weights[0].size // M
-        return weights[0].reshape((1, M, K), order="F"), weights[1]
+        return weights[0].reshape((1, M, K), order="C"), weights[1]
 
     def plot_impulse_response(self, M: int):
         """
