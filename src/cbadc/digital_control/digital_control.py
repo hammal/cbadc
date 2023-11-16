@@ -126,28 +126,6 @@ class DigitalControl:
                 # DAC
                 self._control_decisions[m] = 2.0 * self._s[m] - 1.0
 
-    def event_list(self):
-        """
-        Return the event list of the digital control.
-
-        Returns
-        -------
-        : [(t, x)->r]
-            the list of event functions.
-        """
-        event_list = []
-
-        # The start of delayed impulse responses
-        for m in range(self.M):
-            response = TimeEvent(
-                self._impulse_response[m].t0 - self.clock.tt,
-                name=f"control_update_{m}",
-                terminal=True,
-            )
-            event_list.append(response)
-
-        return event_list
-
     def control_signal(self) -> np.ndarray:
         """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
 
@@ -185,7 +163,6 @@ class DigitalControl:
             the control signal :math:`\mathbf{s}(t)`
 
         """
-        # Check if time t has passed the next control update
         temp = np.zeros(self.M)
         for m in range(self.M):
             if t < self._impulse_response[m].t0:

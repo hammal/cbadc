@@ -124,7 +124,7 @@ class FullSimulator(_BaseSimulator):
             self.digital_control.control_update(
                 t_old,
                 self.analog_system.control_observation(
-                    self._state_vector,
+                    self.state_vector(),
                     self._u,
                     self.digital_control.control_contribution(t_old),
                 ),
@@ -133,7 +133,7 @@ class FullSimulator(_BaseSimulator):
             self.res: OdeResult = scipy.integrate.solve_ivp(
                 derivative,
                 (t_old, t),
-                self._state_vector,
+                self.state_vector(),
                 atol=self.atol,
                 rtol=self.rtol,
                 # method="Radau",
@@ -232,7 +232,6 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             state_noise_covariance_matrix=state_noise_covariance_matrix,
         )
 
-        self._x = np.zeros(self.analog_system.N, dtype=np.double)
         self.atol = atol
         self.rtol = rtol
         self._u = np.zeros(self.analog_system.L)
@@ -366,7 +365,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             self.digital_control.control_update(
                 t_old,
                 self.analog_system.control_observation(
-                    self._state_vector,
+                    self.state_vector(),
                     self._u,
                     self.digital_control.control_contribution(t_old),
                 ),
@@ -374,7 +373,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
             # Homogenious solution
             self._state_vector = np.dot(
-                self._pre_computed_state_transition_matrices[i], self._state_vector
+                self._pre_computed_state_transition_matrices[i], self.state_vector()
             ).flatten()
 
             if self._input_signal:
