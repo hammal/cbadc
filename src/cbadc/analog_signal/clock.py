@@ -83,7 +83,6 @@ class Clock(_AnalogSignal):
 
     def clock_edge(self, t):
         t_ = (t - self.td + self._tt_2) % self.T
-        print(t_)
         if t_ > self._neq_pulse_time:
             return -self._pos_edge(t_ - self._neq_pulse_time)
         else:

@@ -82,7 +82,6 @@ def unit_element_set(N: int, M: int, candidates=[-1, 1, 0]):
             s1 = np.sum(np.abs(np.array(item) - candidate))
             s2 = np.sum(np.abs(np.array(item) + candidate))
             if s1 == 0 or s2 == 0:
-                # print(item, candidate)
                 duplicate = True
         if not duplicate:
             candidate_set.append(candidate)
@@ -90,7 +89,6 @@ def unit_element_set(N: int, M: int, candidates=[-1, 1, 0]):
     candidate_set = np.array(candidate_set)  # [
     #        np.random.permutation(len(candidate_set)), :
     # ]
-    # print(candidate_set)
     if candidate_set.shape[0] < M:
         raise Exception("Not enough unique combinations; M is set to large.")
     set = candidate_set[0, :].reshape((N, 1))
@@ -101,7 +99,6 @@ def unit_element_set(N: int, M: int, candidates=[-1, 1, 0]):
             np.dot(candidate_set, set), ord=2, axis=1
         ) / np.linalg.norm(candidate_set, axis=1, ord=2)
         next_index = np.argmin(costs)
-        # print(candidate_set, costs, next_index)
         set = np.hstack((set, candidate_set[next_index, :].reshape((N, 1))))
         candidate_set = np.delete(candidate_set, next_index, 0)
     # return np.array(set)[:, np.random.permutation(set.shape[1])]

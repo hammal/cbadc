@@ -9,7 +9,9 @@ from cbadc.analog_frontend import AnalogFrontend
 from cbadc.simulator import PreComputedControlSignalsSimulator
 import sympy as sp
 import numpy as np
+import logging
 
+logger = logging.getLogger(__name__)
 
 def g_i(N: int):
     """Compute the integration factor g_i
@@ -151,8 +153,8 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
                 rho * np.ones(N),
                 kappa * np.diag(control_scale_vector[:N]),
             )
-            print(f"control_scale_vector:\n{control_scale_vector}")
-            print(f"amplification_scale_vector:\n{amplification_scale_vector}")
+            logger.info(f"control_scale_vector:\n{control_scale_vector}")
+            logger.info(f"amplification_scale_vector:\n{amplification_scale_vector}")
         else:
             analog_system = LeapFrog(
                 beta * np.ones(N),

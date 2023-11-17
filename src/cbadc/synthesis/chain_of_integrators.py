@@ -87,7 +87,6 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
             digital_control = DigitalControl(
                 Clock(T), N, impulse_response=impulse_responses
             )
-            # print(impulse_response.evaluate(T))
         else:
             impulse_responses = [StepResponse(t0) for _ in range(N)]
             digital_control = DigitalControl(
