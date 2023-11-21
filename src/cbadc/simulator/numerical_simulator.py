@@ -65,6 +65,7 @@ class FullSimulator(_BaseSimulator):
         state_noise_covariance_matrix: np.ndarray = None,
         atol: float = 1e-12,
         rtol: float = 1e-8,
+        modulator: cbadc.analog_system.Modulator = None,
     ):
         super().__init__(
             analog_system,
@@ -78,6 +79,7 @@ class FullSimulator(_BaseSimulator):
         self.res: OdeResult = None
         self._u = np.zeros(self.analog_system.L)
         self._input_signal = len(self.input_signals) > 0
+        self.modulator = modulator
 
     def __next__(self) -> np.ndarray:
         """Computes the next control signal :math:`\mathbf{s}[k]`"""
@@ -108,6 +110,12 @@ class FullSimulator(_BaseSimulator):
 
             control_vector = self.digital_control.control_contribution(t)
 
+            if self.modulator:
+                # logger.info("modulate")
+                control_vector = np.dot(
+                    self.modulator.modulate(t + self.t), control_vector
+                ).flatten()
+
             delta = self.analog_system.derivative(y, t, input_vector, control_vector)
             return delta
 
@@ -121,10 +129,17 @@ class FullSimulator(_BaseSimulator):
                 for ell in range(self.analog_system.L):
                     self._u[ell] = self.input_signals[ell].evaluate(t_old + self.t)
             # update controls
+
+            state = self.state_vector()
+            if self.modulator:
+                # logger.info("demodulate")
+                state = np.dot(
+                    self.modulator.demodulate(t_old + self.t), state
+                ).flatten()
             self.digital_control.control_update(
                 t_old,
                 self.analog_system.control_observation(
-                    self.state_vector(),
+                    state,
                     self._u,
                     self.digital_control.control_contribution(t_old),
                 ),

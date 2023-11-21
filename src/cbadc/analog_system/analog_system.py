@@ -611,3 +611,47 @@ class InvalidAnalogSystemError(Exception):
     def __init__(self, system, message):
         self.analog_system = system
         self.message = message
+
+
+class Modulator:
+    def __init__(
+        self,
+        modulation_frequency: float,
+        permuation_matrix: np.ndarray,
+    ):
+        """Create a modulated analog system."""
+        self.modulation_frequency = modulation_frequency
+        if permuation_matrix.shape[0] != permuation_matrix.shape[1]:
+            raise ValueError("Permutation matrix must be square.")
+
+        self.permuation_matrix = permuation_matrix
+        self.inverted_permuation_matrix = np.linalg.inv(self.permuation_matrix)
+        if self.permuation_matrix.shape[0] % 2 != 0:
+            raise ValueError("Permutation matrix must be even.")
+        self.N = self.permuation_matrix.shape[0] // 2
+
+    def modulate(self, t: float) -> np.ndarray:
+        """Upmodulate the given signal phi."""
+        return np.dot(
+            self.inverted_permuation_matrix,
+            np.dot(
+                self._rotation_matrix(2 * np.pi * self.modulation_frequency * t),
+                self.permuation_matrix,
+            ),
+        )
+
+    def demodulate(self, t: float) -> np.ndarray:
+        """Downmodulate the given signal phi."""
+        return np.dot(
+            self.inverted_permuation_matrix,
+            np.dot(
+                self._rotation_matrix(-2 * np.pi * self.modulation_frequency * t),
+                self.permuation_matrix,
+            ),
+        )
+
+    def _rotation_matrix(self, phi: float) -> np.ndarray:
+        return np.kron(
+            np.eye(self.N),
+            np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]]),
+        )

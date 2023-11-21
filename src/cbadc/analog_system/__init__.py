@@ -3,7 +3,7 @@
 A selection of pre-configures and general analog system structures.
 """
 from typing import Union
-from .analog_system import AnalogSystem, InvalidAnalogSystemError
+from .analog_system import AnalogSystem, InvalidAnalogSystemError, Modulator
 from .chain_of_integrators import ChainOfIntegrators
 from .leap_frog import LeapFrog
 from .filters import ButterWorth, Cauer, ChebyshevI, ChebyshevII, IIRDesign
