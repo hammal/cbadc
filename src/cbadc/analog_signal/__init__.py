@@ -16,6 +16,7 @@ from .sinusoidal import Sinusoidal
 from .clock import Clock
 from .impulse_responses import StepResponse, RCImpulseResponse
 from .quadrature import get_quadrature_signal_pair, QuadratureSignal
+from .zero_order_hold import ZeroOrderHold
 
 from . import clock
 from . import constant_signal
