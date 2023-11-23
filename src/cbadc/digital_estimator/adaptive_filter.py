@@ -104,7 +104,7 @@ class AdaptiveFIRFilter(tf.keras.Model):
         K_sig = K >> 1
         K_sig = K
         K_sig = 6
-        K_sig = 2
+        K_sig = 1
         h_sig = signal.firwin(K_sig, BW).flatten()
         from_index = (K >> 1) - (K_sig >> 1)
         to_index = (K >> 1) + (K_sig - (K_sig >> 1))
