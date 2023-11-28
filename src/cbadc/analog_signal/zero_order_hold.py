@@ -47,14 +47,14 @@ class ZeroOrderHold(_AnalogSignal):
 
     """
 
-    _iterator: Iterable[float]
+    _data: np.ndarray
     T: float
     t0: float
     _value: float
 
-    def __init__(self, sequence: Iterable[float], T: float):
+    def __init__(self, data: np.ndarray, T: float):
         super().__init__()
-        self._iterator = sequence
+        self._data = data
         self.T = T
         self.t0 = 0.0
         self._value = 0.0
@@ -75,13 +75,8 @@ class ZeroOrderHold(_AnalogSignal):
         float
             The analog signal value
         """
-        if t - self.t0 > self.T:
-            self.t0 += self.T
-            self._value = next(self._iterator)
+        return self._data[int(t / self.T) % self._data.shape[0]]
 
-        return self._value
-
-    def __call__(self, sequence: Iterable):
-        self._iterator = sequence
-        self._value = next(self._iterator)
+    def __call__(self, data: np.ndarray):
+        self._data = data
         return self
