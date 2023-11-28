@@ -63,8 +63,8 @@ class FullSimulator(_BaseSimulator):
         input_signal: List[cbadc.analog_signal._AnalogSignal],
         initial_state_vector: np.array = None,
         state_noise_covariance_matrix: np.ndarray = None,
-        atol: float = 1e-12,
-        rtol: float = 1e-8,
+        atol: float = 1e-15,
+        rtol: float = 1e-10,
         modulator: cbadc.analog_system.Modulator = None,
     ):
         super().__init__(
@@ -236,8 +236,8 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         input_signal: List[cbadc.analog_signal._AnalogSignal],
         initial_state_vector: np.array = None,
         state_noise_covariance_matrix: np.ndarray = None,
-        atol: float = 1e-12,
-        rtol: float = 1e-8,
+        atol: float = 1e-15,
+        rtol: float = 1e-10,
     ):
         super().__init__(
             analog_system,
