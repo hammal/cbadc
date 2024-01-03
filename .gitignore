@@ -41,3 +41,4 @@ docs/source/autosummary
 *stderr
 *stdout
 *.raw
+notebooks

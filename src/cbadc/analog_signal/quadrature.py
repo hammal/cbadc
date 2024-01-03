@@ -54,70 +54,23 @@ def get_quadrature_signal_pair(
     """
 
     return (
-        QuadratureSignal2(amplitude, angular_frequency, True, [in_phase, quadrature]),
-        QuadratureSignal2(amplitude, angular_frequency, False, [in_phase, quadrature]),
-        # QuadratureSignal(
-        #     amplitude_modulation, phase_modulation, angular_frequency, phase, offset
-        # ),
-        # ConstantSignal(0.0),
-        # QuadratureSignal(
-        #     amplitude_modulation,
-        #     phase_modulation,
-        #     angular_frequency,
-        #     # phase + np.pi,
-        #     phase - np.pi / 2,
-        #     offset,
-        # ),
+        QuadratureSignal(amplitude, angular_frequency, True, [in_phase, quadrature]),
+        QuadratureSignal(amplitude, angular_frequency, False, [in_phase, quadrature]),
     )
 
 
-class QuadratureSignal(_AnalogSignal):
-    """An analog continuous-time sinusoidal signal.
-
-    Parameters
-    ----------
-    amplitude_modulation : :py:class`cbadc.analog_signal.AnalogSignal`
-        the amplitude modulation signal
-    phase_modulations: :py:class`cbadc.analog_signal.AnalogSignal`
-        the phase modulation signal
-    angular_frequency: `float`
-        the angular frequency of the sinusoidal signal
-    phase: `float`
-        the phase of the sinusoidal signal
-    offset: `float`
-        the offset of the sinusoidal signal
-
-    """
-
-    amplitude: float
-    angular_frequency: float
-    phase: float
-    offset: float
-
+class SineWaveModulator(_AnalogSignal):
     def __init__(
         self,
-        amplitude_modulation: _AnalogSignal,
-        phase_modulation: _AnalogSignal,
-        angular_frequency: float = 1.0,
-        phase: float = 0.0,
-        offset: float = 0.0,
+        in_phase: _AnalogSignal,
+        quadrature: _AnalogSignal,
+        carrier_frequency: float,
     ):
         super().__init__()
-        self.amplitude_modulation = amplitude_modulation
-        self.phase_modulation = phase_modulation
-        self.angular_frequency = angular_frequency
-        self.phase = phase
-        self.offset = offset
-        self._mpmath_dic = {
-            'angular_frequency': mp.mpmathify(angular_frequency),
-            'phase': mp.mpmathify(phase),
-            'offset': mp.mpmathify(offset),
-        }
-
-    def __str__(self):
-        return """
-A quadrature signal.
-        """
+        self._in_phase = in_phase
+        self._quadrature = quadrature
+        self._carrier_radial_frequency = 2.0 * np.pi * carrier_frequency
+        self._amplitude = 1.0 / np.sqrt(2.0)
 
     def evaluate(self, t: float) -> float:
         """Evaluate the signal at time :math:`t`.
@@ -132,45 +85,13 @@ A quadrature signal.
         float
             The analog signal value
         """
-        # in-phase component
-        return (
-            self.amplitude_modulation(t)
-            * np.sin(self.angular_frequency * t + self.phase_modulation(t) + self.phase)
-            + self.offset
-        )
-
-    def _mpmath(self, t: Union[mp.mpf, float]):
-        t = mp.mpmathify(t)
-        return (
-            self.amplitude_modulation._mpmath(t)
-            * mp.sin(
-                self._mpmath_dic['angular_frequency'] * t
-                + self.phase_modulation._mpmath(t)
-                + self._mpmath_dic['phase']
-            )
-            + self._mpmath_dic['offset']
-        )
-
-    def symbolic(self) -> cos:
-        """Returns as symbolic expression
-
-        Returns
-        -------
-        : :py:class:`sympy.Symbol`
-            a sinusodial function
-        """
-        return (
-            self.amplitude_modulation.symbolic()
-            * cos(
-                self.angular_frequency * self.t
-                + self.phase
-                + self.phase_modulation.symbolic()
-            )
-            + self.offset
+        return self._amplitude * (
+            np.cos(self._carrier_radial_frequency * t) * self._in_phase.evaluate(t)
+            + np.sin(self._carrier_radial_frequency * t) * self._quadrature.evaluate(t)
         )
 
 
-class QuadratureSignal2(_AnalogSignal):
+class QuadratureSignal(_AnalogSignal):
     """An analog continuous-time sinusoidal signal.
 
     Parameters
@@ -208,7 +129,7 @@ class QuadratureSignal2(_AnalogSignal):
         else:
             self.phase = np.array([0.0, 1.0])
         if len(i_q) != 2:
-            raise ValueError('i_q must be a list of length 2.')
+            raise ValueError("i_q must be a list of length 2.")
         self._iq = i_q
 
     def evaluate(self, t: float) -> float:

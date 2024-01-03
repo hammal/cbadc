@@ -51,10 +51,9 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
     phi: float = kwargs.get("phi", omega_c / 2 - np.pi)
     delta_DC: float = kwargs.get("delta_DC", 0.0)
 
-    Gamma = np.zeros((2 * N, 2 * N))
-    Gamma_tildeT = np.zeros((2 * N, 2 * N))
-
     if not "modulate" in kwargs:
+        Gamma = np.zeros((2 * N, 2 * N))
+        Gamma_tildeT = np.zeros((2 * N, 2 * N))
         kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.cos(phi)
         bar_kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.sin(phi)
         tilde_kappa = -1 / (beta * T) * np.cos(omega_c * (T / 2 + delta_DC) - phi)
@@ -72,19 +71,20 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
             Gamma_tildeT[i + N, i + N] = tilde_kappa
             Gamma_tildeT[i, i + N] = -bar_tilde_kappa
             Gamma_tildeT[i + N, i] = bar_tilde_kappa
-    else:
-        Gamma[:N, :N] = analog_system_baseband.Gamma
-        Gamma[N:, N:] = analog_system_baseband.Gamma
-        Gamma_tildeT[:N, :N] = analog_system_baseband.Gamma_tildeT
-        Gamma_tildeT[N:, N:] = analog_system_baseband.Gamma_tildeT
 
-    analog_system.Gamma = Gamma
-    analog_system.Gamma_tildeT = Gamma_tildeT
+        analog_system.Gamma = Gamma
+        analog_system.Gamma_tildeT = Gamma_tildeT
 
     digital_control = digital_control = DigitalControl(
         digital_control_baseband.clock,
         2 * digital_control_baseband.M,
     )
+
+    if "scalar_input" in kwargs:
+        analog_system.B[analog_system.N // 2 :, 0] = analog_system.B[
+            analog_system.N // 2 :, 1
+        ]
+        analog_system.B = analog_system.B[:, 0].reshape((analog_system.N, 1))
 
     return AnalogFrontend(
         analog_system=AnalogSystem(

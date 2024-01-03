@@ -122,6 +122,7 @@ class FIRFilter(BatchEstimator):
         fixed_point: cbadc.utilities.FixedPoint = None,
         solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
         modulation_frequency: float = None,
+        dtype=np.float64,
     ):
         """Initializes filter coefficients"""
         if K1 < 0:
@@ -148,14 +149,16 @@ class FIRFilter(BatchEstimator):
             raise NotImplementedError("Planned for v.0.1.0")
         self.mid_point = mid_point
         self.downsample = int(downsample)
-        self._temp_controls = np.zeros((self.downsample, self.analog_system.M))
+        self._temp_controls = np.zeros(
+            (self.downsample, self.analog_system.M), dtype=dtype
+        )
 
         if offset is not None:
-            self.offset = np.array(offset, dtype=np.float64)
+            self.offset = np.array(offset, dtype=dtype)
             if self.offset.size != self.analog_system.L:
                 raise Exception("offset is not of size L")
         else:
-            self.offset = np.zeros(self.analog_system.L, dtype=np.float64)
+            self.offset = np.zeros(self.analog_system.L, dtype=dtype)
 
         if fixed_point is not None:
             self.fixed_point = True
@@ -197,7 +200,9 @@ class FIRFilter(BatchEstimator):
             else:
                 self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
-        self._control_signal_valued = np.zeros((self.K3, self.analog_system.M))
+        self._control_signal_valued = np.zeros(
+            (self.K3, self.analog_system.M), dtype=dtype
+        )
 
         # For modulation
         self._time_index = 0

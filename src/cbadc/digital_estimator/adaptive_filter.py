@@ -1,13 +1,14 @@
-import tensorflow as tf
+from typing import Any, Dict
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
 import logging
+import cbadc
 
 logger = logging.getLogger(__name__)
 
 
-class AdaptiveFIRFilter(tf.keras.Model):
+class AdaptiveFIRFilter:
     """
     Adaptive FIR filter model.
 
@@ -23,108 +24,133 @@ class AdaptiveFIRFilter(tf.keras.Model):
 
     """
 
-    def __init__(self):
-        super().__init__()
-        self.input_layer = tf.keras.layers.Flatten()
-        self.output_layer = tf.keras.layers.Dense(1, activation=None, dtype=tf.float64)
+    def __init__(self, M, K, L=1, dtype=np.float64):
+        self.K = K
+        self.L = L
+        self.M = M
+        self._h_m = np.zeros((L, M, K), dtype=dtype)
+        self._h = np.zeros((L, M, K), dtype=dtype)
+        self.offset = np.zeros((L,), dtype=dtype)
+        self.offset_m = np.zeros((L,), dtype=dtype)
 
-    def call(self, x):
-        x = self.input_layer(x)
-        x = self.output_layer(x)
-        return x
-
-    def generate_dataset(self, control_signals: np.ndarray, h: np.ndarray):
+    def compile(self, optimizer: Dict[str, Any]):
         """
-        Generates a dataset for training the FIR filter
+        Compiles the model.
 
         Parameters
         ----------
-        control_signals : np.ndarray
-            The control signals used to generate the dataset, shape (nr_samples, M).
-            Note that the X number of reference sequences are assumed to be the in the first X columns.
-        h: np.ndarray
-            The reference filter, shape (nr_references, K).
-            Note that the shape of h determines both number of references and general filter length K.
-
+        optimizer : Dict[str, Any]
+            The optimizer to use.
         """
-        number_of_references = h.shape[0]
-        K = h.shape[1]
-        size = control_signals.shape[0] - K
-        M = control_signals.shape[1]
+        self._learning_rate = optimizer.get("learning_rate", 1e-5)
+        self._momentum = optimizer.get("momentum", 0.1)
 
-        if number_of_references > M:
-            raise ValueError(
-                "The number of references must be less than or equal to the number of control signals"
-            )
+    def loss(self, x: np.ndarray, y: np.ndarray):
+        """
+        Computes the loss function.
 
-        x = np.zeros((size, (M - number_of_references) * K), dtype=np.int8)
-        y = np.zeros((size, 1), dtype=float)
-        for i in range(size):
-            s_window = 2 * control_signals[i : i + K, :] - 1
-            x[i, :] = s_window[:, number_of_references:].transpose().flatten()
-            y[i, :] = np.sum(
-                np.multiply(s_window[:, :number_of_references].transpose(), h)
-            )
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The output data.
 
-        logger.info(f"sizeof incoming data {control_signals.nbytes / (1 << 20)} MB")
-        logger.info(f"sizeof outgoing training features {x.nbytes / (1 << 20)} MB")
-        logger.info(f"sizeof outgoing training labels {y.nbytes / (1 << 20)} MB")
+        Returns
+        -------
+        loss : float
+        """
+        return np.linalg.norm(self.call(x) - y, axis=1) ** 2 / x.shape[0]
 
-        return x, y
+    def gradient(self, x: np.ndarray, y: np.ndarray):
+        """
+        Computes the gradient of the loss function with respect to the filter
+        coefficients.
 
-    def generate_decimated_dataset(
-        self,
-        control_signals: np.ndarray,
-        h: np.ndarray,
-        DSR: int,
-        K: int = 1 << 6,
-        number_of_references: int = 1,
-        BW: float = 0.5,
-    ):
-        """ """
-        DSR = int(np.floor(DSR))
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The output data.
 
-        # decimated_control_signals = signal.decimate(
-        #     2.0 * control_signals - 1.0,
-        #     DSR,
-        #     axis=0,
-        #     ftype="fir",
-        #     # n=1024,
-        #     zero_phase=True,
-        # )
-        decimated_control_signals = signal.resample(
-            2.0 * control_signals - 1.0, control_signals.shape[0] // DSR, axis=0
+        Returns
+        -------
+        gradient : [np.ndarray (L, M, K), np.ndarray (L,)]
+            The gradient of the loss function with respect to the filter
+            coefficients.
+        """
+        # (L, batch_size)
+        error = self.call(x) - y
+        return (
+            np.tensordot(
+                error / error.shape[1],
+                np.conj(x),
+                axes=([1], [0]),
+            ),
+            error.mean(axis=1),
         )
 
-        size = decimated_control_signals.shape[0] - K
-        M = decimated_control_signals.shape[1]
+    def fit(
+        self,
+        x: np.ndarray,
+        y: np.ndarray,
+        batch_size: int,
+        epochs: int,
+        shuffle=False,
+        verbose=True,
+    ):
+        if shuffle:
+            raise NotImplementedError
+        for e in cbadc.utilities.show_status(range(epochs)):
+            for b in range(0, x.shape[0], batch_size):
+                x_batch = x[b : b + batch_size, :, :]
+                y_batch = y[:, b : b + batch_size]
 
-        x = np.zeros((size, (M - number_of_references) * K), dtype=float)
-        y = np.zeros((size, 1), dtype=float)
-        K_sig = K >> 1
-        K_sig = K
-        K_sig = 6
-        K_sig = 1
-        h_sig = signal.firwin(K_sig, BW).flatten()
-        from_index = (K >> 1) - (K_sig >> 1)
-        to_index = (K >> 1) + (K_sig - (K_sig >> 1))
+                # [(L, M, K), (L,)]
+                gradient = self.gradient(x_batch, y_batch)
 
-        for i in range(size):
-            s_window = decimated_control_signals[i : i + K, :]
-            x[i, :] = s_window[:, number_of_references:].transpose().flatten()
-            # y[i, :] = np.sum(s_window[s_window.shape[0] // 2, :number_of_references])
-            y[i, :] = np.sum(
-                np.dot(
-                    s_window[from_index:to_index, :number_of_references].transpose(),
-                    h_sig,
+                # (L, M, K)
+                self._h_m *= self._momentum
+                self._h_m += self._learning_rate * gradient[0]
+                self._h -= self._h_m
+
+                # (L,)
+                self.offset_m *= self._momentum
+                self.offset_m += self._learning_rate * gradient[1]
+                self.offset -= self.offset_m
+            if verbose:
+                logger.info(
+                    f"epoch {e}: loss = {self.loss(x, y)}, offset = {np.abs(self.offset)}"
                 )
-            ).flatten()
 
-        logger.info(f"sizeof incoming data {control_signals.nbytes / (1 << 20)} MB")
-        logger.info(f"sizeof outgoing training features {x.nbytes / (1 << 20)} MB")
-        logger.info(f"sizeof outgoing training labels {y.nbytes / (1 << 20)} MB")
+    def call(self, x: np.ndarray):
+        """
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data, shape (nr_samples, M - nr_references).
 
-        return x, y
+        Returns
+        -------
+        y : np.ndarray (L, batch_size)
+            The output data, shape (nr_samples, nr_references).
+        """
+        return np.tensordot(self._h, x, axes=([1, 2], [1, 2])) + self.offset
+
+    def predict(self, x: np.ndarray):
+        """
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data, shape (nr_samples, M - nr_references).
+
+        Returns
+        -------
+        y : np.ndarray (batch_size, L)
+            The output data, shape (nr_samples, nr_references).
+        """
+        return self.call(x)
 
     def predict_full(self, x, y):
         """
@@ -138,9 +164,9 @@ class AdaptiveFIRFilter(tf.keras.Model):
         y: np.ndarray
             The (h * s_reference)(kT) sequence, shape (nr_samples, nr_references).
         """
-        return super().predict(x).flatten() - y.flatten()
+        return self.predict(x) - y
 
-    def get_filters(self, M: int):
+    def get_filters(self):
         """
         Returns the filters of the FIR filter.
 
@@ -156,11 +182,9 @@ class AdaptiveFIRFilter(tf.keras.Model):
             The filter coefficients h and the offset.
             Where the shape of h is (1, M, K) and the shape of offset is (1,).
         """
-        weights = self.get_weights()
-        K = weights[0].size // M
-        return weights[0].reshape((1, M, K), order="C"), weights[1]
+        return self._h.reshape((self.L, self.M, self.K))
 
-    def plot_impulse_response(self, M: int):
+    def plot_impulse_response(self):
         """
         Plots the impulse response of the filter for each channel.
 
@@ -176,30 +200,43 @@ class AdaptiveFIRFilter(tf.keras.Model):
         ax_h : numpy.ndarray
             The axes objects.
         """
-        h = self.get_filters(M)[0]
-        f_h, ax_h = plt.subplots(2, 1, sharex=True)
-        for m in range(M):
-            h_version = h[0, m, :]
-            ax_h[0].plot(
-                np.arange(h_version.size) - h_version.size // 2,
-                h_version,
-                label="$h_{" + f"{m}" + "}$",
-            )
-            ax_h[1].semilogy(
-                np.arange(h_version.size) - h_version.size // 2,
-                np.abs(h_version),
-                label="$h_{" + f"{m}" + "}$",
-            )
-        ax_h[0].legend()
-        ax_h[0].set_title("impulse responses")
-        ax_h[1].set_xlabel("filter taps")
-        ax_h[0].set_ylabel("$h[.]$")
-        ax_h[1].set_ylabel("$|h[.]|$")
-        ax_h[0].grid(True)
-        ax_h[1].grid(True)
+        h = self.get_filters()
+        f_h, ax_h = plt.subplots(2, 2, sharex=True)
+        for l in range(self.L):
+            for m in range(self.M):
+                h_version = h[l, m, :]
+                ax_h[0, 0].plot(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.real(h_version),
+                    label="$real(h_{" + f"{l},{m}" + "})$",
+                )
+                ax_h[0, 1].plot(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.imag(h_version),
+                    label="$imag(h_{" + f"{l},{m}" + "})$",
+                )
+                ax_h[1, 0].semilogy(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.abs(np.real(h_version)),
+                    label="$real(h_{" + f"{l},{m}" + "})$",
+                )
+                ax_h[1, 1].semilogy(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.abs(np.imag(h_version)),
+                    label="$imag(h_{" + f"{l},{m}" + "})$",
+                )
+
+            for m in range(2):
+                ax_h[0, m].legend()
+                ax_h[0, m].set_title(f"impulse responses, L={l}")
+                ax_h[1, m].set_xlabel(f"filter taps, L={l}")
+                ax_h[0, m].set_ylabel("$h[.]$")
+                ax_h[1, m].set_ylabel("$|h[.]|$")
+                ax_h[0, m].grid(True)
+                ax_h[1, m].grid(True)
         return f_h, ax_h
 
-    def plot_bode(self, M: int, linear_frequency: bool = False):
+    def plot_bode(self, linear_frequency: bool = False):
         """
         Plots the Bode diagram for the filter.
 
@@ -218,42 +255,45 @@ class AdaptiveFIRFilter(tf.keras.Model):
         ax_h : numpy.ndarray
             The axes objects.
         """
-        h = self.get_filters(M)[0]
-        f_h, ax_h = plt.subplots(2, 1, sharex=True)
-        for m in range(M):
-            h_version = h[0, m, :]
+        h = self.get_filters()
+        f_h, ax_h = plt.subplots(2, self.L, sharex=True)
+        for l in range(self.L):
+            for m in range(self.M):
+                h_version = h[l, m, :]
 
-            h_freq = np.fft.rfft(h_version)
-            freq = np.fft.rfftfreq(h_version.size)
-
-            if linear_frequency:
-                ax_h[1].plot(
-                    freq,
-                    np.angle(h_freq),
-                    label="$h_{" + f"{m}" + "}$",
-                )
-                ax_h[0].plot(
-                    freq,
-                    20 * np.log10(np.abs(h_freq)),
-                    label="$h_{" + f"{m}" + "}$",
-                )
-            else:
-                ax_h[1].semilogx(
-                    freq,
-                    np.angle(h_freq),
-                    label="$h_{" + f"{m}" + "}$",
-                )
-                ax_h[0].semilogx(
-                    freq,
-                    20 * np.log10(np.abs(h_freq)),
-                    label="$h_{" + f"{m}" + "}$",
-                )
-
-        ax_h[0].legend()
-        ax_h[0].set_title("Bode diagram")
-        ax_h[1].set_xlabel("frequency [Hz]")
-        ax_h[1].set_ylabel("$ \\angle h[.]$ rad")
-        ax_h[0].set_ylabel("$|h[.]|$ dB")
-        ax_h[0].grid(True)
-        ax_h[1].grid(True)
-        return f_h, ax_h
+                h_freq = np.fft.rfft(h_version)
+                freq = np.fft.rfftfreq(h_version.size)
+                if self.L == 1:
+                    ax = ax_h[:]
+                else:
+                    ax = ax_h[:, l]
+                if linear_frequency:
+                    ax[1].plot(
+                        freq,
+                        np.angle(h_freq),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                    ax[0].plot(
+                        freq,
+                        20 * np.log10(np.abs(h_freq)),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                else:
+                    ax[1].semilogx(
+                        freq,
+                        np.angle(h_freq),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                    ax[0].semilogx(
+                        freq,
+                        20 * np.log10(np.abs(h_freq)),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                ax[0].legend()
+                ax[0].set_title(f"Bode diagram, L={l}")
+                ax[1].set_xlabel("frequency [Hz]")
+                ax[1].set_ylabel("$ \\angle h[.]$ rad")
+                ax[0].set_ylabel("$|h[.]|$ dB")
+                ax[0].grid(True)
+                ax[1].grid(True)
+            return f_h, ax_h

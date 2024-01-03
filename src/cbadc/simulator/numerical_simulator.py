@@ -65,7 +65,6 @@ class FullSimulator(_BaseSimulator):
         state_noise_covariance_matrix: np.ndarray = None,
         atol: float = 1e-15,
         rtol: float = 1e-10,
-        modulator: cbadc.analog_system.Modulator = None,
     ):
         super().__init__(
             analog_system,
@@ -79,7 +78,6 @@ class FullSimulator(_BaseSimulator):
         self.res: OdeResult = None
         self._u = np.zeros(self.analog_system.L)
         self._input_signal = len(self.input_signals) > 0
-        self.modulator = modulator
 
     def __next__(self) -> np.ndarray:
         """Computes the next control signal :math:`\mathbf{s}[k]`"""
@@ -109,15 +107,9 @@ class FullSimulator(_BaseSimulator):
                     input_vector[_l] = self.input_signals[_l].evaluate(t + self.t)
 
             control_vector = self.digital_control.control_contribution(t)
-
-            if self.modulator:
-                # logger.info("modulate")
-                control_vector = np.dot(
-                    self.modulator.modulate(t + self.t), control_vector
-                ).flatten()
-
-            delta = self.analog_system.derivative(y, t, input_vector, control_vector)
-            return delta
+            return self.analog_system.derivative(
+                y, t + self.t, input_vector, control_vector
+            )
 
         # while not np.allclose(self.t_rel, self.clock.T, atol=atol_clock):
         # Compute input at time t
@@ -130,16 +122,11 @@ class FullSimulator(_BaseSimulator):
                     self._u[ell] = self.input_signals[ell].evaluate(t_old + self.t)
             # update controls
 
-            state = self.state_vector()
-            if self.modulator:
-                # logger.info("demodulate")
-                state = np.dot(
-                    self.modulator.demodulate(t_old + self.t), state
-                ).flatten()
             self.digital_control.control_update(
                 t_old,
                 self.analog_system.control_observation(
-                    state,
+                    t_old + self.t,
+                    self.state_vector(),
                     self._u,
                     self.digital_control.control_contribution(t_old),
                 ),
@@ -246,6 +233,11 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             initial_state_vector=initial_state_vector,
             state_noise_covariance_matrix=state_noise_covariance_matrix,
         )
+
+        if not analog_system.pre_computable:
+            raise ValueError(
+                "The analog system must be pre-computable to use this simulator."
+            )
 
         self.atol = atol
         self.rtol = rtol
@@ -380,6 +372,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             self.digital_control.control_update(
                 t_old,
                 self.analog_system.control_observation(
+                    t_old + self.t,
                     self.state_vector(),
                     self._u,
                     self.digital_control.control_contribution(t_old),
