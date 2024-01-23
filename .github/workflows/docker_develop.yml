@@ -36,5 +36,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ steps.version.outputs.version }}
+            ${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
