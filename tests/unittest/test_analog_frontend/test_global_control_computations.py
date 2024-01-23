@@ -1,4 +1,3 @@
-import pytest
 from cbadc.analog_frontend import get_global_control, _analog_system_matrix_exponential
 from cbadc.synthesis.leap_frog import get_leap_frog
 import numpy as np

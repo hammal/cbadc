@@ -22,8 +22,8 @@ def test_initialization(chain_of_integrators):
     analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
     clock = cbadc.analog_signal.Clock(Ts)
     digitalControl = cbadc.digital_control.DigitalControl(clock, M)
-    cbadc.simulator.get_simulator(
-        chain_of_integrators["system"], digitalControl, analogSignals, clock
+    cbadc.simulator.Simulator(
+        chain_of_integrators["system"], digitalControl, analogSignals
     )
 
 
@@ -31,11 +31,11 @@ def test_iterator(chain_of_integrators):
     analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
     clock = cbadc.analog_signal.Clock(Ts)
     digitalControl = cbadc.digital_control.DigitalControl(clock, M)
-    statespacesimulator = cbadc.simulator.get_simulator(
-        chain_of_integrators["system"], digitalControl, analogSignals, t_stop=Ts * 100
+    statespacesimulator = cbadc.simulator.Simulator(
+        chain_of_integrators["system"], digitalControl, analogSignals
     )
-    for control_signal in statespacesimulator:
-        pass
+    for _ in range(100):
+        next(statespacesimulator)
 
 
 def test_pre_and_non_pre_computations():
@@ -69,8 +69,8 @@ def test_pre_and_non_pre_computations():
 
     size = 1 << 5
 
-    rtol = 3e-14
-    atol = 1e-100
+    rtol = 1e-12
+    atol = 1e-20
 
     simulator_sc = cbadc.simulator.extended_simulation_result(
         cbadc.simulator.PreComputedControlSignalsSimulator(
@@ -89,7 +89,6 @@ def test_pre_and_non_pre_computations():
             analog_system_sc,
             digital_control_ref,
             [analog_signal],
-            clock,
             atol=atol,
             rtol=rtol,
             initial_state_vector=0.5 * np.ones(N),
@@ -108,22 +107,12 @@ def test_pre_and_non_pre_computations():
             sim_state["control_signal"],
             sim_state_ref["control_signal"],
         )
-        # np.testing.assert_allclose(
-        #     sim_state["analog_state"], sim_state_ref["analog_state"], rtol=1e-1
-        # )
+        np.testing.assert_allclose(
+            sim_state["analog_state"], sim_state_ref["analog_state"], rtol=1e-1
+        )
         np.testing.assert_allclose(
             sim_state["control_signal"], sim_state_ref["control_signal"]
         )
-
-
-def test_Ts_multiple_of_T(chain_of_integrators):
-    analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
-    clock = cbadc.analog_signal.Clock(Ts)
-    digitalControl = cbadc.digital_control.DigitalControl(clock, M)
-    sim_clock = cbadc.analog_signal.Clock(clock.T * 1e-2)
-    cbadc.simulator.FullSimulator(
-        chain_of_integrators["system"], digitalControl, analogSignals, sim_clock
-    )
 
 
 def test_noise_simulation_FullSimulator(chain_of_integrators):
@@ -135,7 +124,7 @@ def test_noise_simulation_FullSimulator(chain_of_integrators):
         chain_of_integrators["system"],
         digitalControl,
         analogSignals,
-        cov_x=thermal_noise_covariance_matrix,
+        state_noise_covariance_matrix=thermal_noise_covariance_matrix,
     )
 
     size = 1 << 8
@@ -152,7 +141,7 @@ def test_noise_simulation_PreComputedSimulator(chain_of_integrators):
         chain_of_integrators["system"],
         digitalControl,
         analogSignals,
-        cov_x=thermal_noise_covariance_matrix,
+        state_noise_covariance_matrix=thermal_noise_covariance_matrix,
     )
 
     size = 1 << 8

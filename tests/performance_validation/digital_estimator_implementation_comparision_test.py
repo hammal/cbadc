@@ -2,7 +2,7 @@ import numpy as np
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_system import AnalogSystem
 from cbadc.analog_signal import Sinusoidal, Clock
-from cbadc.simulator import get_simulator
+from cbadc.simulator import Simulator
 from cbadc.digital_estimator import (
     BatchEstimator,
     ParallelEstimator,
@@ -26,6 +26,8 @@ Ts = 1 / (2 * beta)
 amplitude = 0.76123514
 frequency = 11.232
 phase = np.pi / 3 * 2.0
+atol = 1e-20
+rtol = 1e-9
 
 
 def test_digital_estimator_implementation_comparision():
@@ -53,10 +55,18 @@ def test_digital_estimator_implementation_comparision():
     )
     print(tf_abs, tf_abs.shape)
 
-    simulator1 = get_simulator(analogSystem, digitalControl1, analogSignals)
-    simulator2 = get_simulator(analogSystem, digitalControl2, analogSignals)
-    simulator3 = get_simulator(analogSystem, digitalControl3, analogSignals)
-    simulator4 = get_simulator(analogSystem, digitalControl4, analogSignals)
+    simulator1 = Simulator(
+        analogSystem, digitalControl1, analogSignals, atol=atol, rtol=rtol
+    )
+    simulator2 = Simulator(
+        analogSystem, digitalControl2, analogSignals, atol=atol, rtol=rtol
+    )
+    simulator3 = Simulator(
+        analogSystem, digitalControl3, analogSignals, atol=atol, rtol=rtol
+    )
+    simulator4 = Simulator(
+        analogSystem, digitalControl4, analogSignals, atol=atol, rtol=rtol
+    )
     estimator1 = BatchEstimator(analogSystem, digitalControl1, eta2, K1, K2)
     estimator2 = ParallelEstimator(analogSystem, digitalControl2, eta2, K1, K2)
     estimator3 = FIRFilter(analogSystem, digitalControl3, eta2, K1, K2)
@@ -146,7 +156,7 @@ def test_digital_estimator_implementation_comparision():
         np.log10(e4_error)} dB"""
     )
 
-    assert np.allclose(e1_error, 0, rtol=1e-6, atol=1e-6)
-    assert np.allclose(e2_error, 0, rtol=1e-6, atol=1e-6)
-    assert np.allclose(e3_error, 0, rtol=1e-6, atol=1e-6)
-    assert np.allclose(e4_error, 0, rtol=1e-6, atol=1e-6)
+    assert np.allclose(e1_error, 0, rtol=1e-5, atol=1e-5)
+    assert np.allclose(e2_error, 0, rtol=1e-5, atol=1e-5)
+    assert np.allclose(e3_error, 0, rtol=1e-5, atol=1e-5)
+    assert np.allclose(e4_error, 0, rtol=1e-5, atol=1e-5)

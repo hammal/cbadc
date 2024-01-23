@@ -9,6 +9,9 @@ from cbadc.analog_frontend import AnalogFrontend
 from cbadc.simulator import PreComputedControlSignalsSimulator
 import sympy as sp
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def g_i(N: int):
@@ -23,8 +26,8 @@ def g_i(N: int):
     :  `float`
         the computed integration factor.
     """
-    omega, omega_p, gamma = sp.symbols('w w_p, g', real=True, positive=True)
-    n = sp.symbols('n', integer=True, positive=True)
+    omega, omega_p, gamma = sp.symbols("w w_p, g", real=True, positive=True)
+    n = sp.symbols("n", integer=True, positive=True)
     determinant = sp.Product(
         sp.I * (omega + omega_p * sp.cos(n * sp.pi / (N + 1))), (n, 1, N)
     )
@@ -67,105 +70,47 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
         returns an analog system and digital control tuple
     """
 
-    if all(param in kwargs for param in ('ENOB', 'N', 'BW')):
-        SNR = enob_to_snr(kwargs['ENOB'])
+    if all(param in kwargs for param in ("ENOB", "N", "BW")):
+        SNR = enob_to_snr(kwargs["ENOB"])
         snr = snr_from_dB(SNR)
-        N = kwargs['N']
-        omega_BW = 2.0 * np.pi * kwargs['BW']
-        xi = kwargs.get('xi', 4e-3)
-        gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
+        N = kwargs["N"]
+        omega_BW = 2.0 * np.pi * kwargs["BW"]
+        xi = kwargs.get("xi", 4e-3)
+        delta = kwargs.get("delta", 1.0)
+        gamma_over_delta = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
+        gamma = gamma_over_delta * delta
         omega_p = omega_BW / 2.0
         # omega_p /= np.cos(N * np.pi / (N + 1.0))
         beta = -omega_p * (2.0 * gamma)
         alpha = omega_p / (2.0 * gamma)
         rho = 0
-        if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
-            rho = -(omega_BW / 2.0) / gamma * 1e-2 * 0
-        T = 1.0 / np.abs(2.0 * beta)
+        T = 1.0 / np.abs(2.0 * omega_BW * gamma / delta)
         kappa = beta
-        t0 = T * kwargs.get('excess_delay', 0.0)
-        if kwargs.get('digital_control') == 'switch-cap':
-            scale = 5e1
-            tau = 1.0 / (np.abs(beta) * scale)
-            v_cap = 0.5
-            kappa = v_cap * beta * scale
-            impulse_response = RCImpulseResponse(tau, t0)
-            digital_control = DigitalControl(
-                Clock(T), N, impulse_response=impulse_response
-            )
-        else:
-            impulse_response = StepResponse(t0)
-            digital_control = DigitalControl(
-                Clock(T), N, impulse_response=impulse_response
-            )
-            digital_control = DigitalControl(Clock(T), N)
-        if 'opt' in kwargs:
-            amplification_scale_vector = np.array([1.01 ** (n) for n in range(N)])
-            analog_system = LeapFrog(
-                beta * amplification_scale_vector,
-                alpha / amplification_scale_vector,
-                rho * np.ones(N),
-                kappa * np.eye(N),
-            )
-        else:
-            analog_system = LeapFrog(
-                beta * np.ones(N),
-                alpha * np.ones(N - 1),
-                rho * np.ones(N),
-                kappa * np.eye(N),
-            )
-        return AnalogFrontend(analog_system, digital_control)
-    elif all(param in kwargs for param in ('SNR', 'N', 'BW')):
-        return get_leap_frog(ENOB=snr_to_enob(kwargs['SNR']), **kwargs)
-    elif all(param in kwargs for param in ('OSR', 'N', 'BW')):
-        N = kwargs['N']
-        BW = kwargs['BW']
-        OSR = kwargs['OSR']
+    elif all(param in kwargs for param in ("OSR", "N", "BW")):
+        N = kwargs["N"]
+        BW = kwargs["BW"]
+        OSR = kwargs["OSR"]
         T = 1.0 / (2 * OSR * BW)
         omega_BW = 2.0 * np.pi * BW
-        beta = 1 / (2 * T)
+        delta = kwargs.get("delta", 1.0)
+        gamma = delta * OSR / (2 * np.pi)
+        beta = gamma * omega_BW
         alpha = -((omega_BW / 2) ** 2) / beta
         kappa = beta
         rho = 0
-        digital_control = DigitalControl(Clock(T), N)
-        if 'opt' in kwargs and kwargs['opt'] == True:
-            amplification_scale_vector = np.array([1.0, 1.0, 1.0, 1.0, 1.0] + [1] * N)
-            control_scale_vector = np.ones(N)
-            for m in range(N - 1):
-                analog_system = LeapFrog(
-                    beta * amplification_scale_vector[:N],
-                    alpha / amplification_scale_vector[: N - 1],
-                    rho * np.ones(N),
-                    kappa * np.diag(control_scale_vector[:N]),
-                )
-                sim = PreComputedControlSignalsSimulator(
-                    analog_system, digital_control, [ConstantSignal(1.0)]
-                )
-                control_scale_vector[m + 1] = np.linalg.norm(
-                    sim._pre_computed_control_matrix[m + 1, :], ord=1
-                )
-                # amplification_scale_vector[m + 1] = 1.0 / control_scale_vector[m + 1]
-            analog_system = LeapFrog(
-                beta * amplification_scale_vector[:N],
-                alpha / amplification_scale_vector[: N - 1],
-                rho * np.ones(N),
-                kappa * np.diag(control_scale_vector[:N]),
-            )
-            print(f"control_scale_vector:\n{control_scale_vector}")
-            print(f"amplification_scale_vector:\n{amplification_scale_vector}")
-        else:
-            analog_system = LeapFrog(
-                beta * np.ones(N),
-                alpha * np.ones(N - 1),
-                rho * np.ones(N),
-                kappa * np.eye(N),
-            )
-        return AnalogFrontend(analog_system, digital_control)
-    elif all(param in kwargs for param in ('OSR', 'N', 'T')):
-        N = kwargs['N']
-        T = kwargs.pop('T')
-        OSR = kwargs['OSR']
-        BW = 1.0 / (2 * OSR * T)
+    elif all(param in kwargs for param in ("SNR", "N", "BW")):
+        return get_leap_frog(ENOB=snr_to_enob(kwargs["SNR"]), **kwargs)
+    elif all(param in kwargs for param in ("OSR", "N", "T")):
+        T = kwargs.pop("T")
+        BW = 1.0 / (2 * kwargs["OSR"] * T)
+        return get_leap_frog(BW=BW, **kwargs)
+    else:
+        raise NotImplementedError
 
-        return get_leap_frog(N=N, OSR=OSR, BW=BW)
-    raise NotImplementedError
+    analog_system = LeapFrog(
+        beta * np.ones(N),
+        alpha * np.ones(N - 1),
+        rho * np.ones(N),
+        np.diag([kappa * delta**n for n in range(N)]),
+    )
+    return AnalogFrontend(analog_system, DigitalControl(Clock(T), N))

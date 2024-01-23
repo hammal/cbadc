@@ -1,3 +1,6 @@
+## 0.3.0
+Major code refactoring with improved python simulators
+
 ## 0.2.3
 Major additions with the [circuit](https://cbadc.readthedocs.io/en/latest/autosummary/cbadc.circuit.html) submodule, enabling circuit simulations in ngspice.
 

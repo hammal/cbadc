@@ -67,7 +67,6 @@ def bruteForceCare(
             logger.warning("V_frw:\n{}\n".format(V))
             logger.warning("V_frw.dot(V_frw):\n{}".format(np.dot(V, V)))
             raise FloatingPointError
-        # print(np.linalg.norm(V - V_tmp, ord="fro"))
         tau *= shrink
     return np.array(V, dtype=np.double)
 

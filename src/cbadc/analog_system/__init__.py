@@ -8,6 +8,7 @@ from .chain_of_integrators import ChainOfIntegrators
 from .leap_frog import LeapFrog
 from .filters import ButterWorth, Cauer, ChebyshevI, ChebyshevII, IIRDesign
 from .topology import chain, stack, sos2abcd, tf2abcd, zpk2abcd
+from .modulator import SineWaveModulator, SquareWaveModulator
 
 from . import analog_system
 from . import chain_of_integrators

@@ -13,16 +13,9 @@ from typing import Union
 from .numerical_simulator import (
     FullSimulator,
     PreComputedControlSignalsSimulator,
-    NonLinearSimulator,
 )
-from .analytical_simulator import AnalyticalSimulator
-from .mp_simulator import MPSimulator
+from .numerical_simulator import PreComputedControlSignalsSimulator as Simulator
 from .numpy_simulator import NumpySimulator
 from .utilities import extended_simulation_result
-from .wrapper import get_simulator, SimulatorType
 
-from ..simulation_event import SimulationEvent, TimeEvent, OutOfBounds
-
-_valid_simulators = Union[
-    FullSimulator, PreComputedControlSignalsSimulator, AnalyticalSimulator, MPSimulator
-]
+_valid_simulators = Union[FullSimulator, PreComputedControlSignalsSimulator]

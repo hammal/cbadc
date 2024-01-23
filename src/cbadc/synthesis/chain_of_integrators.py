@@ -58,40 +58,39 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
     """
     finite_gain = kwargs.get("finite_gain", False)
 
-    if all(param in kwargs for param in ('ENOB', 'N', 'BW')):
-        SNR = enob_to_snr(kwargs['ENOB'])
+    if all(param in kwargs for param in ("ENOB", "N", "BW")):
+        SNR = enob_to_snr(kwargs["ENOB"])
         snr = snr_from_dB(SNR)
-        N = kwargs['N']
-        omega_3dB = 2.0 * np.pi * kwargs['BW']
+        N = kwargs["N"]
+        omega_3dB = 2.0 * np.pi * kwargs["BW"]
         # xi = 1e-1 / (np.pi * (2 * N * 0 + 1))
-        xi = kwargs.get('xi', 2.3e-3)
+        xi = kwargs.get("xi", 2.3e-3)
         gamma = (xi / g_i(N) * snr) ** (1.0 / (2.0 * N))
         beta = -gamma * omega_3dB
-        if 'local_feedback' in kwargs and kwargs['local_feedback'] is True:
+        if "local_feedback" in kwargs and kwargs["local_feedback"] is True:
             rho = -omega_3dB / gamma
         else:
-            rho = kwargs.get('rho', 0.0)
+            rho = kwargs.get("rho", 0.0)
         kappa = beta
         T = 1.0 / np.abs(2.0 * beta)
         all_ones = np.ones(N)
         analog_system = ChainOfIntegrators(
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
-        t0 = T * kwargs.get('excess_delay', 0.0)
-        if kwargs.get('digital_control') == 'switch_cap':
+        t0 = T * kwargs.get("excess_delay", 0.0)
+        if kwargs.get("digital_control") == "switch_cap":
             scale = 5e1
             tau = 1.0 / (np.abs(beta) * scale)
             v_cap = 0.5
             kappa = v_cap * beta * scale
-            impulse_response = RCImpulseResponse(tau, t0)
+            impulse_responses = [RCImpulseResponse(tau, t0) for _ in range(N)]
             digital_control = DigitalControl(
-                Clock(T), N, impulse_response=impulse_response
+                Clock(T), N, impulse_response=impulse_responses
             )
-            # print(impulse_response.evaluate(T))
         else:
-            impulse_response = StepResponse(t0)
+            impulse_responses = [StepResponse(t0) for _ in range(N)]
             digital_control = DigitalControl(
-                Clock(T), N, impulse_response=impulse_response
+                Clock(T), N, impulse_response=impulse_responses
             )
             digital_control = DigitalControl(Clock(T), N)
 
@@ -103,16 +102,16 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
             analog_system.A += -omega_3dB / (gamma ** (2 * N)) * np.eye(N)
 
         return AnalogFrontend(analog_system, digital_control)
-    elif all(param in kwargs for param in ('SNR', 'N', 'BW')):
-        return get_chain_of_integrator(ENOB=snr_to_enob(kwargs['SNR']), **kwargs)
-    elif all(param in kwargs for param in ('OSR', 'N', 'BW')):
-        N = kwargs['N']
-        BW = kwargs['BW']
-        OSR = kwargs['OSR']
+    elif all(param in kwargs for param in ("SNR", "N", "BW")):
+        return get_chain_of_integrator(ENOB=snr_to_enob(kwargs["SNR"]), **kwargs)
+    elif all(param in kwargs for param in ("OSR", "N", "BW")):
+        N = kwargs["N"]
+        BW = kwargs["BW"]
+        OSR = kwargs["OSR"]
         T = 1.0 / (2 * BW * OSR)
         beta = 1 / (2 * T)
         kappa = beta
-        rho = kwargs.get('rho', 0.0)
+        rho = kwargs.get("rho", 0.0)
         analog_system = ChainOfIntegrators(
             beta * np.ones(N),
             rho * np.ones(N),
@@ -120,12 +119,12 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         )
         digital_control = DigitalControl(Clock(T), N)
         return AnalogFrontend(analog_system, digital_control)
-    elif all(param in kwargs for param in ('OSR', 'N', 'T')):
-        N = kwargs['N']
-        T = kwargs['T']
-        OSR = kwargs['OSR']
+    elif all(param in kwargs for param in ("OSR", "N", "T")):
+        N = kwargs["N"]
+        T = kwargs["T"]
+        OSR = kwargs["OSR"]
         BW = 1.0 / (2 * T * OSR)
-        rho = kwargs.get('rho', 0.0)
+        rho = kwargs.get("rho", 0.0)
         return get_chain_of_integrator(N=N, OSR=OSR, BW=BW, rho=rho)
     # if all(param in kwargs for param in ('ENOB', 'beta', 'BW')):
     #     snr = snr_from_dB(enob_to_snr(kwargs['ENOB']))

@@ -50,7 +50,7 @@ def test_verify_get_white_noise_leap_frog():
         analog_frontend.analog_system,
         analog_frontend.digital_control,
         input_signals,
-        cov_x=noise_covariance_matrix,
+        state_noise_covariance_matrix=noise_covariance_matrix,
     )
     digital_estimator(simulator)
     size = 1 << 8

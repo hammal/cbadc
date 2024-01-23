@@ -1,8 +1,9 @@
 """The default digital control."""
+from typing import List
 import numpy as np
-from cbadc.analog_signal import StepResponse, _valid_clock_types, Clock
+from cbadc.analog_signal import _valid_clock_types, Clock
+from cbadc.analog_signal.impulse_responses import StepResponse
 from cbadc.analog_signal.impulse_responses import _ImpulseResponse
-from cbadc.simulation_event import TimeEvent
 
 
 class DigitalControl:
@@ -55,26 +56,50 @@ class DigitalControl:
         self,
         clock: _valid_clock_types,
         M: int,
-        t0: float = 0.0,
-        impulse_response: _ImpulseResponse = StepResponse(),
+        impulse_response: List[_ImpulseResponse] = None,
+        t_delay: float = 0.0,
     ):
         if not isinstance(clock, Clock):
             raise Exception("Clock must derive from cbadc.analog_signal.Clock")
         self.clock = clock
         self.M = M
         self.M_tilde = M
-        self._t_next = t0
-        self._t_last_update = self._t_next * np.ones(self.M)
-        self._s = np.zeros(self.M, dtype=np.int8)
+        if t_delay < 0:
+            raise Exception("t_delay must be non-negative")
+        else:
+            self.t_delay = t_delay
+        self._s = np.zeros(self.M, dtype=float)
         self._s[:] = False
-        self._impulse_response = [impulse_response for _ in range(self.M)]
+        self._initialize_impulse_response(clock, impulse_response)
         self._control_decisions = np.zeros(self.M, dtype=np.double)
-        # initialize dac values
-        self.control_update(self._t_next, np.zeros(self.M))
+        self._old_control_decisions = np.zeros_like(self._control_decisions)
+        self._setup_clock_phases()
 
-    def jitter(self, t: float):
-        "Jitter the phase by t"
-        self._t_next += t
+    def _setup_clock_phases(self):
+        self.clock_pulses = [0.0, self.clock.T]
+        # this adds unique clock pulses in sorted order
+        [
+            self.clock_pulses.append(imp.t0)
+            for imp in self._impulse_response
+            if imp.t0 not in self.clock_pulses
+        ]
+
+    def _initialize_impulse_response(self, clock, impulse_response):
+        if impulse_response is not None:
+            if len(impulse_response) != self.M:
+                raise Exception("must be M speciefied impulse responses")
+            t0s = np.array([x.t0 for x in impulse_response])
+            if (
+                (t0s < 0.0).any()
+                or (t0s > self.clock.T).any()
+                or (t0s[:-1] > t0s[1:]).any()
+            ):
+                raise Exception("Invalid impulse respones")
+            self._mulit_phase = np.sum(t0s) > 0.0
+            self._impulse_response = impulse_response
+        else:
+            self._impulse_response = [StepResponse(0.0) for _ in range(self.M)]
+            self._mulit_phase = False
 
     def reset(self, t0: float = 0.0):
         """Reset the digital control clock
@@ -84,8 +109,10 @@ class DigitalControl:
         t0: `float`, `optional`
             time to set next update at, defaults to 0.
         """
-        self._t_next = t0
-        self._t_last_update = t0 * np.ones(self.M)
+        if t0 != 0.0:
+            raise DeprecationWarning("t0 will be removed in future version.")
+        self._s = np.zeros(self.M, dtype=np.int8)
+        self._control_decisions = np.zeros(self.M, dtype=np.double)
 
     def control_update(self, t: float, s_tilde: np.ndarray):
         """Updates the control at time t if valid.
@@ -94,47 +121,17 @@ class DigitalControl:
         ----------
         t : `float`
             time at which the digital control i evaluated.
+            For t > clock.T the control is updated.
         s_tilde : `array_like`, shape=(M_tilde,)
             state vector evaluated at time t
         """
-        # print(f"check closeness ({t}, {self._t_next})")
-        # Check if time t has passed the next control update
-        if np.allclose(t, self._t_next, atol=self.clock._tt_2) or t > self._t_next:
-            # print("close")
-            # if so update the control signal state
-            # print(f"digital_control set for {t} and {s_tilde}")
-            self._s = s_tilde >= 0
-            self._t_last_update[:] = t
-            self._t_next = self._t_next + self.clock.T
-            # DAC
-            self._control_decisions = np.asarray(2 * self._s - 1, dtype=np.double)
-        # return self._dac_values * self._impulse_response(t - self._t_next + self.T)
-
-    def event_list(self):
-        """
-        Return the event list of the digital control.
-
-        Returns
-        -------
-        : [(t, x)->r]
-            the list of event functions.
-        """
-
-        # The next control update
-        control_update = TimeEvent(self._t_next, name='control_update', terminal=True)
-
-        event_list = [control_update]
-
-        # The start of delayed impulse responses
         for m in range(self.M):
-            response = TimeEvent(
-                self._t_last_update[m] - self._impulse_response[m].t0,
-                name=f"impulse_response_{m}",
-                terminal=False,
-            )
-            event_list.append(response)
-
-        return event_list
+            # Comparator
+            if np.allclose(t, self._impulse_response[m].t0, atol=self.clock._tt_2):
+                self._s[m] = s_tilde[m] >= 0.0
+                # DAC
+                self._old_control_decisions[m] = self._control_decisions[m]
+                self._control_decisions[m] = 2.0 * self._s[m] - 1.0
 
     def control_signal(self) -> np.ndarray:
         """Returns the current control state, i.e, :math:`\mathbf{s}[k]`.
@@ -149,7 +146,7 @@ class DigitalControl:
         >>> dc = DigitalControl(Clock(T), M)
         >>> _ = dc.control_contribution(T)
         >>> dc.control_signal()
-        array([ True,  True,  True,  True])
+        array([0., 0., 0., 0.])
 
 
         Returns
@@ -173,11 +170,19 @@ class DigitalControl:
             the control signal :math:`\mathbf{s}(t)`
 
         """
-        # Check if time t has passed the next control update
-        impulse_response = np.zeros(self.M)
+        temp = np.zeros(self.M)
         for m in range(self.M):
-            impulse_response[m] = self._impulse_response[m](t - self._t_last_update[m])
-        return self._control_decisions * impulse_response
+            if t < self._impulse_response[m].t0:
+                temp[m] = self._impulse_response[m](t + self.clock.T)
+            else:
+                temp[m] = self._impulse_response[m](t)
+
+            if t < self.t_delay:
+                temp[m] *= self._old_control_decisions[m]
+            else:
+                temp[m] *= self._control_decisions[m]
+
+        return temp
 
     def impulse_response(self, m: int, t: float) -> np.ndarray:
         """The impulse response of the corresponding DAC waveform

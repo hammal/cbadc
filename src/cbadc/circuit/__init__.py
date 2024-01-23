@@ -1,3 +1,4 @@
+"""Generate circuit models through netlists"""
 from enum import Enum
 from typing import Any, List, Dict, Set, Tuple, Union
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -16,26 +17,26 @@ _template_env = Environment(
 
 
 class SpiceDialect(Enum):
-    ngspice = 'ngspice'
-    specter = 'spectre'
+    ngspice = "ngspice"
+    specter = "spectre"
 
 
 class ComponentType(Enum):
-    resistor = 'R'
-    capacitor = 'C'
-    inductor = 'L'
-    voltage_source = ('V',)
-    voltage_controlled_voltage_source = 'E'
-    current_controlled_voltage_source = 'H'
-    voltage_controlled_current_source = 'F'
-    current_controlled_current_source = 'G'
+    resistor = "R"
+    capacitor = "C"
+    inductor = "L"
+    voltage_source = ("V",)
+    voltage_controlled_voltage_source = "E"
+    current_controlled_voltage_source = "H"
+    voltage_controlled_current_source = "F"
+    current_controlled_current_source = "G"
     current_source = "I"
-    switch = 'S'
-    diode = 'D'
-    mosfet = 'M'
-    bipolar = 'Q'
-    sub_circuit = 'X'
-    xspice = 'A'
+    switch = "S"
+    diode = "D"
+    mosfet = "M"
+    bipolar = "Q"
+    sub_circuit = "X"
+    xspice = "A"
 
 
 class Terminal:
@@ -66,7 +67,7 @@ class Ground(Terminal):
     """The ground terminal"""
 
     def __init__(self):
-        self.name = '0'
+        self.name = "0"
         self.id = 0
         self.hidden = False
 
@@ -356,7 +357,7 @@ class SubCircuitElement(CircuitElement):
             raise ValueError("Instance name must be a non-empty string")
 
         # Make sure the instance name is valid
-        if instance_name[0] != 'X':
+        if instance_name[0] != "X":
             instance_name = f"X{instance_name}"
 
         super().__init__(
@@ -376,12 +377,12 @@ class SubCircuitElement(CircuitElement):
 
     def get_ngspice(self, connections: Union[Dict[Terminal, Port], None] = None):
         connections = self._merge_connections_downstream(connections)
-        return _template_env.get_template('ngspice/sub_circuit.cir.j2').render(
+        return _template_env.get_template("ngspice/sub_circuit.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'subckt_name': self.subckt_name,
-                'terminals': self._get_terminal_names(connections),
-                'parameters': self._parameters_dict,
+                "instance_name": self.instance_name,
+                "subckt_name": self.subckt_name,
+                "terminals": self._get_terminal_names(connections),
+                "parameters": self._parameters_dict,
             }
         )
 
@@ -401,12 +402,12 @@ class SubCircuitElement(CircuitElement):
 
     def get_spectre(self, connections: Union[Dict[Terminal, Port], None] = None):
         connections = self._merge_connections_downstream(connections)
-        return _template_env.get_template('spectre/sub_circuit.cir.j2').render(
+        return _template_env.get_template("spectre/sub_circuit.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'subckt_name': self.subckt_name,
-                'terminals': self._get_terminal_names(connections),
-                'parameters': self._parameters_dict,
+                "instance_name": self.instance_name,
+                "subckt_name": self.subckt_name,
+                "terminals": self._get_terminal_names(connections),
+                "parameters": self._parameters_dict,
             }
         )
 
@@ -540,7 +541,7 @@ class SubCircuitElement(CircuitElement):
         for conn in connections:
             self.connect(conn[0], conn[1])
 
-    def connect(self, first: Terminal, second: Terminal, name=''):
+    def connect(self, first: Terminal, second: Terminal, name=""):
         """Add a connection between two terminals
 
         Parameters
@@ -595,7 +596,7 @@ class SubCircuitElement(CircuitElement):
             elif second.name:
                 self._internal_connections[first].name = second.name
             else:
-                self._internal_connections[first].name = ''
+                self._internal_connections[first].name = ""
 
     def check_connections(self):
         """Check that all terminals are connected
@@ -689,9 +690,9 @@ class NetlistElement(SubCircuitElement):
 
     def __init__(self, netlist: str):
         # check if netlist is a filename
-        if netlist.endswith(('.txt', '.net', '.cir')):
+        if netlist.endswith((".txt", ".net", ".cir")):
             # if so read from the file
-            with open(netlist, 'r') as f:
+            with open(netlist, "r") as f:
                 netlist = f.read()
 
         # Parse netlist
@@ -699,18 +700,18 @@ class NetlistElement(SubCircuitElement):
         first_line = netlist_lines[0].split()
 
         # Check for .subckt statement
-        if not first_line[0].lower() == '.subckt':
+        if not first_line[0].lower() == ".subckt":
             raise ValueError(
-                f'Netlist does not start with .subckt, but with {first_line[0]}'
+                f"Netlist does not start with .subckt, but with {first_line[0]}"
             )
 
         # Check for .endc statement
         _endc_statement = False
         for line in netlist_lines[1:]:
-            if line.split()[0].lower() == '.ends':
+            if line.split()[0].lower() == ".ends":
                 _endc_statement = True
         if not _endc_statement:
-            raise ValueError('Netlist does have a required .ends statement')
+            raise ValueError("Netlist does have a required .ends statement")
 
         # Extract subcircuit and terminal names.
         subckt_name = first_line[1].lower()
@@ -719,7 +720,7 @@ class NetlistElement(SubCircuitElement):
         self._netlist = netlist
 
         super().__init__(
-            f'X{next(self._id_iter)}',
+            f"X{next(self._id_iter)}",
             subckt_name,
             terminals,
         )

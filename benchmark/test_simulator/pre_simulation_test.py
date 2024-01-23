@@ -6,7 +6,6 @@ from cbadc.simulator.numerical_simulator import (
     FullSimulator,
     PreComputedControlSignalsSimulator,
 )
-from cbadc.simulator.analytical_simulator import AnalyticalSimulator
 
 beta = 6250.0
 rho = -62.5
@@ -41,12 +40,5 @@ def test_pre_full_solver_algorithm(benchmark):
 def test_pre_pre_computed_control_algorithm(benchmark):
     def setup():
         PreComputedControlSignalsSimulator(analogSystem, digitalControl, analogSignals)
-
-    benchmark(setup)
-
-
-def test_pre_analytical_algorithm(benchmark):
-    def setup():
-        AnalyticalSimulator(analogSystem, digitalControl, analogSignals)
 
     benchmark(setup)

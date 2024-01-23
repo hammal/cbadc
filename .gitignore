@@ -37,3 +37,8 @@ tests/cadence_validation/spectre_sim.log
 tests/cadence_validation/analog_frontend.vams
 tests/cadence_validation/.cadence/
 docs/source/autosummary
+*.png
+*stderr
+*stdout
+*.raw
+notebooks

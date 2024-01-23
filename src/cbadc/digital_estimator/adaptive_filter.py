@@ -1,313 +1,295 @@
-"""an adaptive FIR filter.
-"""
-from typing import Tuple
-from .fir_estimator import FIRFilter
-
+from typing import Any, Dict
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy import signal
 import logging
+import cbadc
 
 logger = logging.getLogger(__name__)
 
 
-class AdaptiveFilter(FIRFilter):
-    """An adaptive filter
+class AdaptiveFIRFilter:
+    """
+    Adaptive FIR filter model.
 
-    Parameters
-    ----------
-    initial_filter: :py:class:`cbadc.digital_estimator.FIRFilter`
-        an initial filter to setup initial filter parameters and coefficients.
-    reference_control_id: `int`
-        an index indicating which control signal s_0, ..., s_M
-        (and corresponding filter coefficients) are considered fixed references.
-    size: `int`, `optional`
-        a possible buffer size determining how many data points that should be
-        used. Defaults to 0 which is interpreted as no buffered signals.
-    delta: `float`
-        a regularization parameter for the recursive least squares algorithm, defaults to 1e-3.
+    The model is a simple linear model with a single dense layer (in ML language).
+    Alternatively, a simple sum of FIR filters.
+
+    To better understand the usecase of this class see
+    [this notebooke](https://github.com/hammal/cbadc/blob/develop/notebooks/calibrate_a_leapfrog_ADC.ipynb).
+
     """
 
-    def __init__(
-        self,
-        initial_filter: FIRFilter,
-        reference_control_id: int,
-        size: int = 0,
-        delta=1e6,
-    ):
-        self.K1 = initial_filter.K1
-        self.K2 = initial_filter.K2
-        self.K3 = initial_filter.K3
-        self._filter_lag = self.K2 - 2
-        self.analog_system = initial_filter.analog_system
-        self.digital_control = initial_filter.digital_control
-        self.eta2 = initial_filter.eta2
-        self.control_signal = initial_filter.control_signal
-        self.number_of_iterations = initial_filter.number_of_iterations
-        self._iteration = 0
-        self.Ts = initial_filter.Ts
-        self.mid_point = initial_filter.mid_point
-        self.downsample = int(initial_filter.downsample)
-        self._temp_controls = np.zeros((self.downsample, self.analog_system.M))
-        self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
-        self.h = initial_filter.h[:, :, :]
-        self._control_signal_valued = np.zeros((self.K3, self.analog_system.M))
-        self.offset = initial_filter.offset
-        self.fixed_point = False
-        self.ref_id = reference_control_id
-        self.mask = np.ones(self.digital_control.M, dtype=bool)
-        self.mask[self.ref_id] = False
-        self._number_of_gradient_evaluations = 0
-        self.gradient_steps = []
-        self.step_size_template = np.ones_like(self.h)
-        self._G = None
-        self._Delta_Theta = None
-        self._time_index = 0
-        if size < 0:
-            raise Exception("size must be nonnegative number.")
-        if size > 0:
-            self.size = size
-            self._training_data_s = np.zeros(
-                (
-                    self.size,
-                    initial_filter.K3,
-                    initial_filter.analog_system.M,
-                )
-            )
-            self._training_data_collected = False
-            self._index = 0
-            self.buffered_data = True
-            self._gradient = self._gradient_buffered
-        else:
-            self.buffered_data = False
-            self._gradient = self._gradient_unbuffered
+    def __init__(self, M, K, L=1, dtype=np.float64):
+        self.K = K
+        self.L = L
+        self.M = M
+        self._h_m = np.zeros((L, M, K), dtype=dtype)
+        self._h = np.zeros((L, M, K), dtype=dtype)
+        self.offset = np.zeros((L, 1), dtype=dtype)
+        self.offset_m = np.zeros((L,), dtype=dtype)
 
-        # Recursive least squares
-        self._V = np.zeros(
-            (self.analog_system.L, self.analog_system.M, self.K3, self.K3)
-        )
-        #  one offset per input channel L
-        self._offset_V = np.zeros((self.analog_system.L, 1))
+    def compile(self, optimizer: Dict[str, Any]):
+        """
+        Compiles the model.
 
-        one_over_delta = 1 / delta
-        for l in range(self.analog_system.L):
-            self._offset_V[l] = one_over_delta
-            for m in range(self.analog_system.M):
-                self._V[l, m, :, :] = np.eye(self.K3) * one_over_delta
+        Parameters
+        ----------
+        optimizer : Dict[str, Any]
+            The optimizer to use.
+        """
+        self._learning_rate = optimizer.get("learning_rate", 1e-5)
+        self._momentum = optimizer.get("momentum", 0.1)
 
-    def _gradient_buffered(self, stochastic_delay=0) -> Tuple[np.ndarray, float, float]:
-        if not self._training_data_collected:
-            self._fill_up_sample_buffer(stochastic_delay)
-            self._training_data_collected = True
+    def loss(self, x: np.ndarray, y: np.ndarray):
+        """
+        Computes the loss function.
 
-        error_signal = (
-            np.tensordot(
-                self.h, self._training_data_s[self._index, :, :], axes=((1, 2), (0, 1))
-            )
-            + self.offset
-        )
-        gradient = (
-            2 * error_signal * self._training_data_s[self._index, :, :][:, self.mask]
-        )
-        offset_gradient = 2 * error_signal
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The output data.
 
-        self._index = np.random.randint(0, self.size)
-        # self._index = (self._index + 1) % self.size
+        Returns
+        -------
+        loss : float
+        """
+        return np.linalg.norm(self.call(x) - y, axis=1) ** 2 / x.shape[0]
 
-        return (gradient, error_signal, offset_gradient)
+    def gradient(self, x: np.ndarray, y: np.ndarray):
+        """
+        Computes the gradient of the loss function with respect to the filter
+        coefficients.
 
-    def _fill_up_sample_buffer(self, stochastic_delay):
-        logger.info("Initializing training data")
-        for index in range(self.size):
-            self.__next__()
-            self._training_data_s[index, :, :] = self._control_signal_valued[:, :]
-            if stochastic_delay > 0:
-                for _ in range(np.random.randint(0, stochastic_delay)):
-                    self.__next__()
-        # self.h.shape -> (L, K3, M)
-        # self._control_signal_valued.shape -> (K3, M)
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The output data.
 
-    def _gradient_unbuffered(
-        self, stochastic_delay=0
-    ) -> Tuple[np.ndarray, float, float]:
-        # self.h.shape -> (L, K3, M)
-        # self._control_signal_valued.shape -> (K3, M)
-        error_signal = self.sample(stochastic_delay)
+        Returns
+        -------
+        gradient : [np.ndarray (L, M, K), np.ndarray (L,)]
+            The gradient of the loss function with respect to the filter
+            coefficients.
+        """
+        # (L, batch_size)
+        error = self.call(x) - y
         return (
-            2 * error_signal * self._control_signal_valued[:, self.mask],
-            error_signal,
-            2 * error_signal,
+            np.tensordot(
+                error / error.shape[1],
+                np.conj(x),
+                axes=([1], [0]),
+            ),
+            error.mean(axis=1),
         )
 
-    def sample(self, delay: int = 0):
-        error_signal = self.__next__()
-        if delay > 0:
-            for _ in range(np.random.randint(0, delay)):
-                error_signal = self.__next__()
-        return error_signal
-
-    def _recursive_least_squares_unbuffered(self, s, estimate, forgetting_factor):
-        for l in range(self.analog_system.L):
-            # First compute update for offset
-            alpha = self._offset_V[l]
-            g = alpha / (forgetting_factor + alpha)
-            self._offset_V[l] = (self._offset_V[l] - g * alpha) / forgetting_factor
-            self.offset[l] = self.offset[l] - np.sum(estimate) * g
-            # Second compute update for h
-            for m in range(self.analog_system.M):
-                if not m == self.ref_id:
-                    alpha = np.dot(self._V[l, m, :, :], s[:, m])
-                    g = alpha / (forgetting_factor + np.dot(s[:, m], alpha))
-                    self._V[l, m, :, :] = (
-                        self._V[l, m, :, :] - np.outer(g, alpha)
-                    ) / forgetting_factor
-                    self.h[l, :, m] = self.h[l, :, m] - estimate[l] * g
-        return np.tensordot(self.h, s, axes=((1, 2), (0, 1))) + self.offset
-
-    def recursive_least_squares(
+    def fit(
         self,
+        x: np.ndarray,
+        y: np.ndarray,
         batch_size: int,
-        forgetting_factor: float,
-        stochastic_delay: int = 0,
+        epochs: int,
+        shuffle=False,
+        verbose=True,
     ):
-        """A recursive least squares algorithm for adaptive filters.
+        if shuffle:
+            raise NotImplementedError
+        for e in cbadc.utilities.show_status(range(epochs)):
+            for b in range(0, x.shape[0], batch_size):
+                x_batch = x[b : b + batch_size, :, :]
+                y_batch = y[:, b : b + batch_size]
+
+                # [(L, M, K), (L,)]
+                gradient = self.gradient(x_batch, y_batch)
+
+                # (L, M, K)
+                self._h_m *= self._momentum
+                self._h_m += self._learning_rate * gradient[0]
+                self._h -= self._h_m
+
+                # (L,)
+                self.offset_m *= self._momentum
+                self.offset_m += self._learning_rate * gradient[1]
+                self.offset[:, 0] -= self.offset_m
+            if verbose:
+                logger.info(
+                    f"epoch {e}: loss = {self.loss(x, y)}, offset = {np.abs(self.offset)}"
+                )
+
+    def call(self, x: np.ndarray):
+        """
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data, shape (nr_samples, M - nr_references).
+
+        Returns
+        -------
+        y : np.ndarray (L, batch_size)
+            The output data, shape (nr_samples, nr_references).
+        """
+        return np.tensordot(self._h, x, axes=([1, 2], [1, 2])) + self.offset
+
+    def predict(self, x: np.ndarray):
+        """
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data, shape (nr_samples, M - nr_references).
+
+        Returns
+        -------
+        y : np.ndarray (batch_size, L)
+            The output data, shape (nr_samples, nr_references).
+        """
+        return self.call(x)
+
+    def predict_full(self, x, y):
+        """
+        In contrast to the predict method, this method additionally removes
+        the reference signals from the output.
 
         Parameters
         ----------
-        batch_size : int
-            The number of samples to use for the batch.
-        forgetting factor: `float`
-            a forgetting factor.
-        stochastic_delay: `int`
-            a stochastic delay to add to the collection of buffered samples.
+        x : np.ndarray
+            The input data, shape (nr_samples, M - nr_references).
+        y: np.ndarray
+            The (h * s_reference)(kT) sequence, shape (nr_samples, nr_references).
         """
-        if not self._training_data_collected:
-            self._fill_up_sample_buffer(stochastic_delay)
-            self._training_data_collected = True
+        return self.predict(x) - y
 
-        sample_index = 0
-        error_signals = np.zeros((batch_size, self.analog_system.L))
-        for batch_index in range(batch_size):
-            sample_index = np.random.randint(0, self.size)
-            # sample_index = (sample_index + 1) % self.size
-            s = self._training_data_s[sample_index, :, :]
-            estimate = np.tensordot(self.h, s, axes=((1, 2), (0, 1))) + self.offset
-            error_signals[batch_index, :] = self._recursive_least_squares_unbuffered(
-                s, estimate, forgetting_factor
-            )
-        return error_signals
-
-    def stochastic_gradient_decent(
-        self,
-        step_size: float,
-        batch_size: int,
-        stochastic_delay=0,
-    ):
-        """run a stochastic gradient decent batch
+    def get_filters(self):
+        """
+        Returns the filters of the FIR filter.
 
         Parameters
         ----------
-        step_size: `float`
-            a fixed step size for the given batch
-        batch_size: `int`
-            the number of gradient steps to be batched together.
-        stochastic_delay: `int`, `optional`
-            a number determining a uniformly random delay, in the
-            interval [0, stochastic_delay), between data points used
-            in the gradient descent. Defaults to 0.
+        M : int
+            The number of control signals (note this excludes any reference
+            signals as these are not part of the model).
+
+        Returns
+        -------
+        (h, offset): tuple[np.ndarray, np.ndarray]
+            The filter coefficients h and the offset.
+            Where the shape of h is (1, M, K) and the shape of offset is (1,).
         """
+        return self._h.reshape((self.L, self.M, self.K))
 
-        step_sizes = self.step_size_template * step_size
-
-        error_signals = np.zeros(batch_size)
-
-        batch = np.zeros_like(self.h)
-        offset_batch = 0.0
-        for index in range(batch_size):
-            gradient, error_signals[index], offset_gradient = self._gradient(
-                stochastic_delay
-            )
-            batch[:, :, self.mask] += gradient
-            offset_batch += offset_gradient
-            self._number_of_gradient_evaluations += 1
-        gradient_step = step_sizes * batch / batch_size
-        offset_gradient_step = step_size * offset_batch / batch_size
-        self.h = self.h - gradient_step
-        self.offset = self.offset - offset_gradient_step
-        return error_signals
-
-    def compute_step_size_template(self, averaging_window_size=30):
-        """set a step size profile dependent on the current
-        filter weights.
-
-        Parameters
-        ----------
-        averaging_window_size: `int`, `optional`
-            the window size determinging how many neighbouring samples
-            to average when computing the step size template, defaults
-            to 30 samples.
+    def plot_impulse_response(self):
         """
-        filter_taps = np.ones(averaging_window_size)
-        for m in range(self.h.shape[2]):
-            # self.h.shape -> (L, K3, M)
-            self.step_size_template[0, :, m] = np.convolve(
-                np.abs(self.h[0, :, m]), filter_taps, mode="same"
-            )
+        Plots the impulse response of the filter for each channel.
 
-        self.step_size_template /= np.max(self.step_size_template)
+        Parameters:
+        -----------
+        M : int
+            The number of channels.
 
-    def stats(self) -> str:
-        """return a string with the current stats of the average filter."""
-        return f"""Gradient evaluations: {self._number_of_gradient_evaluations}"""
-
-    def adadelta(
-        self,
-        epsilon: float = 1e-8,
-        gamma: float = 0.9,
-        batch_size: int = 1,
-        stochastic_delay=0,
-    ):
-        """run an adadelta gradient update step
-
-        Parameters
-        ----------
-        epsilon: `float`
-            a lower bound on step size
-        gamma: `float`
-            related to momentum.
-        batch_size: `int`
-            the number of gradient steps to be batched together.
-        stochastic_delay: `int`, `optional`
-            a number determining a uniformly random delay, in the
-            interval [0, stochastic_delay), between data points used
-            in the gradient descent. Defaults to 0.
+        Returns:
+        --------
+        f_h : matplotlib.figure.Figure
+            The figure object.
+        ax_h : numpy.ndarray
+            The axes objects.
         """
-        logger.warning("Adadelta does not yet estimate offsets.")
-        error_signals = np.zeros(batch_size)
-        if self._G is None:
-            self._G = np.ones_like(self.h[:, :, self.mask]) * 1e-3
+        h = self.get_filters()
+        f_h, ax_h = plt.subplots(2, 2, sharex=True)
+        for l in range(self.L):
+            for m in range(self.M):
+                h_version = h[l, m, :]
+                ax_h[0, 0].plot(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.real(h_version),
+                    label="$real(h_{" + f"{l},{m}" + "})$",
+                )
+                ax_h[0, 1].plot(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.imag(h_version),
+                    label="$imag(h_{" + f"{l},{m}" + "})$",
+                )
+                ax_h[1, 0].semilogy(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.abs(np.real(h_version)),
+                    label="$real(h_{" + f"{l},{m}" + "})$",
+                )
+                ax_h[1, 1].semilogy(
+                    np.arange(h_version.size) - h_version.size // 2,
+                    np.abs(np.imag(h_version)),
+                    label="$imag(h_{" + f"{l},{m}" + "})$",
+                )
 
-        if self._Delta_Theta is None:
-            self._Delta_Theta_2 = np.zeros_like(self.h[:, :, self.mask])
-            self._RMS_Delta_H = np.zeros_like(self.h[:, :, self.mask])
+            for m in range(2):
+                ax_h[0, m].legend()
+                ax_h[0, m].set_title(f"impulse responses, L={l}")
+                ax_h[1, m].set_xlabel(f"filter taps, L={l}")
+                ax_h[0, m].set_ylabel("$h[.]$")
+                ax_h[1, m].set_ylabel("$|h[.]|$")
+                ax_h[0, m].grid(True)
+                ax_h[1, m].grid(True)
+        return f_h, ax_h
 
-        if gamma > 1.0 or gamma < 0.0:
-            raise Exception("gamma should be 0.0 < gamma < 1.0")
-        gamma_minus = 1.0 - gamma
+    def plot_bode(self, linear_frequency: bool = False):
+        """
+        Plots the Bode diagram for the filter.
 
-        for index in range(batch_size):
-            gradient, error_signals[index], offset_error = self._gradient(
-                stochastic_delay
-            )
-            self._number_of_gradient_evaluations += 1
-            self._G = gamma * self._G + gamma_minus * (gradient**2)
+        Parameters:
+        -----------
+        M : int
+            The number of channels.
+        linear_frequency : bool
+            If true, the frequency axis is linear, otherwise it is logarithmic.
 
-            RMS_G = np.sqrt(self._G + epsilon)
-            self._RMS_Delta_H = (
-                -np.sqrt(self._Delta_Theta_2 + epsilon) / RMS_G * gradient
-            )
 
-            self.h[:, :, self.mask] = self.h[:, :, self.mask] + self._RMS_Delta_H
+        Returns:
+        --------
+        f_h : matplotlib.figure.Figure
+            The figure object.
+        ax_h : numpy.ndarray
+            The axes objects.
+        """
+        h = self.get_filters()
+        f_h, ax_h = plt.subplots(2, self.L, sharex=True)
+        for l in range(self.L):
+            for m in range(self.M):
+                h_version = h[l, m, :]
 
-            self._Delta_Theta_2 = gamma * self._Delta_Theta_2 + gamma_minus * (
-                self._RMS_Delta_H**2
-            )
-        return error_signals
+                h_freq = np.fft.rfft(h_version)
+                freq = np.fft.rfftfreq(h_version.size)
+                if self.L == 1:
+                    ax = ax_h[:]
+                else:
+                    ax = ax_h[:, l]
+                if linear_frequency:
+                    ax[1].plot(
+                        freq,
+                        np.angle(h_freq),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                    ax[0].plot(
+                        freq,
+                        20 * np.log10(np.abs(h_freq)),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                else:
+                    ax[1].semilogx(
+                        freq,
+                        np.angle(h_freq),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                    ax[0].semilogx(
+                        freq,
+                        20 * np.log10(np.abs(h_freq)),
+                        label="$h_{" + f"{l},{m}" + "}$",
+                    )
+                ax[0].legend()
+                ax[0].set_title(f"Bode diagram, L={l}")
+                ax[1].set_xlabel("frequency [Hz]")
+                ax[1].set_ylabel("$ \\angle h[.]$ rad")
+                ax[0].set_ylabel("$|h[.]|$ dB")
+                ax[0].grid(True)
+                ax[1].grid(True)
+            return f_h, ax_h

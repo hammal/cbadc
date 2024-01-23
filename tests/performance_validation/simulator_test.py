@@ -3,10 +3,8 @@ import numpy as np
 import cbadc
 from .fixtures import setup_filter
 from cbadc.simulator import (
-    AnalyticalSimulator,
     FullSimulator,
     PreComputedControlSignalsSimulator,
-    MPSimulator,
 )
 
 
@@ -32,37 +30,33 @@ from cbadc.simulator import (
 @pytest.mark.parametrize(
     "analog_system",
     [
-        pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
-        pytest.param('leap_frog', id="leap_frog_as"),
+        pytest.param("chain-of-integrators", id="chain_of_integrators_as"),
+        pytest.param("leap_frog", id="leap_frog_as"),
     ],
 )
 @pytest.mark.parametrize(
     "digital_control",
     [
-        pytest.param('default', id="default_dc"),
-        pytest.param('switch_cap', id="switch_cap_dc"),
+        pytest.param("default", id="default_dc"),
+        pytest.param("switch_cap", id="switch_cap_dc"),
     ],
 )
 @pytest.mark.parametrize(
-    'simulation_method',
-    [
-        pytest.param(FullSimulator, id="full_num_sim"),
-        pytest.param(PreComputedControlSignalsSimulator, id="pre_num_sim"),
-        pytest.param(MPSimulator, id="mp_sim"),
-        # pytest.param(AnalyticalSimulator, id="ana_sim"),
-    ],
-)
-@pytest.mark.parametrize(
-    'reference_method',
+    "simulation_method",
     [
         # pytest.param(FullSimulator, id="full_num_sim"),
-        # pytest.param(PreComputedControlSignalsSimulator, id="pre_num_sim"),
-        # pytest.param(MPSimulator, id="mp_sim"),
-        pytest.param(AnalyticalSimulator, id="ana_sim"),
+        pytest.param(PreComputedControlSignalsSimulator, id="pre_num_sim"),
     ],
 )
 @pytest.mark.parametrize(
-    'excess_delay',
+    "reference_method",
+    [
+        pytest.param(FullSimulator, id="full_num_sim"),
+        # pytest.param(PreComputedControlSignalsSimulator, id="pre_num_sim"),
+    ],
+)
+@pytest.mark.parametrize(
+    "excess_delay",
     [
         pytest.param(0.0, id="excess_delay=0"),
         # pytest.param(1e-1, id="excess_delay=0.1")
@@ -92,20 +86,20 @@ def test_simulator(
     input = cbadc.analog_signal.ConstantSignal(0.0)
     # initial_state = np.random.rand(N) * 2.0 - 1.0
     initial_state = np.ones(N) * 0.1
-    if N > 5 and analog_system == 'leap_frog':
+    if N > 5 and analog_system == "leap_frog":
         pytest.skip("No analytical solution for Leap-frog N > 2")
 
-    analog_system = res['analog_system']
+    analog_system = res["analog_system"]
 
     ref_sim = reference_method(
-        res['analog_system'],
-        res['digital_control'],
+        res["analog_system"],
+        res["digital_control"],
         [input],
         initial_state_vector=initial_state[:],
     )
     sim = simulation_method(
-        res2['analog_system'],
-        res2['digital_control'],
+        res2["analog_system"],
+        res2["digital_control"],
         [input],
         initial_state_vector=initial_state[:],
     )

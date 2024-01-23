@@ -1,4 +1,3 @@
-from cbadc.circuit.state_space import StateSpaceFrontend
 from cbadc.circuit.components.sources import (
     SinusoidalVoltageSource,
 )

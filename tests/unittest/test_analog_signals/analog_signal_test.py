@@ -27,3 +27,21 @@ def test_symbolic():
     c = Float(0)
     signal = analog_signal.symbolic()
     assert Eq(signal - c, 0)
+
+
+def test_addition():
+    analog_signal_1 = ConstantSignal(1)
+    analog_signal_2 = ConstantSignal(2)
+    analog_signal_3 = ConstantSignal(3)
+    superposition = analog_signal_1 + analog_signal_2 + analog_signal_3
+    superposition.evaluate(1.0)
+    print(superposition)
+
+
+def test_multiplication():
+    analog_signal_1 = ConstantSignal(1)
+    analog_signal_2 = ConstantSignal(2)
+    analog_signal_3 = ConstantSignal(3)
+    modulation_signal = analog_signal_1 * analog_signal_2 * analog_signal_3
+    modulation_signal.evaluate(1.0)
+    print(modulation_signal)

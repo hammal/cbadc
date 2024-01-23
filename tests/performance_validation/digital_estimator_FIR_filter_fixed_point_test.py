@@ -1,7 +1,5 @@
 import cbadc
 import numpy as np
-from tests.fixture.chain_of_integrators import chain_of_integrators
-from cbadc.analog_signal import Clock
 
 beta = 6250.0
 rho = -62.5
@@ -28,7 +26,7 @@ def test_fixed_point():
     # analog_signals = [cbadc.analog_signal.ConstantSignal(0.25)]
     clock = cbadc.analog_signal.Clock(Ts)
     digital_control_floating_point = cbadc.digital_control.DigitalControl(clock, M)
-    circuitSimulator_floating_point = cbadc.simulator.get_simulator(
+    circuitSimulator_floating_point = cbadc.simulator.Simulator(
         analog_system, digital_control_floating_point, analog_signals
     )
     estimator_floating_point = cbadc.digital_estimator.FIRFilter(
@@ -37,7 +35,7 @@ def test_fixed_point():
     estimator_floating_point(circuitSimulator_floating_point)
 
     digital_control_fixed_point = cbadc.digital_control.DigitalControl(clock, M)
-    circuitSimulator_fixed_point = cbadc.simulator.get_simulator(
+    circuitSimulator_fixed_point = cbadc.simulator.Simulator(
         analog_system, digital_control_fixed_point, analog_signals
     )
 

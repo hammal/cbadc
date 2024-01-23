@@ -15,7 +15,8 @@ from .sinc_pulse import SincPulse
 from .sinusoidal import Sinusoidal
 from .clock import Clock
 from .impulse_responses import StepResponse, RCImpulseResponse
-from .quadrature import get_quadrature_signal_pair, QuadratureSignal
+from .quadrature import get_quadrature_signal_pair, QuadratureSignal, SineWaveModulator
+from .zero_order_hold import ZeroOrderHold, RaisedCosine, BandLimitedSignal
 
 from . import clock
 from . import constant_signal
