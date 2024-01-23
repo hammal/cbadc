@@ -53,5 +53,25 @@ The source code is hosted on [https://github.com/hammal/cbadc](https://github.co
 
 Please report problems at [https://github.com/hammal/cbadc/issues](https://github.com/hammal/cbadc/issues)
 
+## Develop Version
+
+Alternatively, the latest develop branch can be installed by
+
+```bash
+git clone --branch develop https://github.com/hammal/cbadc.git && \
+cd cbadc && \
+python -m pip install . && \
+cd .. && \
+rm -rf cbadc
+```
+
+# Source Code
+
+The source code is hosted on [https://github.com/hammal/cbadc](https://github.com/hammal/cbadc).
+
+# Bugs and Issues
+
+Please report problems at [https://github.com/hammal/cbadc/issues](https://github.com/hammal/cbadc/issues)
+
 # Changelog
 see [CHANGELOG](./CHANGELOG.md)
