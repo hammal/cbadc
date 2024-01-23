@@ -17,6 +17,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Get Python package version
+        id: version
+        run: |
+          echo "::set-output name=version::$(python -c 'from cbadc import __version__; print(__version__)')"
+
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
@@ -35,5 +40,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+            ${{ steps.version.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
