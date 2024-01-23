@@ -57,16 +57,22 @@ class DigitalControl:
         clock: _valid_clock_types,
         M: int,
         impulse_response: List[_ImpulseResponse] = None,
+        t_delay: float = 0.0,
     ):
         if not isinstance(clock, Clock):
             raise Exception("Clock must derive from cbadc.analog_signal.Clock")
         self.clock = clock
         self.M = M
         self.M_tilde = M
+        if t_delay < 0:
+            raise Exception("t_delay must be non-negative")
+        else:
+            self.t_delay = t_delay
         self._s = np.zeros(self.M, dtype=float)
         self._s[:] = False
         self._initialize_impulse_response(clock, impulse_response)
         self._control_decisions = np.zeros(self.M, dtype=np.double)
+        self._old_control_decisions = np.zeros_like(self._control_decisions)
         self._setup_clock_phases()
 
     def _setup_clock_phases(self):
@@ -92,7 +98,7 @@ class DigitalControl:
             self._mulit_phase = np.sum(t0s) > 0.0
             self._impulse_response = impulse_response
         else:
-            self._impulse_response = [StepResponse(0.0) for m in range(self.M)]
+            self._impulse_response = [StepResponse(0.0) for _ in range(self.M)]
             self._mulit_phase = False
 
     def reset(self, t0: float = 0.0):
@@ -124,6 +130,7 @@ class DigitalControl:
             if np.allclose(t, self._impulse_response[m].t0, atol=self.clock._tt_2):
                 self._s[m] = s_tilde[m] >= 0.0
                 # DAC
+                self._old_control_decisions[m] = self._control_decisions[m]
                 self._control_decisions[m] = 2.0 * self._s[m] - 1.0
 
     def control_signal(self) -> np.ndarray:
@@ -166,11 +173,15 @@ class DigitalControl:
         temp = np.zeros(self.M)
         for m in range(self.M):
             if t < self._impulse_response[m].t0:
-                temp[m] = self._control_decisions[m] * self._impulse_response[m](
-                    t + self.clock.T
-                )
+                temp[m] = self._impulse_response[m](t + self.clock.T)
             else:
-                temp[m] = self._control_decisions[m] * self._impulse_response[m](t)
+                temp[m] = self._impulse_response[m](t)
+
+            if t <= self.t_delay:
+                temp[m] *= self._old_control_decisions[m]
+            else:
+                temp[m] *= self._control_decisions[m]
+
         return temp
 
     def impulse_response(self, m: int, t: float) -> np.ndarray:

@@ -85,32 +85,6 @@ class FullSimulator(_BaseSimulator):
         return self.digital_control.control_signal()
 
     def _full_ordinary_differential_solution(self):
-        def derivative(t: float, y: np.ndarray):
-            """Solve the differential computational problem
-            of the analog system and digital control interaction
-
-            Parameters
-            ----------
-            t : `float`
-                the time for evaluation
-            y : array_lik, shape=(N,)
-                state vector
-
-            Returns
-            -------
-            array_like, shape=(N,)
-                vector of derivatives evaluated at time t.
-            """
-            input_vector = np.zeros(self.analog_system.L)
-            if len(self.input_signals) > 0:
-                for _l in range(self.analog_system.L):
-                    input_vector[_l] = self.input_signals[_l].evaluate(t + self.t)
-
-            control_vector = self.digital_control.control_contribution(t)
-            return self.analog_system.derivative(
-                y, t + self.t, input_vector, control_vector
-            )
-
         # while not np.allclose(self.t_rel, self.clock.T, atol=atol_clock):
         # Compute input at time t
         for t_old, t in zip(
@@ -132,6 +106,59 @@ class FullSimulator(_BaseSimulator):
                 ),
             )
 
+            if self._input_signal:
+
+                def derivative(t: float, y: np.ndarray):
+                    """Solve the differential computational problem
+                    of the analog system and digital control interaction
+
+                    Parameters
+                    ----------
+                    t : `float`
+                        the time for evaluation
+                    y : array_lik, shape=(N,)
+                        state vector
+
+                    Returns
+                    -------
+                    array_like, shape=(N,)
+                        vector of derivatives evaluated at time t.
+                    """
+                    input_vector = np.zeros(self.analog_system.L)
+                    if len(self.input_signals) > 0:
+                        for _l in range(self.analog_system.L):
+                            input_vector[_l] = self.input_signals[_l].evaluate(
+                                t + self.t
+                            )
+
+                    control_vector = self.digital_control.control_contribution(t)
+                    return self.analog_system.derivative(
+                        y, t + self.t, input_vector, control_vector
+                    )
+
+            else:
+
+                def derivative(t: float, y: np.ndarray):
+                    """Solve the differential computational problem
+                    of the analog system and digital control interaction
+
+                    Parameters
+                    ----------
+                    t : `float`
+                        the time for evaluation
+                    y : array_lik, shape=(N,)
+                        state vector
+
+                    Returns
+                    -------
+                    array_like, shape=(N,)
+                        vector of derivatives evaluated at time t.
+                    """
+                    return np.dot(self.analog_system.A, self.state_vector()) + np.dot(
+                        self.analog_system.Gamma,
+                        self.digital_control.control_contribution(t),
+                    )
+
             self.res: OdeResult = scipy.integrate.solve_ivp(
                 derivative,
                 (t_old, t),
@@ -144,7 +171,7 @@ class FullSimulator(_BaseSimulator):
                 # method='LSODA',
                 # method="BDF",
             )
-            self._state_vector = self.res.y[:, -1]
+            self._state_vector[:] = self.res.y[:, -1]
 
         # if thermal noise
         if self.noisy:

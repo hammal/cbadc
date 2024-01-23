@@ -42,40 +42,37 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
     beta = analog_system_baseband.Gamma[0, 0]
     T = digital_control_baseband.clock.T
     fc = kwargs["fc"]
-    omega_c = 2 * np.pi * fc
+    omega_c = 2.0 * np.pi * fc
 
     analog_system = stack([analog_system_baseband, analog_system_baseband])
     analog_system.A[:N, N:] = -omega_c * np.eye(N)
     analog_system.A[N:, :N] = omega_c * np.eye(N)
-    kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2))
-    phi: float = kwargs.get("phi", omega_c / 2 - np.pi)
-    delta_DC: float = kwargs.get("delta_DC", 0.0)
 
     if not "modulate" in kwargs:
+        # kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2))
+        phi: float = kwargs.get("phi", 0.0)
+        delta_DC: float = kwargs.get("delta_DC", 0.0)
         Gamma = np.zeros((2 * N, 2 * N))
         Gamma_tildeT = np.zeros((2 * N, 2 * N))
         kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.cos(phi)
         bar_kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2)) * np.sin(phi)
         tilde_kappa = -1 / (beta * T) * np.cos(omega_c * (T / 2 + delta_DC) - phi)
         bar_tilde_kappa = -1 / (beta * T) * np.sin(omega_c * (T / 2 + delta_DC) - phi)
-        # gamma_temp = kappa * _rotation_matrix(phi)
-        # gamma_tilde_temp = omega_c / (2 * kappa * np.sin(omega_c * T / 2)) * _rotation_matrix(omega_c * (T / 2 + delta_DC) - phi - np.pi)
-        for i in range(N):
-            # Gamma[2*i:2*i + 2, 2*i: 2 * i + 2] = kappa * _rotation_matrix(phi)
-            Gamma[i, i] = kappa
-            Gamma[i + N, i + N] = kappa
-            Gamma[i, i + N] = -bar_kappa
-            Gamma[i + N, i] = bar_kappa
 
-            Gamma_tildeT[i, i] = tilde_kappa
-            Gamma_tildeT[i + N, i + N] = tilde_kappa
-            Gamma_tildeT[i, i + N] = -bar_tilde_kappa
-            Gamma_tildeT[i + N, i] = bar_tilde_kappa
+        Gamma[:N, :N] = kappa * np.eye(N)
+        Gamma[N:, N:] = kappa * np.eye(N)
+        Gamma[:N, N:] = -bar_kappa * np.eye(N)
+        Gamma[N:, :N] = bar_kappa * np.eye(N)
+
+        Gamma_tildeT[:N, :N] = tilde_kappa * np.eye(N)
+        Gamma_tildeT[N:, N:] = tilde_kappa * np.eye(N)
+        Gamma_tildeT[:N, N:] = -bar_tilde_kappa * np.eye(N)
+        Gamma_tildeT[N:, :N] = bar_tilde_kappa * np.eye(N)
 
         analog_system.Gamma = Gamma
         analog_system.Gamma_tildeT = Gamma_tildeT
 
-    digital_control = digital_control = DigitalControl(
+    digital_control = DigitalControl(
         digital_control_baseband.clock,
         2 * digital_control_baseband.M,
     )

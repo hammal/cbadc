@@ -30,7 +30,7 @@ class AdaptiveFIRFilter:
         self.M = M
         self._h_m = np.zeros((L, M, K), dtype=dtype)
         self._h = np.zeros((L, M, K), dtype=dtype)
-        self.offset = np.zeros((L,), dtype=dtype)
+        self.offset = np.zeros((L, 1), dtype=dtype)
         self.offset_m = np.zeros((L,), dtype=dtype)
 
     def compile(self, optimizer: Dict[str, Any]):
@@ -118,7 +118,7 @@ class AdaptiveFIRFilter:
                 # (L,)
                 self.offset_m *= self._momentum
                 self.offset_m += self._learning_rate * gradient[1]
-                self.offset -= self.offset_m
+                self.offset[:, 0] -= self.offset_m
             if verbose:
                 logger.info(
                     f"epoch {e}: loss = {self.loss(x, y)}, offset = {np.abs(self.offset)}"
