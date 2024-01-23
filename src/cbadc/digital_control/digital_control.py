@@ -177,7 +177,7 @@ class DigitalControl:
             else:
                 temp[m] = self._impulse_response[m](t)
 
-            if t <= self.t_delay:
+            if t < self.t_delay:
                 temp[m] *= self._old_control_decisions[m]
             else:
                 temp[m] *= self._control_decisions[m]
