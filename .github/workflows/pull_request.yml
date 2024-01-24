@@ -4,7 +4,7 @@ name: Unittest and Performance test
 
 on:
   pull_request:
-    branches: ["develop", "master"]
+    branches: ["develop", "main"]
 
 jobs:
   linting:
