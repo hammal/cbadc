@@ -1,6 +1,6 @@
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: General Tests for master and develop
+name: General Tests for main and develop
 
 on:
     push:
