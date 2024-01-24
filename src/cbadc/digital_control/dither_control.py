@@ -34,7 +34,12 @@ class DitherControl(DigitalControl):
         impulse_response: List[_ImpulseResponse] = None,
         dithering=True,
         random_sequence_length=1 << 22,
+        t_delay: float = 0.0,
     ):
+        if t_delay < 0:
+            raise Exception("t_delay must be non-negative")
+        else:
+            self.t_delay = t_delay
         self._deterministic_control = copy(digital_control)
         self.number_of_random_control = number_of_random_controls
         self.clock = copy(digital_control.clock)
