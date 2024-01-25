@@ -1,9 +1,6 @@
-import cbadc
 from scipy.signal import firwin
 import pytest
 import numpy as np
-import tensorflow as tf
-import os
 
 
 @pytest.fixture()
