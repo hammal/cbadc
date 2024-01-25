@@ -34,7 +34,8 @@ def g_i(N: int):
     H = determinant / ((gamma * omega_p) ** N)
     H2 = sp.Abs(H) ** 2
     LF_int = sp.integrate(H2, (omega, 0, omega_p))
-    g_i = sp.simplify(omega_p / (LF_int * gamma ** (2 * N)))
+    # g_i = sp.simplify(omega_p / (LF_int * gamma ** (2 * N)))
+    g_i = omega_p / (LF_int * gamma ** (2 * N))
     return np.float64(g_i.subs(omega_p, 1e0).evalf())
 
 
