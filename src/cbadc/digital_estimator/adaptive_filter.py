@@ -10,7 +10,7 @@ import cbadc
 logger = logging.getLogger(__name__)
 
 
-def batch(signal: np.ndarray, batch_size: int, axis: int = 0):
+def batch(signal: np.ndarray, batch_size: int, axis: int = 0) -> np.ndarray:
     """
     Batch the signal for FIR filter processing
 

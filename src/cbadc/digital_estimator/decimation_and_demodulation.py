@@ -3,7 +3,7 @@ import scipy.signal
 import numpy as np
 
 
-def decimate(signal: np.ndarray, DSR: int, axis: int = 0):
+def decimate(signal: np.ndarray, DSR: int, axis: int = 0) -> np.ndarray:
     """
     Decimate the signal by a factor of DSR
 
@@ -19,7 +19,7 @@ def decimate(signal: np.ndarray, DSR: int, axis: int = 0):
     return scipy.signal.resample(signal, signal.shape[axis] // DSR, axis=axis)
 
 
-def demodulate(signal: np.ndarray, Omega: float, axis: int = 0):
+def demodulate(signal: np.ndarray, Omega: float, axis: int = 0) -> np.ndarray:
     """
     Demodulate the signal
 
