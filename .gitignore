@@ -42,3 +42,4 @@ docs/source/autosummary
 *stdout
 *.raw
 notebooks
+venv
