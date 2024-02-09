@@ -36,8 +36,8 @@ def batch(signal: np.ndarray, batch_size: int, axis: int = 0) -> np.ndarray:
     old_shape = signal.shape
     batch_shape = []
     total_number_of_samples = signal.shape[axis] - batch_size
-    for dim in old_shape:
-        if dim == axis:
+    for index, dim in enumerate(old_shape):
+        if index == axis:
             batch_shape.append(total_number_of_samples)
         else:
             batch_shape.append(dim)
@@ -45,7 +45,7 @@ def batch(signal: np.ndarray, batch_size: int, axis: int = 0) -> np.ndarray:
 
     batched_signal = np.zeros(batch_shape, dtype=signal.dtype)
     for i in range(total_number_of_samples):
-        batched_signal[i, ...] = signal[i : i + batch_size, ...].transpose()
+        batched_signal[i, ...] = signal[i : i + batch_size, ...].T
 
     return batched_signal
 
@@ -146,7 +146,6 @@ class AdaptiveFIRFilter:
         momentum: float = 0.9,
         shuffle=False,
         verbose=True,
-        force_real_valued=False,
     ):
         """
         Fits the filter to the given data using the LMS method.
@@ -185,9 +184,6 @@ class AdaptiveFIRFilter:
 
                 # [(L, M, K), (L,)]
                 gradient = self.gradient(x_batch, y_batch)
-                if force_real_valued:
-                    gradient[0] = np.real(gradient[0])
-                    gradient[1] = np.real(gradient[1])
 
                 # (L, M, K)
                 self._h_m *= momentum
@@ -275,6 +271,28 @@ class AdaptiveFIRFilter:
                 logger.info(
                     f"epoch {e}: loss = {self.loss(x, y)}, offset = {self._offset}"
                 )
+
+    def lstsq(self, x: np.ndarray, y: np.ndarray, verbose=True):
+        """
+        Fits the filter to the given data using the least squares method.
+
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The reference data.
+        """
+        # (batch_size, M * K + 1)
+        x_with_offset = np.hstack(
+            (x.reshape((-1, self.M * self.K)), np.ones((x.shape[0], 1)))
+        )
+        # (M * K + 1, L)
+        sol = np.linalg.lstsq(x_with_offset, y.T, rcond=None)
+        self._offset = sol[0][-1, :].T
+        self._h = sol[0][:-1, :].T.reshape((self.L, self.M, self.K))
+        if verbose:
+            logger.info(f"loss = {sol[1]}, offset = {self._offset}")
 
     def call(self, x: np.ndarray):
         """
@@ -367,22 +385,22 @@ class AdaptiveFIRFilter:
                     ax_h[0, 0].plot(
                         np.arange(h_version.size) - h_version.size // 2,
                         np.real(h_version),
-                        label="$real(h_{" + f"{l},{m}" + "})$",
+                        label="$real(h_{" + f"{l + 1},{m + 1}" + "})$",
                     )
                     ax_h[0, 1].plot(
                         np.arange(h_version.size) - h_version.size // 2,
                         np.imag(h_version),
-                        label="$imag(h_{" + f"{l},{m}" + "})$",
+                        label="$imag(h_{" + f"{l + 1},{m + 1}" + "})$",
                     )
                     ax_h[1, 0].semilogy(
                         np.arange(h_version.size) - h_version.size // 2,
                         np.abs(np.real(h_version)),
-                        label="$real(h_{" + f"{l},{m}" + "})$",
+                        label="$real(h_{" + f"{l + 1},{m + 1}" + "})$",
                     )
                     ax_h[1, 1].semilogy(
                         np.arange(h_version.size) - h_version.size // 2,
                         np.abs(np.imag(h_version)),
-                        label="$imag(h_{" + f"{l},{m}" + "})$",
+                        label="$imag(h_{" + f"{l + 1},{m + 1}" + "})$",
                     )
 
                 for m in range(2):
@@ -401,12 +419,12 @@ class AdaptiveFIRFilter:
                     ax_h[0].plot(
                         np.arange(h_version.size) - h_version.size // 2,
                         h_version,
-                        label="$h_{" + f"{l},{m}" + "}$",
+                        label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                     )
                     ax_h[1].semilogy(
                         np.arange(h_version.size) - h_version.size // 2,
                         np.abs(h_version),
-                        label="$h_{" + f"{l},{m}" + "}$",
+                        label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                     )
 
                 ax_h[0].legend()
@@ -450,23 +468,23 @@ class AdaptiveFIRFilter:
                     ax[1].plot(
                         freq,
                         np.angle(h_freq),
-                        label="$h_{" + f"{1},{m}" + "}$",
+                        label="$h_{" + f"{1},{m + 1}" + "}$",
                     )
                     ax[0].plot(
                         freq,
                         20 * np.log10(np.abs(h_freq)),
-                        label="$h_{" + f"{1},{m}" + "}$",
+                        label="$h_{" + f"{1},{m + 1}" + "}$",
                     )
                 else:
                     ax[1].semilogx(
                         freq,
                         np.angle(h_freq),
-                        label="$h_{" + f"{1},{m}" + "}$",
+                        label="$h_{" + f"{1},{m + 1}" + "}$",
                     )
                     ax[0].semilogx(
                         freq,
                         20 * np.log10(np.abs(h_freq)),
-                        label="$h_{" + f"{1},{m}" + "}$",
+                        label="$h_{" + f"{1},{m + 1}" + "}$",
                     )
                 ax[0].legend()
                 ax[0].set_title(f"Bode diagram, L={self.L}")
@@ -487,23 +505,23 @@ class AdaptiveFIRFilter:
                         ax[1].plot(
                             freq,
                             np.angle(h_freq),
-                            label="$h_{" + f"{l},{m}" + "}$",
+                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                         )
                         ax[0].plot(
                             freq,
                             20 * np.log10(np.abs(h_freq)),
-                            label="$h_{" + f"{l},{m}" + "}$",
+                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                         )
                     else:
                         ax[1].semilogx(
                             freq,
                             np.angle(h_freq),
-                            label="$h_{" + f"{l},{m}" + "}$",
+                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                         )
                         ax[0].semilogx(
                             freq,
                             20 * np.log10(np.abs(h_freq)),
-                            label="$h_{" + f"{l},{m}" + "}$",
+                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                         )
                     ax[0].legend()
                     ax[0].set_title(f"Bode diagram, L={self.L}")
