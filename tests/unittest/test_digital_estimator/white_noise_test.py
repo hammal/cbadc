@@ -44,17 +44,17 @@ def test_verify_get_white_noise_leap_frog():
         np.ones(N) / cbadc.fom.enob_to_snr(ENOB),
     )
     print(white_noise_RMS)
-    input_signals = [cbadc.analog_signal.ConstantSignal(0)]
+    input_signal = [cbadc.analog_signal.ConstantSignal(0)]
     noise_covariance_matrix = np.diag(white_noise_RMS.flatten())
     simulator = cbadc.simulator.FullSimulator(
         analog_frontend.analog_system,
         analog_frontend.digital_control,
-        input_signals,
+        input_signal,
         state_noise_covariance_matrix=noise_covariance_matrix,
     )
     digital_estimator(simulator)
     size = 1 << 8
     u_hat = np.zeros(size)
     for index in range(size):
-        u_hat[index] = next(digital_estimator)
+        u_hat[index] = next(digital_estimator)[0]
     print(np.var(u_hat))
