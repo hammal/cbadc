@@ -102,7 +102,7 @@ class AdaptiveFIRFilter:
 
         Returns
         -------
-        loss : float
+        loss : np.ndarray (L,)
             The loss function evaluated on the given data.
         """
         return np.linalg.norm(y - self.call(x), axis=1) ** 2 / x.shape[0]
@@ -168,8 +168,11 @@ class AdaptiveFIRFilter:
             Whether to shuffle the data, defaults to False.
         verbose : bool
             Whether to print the loss function during training.
-        force_real_valued : bool
-            Whether to force the filter coefficients to be real valued, defaults to False.
+
+        Returns
+        -------
+        loss : np.ndarray (L,)
+            The loss function evaluated on the given data.
         """
 
         for e in cbadc.utilities.show_status(range(epochs)):
@@ -199,6 +202,7 @@ class AdaptiveFIRFilter:
                 logger.info(
                     f"epoch {e}: loss = {self.loss(x, y)}, offset = {self._offset}"
                 )
+        return self.loss(x, y)
 
     def rls(
         self,
@@ -209,7 +213,6 @@ class AdaptiveFIRFilter:
         lambda_: float = 1e0 - 1e-12,
         shuffle=False,
         verbose=True,
-        force_real_valued=False,
     ):
         """
         Fits the filter to the given data using the RLS method.
@@ -230,8 +233,12 @@ class AdaptiveFIRFilter:
             Whether to shuffle the data, defaults to False.
         verbose : bool
             Whether to print the loss function during training.
-        force_real_valued : bool
-            Whether to force the filter coefficients to be real valued, defaults to False.
+
+
+        Returns
+        -------
+        loss : np.ndarray (L,)
+            The loss function evaluated on the given data.
         """
 
         # Lazy initialize Covariance matrix
@@ -271,6 +278,7 @@ class AdaptiveFIRFilter:
                 logger.info(
                     f"epoch {e}: loss = {self.loss(x, y)}, offset = {self._offset}"
                 )
+        return self.loss(x, y)
 
     def lstsq(self, x: np.ndarray, y: np.ndarray, verbose=True):
         """
@@ -282,6 +290,11 @@ class AdaptiveFIRFilter:
             The input data.
         y: np.ndarray (L, batch_size)
             The reference data.
+
+        Returns
+        -------
+        loss : np.ndarray (L,)
+            The loss function evaluated on the given data.
         """
         # (batch_size, M * K + 1)
         x_with_offset = np.hstack(
@@ -293,6 +306,7 @@ class AdaptiveFIRFilter:
         self._h = sol[0][:-1, :].T.reshape((self.L, self.M, self.K))
         if verbose:
             logger.info(f"loss = {sol[1]}, offset = {self._offset}")
+        return sol[1]
 
     def call(self, x: np.ndarray):
         """
@@ -360,6 +374,24 @@ class AdaptiveFIRFilter:
         """
         return np.copy(self._offset[:, 0])
 
+    def impulse_response(self, number_of_points: int = 0):
+        """
+        Returns the impulse response of the filter.
+
+        Parameters
+        ----------
+        number_of_points : int
+            The number of uniformly spaced frequency points to evaluate the transfer function at, defaults to K.
+
+        Returns
+        -------
+        h : np.ndarray (L, M, K)
+            The impulse response.
+        """
+        if number_of_points != 0:
+            raise ValueError("number_of_points must be 0 for FIR filters")
+        return self.get_filter()
+
     def plot_impulse_response(self):
         """
         Plots the impulse response of the filter for each channel.
@@ -376,7 +408,7 @@ class AdaptiveFIRFilter:
         ax_h : numpy.ndarray
             The axes objects.
         """
-        h = self.get_filter()
+        h = self.impulse_response()
         if h.dtype == np.complex128:
             f_h, ax_h = plt.subplots(2, 2, sharex=True)
             for l in range(self.L):
@@ -437,6 +469,34 @@ class AdaptiveFIRFilter:
 
         return f_h, ax_h
 
+    def transfer_function(self, number_of_points: int = 0):
+        """
+        Returns the transfer function of the filter.
+
+        Parameters
+        ----------
+        number_of_points : int
+            The number of uniformly spaced frequency points to evaluate the transfer function at, defaults to K.
+
+
+        Returns
+        -------
+        freqs : np.ndarray
+            The frequency points.
+        tf : np.ndarray (L, M, number_of_points)
+            The transfer function.
+        """
+        if number_of_points == 0:
+            number_of_points = self.K
+        tf = np.zeros(
+            (self.L, self.M, (number_of_points >> 1) + 1), dtype=np.complex128
+        )
+        freqs = np.fft.rfftfreq(number_of_points)
+        for l in range(self.L):
+            for m in range(self.M):
+                tf[l, m, :] = np.fft.rfft(self._h[l, m, :])
+        return freqs, tf
+
     def plot_bode(self, linear_frequency: bool = False):
         """
         Plots the Bode diagram for the filter.
@@ -456,35 +516,35 @@ class AdaptiveFIRFilter:
         ax_h : numpy.ndarray
             The axes objects.
         """
-        h = self.get_filter()
-        if self.L == 1:
-            f_h, ax_h = plt.subplots(2, 1, sharex=True)
+        freq, h_freq = self.transfer_function()
+        f_h, ax_h = plt.subplots(2, self.L, sharex=True)
+        for l in range(self.L):
             for m in range(self.M):
-                h_version = h[0, m, :]
-                h_freq = np.fft.rfft(h_version)
-                freq = np.fft.rfftfreq(h_version.size)
-                ax = ax_h
+                if self.L == 1:
+                    ax = ax_h
+                else:
+                    ax = ax_h[:, l]
                 if linear_frequency:
                     ax[1].plot(
                         freq,
-                        np.angle(h_freq),
-                        label="$h_{" + f"{1},{m + 1}" + "}$",
+                        np.angle(h_freq[l, m, :]),
+                        label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                     )
                     ax[0].plot(
                         freq,
-                        20 * np.log10(np.abs(h_freq)),
-                        label="$h_{" + f"{1},{m + 1}" + "}$",
+                        20 * np.log10(np.abs(h_freq[l, m, :])),
+                        label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                     )
                 else:
                     ax[1].semilogx(
                         freq,
-                        np.angle(h_freq),
-                        label="$h_{" + f"{1},{m + 1}" + "}$",
+                        np.angle(h_freq[l, m, :]),
+                        label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                     )
                     ax[0].semilogx(
                         freq,
-                        20 * np.log10(np.abs(h_freq)),
-                        label="$h_{" + f"{1},{m + 1}" + "}$",
+                        20 * np.log10(np.abs(h_freq[l, m, :])),
+                        label="$h_{" + f"{l + 1},{m + 1}" + "}$",
                     )
                 ax[0].legend()
                 ax[0].set_title(f"Bode diagram, L={self.L}")
@@ -493,41 +553,152 @@ class AdaptiveFIRFilter:
                 ax[0].set_ylabel("$|h[.]|$ dB")
                 ax[0].grid(True)
                 ax[1].grid(True)
-        else:
-            f_h, ax_h = plt.subplots(2, self.L, sharex=True)
-            for l in range(self.L):
-                for m in range(self.M):
-                    h_version = h[l, m, :]
-                    h_freq = np.fft.rfft(h_version)
-                    freq = np.fft.rfftfreq(h_version.size)
-                    ax = ax_h[:, l]
-                    if linear_frequency:
-                        ax[1].plot(
-                            freq,
-                            np.angle(h_freq),
-                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
-                        )
-                        ax[0].plot(
-                            freq,
-                            20 * np.log10(np.abs(h_freq)),
-                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
-                        )
-                    else:
-                        ax[1].semilogx(
-                            freq,
-                            np.angle(h_freq),
-                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
-                        )
-                        ax[0].semilogx(
-                            freq,
-                            20 * np.log10(np.abs(h_freq)),
-                            label="$h_{" + f"{l + 1},{m + 1}" + "}$",
-                        )
-                    ax[0].legend()
-                    ax[0].set_title(f"Bode diagram, L={self.L}")
-                    ax[1].set_xlabel("frequency [Hz]")
-                    ax[1].set_ylabel("$ \\angle h[.]$ rad")
-                    ax[0].set_ylabel("$|h[.]|$ dB")
-                    ax[0].grid(True)
-                    ax[1].grid(True)
         return f_h, ax_h
+
+
+class AdaptiveIIRFilter(AdaptiveFIRFilter):
+    """The adaptive IIR filter model."""
+
+    def __init__(self, M, K, L=1, dtype=np.float64):
+        super().__init__(M + 1, K, L, dtype)
+
+    def _numerator(self):
+        return self._h[:, :-1, :]
+
+    def _denominator(self):
+        return self._h[:, -1, :]
+
+    def _dlti(self, l, m):
+        return signal.dlti(self._numerator()[l, m, :], self._denominator()[l, :])
+
+    def call(self, x: np.ndarray):
+        """
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data batch.
+
+        Returns
+        -------
+        y : np.ndarray (L, batch_size)
+            The output data, shape (nr_samples, nr_references).
+        """
+        # FIR filter part (L, batch_size)
+        batch_size = x.shape[0]
+        numerator = self._numerator()
+        denominator = self._denominator()
+
+        fir_output = np.tensordot(numerator, x, axes=([1, 2], [1, 2])) + np.conj(
+            self._offset
+        )
+        res = np.zeros((self.L, x.shape[0], self.K + 1), dtype=x.dtype)
+        for index in range(batch_size):
+            # IIR filter part (L, batch_size)
+            res[:, index, -1] = fir_output[:, index] + np.tensordot(
+                denominator, res[:, index, :-1], axes=([1], [1])
+            )
+            if index < batch_size - 1:
+                res[:, index + 1, :-1] = res[:, index, 1:]
+
+        return res[..., -1]
+
+    def transfer_function(self, number_of_points: int = 0):
+        """
+        Returns the transfer function of the filter.
+
+        Parameters
+        ----------
+        number_of_points : int
+            The number of uniformly spaced frequency points to evaluate the transfer function at, defaults to K.
+
+        Returns
+        -------
+        freqs : np.ndarray
+            The frequency points.
+        tf : np.ndarray (L, M, number_of_points)
+        """
+
+        if number_of_points == 0:
+            number_of_points = self.K
+
+        tf = np.zeros((self.L, self.M, number_of_points), dtype=np.complex128)
+        for l in range(self.L):
+            for m in range(self.M):
+                freqs, tf[l, m, :] = self._dlti(l, m).freqresp(n=number_of_points)
+        return freqs, tf
+
+    def impulse_response(self, number_of_points: int = 0):
+        """
+        Returns the impulse response of the filter.
+
+        Parameters
+        ----------
+        number_of_points : int
+            The number of uniformly spaced frequency points to evaluate the transfer function at, defaults to K.
+
+        Returns
+        -------
+        h : np.ndarray (L, M, number_of_points)
+            The impulse response.
+        """
+        if number_of_points == 0:
+            number_of_points = self.K
+        h = np.zeros((self.L, self.M, number_of_points), dtype=np.complex128)
+        for l in range(self.L):
+            for m in range(self.M):
+                h[l, m, :] = self._dlti(l, m).impulse(n=number_of_points)
+        return h
+
+    def _reshape_data_for_FIR_filter_training(
+        self, x: np.ndarray, y: np.ndarray, delay
+    ):
+        # Batch reference data and remove delay
+        MK = x.shape[1] * x.shape[2]
+
+        if delay < 0:
+            raise ValueError("Delay must be non-negative")
+
+        x = x.reshape((-1, MK))[delay:, ...]
+        y_batched = batch(y.T, self._denominator().shape[1] + 1)
+
+        length = min(x.shape[0], y_batched.shape[0])
+
+        x = np.hstack((x[:length], y_batched[:length,]))
+
+        x = x[:length, ...]
+
+        return x, y_batched[..., -1]
+
+    def lstsq(self, x: np.ndarray, y: np.ndarray, delay: int = 0, verbose=True):
+        """
+        Fits the filter to the given data using the least squares method.
+
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M, K)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The reference data.
+        delay : int
+            The delay of the IIR filter. must be non-negative.
+        verbose : bool
+            Whether to print the loss function during training.
+
+        Returns
+        -------
+        loss : np.ndarray (L,)
+            The loss function evaluated on the given data.
+        """
+        # Batch reference data and remove delay
+        MK = x.shape[1] * x.shape[2]
+
+        if delay < 0:
+            raise ValueError("Delay must be non-negative")
+
+        x = x.reshape((-1, MK))[delay:, ...]
+        y_batched = batch(y.T, self._denominator().shape[1] + 1)
+
+        length = min(x.shape[0], y_batched.shape[0])
+        x = x[:length, ...]
+
+        return super().lstsq(x, y_batched, verbose=verbose)
