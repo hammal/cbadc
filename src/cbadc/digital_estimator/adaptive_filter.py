@@ -144,6 +144,7 @@ class AdaptiveFIRFilter:
         epochs: int,
         learning_rate: float = 1e-5,
         momentum: float = 0.9,
+        delay: int = 0,
         shuffle=False,
         verbose=True,
     ):
@@ -152,7 +153,7 @@ class AdaptiveFIRFilter:
 
         Parameters
         ----------
-        x : np.ndarray (batch_size, M, K)
+        x : np.ndarray (batch_size, M)
             The input data.
         y: np.ndarray (L, batch_size)
             The reference data.
@@ -164,6 +165,8 @@ class AdaptiveFIRFilter:
             The learning rate, defaults to 1e-5.
         momentum : float
             The momentum, defaults to 0.9.
+        delay : int
+            The delay of the FIR filter. must be non-negative.
         shuffle : bool
             Whether to shuffle the data, defaults to False.
         verbose : bool
@@ -174,6 +177,17 @@ class AdaptiveFIRFilter:
         loss : np.ndarray (L,)
             The loss function evaluated on the given data.
         """
+        if verbose:
+            logger.info(
+                f"""
+Training using LMS for:
+- epochs = {epochs},
+- batch size = {batch_size},
+- learning rate = {learning_rate},
+- momentum = {momentum},
+- and shuffle set to {shuffle}."""
+            )
+        x, y = self._batch(x, y, delay)
 
         for e in cbadc.utilities.show_status(range(epochs)):
             if shuffle:
@@ -204,6 +218,34 @@ class AdaptiveFIRFilter:
                 )
         return self.loss(x, y)
 
+    def _batch(self, x: np.ndarray, y: np.ndarray, delay: int):
+        """
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The reference data.
+        delay : int
+            The delay of the FIR filter. must be non-negative.
+
+        Returns
+        -------
+        x : np.ndarray (length, M, K)
+            The modified input data.
+        y : np.ndarray (L, length)
+            The modified reference data.
+
+        where length = min(x.shape[0], y.shape[1])
+        """
+        if delay < 0:
+            raise ValueError("delay must be non-negative")
+        x = batch(x[delay:, :], self.K)
+        length = min(x.shape[0], y.shape[1])
+        x = x[:length, ...]
+        y = y[:, :length]
+        return x, y
+
     def rls(
         self,
         x: np.ndarray,
@@ -211,6 +253,7 @@ class AdaptiveFIRFilter:
         epochs: int,
         delta: float = 1e-2,
         lambda_: float = 1e0 - 1e-12,
+        delay: int = 0,
         shuffle=False,
         verbose=True,
     ):
@@ -229,6 +272,8 @@ class AdaptiveFIRFilter:
             The delta parameter of the RLS algorithm.
         lambda : float
             The lambda parameter of the RLS algorithm.
+        delay : int
+            The delay of the FIR filter. must be non-negative.
         shuffle : bool
             Whether to shuffle the data, defaults to False.
         verbose : bool
@@ -240,10 +285,21 @@ class AdaptiveFIRFilter:
         loss : np.ndarray (L,)
             The loss function evaluated on the given data.
         """
+        if verbose:
+            logger.info(
+                f"""
+Training using RLS for:
+- epochs = {epochs},
+- delta = {delta},
+- lambda = {lambda_},
+- and shuffle set to {shuffle}."""
+            )
+
+        x, y = self._batch(x, y, delay)
 
         # Lazy initialize Covariance matrix
         if hasattr(self, "V") is False:
-            total_size = self.M * self.K + 1
+            total_size = np.prod(self._h.shape[1:]) + 1
             self.V = np.eye(total_size, dtype=x.dtype) / delta
             self._x_flatened = np.zeros((total_size), dtype=x.dtype)
             self._x_flatened[-1] = 1.0
@@ -272,7 +328,7 @@ class AdaptiveFIRFilter:
 
                 for l in range(self.L):
                     self._offset[l, 0] += g[-1] * error[l]
-                    self._h[l, ...] += g[:-1].reshape((self.M, self.K)) * error[l]
+                    self._h[l, ...] += g[:-1].reshape((-1, self.K)) * error[l]
 
             if verbose:
                 logger.info(
@@ -280,30 +336,36 @@ class AdaptiveFIRFilter:
                 )
         return self.loss(x, y)
 
-    def lstsq(self, x: np.ndarray, y: np.ndarray, verbose=True):
+    def lstsq(self, x: np.ndarray, y: np.ndarray, delay: int = 0, verbose=True):
         """
         Fits the filter to the given data using the least squares method.
 
         Parameters
         ----------
-        x : np.ndarray (batch_size, M, K)
+        x : np.ndarray (batch_size, M)
             The input data.
         y: np.ndarray (L, batch_size)
             The reference data.
+        delay : int
+            The delay of the FIR filter. must be non-negative.
+        verbose : bool
+            Whether to print the loss function during training.
 
         Returns
         -------
         loss : np.ndarray (L,)
             The loss function evaluated on the given data.
         """
+        x, y = self._batch(x, y, delay)
+
         # (batch_size, M * K + 1)
         x_with_offset = np.hstack(
-            (x.reshape((-1, self.M * self.K)), np.ones((x.shape[0], 1)))
+            (x.reshape((x.shape[0], -1)), np.ones((x.shape[0], 1)))
         )
         # (M * K + 1, L)
         sol = np.linalg.lstsq(x_with_offset, y.T, rcond=None)
         self._offset = sol[0][-1, :].T
-        self._h = sol[0][:-1, :].T.reshape((self.L, self.M, self.K))
+        self._h = sol[0][:-1, :].T.reshape((self.L, -1, self.K))
         if verbose:
             logger.info(f"loss = {sol[1]}, offset = {self._offset}")
         return sol[1]
@@ -328,15 +390,16 @@ class AdaptiveFIRFilter:
         """
         Parameters
         ----------
-        x : np.ndarray (batch_size, M, K)
-            The input data, shape (nr_samples, M - nr_references).
+        x : np.ndarray (batch_size, M)
+            The input data.
 
         Returns
         -------
         y : np.ndarray (L, batch_size)
             The output data, shape (nr_samples, nr_references).
         """
-        return self.call(x)
+
+        return self.call(batch(x, self.K))
 
     def predict_full(self, x, y):
         """
@@ -361,7 +424,7 @@ class AdaptiveFIRFilter:
         h : np.ndarray (L, M, K)
             The FIR filter.
         """
-        return np.copy(self._h.reshape((self.L, self.M, self.K)))
+        return np.copy(self._h.reshape((self.L, -1, self.K)))
 
     def get_offset(self):
         """
@@ -411,8 +474,8 @@ class AdaptiveFIRFilter:
         h = self.impulse_response()
         if h.dtype == np.complex128:
             f_h, ax_h = plt.subplots(2, 2, sharex=True)
-            for l in range(self.L):
-                for m in range(self.M):
+            for l in range(h.shape[0]):
+                for m in range(h.shape[1]):
                     h_version = h[l, m, :]
                     ax_h[0, 0].plot(
                         np.arange(h_version.size) - h_version.size // 2,
@@ -445,8 +508,8 @@ class AdaptiveFIRFilter:
                     ax_h[1, m].grid(True)
         else:
             f_h, ax_h = plt.subplots(2, 1, sharex=True)
-            for l in range(self.L):
-                for m in range(self.M):
+            for l in range(h.shape[0]):
+                for m in range(h.shape[1]):
                     h_version = h[l, m, :]
                     ax_h[0].plot(
                         np.arange(h_version.size) - h_version.size // 2,
@@ -492,8 +555,8 @@ class AdaptiveFIRFilter:
             (self.L, self.M, (number_of_points >> 1) + 1), dtype=np.complex128
         )
         freqs = np.fft.rfftfreq(number_of_points)
-        for l in range(self.L):
-            for m in range(self.M):
+        for l in range(tf.shape[0]):
+            for m in range(tf.shape[1]):
                 tf[l, m, :] = np.fft.rfft(self._h[l, m, :])
         return freqs, tf
 
@@ -561,6 +624,7 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
 
     def __init__(self, M, K, L=1, dtype=np.float64):
         super().__init__(M + 1, K, L, dtype)
+        self.M = M
 
     def _numerator(self):
         return self._h[:, :-1, :]
@@ -569,13 +633,13 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
         return self._h[:, -1, :]
 
     def _dlti(self, l, m):
-        return signal.dlti(self._numerator()[l, m, :], self._denominator()[l, :])
+        return signal.dlti(self._numerator()[l, m, ::1], self._denominator()[l, ::1])
 
-    def call(self, x: np.ndarray):
+    def predict(self, x: np.ndarray):
         """
         Parameters
         ----------
-        x : np.ndarray (batch_size, M, K)
+        x : np.ndarray (batch_size, M)
             The input data batch.
 
         Returns
@@ -583,6 +647,7 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
         y : np.ndarray (L, batch_size)
             The output data, shape (nr_samples, nr_references).
         """
+        x = batch(x, self.K)
         # FIR filter part (L, batch_size)
         batch_size = x.shape[0]
         numerator = self._numerator()
@@ -627,47 +692,55 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
                 freqs, tf[l, m, :] = self._dlti(l, m).freqresp(n=number_of_points)
         return freqs, tf
 
-    def impulse_response(self, number_of_points: int = 0):
-        """
-        Returns the impulse response of the filter.
+    # def impulse_response(self, number_of_points: int = 0):
+    #     """
+    #     Returns the impulse response of the filter.
 
+    #     Parameters
+    #     ----------
+    #     number_of_points : int
+    #         The number of uniformly spaced frequency points to evaluate the transfer function at, defaults to K.
+
+    #     Returns
+    #     -------
+    #     h : np.ndarray (L, M, number_of_points)
+    #         The impulse response.
+    #     """
+    #     if number_of_points == 0:
+    #         number_of_points = self.K
+    #     h = np.zeros((self.L, self.M, number_of_points))
+    #     for l in range(self.L):
+    #         for m in range(self.M):
+    #             h[l, m, :] = (
+    #                 self._dlti(l, m).impulse(n=number_of_points)[1][l].flatten()
+    #             )
+    #     return h
+
+    def _reshape_data_for_FIR_filter_training(
+        self, x: np.ndarray, y: np.ndarray, delay: int = 0
+    ):
+        """
         Parameters
         ----------
-        number_of_points : int
-            The number of uniformly spaced frequency points to evaluate the transfer function at, defaults to K.
+        x : np.ndarray (batch_size, M, K)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The reference data.
+        delay : int
+            The delay of the IIR filter. must be non-negative.
 
         Returns
         -------
-        h : np.ndarray (L, M, number_of_points)
-            The impulse response.
+        x_concat : np.ndarray (length, (M + L) * K)
+            The modified input data.
+        y_batched : np.ndarray (L, length)
+            The modified reference data.
         """
-        if number_of_points == 0:
-            number_of_points = self.K
-        h = np.zeros((self.L, self.M, number_of_points), dtype=np.complex128)
-        for l in range(self.L):
-            for m in range(self.M):
-                h[l, m, :] = self._dlti(l, m).impulse(n=number_of_points)
-        return h
-
-    def _reshape_data_for_FIR_filter_training(
-        self, x: np.ndarray, y: np.ndarray, delay
-    ):
-        # Batch reference data and remove delay
-        MK = x.shape[1] * x.shape[2]
-
-        if delay < 0:
-            raise ValueError("Delay must be non-negative")
-
-        x = x.reshape((-1, MK))[delay:, ...]
-        y_batched = batch(y.T, self._denominator().shape[1] + 1)
-
-        length = min(x.shape[0], y_batched.shape[0])
-
-        x = np.hstack((x[:length], y_batched[:length,]))
-
-        x = x[:length, ...]
-
-        return x, y_batched[..., -1]
+        x = x[self.K + delay :, :]
+        length = min(x.shape[0], y.shape[1] - self.K)
+        # (length, M + L)
+        x_concat = np.concatenate((x[:length, :], y[:, :length].T), axis=1)
+        return x_concat, y[:, self.K : self.K + length]
 
     def lstsq(self, x: np.ndarray, y: np.ndarray, delay: int = 0, verbose=True):
         """
@@ -675,7 +748,7 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
 
         Parameters
         ----------
-        x : np.ndarray (batch_size, M, K)
+        x : np.ndarray (batch_size, M)
             The input data.
         y: np.ndarray (L, batch_size)
             The reference data.
@@ -689,16 +762,166 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
         loss : np.ndarray (L,)
             The loss function evaluated on the given data.
         """
-        # Batch reference data and remove delay
-        MK = x.shape[1] * x.shape[2]
+        x, y = self._reshape_data_for_FIR_filter_training(x, y, delay)
+        return super().lstsq(x, y, delay=0, verbose=verbose)
 
-        if delay < 0:
-            raise ValueError("Delay must be non-negative")
+    def lms(self, x: np.ndarray, y: np.ndarray, delay: int = 0, **kwargs):
+        """
+        Fits the filter to the given data using the LMS method.
 
-        x = x.reshape((-1, MK))[delay:, ...]
-        y_batched = batch(y.T, self._denominator().shape[1] + 1)
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The reference data.
+        delay : int
+            The delay of the IIR filter. must be non-negative.
+        batch_size : int
+            The batch size.
+        epochs : int
+            The number of epochs.
+        learning_rate : float
+            The learning rate, defaults to 1e-5.
+        momentum : float
+            The momentum, defaults to 0.9.
+        verbose : bool
+            Whether to print the loss function during training.
 
-        length = min(x.shape[0], y_batched.shape[0])
-        x = x[:length, ...]
 
-        return super().lstsq(x, y_batched, verbose=verbose)
+        Returns
+        -------
+        loss : np.ndarray (L,)
+            The loss function evaluated on the given data.
+        """
+        if "shuffle" in kwargs:
+            raise ValueError("shuffle is not supported for IIR filters")
+        x, y = self._reshape_data_for_FIR_filter_training(x, y, delay)
+        return super().lms(x, y, **kwargs)
+
+    def rls(self, x: np.ndarray, y: np.ndarray, delay: int = 0, **kwargs):
+        """
+        Fits the filter to the given data using the RLS method.
+
+        Parameters
+        ----------
+        x : np.ndarray (batch_size, M)
+            The input data.
+        y: np.ndarray (L, batch_size)
+            The reference data.
+        delay : int
+            The delay of the IIR filter. must be non-negative.
+        epochs : int
+            The number of epochs.
+        delta : float
+            The delta parameter of the RLS algorithm.
+        lambda : float
+            The lambda parameter of the RLS algorithm.
+        verbose : bool
+            Whether to print the loss function during training.
+
+
+        Returns
+        -------
+        loss : np.ndarray (L,)
+            The loss function evaluated on the given data.
+        """
+        if "shuffle" in kwargs:
+            raise ValueError("shuffle is not supported for IIR filters")
+        x, y = self._reshape_data_for_FIR_filter_training(x, y, delay)
+        return super().rls(x, y, **kwargs)
+
+
+def find_IIR_filter(
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    K: int = 1 << 5,
+    delay=None,
+    dtype=np.float64,
+) -> AdaptiveIIRFilter:
+    """
+
+    Parameters
+    ----------
+    x_train : np.ndarray (train_size, M)
+        The input training data.
+    y_train: np.ndarray (L, train_size)
+        The reference training data.
+    K : int
+        The number of filter taps per control signal.
+    delay : [int, int]
+        A range of possible delays for the IIR filter, defaults to [0, K].
+    dtype : np.dtype
+        The data type of the filter coefficients.
+    """
+    if delay is None:
+        delay = [0, K]
+
+    best_loss = np.inf
+    best_filter = None
+    x_train_batch = batch(x_train, K)
+    for d in range(delay[0], delay[1] + 1):
+        filter = AdaptiveIIRFilter(x_train.shape[1], K, y_train.shape[0], dtype)
+        loss = np.linalg.norm(
+            filter.lstsq(x_train_batch, y_train, delay=d, verbose=False)
+        )
+        if loss < best_loss:
+            best_loss = loss
+            best_filter = filter
+    if best_filter is None:
+        raise ValueError("No filter found")
+    return best_filter
+
+
+def find_IIR_filter_snr(
+    x_train: np.ndarray,
+    x_test: np.ndarray,
+    y_train: np.ndarray,
+    K: int = 1 << 5,
+    delay=None,
+    dtype=np.float64,
+) -> AdaptiveIIRFilter:
+    """
+
+    Parameters
+    ----------
+    x_train : np.ndarray (train_size, M)
+        The input training data.
+    x_test : np.ndarray (test_size, M)
+        The input test data.
+    y_train: np.ndarray (L, train_size)
+        The reference training data.
+    K : int
+        The number of filter taps per control signal.
+    delay : [int, int]
+        A range of possible delays for the IIR filter, defaults to [0, K].
+    dtype : np.dtype
+        The data type of the filter coefficients.
+    """
+    if delay is None:
+        delay = [0, K]
+
+    best_snr = -np.inf
+    best_filter = None
+    x_train_batch = batch(x_train, K)
+    x_test_batch = batch(x_test, K)
+    for d in range(delay[0], delay[1] + 1):
+        filter = AdaptiveIIRFilter(x_train.shape[1], K, y_train.shape[0], dtype)
+        _ = np.linalg.norm(filter.lstsq(x_train_batch, y_train, delay=d, verbose=False))
+        u_hat = filter.predict(x_test_batch).flatten()
+        _, psd = cbadc.utilities.compute_power_spectral_density(
+            u_hat,
+        )
+        signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
+        noise_index = np.ones(psd.size, dtype=bool)
+        noise_index[:3] = False
+        noise_index[signal_index] = False
+        res = cbadc.utilities.snr_spectrum_computation_extended(
+            psd, signal_index, noise_index
+        )
+        if res["snr"] > best_snr:
+            best_snr = res["snr"]
+            best_filter = filter
+    if best_filter is None:
+        raise ValueError("No filter found")
+    return best_filter
