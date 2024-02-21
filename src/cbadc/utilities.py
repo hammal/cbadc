@@ -3,6 +3,7 @@
 This module contains various helpful functions to accommodate
 the cbadc toolbox.
 """
+
 import struct
 from typing import Generator, Iterator, Union
 import numpy as np
@@ -233,7 +234,7 @@ def read_byte_stream_from_url(
 
 
 def csv_2_control_signal(
-    filename: str, M: int, msb2lsb: bool = False, separator: str = ','
+    filename: str, M: int, msb2lsb: bool = False, separator: str = ","
 ):
     """Creates an iterator that reads a control sequence from a CSV file.
 
@@ -276,7 +277,7 @@ def csv_2_control_signal(
         for lines with number of entries different from M.
 
     """
-    with open(filename, 'r') as read_obj:
+    with open(filename, "r") as read_obj:
         for line in read_obj:
             s = np.fromstring(line, dtype=np.int8, sep=separator)
             if s.size != M:
@@ -512,7 +513,10 @@ def find_sinusoidal(spectrum: np.ndarray, mask_width: np.ndarray):
         the width around peak to be considered.
 
     """
-    return find_n_sinusoidals(spectrum, 1, mask_width)
+    try:
+        return find_n_sinusoidals(spectrum, 1, mask_width)
+    except IndexError:
+        return np.array([0], dtype=np.int64)
 
 
 def show_status(iterator, length: int = 1 << 63):
