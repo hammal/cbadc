@@ -1,7 +1,7 @@
 """ The adaptive FIR filter model.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
@@ -722,7 +722,7 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
         """
         Parameters
         ----------
-        x : np.ndarray (batch_size, M, K)
+        x : np.ndarray (batch_size, M)
             The input data.
         y: np.ndarray (L, batch_size)
             The reference data.
@@ -742,7 +742,14 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
         x_concat = np.concatenate((x[:length, :], y[:, :length].T), axis=1)
         return x_concat, y[:, self.K : self.K + length]
 
-    def lstsq(self, x: np.ndarray, y: np.ndarray, delay: int = 0, verbose=True):
+    def lstsq(
+        self,
+        x: np.ndarray,
+        y: np.ndarray,
+        delay: int = 0,
+        x_validate: np.ndarray = None,
+        verbose=True,
+    ):
         """
         Fits the filter to the given data using the least squares method.
 
@@ -762,8 +769,42 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
         loss : np.ndarray (L,)
             The loss function evaluated on the given data.
         """
-        x, y = self._reshape_data_for_FIR_filter_training(x, y, delay)
-        return super().lstsq(x, y, delay=0, verbose=verbose)
+        if isinstance(delay, int) or isinstance(delay, np.int64):
+            x, y = self._reshape_data_for_FIR_filter_training(x, y, delay)
+            return super().lstsq(x, y, delay=0, verbose=verbose)
+
+        if len(delay) != 2:
+            raise ValueError("delay must be an integer or a list of two integers")
+
+        best_loss = np.inf
+        best_delay = None
+        for d in range(delay[0], delay[1] + 1):
+            loss = np.linalg.norm(self.lstsq(x, y, delay=d, verbose=False))
+            if x_validate is not None:
+                u_hat = self.predict(x_validate).flatten()
+                _, psd = cbadc.utilities.compute_power_spectral_density(
+                    u_hat,
+                )
+                signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
+                noise_index = np.ones(psd.size, dtype=bool)
+                noise_index[:3] = False
+                noise_index[signal_index] = False
+                res = cbadc.utilities.snr_spectrum_computation_extended(
+                    psd, signal_index, noise_index
+                )
+                loss = 1.0 / res["snr"]
+
+            if loss < best_loss:
+                best_loss = loss
+                best_delay = d
+        if best_delay is None:
+            raise ValueError("No filter found")
+
+        if verbose:
+            logger.info(f"Delay set as: {best_delay}")
+
+        # solves the problem once more this is wasetful.
+        return self.lstsq(x, y, delay=best_delay, verbose=verbose)
 
     def lms(self, x: np.ndarray, y: np.ndarray, delay: int = 0, **kwargs):
         """
@@ -830,98 +871,3 @@ class AdaptiveIIRFilter(AdaptiveFIRFilter):
             raise ValueError("shuffle is not supported for IIR filters")
         x, y = self._reshape_data_for_FIR_filter_training(x, y, delay)
         return super().rls(x, y, **kwargs)
-
-
-def find_IIR_filter(
-    x_train: np.ndarray,
-    y_train: np.ndarray,
-    K: int = 1 << 5,
-    delay=None,
-    dtype=np.float64,
-) -> AdaptiveIIRFilter:
-    """
-
-    Parameters
-    ----------
-    x_train : np.ndarray (train_size, M)
-        The input training data.
-    y_train: np.ndarray (L, train_size)
-        The reference training data.
-    K : int
-        The number of filter taps per control signal.
-    delay : [int, int]
-        A range of possible delays for the IIR filter, defaults to [0, K].
-    dtype : np.dtype
-        The data type of the filter coefficients.
-    """
-    if delay is None:
-        delay = [0, K]
-
-    best_loss = np.inf
-    best_filter = None
-    x_train_batch = batch(x_train, K)
-    for d in range(delay[0], delay[1] + 1):
-        filter = AdaptiveIIRFilter(x_train.shape[1], K, y_train.shape[0], dtype)
-        loss = np.linalg.norm(
-            filter.lstsq(x_train_batch, y_train, delay=d, verbose=False)
-        )
-        if loss < best_loss:
-            best_loss = loss
-            best_filter = filter
-    if best_filter is None:
-        raise ValueError("No filter found")
-    return best_filter
-
-
-def find_IIR_filter_snr(
-    x_train: np.ndarray,
-    x_test: np.ndarray,
-    y_train: np.ndarray,
-    K: int = 1 << 5,
-    delay=None,
-    dtype=np.float64,
-) -> AdaptiveIIRFilter:
-    """
-
-    Parameters
-    ----------
-    x_train : np.ndarray (train_size, M)
-        The input training data.
-    x_test : np.ndarray (test_size, M)
-        The input test data.
-    y_train: np.ndarray (L, train_size)
-        The reference training data.
-    K : int
-        The number of filter taps per control signal.
-    delay : [int, int]
-        A range of possible delays for the IIR filter, defaults to [0, K].
-    dtype : np.dtype
-        The data type of the filter coefficients.
-    """
-    if delay is None:
-        delay = [0, K]
-
-    best_snr = -np.inf
-    best_filter = None
-    x_train_batch = batch(x_train, K)
-    x_test_batch = batch(x_test, K)
-    for d in range(delay[0], delay[1] + 1):
-        filter = AdaptiveIIRFilter(x_train.shape[1], K, y_train.shape[0], dtype)
-        _ = np.linalg.norm(filter.lstsq(x_train_batch, y_train, delay=d, verbose=False))
-        u_hat = filter.predict(x_test_batch).flatten()
-        _, psd = cbadc.utilities.compute_power_spectral_density(
-            u_hat,
-        )
-        signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
-        noise_index = np.ones(psd.size, dtype=bool)
-        noise_index[:3] = False
-        noise_index[signal_index] = False
-        res = cbadc.utilities.snr_spectrum_computation_extended(
-            psd, signal_index, noise_index
-        )
-        if res["snr"] > best_snr:
-            best_snr = res["snr"]
-            best_filter = filter
-    if best_filter is None:
-        raise ValueError("No filter found")
-    return best_filter
