@@ -1,0 +1,2 @@
+{% include 'comment.cir.j2' %}
+{{ instance_name }} {{ terminals[0] }} {{ terminals[1] }} {{ terminals[2] }} {{ terminals[3] }} {{ model_instance_name }} {% for key, value in parameters.items() %}{% if loop.last %}{{ key }}={{ value }}{% else %}{{ key }}={{ value }} {% endif %}{% endfor %}
