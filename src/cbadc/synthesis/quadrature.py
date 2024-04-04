@@ -1,4 +1,5 @@
 """Synthesise functions for chain-of-integrators control-bounded ADCs."""
+
 from cbadc.analog_frontend import AnalogFrontend
 from cbadc.analog_system import AnalogSystem
 from cbadc.synthesis.leap_frog import g_i, get_leap_frog
@@ -78,10 +79,14 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
     )
 
     if "scalar_input" in kwargs:
-        analog_system.B[analog_system.N // 2 :, 0] = analog_system.B[
+        analog_system.B[analog_system.N // 2 :, 0] = -analog_system.B[
             analog_system.N // 2 :, 1
         ]
         analog_system.B = analog_system.B[:, 0].reshape((analog_system.N, 1))
+
+        analog_system.B_tilde = (
+            analog_system.B_tilde[:, 0] - analog_system.B_tilde[:, 1]
+        ).reshape((-1, 1))
 
     return AnalogFrontend(
         analog_system=AnalogSystem(
@@ -90,6 +95,8 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
             analog_system.CT,
             analog_system.Gamma,
             analog_system.Gamma_tildeT,
+            B_tilde=analog_system.B_tilde,
+            A_tilde=analog_system.A_tilde,
         ),
         digital_control=digital_control,
     )
