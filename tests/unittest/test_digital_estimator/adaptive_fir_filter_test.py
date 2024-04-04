@@ -134,9 +134,9 @@ def check_ENOB(f, psd, target_ENOB, fs, BW):
 def test_calibration(setup):
     M = setup["analog_frontend"].analog_system.M
     K = setup["K"]
-    s_batched = setup["s_batched"]
+    s_decimated = setup["s_decimated"]
     r_filtered = setup["r_filtered"]
-    s_test_batched = setup["s_test_batched"]
+    s_test_decimated = setup["s_test_decimated"]
     fs = setup["fs"]
     DSR = setup["DSR"]
     BW = setup["BW"]
@@ -145,7 +145,7 @@ def test_calibration(setup):
     # Solve using least squares
     lstsq_estimator = cbadc.digital_estimator.AdaptiveFIRFilter(M, K, L=1)
     lstsq_estimator.lstsq(
-        s_batched,
+        s_decimated,
         y=r_filtered,
     )
 
@@ -156,7 +156,7 @@ def test_calibration(setup):
 
     rls_estimator = cbadc.digital_estimator.AdaptiveFIRFilter(M, K, L=1)
     rls_estimator.rls(
-        x=s_batched,
+        x=s_decimated,
         y=r_filtered.reshape((1, -1)),
         epochs=epochs,
         verbose=True,
@@ -172,7 +172,7 @@ def test_calibration(setup):
 
     lms_estimator = cbadc.digital_estimator.AdaptiveFIRFilter(M, K, L=1)
     lms_estimator.lms(
-        x=s_batched,
+        x=s_decimated,
         y=r_filtered.reshape((1, -1)),
         batch_size=batch_size,
         epochs=epochs,
@@ -192,11 +192,11 @@ def test_calibration(setup):
     lms_estimator.plot_impulse_response()
 
     # Compute LSTSQ test estimate
-    u_hat_lstsq = lstsq_estimator.predict(s_test_batched).flatten()
+    u_hat_lstsq = lstsq_estimator.predict(s_test_decimated).flatten()
     # Compute RLS test estimate
-    u_hat_rls = rls_estimator.predict(s_test_batched).flatten()
+    u_hat_rls = rls_estimator.predict(s_test_decimated).flatten()
     # Compute LMS test estimate
-    u_hat_lms = lms_estimator.predict(s_test_batched).flatten()
+    u_hat_lms = lms_estimator.predict(s_test_decimated).flatten()
 
     f, psd = cbadc.utilities.compute_power_spectral_density(
         u_hat_lstsq,

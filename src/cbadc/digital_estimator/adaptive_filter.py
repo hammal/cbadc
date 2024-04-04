@@ -363,7 +363,7 @@ Training using RLS for:
             (x.reshape((x.shape[0], -1)), np.ones((x.shape[0], 1)))
         )
         # (M * K + 1, L)
-        sol = np.linalg.lstsq(x_with_offset, y.T, rcond=None)
+        sol = np.linalg.lstsq(np.conj(x_with_offset), y.T, rcond=None)
         self._offset = sol[0][-1, :].T
         self._h = sol[0][:-1, :].T.reshape((self.L, -1, self.K))
         if verbose:
@@ -382,9 +382,10 @@ Training using RLS for:
         y : np.ndarray (L, batch_size)
             The output data, shape (nr_samples, nr_references).
         """
-        return np.tensordot(self._h.conj(), x, axes=([1, 2], [1, 2])) + np.conj(
-            self._offset
-        )
+        return (
+            np.tensordot(self._h.conj(), x, axes=([1, 2], [1, 2])).T
+            + np.conj(self._offset)
+        ).T
 
     def predict(self, x: np.ndarray):
         """
