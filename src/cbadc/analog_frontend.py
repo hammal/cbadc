@@ -1,4 +1,5 @@
 """The analog frontend"""
+
 import cbadc
 import numpy as np
 import scipy.integrate
@@ -43,6 +44,27 @@ def get_global_control(
     atol=1e-12,
     rtol=1e-12,
 ) -> AnalogFrontend:
+    """Compute the global control for the given analog system and digital control.
+
+    Parameters
+    ----------
+    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
+        an analog system instance
+    digital_control: :py:class:`cbadc.digital_control.DigitalControl`
+        a digital control instance
+    phi_delay: np.ndarray
+        the delay vector
+    atol: float
+        absolute tolerance for the ODE solver
+    rtol: float
+        relative tolerance for the ODE solver
+
+    Returns
+    -------
+    :py:class:`cbadc.analog_frontend.AnalogFrontend`
+        an analog frontend with global control
+    """
+
     def zero_order_hold(l: int, t: float) -> np.ndarray:
         res = np.zeros(analog_system.L)
         if t >= 0 and t < digital_control.clock.T:
@@ -142,6 +164,17 @@ def get_global_control(
 
             return res
 
+        events = []
+
+        for m in range(analog_system.M_tilde):
+
+            def event_function(t, x):
+                return t - phi_delay[m]
+
+            event_function.terminal = False
+            event_function.direction = 0
+            events.append(event_function)
+
         # solve ode
         sol = scipy.integrate.solve_ivp(
             derivative_m,
@@ -151,10 +184,7 @@ def get_global_control(
             ),
             atol=atol,
             rtol=rtol,
-            events=[
-                cbadc.simulation_event.TimeEvent(phi_delay[mm], name=f"phi_delay_{mm}")
-                for mm in range(analog_system.M_tilde)
-            ],
+            events=events,
         )
 
         y = sol.y[:, -1]

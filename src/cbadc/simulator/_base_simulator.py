@@ -96,6 +96,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
         """reset initial time of simulator and digital control"""
         self.t = t
         self.digital_control.reset(t)
+        self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
 
     def state_vector(self) -> np.ndarray:
         """return current analog system state vector :math:`\mathbf{x}(t)`

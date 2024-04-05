@@ -30,7 +30,6 @@ class SineWaveModulator(AnalogSystem):
         self,
         analog_system: AnalogSystem,
         modulation_frequency: float,
-        permuation_matrix: np.ndarray,
     ):
         super().__init__(
             analog_system.A,
@@ -42,18 +41,27 @@ class SineWaveModulator(AnalogSystem):
             analog_system.B_tilde,
             analog_system.A_tilde,
         )
-        self.modulation_frequency = modulation_frequency
-        if permuation_matrix.shape[0] != permuation_matrix.shape[1]:
-            raise ValueError("Permutation matrix must be square.")
+        self.angular_modulation_frequency = 2 * np.pi * modulation_frequency
 
-        self.permuation_matrix = permuation_matrix
-        self.inverted_permuation_matrix = np.linalg.inv(self.permuation_matrix)
-        if self.permuation_matrix.shape[0] % 2 != 0:
-            raise ValueError("Permutation matrix must be even.")
-        # if self.permuation_matrix.shape[0] != self.A.shape[0]:
-        #     raise ValueError("Permutation matrix must be of same size as A.")
         if self.N % 2 != 0:
             raise ValueError("A must be even sized.")
+        self._N_half = self.N // 2
+        self._x_shuffler = np.zeros(self.N, dtype=int)
+        _indices = np.arange(self._x_shuffler.size)
+        self._x_shuffler[::2] = _indices[: self._N_half]
+        self._x_shuffler[1::2] = _indices[self._N_half :]
+        self._x_de_shuffler = np.zeros_like(self._x_shuffler)
+        self._x_de_shuffler[self._x_shuffler] = _indices
+
+        self._M_half = self.M // 2
+        self._s_shuffler = np.zeros(self.M, dtype=int)
+        _indices = np.arange(self._s_shuffler.size)
+        self._s_shuffler[::2] = _indices[: self._M_half]
+        self._s_shuffler[1::2] = _indices[self._M_half :]
+        self._s_de_shuffler = np.zeros_like(self._s_shuffler)
+        self._s_de_shuffler[self._s_shuffler] = _indices
+
+        self._rotation_matrix_data = np.eye(self.N)
 
     def derivative(
         self, x: np.ndarray, t: float, u: np.ndarray, s: np.ndarray
@@ -87,7 +95,12 @@ class SineWaveModulator(AnalogSystem):
         return (
             np.dot(self.A, x).flatten()
             + np.dot(self.B, u).flatten()
-            + np.dot(self.Gamma, np.dot(self.modulate(t), s)).flatten()
+            + np.dot(
+                self.Gamma,
+                np.dot(self.modulate(t)[: self.M, : self.M], s[self._s_shuffler])[
+                    self._s_de_shuffler
+                ],
+            ).flatten()
         )
 
     def control_observation(
@@ -114,7 +127,9 @@ class SineWaveModulator(AnalogSystem):
             the control observation.
 
         """
-        x = np.dot(self.demodulate(t), x).flatten()
+        x = np.dot(self.demodulate(t), x[self._x_shuffler])[
+            self._x_de_shuffler
+        ].flatten()
         if u is None:
             return np.dot(self.Gamma_tildeT, x)
         if s is None:
@@ -127,35 +142,21 @@ class SineWaveModulator(AnalogSystem):
 
     def modulate(self, t: float) -> np.ndarray:
         """Upmodulate the given signal phi."""
-        return np.dot(
-            self.inverted_permuation_matrix,
-            np.dot(
-                self._rotation_matrix(2 * np.pi * self.modulation_frequency * t),
-                self.permuation_matrix,
-            ),
-        )
+        return self._rotation_matrix(self.angular_modulation_frequency * t)
 
     def demodulate(self, t: float) -> np.ndarray:
         """Downmodulate the given signal phi."""
-        return np.dot(
-            self.inverted_permuation_matrix,
-            np.dot(
-                self._rotation_matrix(-2 * np.pi * self.modulation_frequency * t),
-                self.permuation_matrix,
-            ),
-        )
+        return self._rotation_matrix(-self.angular_modulation_frequency * t)
 
     def _rotation_matrix(self, phi: float) -> np.ndarray:
-        # return np.kron(
-        #     np.eye(self.N // 2),
-        #     np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]]),
-        # )
-        return scipy.linalg.block_diag(
-            *[
-                np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]])
-                for _ in range(self.N // 2)
-            ]
-        )
+        self._rotation_matrix_data[: self.N, : self.N] = np.eye(self.N) * np.cos(phi)
+        self._rotation_matrix_data[: self._N_half, self._N_half :] = -np.eye(
+            self._N_half
+        ) * np.sin(phi)
+        self._rotation_matrix_data[self._N_half :, : self._N_half] = np.eye(
+            self._N_half
+        ) * np.sin(phi)
+        return self._rotation_matrix_data
 
 
 class SquareWaveModulator(SineWaveModulator):
@@ -209,22 +210,12 @@ class SquareWaveModulator(SineWaveModulator):
         self._full_rotation_matrix = np.zeros((self.N // 2, self.N // 2))
 
     def _rotation_matrix(self, phi: float) -> np.ndarray:
-        # rotation = np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]])
-
         cos_wave = 2 * (np.cos(phi) > 0) - 1
         sin_wave = 2 * (np.sin(phi) > 0) - 1
         self._square_rotation[0, 0] = cos_wave
         self._square_rotation[1, 1] = cos_wave
         self._square_rotation[0, 1] = -sin_wave
         self._square_rotation[1, 0] = sin_wave
-        # res = scipy.linalg.block_diag(
-        #     *[self._square_rotation for _ in range(self.N // 4)]
-        # )
-        # res = np.kron(
-        #     np.eye(self.N // 4),
-        #     self._square_rotation,
-        # )
-        # return res
         for n in range(self.N // 4):
             self._full_rotation_matrix[
                 2 * n : 2 * (n + 1), 2 * n : 2 * (n + 1)
@@ -250,9 +241,9 @@ class SquareWaveModulator(SineWaveModulator):
             self.inverted_permuation_matrix,
             np.dot(
                 self._rotation_matrix_half_clock_cycle(
-                    -2 * np.pi * self.modulation_frequency * t
+                    -2 * np.pi * self.angular_modulation_frequency * t
                 ),
-                self.permuation_matrix,
+                self._permuation_matrix,
             ),
         )
 

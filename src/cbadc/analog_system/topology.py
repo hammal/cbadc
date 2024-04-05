@@ -1,4 +1,5 @@
 """Tools to construct analog systems by means of combining other analog systems."""
+
 import numpy as np
 from typing import Tuple, List
 from .analog_system import AnalogSystem
@@ -49,10 +50,12 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     A = np.zeros((N, N))
     B = np.zeros((N, L))
     CT = np.zeros((analog_systems[0].CT.shape[0], N))
-
     CT[
         : analog_systems[0].CT.shape[0], : analog_systems[0].CT.shape[1]
     ] = analog_systems[0].CT
+
+    A_tilde = np.zeros((M_tilde, M))
+    B_tilde = np.zeros((M_tilde, L))
 
     Gamma = np.zeros((N, M))
     Gamma_tilde = np.zeros((M_tilde, N))
@@ -69,6 +72,9 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
         A[n:n_end, :] = np.dot(analog_system.B, CT)
         A[n:n_end, n:n_end] = analog_system.A
 
+        A_tilde[m_tilde:m_tilde_end, m:m_end] = analog_system.A_tilde
+        # B_tilde[m_tilde:m_tilde_end, :] = analog_system.B_tilde
+
         B[n:n_end, :] = np.dot(analog_system.B, D)
 
         D = np.dot(analog_system.D, D)
@@ -83,7 +89,9 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
         n += analog_system.N
         m += analog_system.M
         m_tilde += analog_system.M_tilde
-    return AnalogSystem(A, B, CT, Gamma, Gamma_tilde, D)
+    return AnalogSystem(
+        A, B, CT, Gamma, Gamma_tilde, D, B_tilde=B_tilde, A_tilde=A_tilde
+    )
 
 
 def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
@@ -134,6 +142,8 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     Gamma = np.zeros((N, M))
     Gamma_tilde = np.zeros((M_tilde, N))
     D = np.zeros((N_tilde, L))
+    A_tilde = np.zeros((M_tilde, M))
+    B_tilde = np.zeros((M_tilde, L))
 
     n: int = 0
     m: int = 0
@@ -154,13 +164,17 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
         Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_system.Gamma_tildeT
 
         D[n_tilde:n_tilde_end, l:l_end] = analog_system.D
+        A_tilde[m_tilde:m_tilde_end, m:m_end] = analog_system.A_tilde
+        # B_tilde[m_tilde:m_tilde_end, :] = analog_system.B_tilde
 
         l += analog_system.L
         n += analog_system.N
         n_tilde += analog_system.N_tilde
         m += analog_system.M
         m_tilde += analog_system.M_tilde
-    return AnalogSystem(A, B, CT, Gamma, Gamma_tilde, D)
+    return AnalogSystem(
+        A, B, CT, Gamma, Gamma_tilde, D, B_tilde=B_tilde, A_tilde=A_tilde
+    )
 
 
 def zpk2abcd(z, p, k):

@@ -53,10 +53,10 @@ def get_quadrature_signal_pair(
 
     """
 
-    return (
+    return [
         QuadratureSignal(amplitude, angular_frequency, True, [in_phase, quadrature]),
         QuadratureSignal(amplitude, angular_frequency, False, [in_phase, quadrature]),
-    )
+    ]
 
 
 class SineWaveModulator(_AnalogSignal):
