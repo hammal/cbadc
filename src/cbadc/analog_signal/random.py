@@ -1,14 +1,16 @@
 """Random signals."""
 
 from ._analog_signal import _AnalogSignal
-import random
+import numpy as np
 
 
 class _FiniteRandomSignal(_AnalogSignal):
     def __init__(self, output_set: tuple, T: float):
         super().__init__()
         self.set = output_set
-        self._value = random.choice(self.set)
+        self._buffer_size = 1 << 10
+        self._buffer_index = 0
+        self._values = np.random.choice(self.set, self._buffer_size)
         self._t = 0.0
         self.T = T
 
@@ -19,8 +21,11 @@ class _FiniteRandomSignal(_AnalogSignal):
         rel_t = t - self._t
         if rel_t >= self.T:
             self._t = t
-            self._value = random.choice(self.set)
-        return self._value
+            self._buffer_index += 1
+            if self._buffer_index == self._buffer_size:
+                self._values = np.random.choice(self.set, self._buffer_size)
+                self._buffer_index = 0
+        return self._values[self._buffer_index]
 
 
 class BinaryReferenceSignal(_FiniteRandomSignal):
@@ -96,7 +101,9 @@ class GaussianReferenceSignal(_AnalogSignal):
         self.std = std
         self._t = 0.0
         self.T = T
-        self._value = random.gauss(self.mean, self.std)
+        self._buffer_size = 1 << 10
+        self._buffer_index = 0
+        self._values = np.random.randn(self._buffer_size)
 
     def __str__(self):
         return f"""Gaussian random signal with mean: {self.mean}, standard deviation: {self.std}, and period {self.T}"""
@@ -118,5 +125,8 @@ class GaussianReferenceSignal(_AnalogSignal):
         rel_t = t - self._t
         if rel_t >= self.T:
             self._t = t
-            self._value = random.gauss(self.mean, self.std)
-        return self._value
+            self._buffer_index += 1
+            if self._buffer_index == self._buffer_size:
+                self._values = np.random.randn(self._buffer_size)
+                self._buffer_index = 0
+        return self._values[self._buffer_index]
