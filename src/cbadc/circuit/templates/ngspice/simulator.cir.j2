@@ -12,7 +12,8 @@
 * .endc
 
 * Transient analysis of state trajectories
-.tran {{ transient_analysis['step'] }} {{ transient_analysis['stop_time'] }} {{ transient_analysis['start_time'] }} {{ transient_analysis['max_step'] }} UIC
+.tran {{ transient_analysis['step'] }} {{ transient_analysis['stop_time'] }} {{ transient_analysis['start_time'] }} {{ transient_analysis['max_step'] }}{% if transient_analysis['UIC'] %} UIC{% else %}{% endif %}
+
 * .control
 * run
 * plot the differential state trajectories

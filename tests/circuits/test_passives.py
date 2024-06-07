@@ -6,18 +6,18 @@ from cbadc.circuit.components.sources import (
 )
 from cbadc.circuit import Terminal, SubCircuitElement
 
-three_terminals = [Terminal('p'), Terminal('n'), Terminal('g')]
+three_terminals = [Terminal("p"), Terminal("n"), Terminal("g")]
 
 
 def test_subckt():
-    SubCircuitElement('Xsub', 'subckt', three_terminals)
+    SubCircuitElement("Xsub", "subckt", three_terminals)
 
 
 def test_resistor():
-    subckt = SubCircuitElement('Xsub', 'subckt', three_terminals)
-    subckt.add(Resistor('R2', 1e3))
-    subckt.add(Resistor('R3', 1e6))
-    subckt.R4 = Resistor('R4', 1e2)
+    subckt = SubCircuitElement("Xsub", "subckt", three_terminals)
+    subckt.add(Resistor("R2", 1e3))
+    subckt.add(Resistor("R3", 1e6, 2))
+    subckt.R4 = Resistor("R4", 1e2)
 
     subckt.connects(
         (subckt[0], subckt.R2[0]),
@@ -28,10 +28,11 @@ def test_resistor():
         (subckt[1], subckt.R4[1]),
     )
 
-    assert subckt.R2.get_ngspice(subckt._internal_connections) == 'R2 P N r=1000.0'
-    assert subckt.R3.get_ngspice(subckt._internal_connections) == 'R3 P N r=1000000.0'
-    assert subckt.R4.get_ngspice(subckt._internal_connections) == 'R4 P N r=100.0'
-
+    assert subckt.R2.get_ngspice(subckt._internal_connections) == "R2 P N r=1000.0 m=1"
+    assert (
+        subckt.R3.get_ngspice(subckt._internal_connections) == "R3 P N r=1000000.0 m=2"
+    )
+    assert subckt.R4.get_ngspice(subckt._internal_connections) == "R4 P N r=100.0 m=1"
     # # Spectre
     # assert (
     #     subckt.subckt_components[0].get_spectre(subckt._internal_connections)
@@ -48,12 +49,12 @@ def test_resistor():
 
 
 def test_capacitor():
-    subckt = SubCircuitElement('Xsub', 'subckt', three_terminals)
-    subckt.add(Capacitor('C2', 1e-12))
+    subckt = SubCircuitElement("Xsub", "subckt", three_terminals)
+    subckt.add(Capacitor("C2", 1e-12, m=3))
     subckt.connect(subckt[0], subckt.C2[0])
     subckt.connect(subckt[1], subckt.C2[1])
 
-    assert subckt.C2.get_ngspice(subckt._internal_connections) == 'C2 P N 1e-12'
+    assert subckt.C2.get_ngspice(subckt._internal_connections) == "C2 P N 1e-12 m=3"
     # assert (
     #     subckt.subckt_components[0].get_spectre(subckt._internal_connections)
     #     == 'C2 P N c=1e-12'
@@ -61,13 +62,13 @@ def test_capacitor():
 
 
 def test_inductor():
-    subckt = SubCircuitElement('Xsub', 'subckt', three_terminals)
-    subckt.add(Inductor('L3', 1e-9))
+    subckt = SubCircuitElement("Xsub", "subckt", three_terminals)
+    subckt.add(Inductor("L3", 1e-9))
     subckt.connects(
         (subckt[0], subckt.L3[0]),
         (subckt[1], subckt.L3[1]),
     )
-    assert subckt.L3.get_ngspice(subckt._internal_connections) == 'L3 P N 1e-09'
+    assert subckt.L3.get_ngspice(subckt._internal_connections) == "L3 P N 1e-09 m=1"
     # assert (
     #     subckt.subckt_components[0].get_spectre(subckt._internal_connections)
     #     == 'L2 P N l=1e-09'
@@ -75,14 +76,16 @@ def test_inductor():
 
 
 def test_DC_voltage_source():
-    subckt = SubCircuitElement('Xsub', 'subckt', three_terminals)
-    subckt.add(DCVoltageSource('Vdd', 1))
+    subckt = SubCircuitElement("Xsub", "subckt", three_terminals)
+    subckt.add(DCVoltageSource("Vdd", 1))
 
     subckt.connects(
         (subckt[0], subckt.Vdd[0]),
         (subckt[1], subckt.Vdd[1]),
     )
-    assert subckt.Vdd.get_ngspice(subckt._internal_connections) == 'Vdd P N DC 1'
+    print(subckt.Vdd.get_ngspice(subckt._internal_connections))
+    # print(subckt.Vdd.m)
+    assert subckt.Vdd.get_ngspice(subckt._internal_connections) == "Vdd P N DC 1"
     # assert (
     #     subckt.subckt_components[0].get_spectre(subckt._internal_connections)
     #     == 'V2 P N vsource dc=1 type=dc'
@@ -96,8 +99,8 @@ def test_PULSE_voltage_source_ngspice():
     rise_time = 1e-4
     fall_time = 1e-5
     period = 1e-2
-    subckt = SubCircuitElement('Xsub', 'subckt', three_terminals)
-    subckt.add(PulseVoltageSource('V2', low, high, period, rise_time, fall_time))
+    subckt = SubCircuitElement("Xsub", "subckt", three_terminals)
+    subckt.add(PulseVoltageSource("V2", low, high, period, rise_time, fall_time))
 
     subckt.connects(
         (subckt[0], subckt.V2[0]),
@@ -106,7 +109,7 @@ def test_PULSE_voltage_source_ngspice():
 
     assert (
         subckt.V2.get_ngspice(subckt._internal_connections)
-        == 'V2 P N PULSE(-1 1 0.0 0.0001 1e-05 0.0049900000000000005 0.01) DC 0.0'
+        == "V2 P N PULSE(-1 1 0.0 0.0001 1e-05 0.0049900000000000005 0.01) DC 0.0"
     )
 
 
@@ -138,10 +141,10 @@ def test_SIN_voltage_source_ngspice():
     offset = 1e-12
     damping_factor = -1
     phase = 3.14
-    subckt = SubCircuitElement('Xsub', 'subckt', three_terminals)
+    subckt = SubCircuitElement("Xsub", "subckt", three_terminals)
     subckt.add(
         SinusoidalVoltageSource(
-            'V2',
+            "V2",
             offset=offset,
             amplitude=amplitude,
             frequency=frequency,
@@ -158,7 +161,7 @@ def test_SIN_voltage_source_ngspice():
 
     assert (
         subckt.V2.get_ngspice(subckt._internal_connections)
-        == 'V2 P N SIN(1e-12 1 1000.0 0.001 -1 3.14) DC 0.0 AC 1'
+        == "V2 P N SIN(1e-12 1 1000.0 0.001 -1 3.14) DC 0.0 AC 1"
     )
 
 

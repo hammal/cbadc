@@ -2,6 +2,6 @@
 subckt {{ subckt_name }}{% for terminal in terminals %} {{ terminal }}{% endfor %}{% for key, value in parameters %} {{ key }}={{ value }}{% endfor %}
 
 {% for subckt in sub_circuits %}
-    {{ subckt.get_spectre(connections) }}
+{{ subckt.get_spectre(connections) }}
 {% endfor %}
 ends {{ subckt_name }}

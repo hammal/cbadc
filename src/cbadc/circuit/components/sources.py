@@ -11,36 +11,36 @@ class DCVoltageSource(CircuitElement):
         value: SPICE_VALUE,
     ):
         if not isinstance(value, (float, str, int)):
-            raise TypeError(f'Expected float, str, or int, got {type(value)}')
+            raise TypeError(f"Expected float, str, or int, got {type(value)}")
 
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'V':
-            instance_name = 'V' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "V":
+            instance_name = "V" + instance_name
 
         super().__init__(
             instance_name,
-            [Terminal(), Terminal()],
+            [Terminal("P"), Terminal("N")],
             dc=value,
         )
 
     def get_ngspice(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('ngspice/dc_voltage_source.cir.j2').render(
+        return _template_env.get_template("ngspice/dc_voltage_source.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'value': self._parameters_dict['dc'],
-                'comments': self.comments,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "value": self._parameters_dict["dc"],
+                "comments": self.comments,
             }
         )
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('spectre/dc_voltage_source.cir.j2').render(
+        return _template_env.get_template("spectre/dc_voltage_source.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'value': self._parameters_dict['dc'],
-                'comments': self.comments,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "value": self._parameters_dict["dc"],
+                "comments": self.comments,
             }
         )
 
@@ -64,9 +64,9 @@ class PulseVoltageSource(CircuitElement):
         fall_time: SPICE_VALUE,
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'V':
-            instance_name = 'V' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "V":
+            instance_name = "V" + instance_name
 
         super().__init__(instance_name, [Terminal(), Terminal()])
         self.val0 = val0
@@ -80,30 +80,30 @@ class PulseVoltageSource(CircuitElement):
         self.period = period
 
     def get_ngspice(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('ngspice/pulse_voltage_source.cir.j2').render(
+        return _template_env.get_template("ngspice/pulse_voltage_source.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'val0': self.val0,
-                'val1': self.val1,
-                'delay_time': 0.0,
-                'pulse_width': self.pulse_width,
-                'period': self.period,
-                'rise_time': self.rise_time,
-                'fall_time': self.fall_time,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "val0": self.val0,
+                "val1": self.val1,
+                "delay_time": 0.0,
+                "pulse_width": self.pulse_width,
+                "period": self.period,
+                "rise_time": self.rise_time,
+                "fall_time": self.fall_time,
             }
         )
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('spectre/pulse_voltage_source.cir.j2').render(
+        return _template_env.get_template("spectre/pulse_voltage_source.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'val0': self.val0,
-                'val1': self.val1,
-                'period': self.pulse_width,
-                'rise': self.rise_time,
-                'fall': self.fall_time,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "val0": self.val0,
+                "val1": self.val1,
+                "period": self.pulse_width,
+                "rise": self.rise_time,
+                "fall": self.fall_time,
             }
         )
 
@@ -128,9 +128,9 @@ class SinusoidalVoltageSource(CircuitElement):
         ac_gain: SPICE_VALUE = 1,
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'V':
-            instance_name = 'V' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "V":
+            instance_name = "V" + instance_name
 
         super().__init__(
             instance_name,
@@ -145,31 +145,31 @@ class SinusoidalVoltageSource(CircuitElement):
         self.ac_gain = ac_gain
 
     def get_ngspice(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('ngspice/sine_voltage_source.cir.j2').render(
+        return _template_env.get_template("ngspice/sine_voltage_source.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'offset': self.offset,
-                'amplitude': self.amplitude,
-                'frequency': self.frequency,
-                'phase': self.phase,
-                'delay': self.delay_time,
-                'damping_factor': self.damping_factor,
-                'ac_gain': self.ac_gain,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "offset": self.offset,
+                "amplitude": self.amplitude,
+                "frequency": self.frequency,
+                "phase": self.phase,
+                "delay": self.delay_time,
+                "damping_factor": self.damping_factor,
+                "ac_gain": self.ac_gain,
             }
         )
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('spectre/sine_voltage_source.cir.j2').render(
+        return _template_env.get_template("spectre/sine_voltage_source.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'offset': self.offset,
-                'amplitude': self.amplitude,
-                'frequency': self.frequency,
-                'phase': self.phase,
-                'delay': self.delay_time,
-                'damping_factor': self.damping_factor,
-                'ac_gain': self.ac_gain,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "offset": self.offset,
+                "amplitude": self.amplitude,
+                "frequency": self.frequency,
+                "phase": self.phase,
+                "delay": self.delay_time,
+                "damping_factor": self.damping_factor,
+                "ac_gain": self.ac_gain,
             }
         )

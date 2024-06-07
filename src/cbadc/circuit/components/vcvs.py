@@ -15,6 +15,7 @@ class VoltageControlledVoltageSource(CircuitElement):
         instance_name: str,
         model_name: str,
         value: SPICE_VALUE,
+        m: SPICE_VALUE = 1,
     ):
         if not instance_name or not isinstance(instance_name, str):
             raise TypeError(f"Expected str, got {type(instance_name)}")
@@ -33,6 +34,7 @@ class VoltageControlledVoltageSource(CircuitElement):
             ],
             model_name,
             value=value,
+            m=m,
         )
         self.model = VoltageControlledVoltageSourceModel(
             model_name,

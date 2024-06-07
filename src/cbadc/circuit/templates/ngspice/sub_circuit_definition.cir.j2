@@ -1,7 +1,7 @@
 {% include 'comment.cir.j2' %}
-.SUBCKT {{ subckt_name }}{% for terminal in terminals %} {{ terminal }}{% endfor %}{% for key, value in parameters %} {{ key }}={{ value }}{% endfor %}
+.SUBCKT {{ subckt_name }}{% for terminal in terminals %} {{ terminal }}{% endfor %}{% for key, value in parameters.items() %} {{ key }}={{ value }}{% endfor %}
 
 {% for subckt in sub_circuits %}
-    {{ subckt.get_ngspice(connections) }}
+{{ subckt.get_ngspice(connections) }}
 {% endfor %}
 .ENDS {{ subckt_name }}

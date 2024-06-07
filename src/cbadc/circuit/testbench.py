@@ -64,46 +64,46 @@ class TestBench(SubCircuitElement):
         vdd_voltage: float,
         number_of_control_signals: int,
         *args,
-        title='Testbench',
-        control_signal_vector_name='control_signals.out',
-        verilog_ams_library_name='verilog_ams_library.vams',
+        title="Testbench",
+        control_signal_vector_name="control_signals.out",
+        verilog_ams_library_name="verilog_ams_library.vams",
         **kwargs,
     ):
         self.title = title
         self.verilog_ams_library_name = verilog_ams_library_name
         super().__init__(
-            'Xtb',
-            'testbench',
+            "Xtb",
+            "testbench",
             [
                 Ground(),
-                Terminal('VDD'),
-                Terminal('CLK'),
-                Terminal('VCM'),
+                Terminal("VDD"),
+                Terminal("CLK"),
+                Terminal("VCM"),
             ]
-            + [Terminal(f'IN{i}_P') for i in range(len(input_signals))]
-            + [Terminal(f'IN{i}_N') for i in range(len(input_signals))]
-            + [Terminal(f'OUT{i}_P') for i in range(number_of_control_signals)]
-            + [Terminal(f'OUT{i}_N') for i in range(number_of_control_signals)],
+            + [Terminal(f"IN{i}_P") for i in range(len(input_signals))]
+            + [Terminal(f"IN{i}_N") for i in range(len(input_signals))]
+            + [Terminal(f"OUT{i}_P") for i in range(number_of_control_signals)]
+            + [Terminal(f"OUT{i}_N") for i in range(number_of_control_signals)],
             *args,
             **kwargs,
         )
 
         # Add power supplies
-        self.Vdd = DCVoltageSource('Vdd', vdd_voltage / 2)
-        self.Vss = DCVoltageSource('Vss', vdd_voltage / 2)
+        self.Vdd = DCVoltageSource("Vdd", vdd_voltage / 2)
+        self.Vss = DCVoltageSource("Vss", vdd_voltage / 2)
 
         # Connect power supplies to terminals
         self.connects(
-            (self['VCM'], self.Vdd[1]),
-            (self['VDD'], self.Vdd[0]),
-            (self['0'], self.Vss[1]),
-            (self['VCM'], self.Vss[0]),
+            (self["VCM"], self.Vdd[1]),
+            (self["VDD"], self.Vdd[0]),
+            (self["0"], self.Vss[1]),
+            (self["VCM"], self.Vss[0]),
         )
 
         # Add clock source
         self.T = clock.T
         self.Vclk = PulseVoltageSource(
-            'Vclk',
+            "Vclk",
             0.0,
             vdd_voltage,
             clock.T,
@@ -113,14 +113,14 @@ class TestBench(SubCircuitElement):
 
         # Connect clock to terminals
         self.connects(
-            (self['CLK'], self.Vclk[0]),
-            (self['0'], self.Vclk[1]),
+            (self["CLK"], self.Vclk[0]),
+            (self["0"], self.Vclk[1]),
         )
 
         self.input_signals = []
         for l, input_signal in enumerate(input_signals):
             if not isinstance(input_signal, Sinusoidal):
-                raise TypeError(f'Input signal {l} is not of type Sinusoidal')
+                raise TypeError(f"Input signal {l} is not of type Sinusoidal")
             inp = SinusoidalVoltageSource(
                 offset=input_signal.offset,
                 amplitude=input_signal.amplitude / 2,
@@ -128,7 +128,7 @@ class TestBench(SubCircuitElement):
                 delay_time=0.0,
                 phase=input_signal.phase,
                 damping_factor=0.0,
-                instance_name=f'Vin_p_{l}',
+                instance_name=f"Vin_p_{l}",
                 ac_gain=vdd_voltage / 2.0,
             )
             inn = SinusoidalVoltageSource(
@@ -138,17 +138,17 @@ class TestBench(SubCircuitElement):
                 delay_time=0.0,
                 phase=input_signal.phase,
                 damping_factor=0.0,
-                instance_name=f'Vin_n_{l}',
+                instance_name=f"Vin_n_{l}",
                 ac_gain=vdd_voltage / 2.0,
             )
             self.add(inp, inn)
 
             # Connect input signal to terminals
             self.connects(
-                (self[f'IN{l}_P'], inp[0]),
-                (self[f'IN{l}_N'], inn[1]),
-                (self['VCM'], inp[1]),
-                (self['VCM'], inn[0]),
+                (self[f"IN{l}_P"], inp[0]),
+                (self[f"IN{l}_N"], inn[1]),
+                (self["VCM"], inp[1]),
+                (self["VCM"], inn[0]),
             )
 
             self.input_signals.append(inp)
@@ -156,31 +156,31 @@ class TestBench(SubCircuitElement):
 
         # add observer
         self.Aobs = Observer(
-            'Aobs',
-            'observer',
-            [f's_{index}' for index in range(number_of_control_signals)],
+            "Aobs",
+            "observer",
+            [f"s_{index}" for index in range(number_of_control_signals)],
             trigger_offset=vdd_voltage / 2.0,
             filename=control_signal_vector_name,
         )
-        self.connect(self['CLK'], self.Aobs[0])
+        self.connect(self["CLK"], self.Aobs[0])
 
         self.highlighted_terminals = {}
         # Highlight terminals for later plotting
-        self.highlighted_terminals['control'] = [
-            Terminal(f'OUT{i}_P') for i in range(number_of_control_signals)
-        ] + [Terminal(f'OUT{i}_N') for i in range(number_of_control_signals)]
+        self.highlighted_terminals["control"] = [
+            Terminal(f"OUT{i}_P") for i in range(number_of_control_signals)
+        ] + [Terminal(f"OUT{i}_N") for i in range(number_of_control_signals)]
 
-        self.highlighted_terminals['input'] = [
-            Terminal(f'IN{i}_P') for i in range(len(input_signals))
-        ] + [Terminal(f'IN{i}_N') for i in range(len(input_signals))]
+        self.highlighted_terminals["input"] = [
+            Terminal(f"IN{i}_P") for i in range(len(input_signals))
+        ] + [Terminal(f"IN{i}_N") for i in range(len(input_signals))]
 
     def _sanity_check(self):
         if self.Xaf is None:
-            raise ValueError('Analog frontend is not set')
+            raise ValueError("Analog frontend is not set")
         for terminal in self.Aobs.get_terminals():
             if terminal not in self._internal_connections:
                 raise ValueError(
-                    f'Testbench is not connected to observer terminal {terminal.name}'
+                    f"Testbench is not connected to observer terminal {terminal.name}"
                 )
         # Check analog frontend
         # This makes me mad.
@@ -191,18 +191,19 @@ class TestBench(SubCircuitElement):
         """returns the ngspice testbench as a string"""
         if check:
             self._sanity_check()
-        return _template_env.get_template('ngspice/testbench.cir.j2').render(
+        return _template_env.get_template("ngspice/testbench.cir.j2").render(
             {
-                'analog_frontend': self.Xaf,
-                'input_signals': self.input_signals,
-                'power_supplies': (self.Vdd, self.Vss),
-                'clock': self.Vclk,
-                'connections': self._internal_connections,
-                'models': self._get_model_set(),
-                'title': self.title,
+                "analog_frontend": self.Xaf,
+                "input_signals": self.input_signals,
+                "power_supplies": (self.Vdd, self.Vss),
+                "clock": self.Vclk,
+                "connections": self._internal_connections,
+                "models": self._get_model_set(),
+                "title": self.title,
                 "datetime": datetime.isoformat(datetime.now()),
                 "cbadc_version": __version__,
                 "comment_symbol": "*",
+                "includes": self._get_include_set(),
             }
         )
 
@@ -221,27 +222,27 @@ class TestBench(SubCircuitElement):
                     spice_models.append(model)
         # if verilog_models:
         verilog_ams_text = _template_env.get_template(
-            'verilog_ams/library.vams.j2'
+            "verilog_ams/library.vams.j2"
         ).render(
             {
-                'models': self._get_model_set(),
+                "models": self._get_model_set(),
                 "datetime": datetime.isoformat(datetime.now()),
                 "cbadc_version": __version__,
                 "comment_symbol": "//",
             }
         )
-        spice_text = _template_env.get_template('spectre/testbench.cir.j2').render(
+        spice_text = _template_env.get_template("spectre/testbench.cir.j2").render(
             {
-                'analog_frontend': self.Xaf,
-                'input_signals': self.input_signals,
-                'power_supplies': (self.Vdd, self.Vss),
-                'clock': self.Vclk,
-                'connections': self._internal_connections,
-                'title': self.title,
+                "analog_frontend": self.Xaf,
+                "input_signals": self.input_signals,
+                "power_supplies": (self.Vdd, self.Vss),
+                "clock": self.Vclk,
+                "connections": self._internal_connections,
+                "title": self.title,
                 "datetime": datetime.isoformat(datetime.now()),
                 "cbadc_version": __version__,
-                'includes': [f'ahdl_include {self.verilog_ams_library_name}'],
-                'models': spice_models,
+                "includes": [f"ahdl_include {self.verilog_ams_library_name}"],
+                "models": spice_models,
                 "comment_symbol": "*",
                 "observer": self.observer,
             }
@@ -261,8 +262,8 @@ class StateSpaceTestBench(TestBench):
         C_int: float = 1e-14,
         C_amp: float = 1e-14,
         title="CBADC OpAmpTestbench",
-        control_signal_vector_name='control_signals.out',
-        verilog_ams_library_name='verilog_ams_library.vams',
+        control_signal_vector_name="control_signals.out",
+        verilog_ams_library_name="verilog_ams_library.vams",
     ):
         super().__init__(
             input_signals,
@@ -280,25 +281,25 @@ class StateSpaceTestBench(TestBench):
         # self.Xaf = StateSpaceFrontend(analog_frontend, vdd_voltage, in_high, in_low)
         # Connect gnd, power supply, and clock to analog frontend
         self.connects(
-            (self['0'], self.Xaf['VSS']),
-            (self['VDD'], self.Xaf['VDD']),
-            (self['CLK'], self.Xaf['CLK']),
-            (self['VCM'], self.Xaf['VCM']),
+            (self["0"], self.Xaf["VSS"]),
+            (self["VDD"], self.Xaf["VDD"]),
+            (self["CLK"], self.Xaf["CLK"]),
+            (self["VCM"], self.Xaf["VCM"]),
         )
 
         for l in range(self.Xaf.analog_frontend.analog_system.L):
             # Connect input signal to terminals
             self.connects(
-                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
-                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+                (self[f"IN{l}_P"], self.Xaf[f"IN{l}_P"]),
+                (self[f"IN{l}_N"], self.Xaf[f"IN{l}_N"]),
             )
 
         # Connect analog frontend to observer
         for m in range(self.Xaf.analog_frontend.analog_system.M):
             self.connects(
-                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
-                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
-                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+                (self[f"OUT{m}_P"], self.Aobs[1 + m]),
+                (self[f"OUT{m}_P"], self.Xaf[f"OUT{m}_P"]),
+                (self[f"OUT{m}_N"], self.Xaf[f"OUT{m}_N"]),
             )
 
 
@@ -342,8 +343,8 @@ class OpAmpTestBench(TestBench):
         C_int: float = 1e-14,
         C_amp: float = 1e-14,
         title="CBADC OpAmpTestbench",
-        control_signal_vector_name='control_signals.out',
-        verilog_ams_library_name='verilog_ams_library.vams',
+        control_signal_vector_name="control_signals.out",
+        verilog_ams_library_name="verilog_ams_library.vams",
     ):
         super().__init__(
             input_signals,
@@ -364,25 +365,25 @@ class OpAmpTestBench(TestBench):
         )
         # Connect gnd, power supply, and clock to analog frontend
         self.connects(
-            (self['0'], self.Xaf['VSS']),
-            (self['VDD'], self.Xaf['VDD']),
-            (self['CLK'], self.Xaf['CLK']),
-            (self['VCM'], self.Xaf['VCM']),
+            (self["0"], self.Xaf["VSS"]),
+            (self["VDD"], self.Xaf["VDD"]),
+            (self["CLK"], self.Xaf["CLK"]),
+            (self["VCM"], self.Xaf["VCM"]),
         )
 
         for l in range(self.Xaf.analog_frontend.analog_system.L):
             # Connect input signal to terminals
             self.connects(
-                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
-                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+                (self[f"IN{l}_P"], self.Xaf[f"IN{l}_P"]),
+                (self[f"IN{l}_N"], self.Xaf[f"IN{l}_N"]),
             )
 
         # Connect analog frontend to observer
         for m in range(self.Xaf.analog_frontend.analog_system.M):
             self.connects(
-                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
-                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
-                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+                (self[f"OUT{m}_P"], self.Aobs[1 + m]),
+                (self[f"OUT{m}_P"], self.Xaf[f"OUT{m}_P"]),
+                (self[f"OUT{m}_N"], self.Xaf[f"OUT{m}_N"]),
             )
 
 
@@ -421,8 +422,8 @@ class OTATestBench(TestBench):
         vdd_voltage: float,
         C_int: float = 1e-14,
         title="CBADC OTA Testbench",
-        control_signal_vector_name='control_signals.out',
-        verilog_ams_library_name='verilog_ams_library.vams',
+        control_signal_vector_name="control_signals.out",
+        verilog_ams_library_name="verilog_ams_library.vams",
     ):
         super().__init__(
             input_signals,
@@ -445,25 +446,25 @@ class OTATestBench(TestBench):
 
         # Connect gnd, power supply, and clock to analog frontend
         self.connects(
-            (self['0'], self.Xaf['VSS']),
-            (self['VDD'], self.Xaf['VDD']),
-            (self['CLK'], self.Xaf['CLK']),
-            (self['VCM'], self.Xaf['VCM']),
+            (self["0"], self.Xaf["VSS"]),
+            (self["VDD"], self.Xaf["VDD"]),
+            (self["CLK"], self.Xaf["CLK"]),
+            (self["VCM"], self.Xaf["VCM"]),
         )
 
         for l in range(self.Xaf.analog_frontend.analog_system.L):
             # Connect input signal to terminals
             self.connects(
-                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
-                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+                (self[f"IN{l}_P"], self.Xaf[f"IN{l}_P"]),
+                (self[f"IN{l}_N"], self.Xaf[f"IN{l}_N"]),
             )
 
         # Connect analog frontend to observer
         for m in range(self.Xaf.analog_frontend.analog_system.M):
             self.connects(
-                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
-                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
-                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+                (self[f"OUT{m}_P"], self.Aobs[1 + m]),
+                (self[f"OUT{m}_P"], self.Xaf[f"OUT{m}_P"]),
+                (self[f"OUT{m}_N"], self.Xaf[f"OUT{m}_N"]),
             )
 
 
@@ -479,8 +480,8 @@ class LCTestBench(TestBench):
         gm: float = 1e-3,
         Rin: float = 1e0,
         title="CBADC LC Testbench",
-        control_signal_vector_name='control_signals.out',
-        verilog_ams_library_name='verilog_ams_library.vams',
+        control_signal_vector_name="control_signals.out",
+        verilog_ams_library_name="verilog_ams_library.vams",
     ):
         super().__init__(
             input_signals,
@@ -504,23 +505,23 @@ class LCTestBench(TestBench):
 
         # Connect gnd, power supply, and clock to analog frontend
         self.connects(
-            (self['0'], self.Xaf['VSS']),
-            (self['VDD'], self.Xaf['VDD']),
-            (self['CLK'], self.Xaf['CLK']),
-            (self['VCM'], self.Xaf['VCM']),
+            (self["0"], self.Xaf["VSS"]),
+            (self["VDD"], self.Xaf["VDD"]),
+            (self["CLK"], self.Xaf["CLK"]),
+            (self["VCM"], self.Xaf["VCM"]),
         )
 
         for l in range(self.Xaf.analog_frontend.analog_system.L):
             # Connect input signal to terminals
             self.connects(
-                (self[f'IN{l}_P'], self.Xaf[f'IN{l}_P']),
-                (self[f'IN{l}_N'], self.Xaf[f'IN{l}_N']),
+                (self[f"IN{l}_P"], self.Xaf[f"IN{l}_P"]),
+                (self[f"IN{l}_N"], self.Xaf[f"IN{l}_N"]),
             )
 
         # Connect analog frontend to observer
         for m in range(self.Xaf.analog_frontend.analog_system.M):
             self.connects(
-                (self[f'OUT{m}_P'], self.Aobs[1 + m]),
-                (self[f'OUT{m}_P'], self.Xaf[f'OUT{m}_P']),
-                (self[f'OUT{m}_N'], self.Xaf[f'OUT{m}_N']),
+                (self[f"OUT{m}_P"], self.Aobs[1 + m]),
+                (self[f"OUT{m}_P"], self.Xaf[f"OUT{m}_P"]),
+                (self[f"OUT{m}_N"], self.Xaf[f"OUT{m}_N"]),
             )

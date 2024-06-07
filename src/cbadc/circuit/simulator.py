@@ -49,6 +49,7 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
         stdout_filename: str = "ngspice_sim.stdout",
         stderr_filename: str = "ngspice_sim.stderr",
         ac_freq_range=(1e3, 1e7),
+        UIC=True,
         options: dict[str] = {},
     ):
         self.testbench = testbench
@@ -56,7 +57,8 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
             "start_time": 0.0,
             "stop_time": t_end,
             "step": step,
-            "max_step": step / 1.0,
+            "max_step": step / 10.0,
+            "UIC": UIC,
         }
 
         self._save_variable_names = []
@@ -64,12 +66,12 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
             self._save_variable_names.extend(
                 [terminal.name for terminal in terminal_list]
             )
-        self._save_variable_names.extend(
-            [
-                f"Xaf.{term.name}"
-                for term in self.testbench.Xaf.xp + self.testbench.Xaf.xn
-            ]
-        )
+        # self._save_variable_names.extend(
+        #     [
+        #         f"Xaf.{term.name}"
+        #         for term in self.testbench.Xaf.xp + self.testbench.Xaf.xn
+        #     ]
+        # )
 
         self.ac_analysis = {
             "number_of_points": 1 << 8,

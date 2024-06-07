@@ -1,2 +1,5 @@
 {% include 'comment.cir.j2' %}
-.model {{ model_instance_name }} {{ model_name }}({% for key, value in parameters.items() %}{% if loop.last %}{{ key }}={{ value }}{% else %}{{ key }}={{ value }} {% endif %}{% endfor %})
+.model {{ model_instance_name }} {{ model_name }}
+{% for key, value in parameters.items() %}
++ {{ key }}={{ value }}
+{% endfor %}

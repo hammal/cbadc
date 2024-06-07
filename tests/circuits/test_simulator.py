@@ -322,6 +322,7 @@ def test_ngspice_opamp_simulator_estimate():
         )
         ** 2
     )
+    print(eta2)
     # K1 = 1 << 12
     # K2 = K1
     digital_estimator = BatchEstimator(
@@ -350,6 +351,7 @@ def test_ngspice_opamp_simulator_estimate():
     )
     est_SNR = snr_to_dB(fom["snr"])
     est_ENOB = snr_to_enob(est_SNR)
+    print(fom)
 
     plt.title(f"Power spectral density:\nN={N},ENOB={ENOB}")
     plt.semilogx(

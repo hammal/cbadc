@@ -1,4 +1,5 @@
 """Generate circuit models through netlists"""
+
 from enum import Enum
 from typing import Any, List, Dict, Set, Tuple, Union
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -194,6 +195,7 @@ class CircuitElement:
     _parameter_list: List[str]
     comments: List[str]
     model: DeviceModel
+    include: List[str]
 
     def __init__(
         self,
@@ -202,6 +204,7 @@ class CircuitElement:
         *args,
         comments: List[str] = [],
         model: DeviceModel = None,
+        include: List[str] = [],
         **kwargs,
     ):
         # Make sure instance name is of correct type and format
@@ -226,6 +229,14 @@ class CircuitElement:
         if model and not isinstance(model, DeviceModel):
             raise ValueError("Model must be of type DeviceModel")
         self.model = model
+
+        # Make sure include is of correct type
+        if not isinstance(include, list):
+            raise ValueError("Include must be a list")
+        for inc in include:
+            if not isinstance(inc, str):
+                raise ValueError("Include must be of type str")
+        self.include = include
 
         self._parameter_list = [str(arg) for arg in args]
         self._parameters_dict = {key: str(value) for key, value in kwargs.items()}
@@ -256,6 +267,9 @@ class CircuitElement:
         if self.model:
             return [self.model]
         return []
+
+    def _get_include_set(self) -> List[str]:
+        return self.include
 
     def get_terminals(self) -> List[Terminal]:
         """Get the terminals of the component"""
@@ -466,6 +480,15 @@ class SubCircuitElement(CircuitElement):
         result_set = []
         for sub_circuit in self._get_subckts():
             candidates = sub_circuit._get_model_set(verilog_ams)
+            for candidate in candidates:
+                if candidate not in result_set:
+                    result_set.append(candidate)
+        return result_set
+
+    def _get_include_set(self) -> List[str]:
+        result_set = []
+        for sub_circuit in self._get_subckts():
+            candidates = sub_circuit._get_include_set()
             for candidate in candidates:
                 if candidate not in result_set:
                     result_set.append(candidate)
