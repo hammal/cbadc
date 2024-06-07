@@ -61,8 +61,8 @@ class TernaryReferenceSignal(_FiniteRandomSignal):
 
     Example
     -------
-    >>> from cbadc.analog_signal import TernaryRandomSignal
-    >>> u = TernaryRandomSignal(1, 1, 0)
+    >>> from cbadc.analog_signal import TernaryReferenceSignal
+    >>> u = TernaryReferenceSignal(1, 1, 0)
 
     """
 
