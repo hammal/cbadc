@@ -103,7 +103,7 @@ class GaussianReferenceSignal(_AnalogSignal):
         self.T = T
         self._buffer_size = 1 << 10
         self._buffer_index = 0
-        self._values = np.random.randn(self._buffer_size)
+        self._values = np.random.randn(self._buffer_size) * self.std + self.mean
 
     def __str__(self):
         return f"""Gaussian random signal with mean: {self.mean}, standard deviation: {self.std}, and period {self.T}"""
@@ -127,6 +127,6 @@ class GaussianReferenceSignal(_AnalogSignal):
             self._t = t
             self._buffer_index += 1
             if self._buffer_index == self._buffer_size:
-                self._values = np.random.randn(self._buffer_size)
+                self._values = np.random.randn(self._buffer_size) * self.std + self.mean
                 self._buffer_index = 0
         return self._values[self._buffer_index]
