@@ -38,11 +38,7 @@ into your console. Note that, currently cbadc is only supported for Python3.9 an
 Alternatively, the latest develop branch can be installed by
 
 ```bash
-git clone --branch develop https://github.com/hammal/cbadc.git && \
-cd cbadc && \
-python -m pip install . && \
-cd .. && \
-rm -rf cbadc
+pip install git+https://github.com/hammal/cbadc.git@develop
 ```
 
 # Source Code
