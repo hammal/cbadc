@@ -367,7 +367,10 @@ Training using RLS for:
         self._offset = sol[0][-1, :].T
         self._h = sol[0][:-1, :].T.reshape((self.L, -1, self.K))
         if verbose:
-            logger.info(f"loss = {sol[1]}, offset = {self._offset}")
+            loss = sol[1] / x.shape[0]
+            logger.info(
+                f"loss = {loss}, loss = {10 * np.log10(loss)} dB, and offset = {self._offset}"
+            )
         return sol[1]
 
     def call(self, x: np.ndarray):
