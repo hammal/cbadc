@@ -22,6 +22,7 @@ from .random import (
     BinaryReferenceSignal,
     TernaryReferenceSignal,
     GaussianReferenceSignal,
+    UniformReferenceSignal,
 )
 
 from . import clock
