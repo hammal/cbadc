@@ -195,7 +195,7 @@ class MurmannSurvey:
     def __init__(self):
         self._version = [
             # "https://web.stanford.edu/~murmann/publications/ADCsurvey_rev20210628.xls"
-            "https://github.com/bmurmann/ADC-survey/blob/main/xls/ADCsurvey_latest.xlsx"
+            "https://github.com/bmurmann/ADC-survey/blob/34b77796ec2c981b20836b3fc369270a23c89944/xls/ADCsurvey_latest.xlsx"
         ]
 
         self._current_year = 2021
