@@ -13,6 +13,7 @@ class _FiniteRandomSignal(_AnalogSignal):
         self._values = np.random.choice(self.set, self._buffer_size)
         self._t = 0.0
         self.T = T
+        self.piecewise_constant = True
 
     def __str__(self):
         return f"""Random signal with the possible values: {self.set} and period {self.T}"""
@@ -164,6 +165,7 @@ class UniformReferenceSignal(_AnalogSignal):
         self._values = np.random.uniform(
             self.low + self.offset, self.high + self.offset, self._buffer_size
         )
+        self.piecewise_constant = True
 
     def __str__(self):
         return f"""Uniform random signal with values between: [{self.low+self.offset}, {self.high + self.offset}), and period {self.T}"""

@@ -1,4 +1,5 @@
 """Numerical solvers."""
+
 import logging
 import cbadc.analog_system
 import cbadc.digital_control
@@ -247,7 +248,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         self,
         analog_system: cbadc.analog_system._valid_analog_system_types,
         digital_control: cbadc.digital_control._valid_digital_control_types,
-        input_signal: List[cbadc.analog_signal._AnalogSignal],
+        input_signal: List[cbadc.analog_signal.Sinusoidal],
         initial_state_vector: np.array = None,
         state_noise_covariance_matrix: np.ndarray = None,
         atol: float = 1e-15,
@@ -261,10 +262,21 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             state_noise_covariance_matrix=state_noise_covariance_matrix,
         )
 
+        for analog_signal in self.input_signals:
+            if not analog_signal.piecewise_constant and not isinstance(
+                analog_signal, cbadc.analog_signal.Sinusoidal
+            ):
+                raise ValueError(
+                    "Only piecewise constant and sinusoidal signals are supported in this simulator."
+                )
+
         if not analog_system.pre_computable:
             raise ValueError(
                 "The analog system must be pre-computable to use this simulator."
             )
+
+        if digital_control._mulit_phase:
+            raise NotImplementedError("Not yet implemented for multi-phase control.")
 
         self.atol = atol
         self.rtol = rtol
@@ -330,6 +342,51 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         self._pre_computed_state_transition_matrices = []
         self._pre_computed_control_matrices = []
 
+        # Transfer function in polar coordinates where first (0, n, l) is the magnitude
+        # and (1, n, l) is the phase in radians.
+
+        # Figure out the sinusoidal and piecewise constant signals
+        self._sinusoidal_signals = []
+        self._sinusoidal_signals_index = []
+        self._piecewise_constant_signals = []
+        self._piecewise_constant_signals_index = []
+        for l, analog_signal in enumerate(self.input_signals):
+            if isinstance(analog_signal, cbadc.analog_signal.Sinusoidal):
+                self._sinusoidal_signals.append(analog_signal)
+                self._sinusoidal_signals_index.append(l)
+            elif analog_signal.piecewise_constant:
+                self._piecewise_constant_signals.append(analog_signal)
+                self._piecewise_constant_signals_index.append(l)
+            else:
+                raise ValueError(
+                    "Only piecewise constant and sinusoidal signals are supported."
+                )
+
+        # Pre-compute the transfer function and angular frequencies
+        number_of_sin = len(self._sinusoidal_signals)
+        self._pre_computed_transfer_function = np.zeros(
+            (2, self.analog_system.N, number_of_sin), dtype=float
+        )
+        self._pre_computed_angular_frequencies = np.zeros((number_of_sin, 1))
+
+        for l, (l_index, analog_signal) in enumerate(
+            zip(self._sinusoidal_signals_index, self._sinusoidal_signals)
+        ):
+            tf = self.analog_system.transfer_function_matrix(
+                np.array([analog_signal.angularFrequency])
+            )
+            self._pre_computed_transfer_function[0, :, l] = np.abs(tf[:, l_index, 0])
+            self._pre_computed_transfer_function[1, :, l] = (
+                np.angle(tf[:, l_index, 0]) + analog_signal.phase
+            )
+            self._pre_computed_angular_frequencies[l] = analog_signal.angularFrequency
+            if analog_signal.offset != 0:
+                raise NotImplementedError("Offset is not yet supported.")
+
+        # Pre-compute piecewise constant signals
+        number_of_piecewise = len(self._piecewise_constant_signals)
+        self._precomputed_piecewise_constant_transition = []
+
         for t_old, t in zip(
             self.digital_control.clock_pulses[:-1],
             self.digital_control.clock_pulses[1:],
@@ -379,11 +436,38 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
             self._pre_computed_control_matrices.append(temp)
 
+            temp_piecewise = np.zeros((self.analog_system.N, number_of_piecewise))
+            for l, (l_index, analog_signal) in enumerate(
+                zip(
+                    self._piecewise_constant_signals_index,
+                    self._piecewise_constant_signals,
+                )
+            ):
+
+                def derivative(t, x):
+                    return (
+                        np.dot(self.analog_system.A, x).flatten()
+                        + self.analog_system.B[:, l_index].flatten()
+                    )
+
+                self.res = scipy.integrate.solve_ivp(
+                    derivative,
+                    (t_old, t),
+                    np.zeros((self.analog_system.N)),
+                    atol=self.atol,
+                    rtol=self.rtol,
+                    # method="RK45",
+                    # method="Radau",
+                    method="DOP853",
+                    # method="BDF",
+                    # method="LSODA",
+                    # jac=self.analog_system.A,
+                )
+                temp_piecewise[:, l] = self.res.y[:, -1]
+            self._precomputed_piecewise_constant_transition.append(temp_piecewise)
+
     def _ordinary_differential_solution(self):
         # Compute signal contribution
-
-        if self.digital_control._mulit_phase:
-            raise NotImplementedError("Not yet implemented for multi-phase control.")
 
         for i, (t_old, t) in enumerate(
             zip(
@@ -393,9 +477,8 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         ):
             if self._input_signal:
                 for ell in range(self.analog_system.L):
-                    self._u[ell] = self.input_signals[ell].evaluate(t_old + self.t)
+                    self._u[ell] = self.input_signals[ell].evaluate(self.t + t_old)
 
-            # update controls
             self.digital_control.control_update(
                 t_old,
                 self.analog_system.control_observation(
@@ -411,31 +494,63 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                 self._pre_computed_state_transition_matrices[i], self.state_vector()
             ).flatten()
 
-            if self._input_signal:
+            # Compute the sinusoidal signals
+            if self._sinusoidal_signals:
 
-                def f(_t, x):
-                    res = np.dot(self.analog_system.A, x)
-                    for _l in range(self.analog_system.L):
-                        res += np.dot(
-                            self.analog_system.B[:, _l],
-                            self.input_signals[_l].evaluate(_t + self.t),
-                        )
-                    return res.flatten()
-
-                self.res = scipy.integrate.solve_ivp(
-                    f,
-                    (t_old, t),
-                    np.zeros(self.analog_system.N),
-                    atol=self.atol,
-                    rtol=self.rtol,
-                    # method="RK45",
-                    # method="Radau",
-                    method="DOP853",
-                    # method="BDF",
-                    # method="LSODA",
-                    # jac=self.analog_system.A,
+                sine_after = np.sum(
+                    self._pre_computed_transfer_function[0, :, :]
+                    * np.sin(
+                        self._pre_computed_angular_frequencies * (self.t + t)
+                        + self._pre_computed_transfer_function[1, :, :]
+                    ),
+                    axis=1,
                 )
-                self._state_vector += self.res.y[:, -1]
+
+                sine_before = np.sum(
+                    self._pre_computed_transfer_function[0, :, :]
+                    * np.sin(
+                        self._pre_computed_angular_frequencies * (self.t + t_old)
+                        + self._pre_computed_transfer_function[1, :, :]
+                    ),
+                    axis=1,
+                )
+                self._state_vector += sine_after - np.dot(
+                    self._pre_computed_state_transition_matrices[i], sine_before
+                )
+
+            # Compute the piecewise constant signals
+            if self._piecewise_constant_signals:
+
+                self._state_vector += np.dot(
+                    self._precomputed_piecewise_constant_transition[i],
+                    self._u[self._piecewise_constant_signals_index],
+                ).flatten()
+
+            ## The old way of computing the piecewise constant and sinusoidal signals
+            # if self._input_signal:
+            #     def f(_t, x):
+            #         res = np.dot(self.analog_system.A, x)
+            #         for _l in range(self.analog_system.L):
+            #             res += np.dot(
+            #                 self.analog_system.B[:, _l],
+            #                 self.input_signals[_l].evaluate(_t + self.t),
+            #             )
+            #         return res.flatten()
+
+            #     self.res = scipy.integrate.solve_ivp(
+            #         f,
+            #         (t_old, t),
+            #         np.zeros(self.analog_system.N),
+            #         atol=self.atol,
+            #         rtol=self.rtol,
+            #         # method="RK45",
+            #         # method="Radau",
+            #         method="DOP853",
+            #         # method="BDF",
+            #         # method="LSODA",
+            #         # jac=self.analog_system.A,
+            #     )
+            #     self._state_vector += self.res.y[:, -1]
 
             # Partial control solution
             self._state_vector += np.dot(

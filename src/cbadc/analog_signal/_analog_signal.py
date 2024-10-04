@@ -1,5 +1,6 @@
 """
 """
+
 import logging
 from typing import Union, List
 from sympy import Symbol
@@ -15,6 +16,7 @@ class _AnalogSignal:
         self.t = Symbol("t", real=True)
         self.sym_phase = Symbol("\u03C6", real=True)
         self.t0 = 0.0
+        self.piecewise_constant = False
 
     def symbolic(self) -> Symbol:
         """Returns as symbolic exression
