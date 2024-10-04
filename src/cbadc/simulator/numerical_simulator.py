@@ -294,7 +294,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         return np.asarray(scipy.linalg.expm(np.asarray(self.analog_system.A) * t))
 
     def _analog_system_matrix_exponential_with_ivp(self, T: float) -> np.ndarray:
-        a_exp = np.zeros_like(self.analog_system.A, dtype=float)
+        a_exp = np.zeros_like(self.analog_system.A, dtype=np.float64)
 
         for n in range(self.analog_system.N):
 
@@ -365,7 +365,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         # Pre-compute the transfer function and angular frequencies
         number_of_sin = len(self._sinusoidal_signals)
         self._pre_computed_transfer_function = np.zeros(
-            (2, self.analog_system.N, number_of_sin), dtype=float
+            (2, self.analog_system.N, number_of_sin), dtype=np.float64
         )
         self._pre_computed_angular_frequencies = np.zeros((number_of_sin, 1))
 
@@ -399,7 +399,9 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             #     self._analog_system_matrix_exponential_with_ivp(t - t_old)
             # )
 
-            temp = np.zeros((self.analog_system.N, self.analog_system.M), dtype=float)
+            temp = np.zeros(
+                (self.analog_system.N, self.analog_system.M), dtype=np.float64
+            )
 
             for m in range(self.analog_system.M):
                 if t > self.digital_control._impulse_response[m].t0:
@@ -436,7 +438,9 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
             self._pre_computed_control_matrices.append(temp)
 
-            temp_piecewise = np.zeros((self.analog_system.N, number_of_piecewise))
+            temp_piecewise = np.zeros(
+                (self.analog_system.N, number_of_piecewise), dtype=np.float64
+            )
             for l, (l_index, analog_signal) in enumerate(
                 zip(
                     self._piecewise_constant_signals_index,
@@ -446,9 +450,9 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
                 def derivative(t, x):
                     return (
-                        np.dot(self.analog_system.A, x).flatten()
-                        + self.analog_system.B[:, l_index].flatten()
-                    )
+                        np.dot(self.analog_system.A, x)
+                        + self.analog_system.B[:, l_index]
+                    ).flatten()
 
                 self.res = scipy.integrate.solve_ivp(
                     derivative,
@@ -521,10 +525,45 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             # Compute the piecewise constant signals
             if self._piecewise_constant_signals:
 
-                self._state_vector += np.dot(
+                # self._state_vector +=
+                _u = np.array(
+                    [
+                        self.input_signals[ell].evaluate(self.t + t)
+                        for ell in self._piecewise_constant_signals_index
+                    ]
+                )
+                pre_comp = np.dot(
                     self._precomputed_piecewise_constant_transition[i],
-                    self._u[self._piecewise_constant_signals_index],
+                    # self._u[self._piecewise_constant_signals_index],
+                    _u,
                 ).flatten()
+                self._state_vector += pre_comp
+
+                # def f(_t, x):
+                #     res = np.dot(self.analog_system.A, x)
+                #     for _l in self._piecewise_constant_signals_index:
+                #         res += np.dot(
+                #             self.analog_system.B[:, _l],
+                #             self.input_signals[_l].evaluate(_t + self.t),
+                #         )
+                #     return res.flatten()
+
+                # self.res = scipy.integrate.solve_ivp(
+                #     f,
+                #     (t_old, t),
+                #     np.zeros(self.analog_system.N),
+                #     atol=self.atol,
+                #     rtol=self.rtol,
+                #     # method="RK45",
+                #     # method="Radau",
+                #     method="DOP853",
+                #     # method="BDF",
+                #     # method="LSODA",
+                #     # jac=self.analog_system.A,
+                # )
+                # self._state_vector += self.res.y[:, -1]
+
+                # print(pre_comp - self.res.y[:, -1])
 
             ## The old way of computing the piecewise constant and sinusoidal signals
             # if self._input_signal:
