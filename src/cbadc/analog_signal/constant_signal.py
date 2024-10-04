@@ -1,4 +1,5 @@
 """Analog constant signals."""
+
 import numpy as np
 from ._analog_signal import _AnalogSignal
 from sympy import Float
@@ -37,6 +38,7 @@ class ConstantSignal(_AnalogSignal):
         """Create a constant analog signal."""
         super().__init__()
         self.offset: float = offset
+        self.piecewise_constant = True
 
     def symbolic(self) -> Float:
         """Returns as symbolic exression

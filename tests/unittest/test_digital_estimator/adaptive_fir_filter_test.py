@@ -22,7 +22,7 @@ def setup():
     r_seq = kappa_0 * (2.0 * np.random.randint(0, 2, simulation_length + warm_up) - 1.0)
     r_signal = cbadc.analog_signal.ZeroOrderHold(r_seq, T)
     atol = 1e-15
-    rtol = 1e-10
+    rtol = 1e-12
     simulator = cbadc.simulator.PreComputedControlSignalsSimulator(
         analog_frontend.analog_system,
         analog_frontend.digital_control,
@@ -42,6 +42,7 @@ def setup():
     for i in cbadc.utilities.show_status(range(simulation_length)):
         s[i, :] = 2.0 * next(simulator) - 1.0
         x[i, :] = simulator.state_vector()
+        r_seq[i + warm_up] = simulator.input_signals[0].evaluate(simulator.t)
     bw_rel = DSR / (2 * OSR)
 
     h0 = signal.firwin2(K, [0, bw_rel, bw_rel, 1], [1, 1 / np.sqrt(2), 0, 0])
