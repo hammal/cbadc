@@ -68,6 +68,11 @@ class _AnalogSignal:
 class ModulatedSignal(_AnalogSignal):
     def __init__(self, *signals: _AnalogSignal):
         self._signals = signals
+        # Check if piecewise constant
+        self.piecewise_constant = True
+        for signal in self._signals:
+            if not signal.piecewise_constant:
+                self.piecewise_constant = False
 
     def evaluate(self, t: float) -> float:
         """Evaluate the signal at time :math:`t`.
@@ -98,6 +103,11 @@ class SuperpositionSignal(_AnalogSignal):
 
     def __init__(self, *signals: _AnalogSignal):
         self._signals = signals
+        # Check if piecewise constant
+        self.piecewise_constant = True
+        for signal in self._signals:
+            if not signal.piecewise_constant:
+                self.piecewise_constant = False
 
     def evaluate(self, t: float) -> float:
         """Evaluate the signal at time :math:`t`.

@@ -1,4 +1,5 @@
 """Analog impulse response signals from common linear systems."""
+
 from typing import Union
 import numpy as np
 import sympy as sp
@@ -10,6 +11,7 @@ class _ImpulseResponse(_AnalogSignal):
     def __init__(self):
         super().__init__()
         self.t0 = 0.0
+        self.piecewise_constant = True
 
 
 class StepResponse(_ImpulseResponse):
