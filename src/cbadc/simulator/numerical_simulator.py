@@ -375,7 +375,9 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             tf = self.analog_system.transfer_function_matrix(
                 np.array([analog_signal.angularFrequency])
             )
-            self._pre_computed_transfer_function[0, :, l] = np.abs(tf[:, l_index, 0])
+            self._pre_computed_transfer_function[0, :, l] = (
+                np.abs(tf[:, l_index, 0]) * analog_signal.amplitude
+            )
             self._pre_computed_transfer_function[1, :, l] = (
                 np.angle(tf[:, l_index, 0]) + analog_signal.phase
             )
