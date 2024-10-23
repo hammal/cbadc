@@ -1,4 +1,5 @@
 """The default digital control."""
+
 from typing import List
 import numpy as np
 from cbadc.analog_signal import _valid_clock_types, Clock
@@ -58,6 +59,7 @@ class DigitalControl:
         M: int,
         impulse_response: List[_ImpulseResponse] = None,
         t_delay: float = 0.0,
+        offsets: np.ndarray = None,
     ):
         if not isinstance(clock, Clock):
             raise Exception("Clock must derive from cbadc.analog_signal.Clock")
@@ -75,14 +77,21 @@ class DigitalControl:
         self._old_control_decisions = np.zeros_like(self._control_decisions)
         self._setup_clock_phases()
 
+        if offsets is not None:
+            if len(offsets) != self.M:
+                raise Exception("offsets must have length M")
+            self.offsets = np.array(offsets).flatten()
+        else:
+            self.offsets = np.zeros(self.M)
+
     def _setup_clock_phases(self):
         self.clock_pulses = [0.0, self.clock.T]
         # this adds unique clock pulses in sorted order
-        [
-            self.clock_pulses.append(imp.t0)
-            for imp in self._impulse_response
-            if imp.t0 not in self.clock_pulses
-        ]
+        # [
+        #     self.clock_pulses.append(imp.t0)
+        #     for imp in self._impulse_response
+        #     if imp.t0 not in self.clock_pulses
+        # ]
 
     def _initialize_impulse_response(self, clock, impulse_response):
         if impulse_response is not None:
@@ -128,7 +137,8 @@ class DigitalControl:
         for m in range(self.M):
             # Comparator
             if np.allclose(t, self._impulse_response[m].t0, atol=self.clock._tt_2):
-                self._s[m] = s_tilde[m] >= 0.0
+                # print(f"t: {t}, t0: {self._impulse_response[m].t0}")
+                self._s[m] = s_tilde[m] >= self.offsets[m]
                 # DAC
                 self._old_control_decisions[m] = self._control_decisions[m]
                 self._control_decisions[m] = 2.0 * self._s[m] - 1.0
@@ -170,7 +180,7 @@ class DigitalControl:
             the control signal :math:`\mathbf{s}(t)`
 
         """
-        temp = np.zeros(self.M)
+        temp = np.zeros(self.M, dtype=np.float64)
         for m in range(self.M):
             if t < self._impulse_response[m].t0:
                 temp[m] = self._impulse_response[m](t + self.clock.T)
@@ -178,8 +188,10 @@ class DigitalControl:
                 temp[m] = self._impulse_response[m](t)
 
             if t < self.t_delay:
+                # print(f"-t: {t}, t_delay: {self.t_delay}")
                 temp[m] *= self._old_control_decisions[m]
             else:
+                # print(f"+t: {t}, t_delay: {self.t_delay}")
                 temp[m] *= self._control_decisions[m]
 
         return temp

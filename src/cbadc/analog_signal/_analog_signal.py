@@ -43,6 +43,10 @@ class _AnalogSignal:
         """
         return 0.0
 
+    def tick(self):
+        """Tick the signal, i.e., update the internal state."""
+        pass
+
     def _mpmath(self, t: Union[mp.mpf, float]):
         return mp.mpmathify(self.evaluate(t))
 

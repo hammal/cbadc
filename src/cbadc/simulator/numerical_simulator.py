@@ -66,6 +66,7 @@ class FullSimulator(_BaseSimulator):
         state_noise_covariance_matrix: np.ndarray = None,
         atol: float = 1e-15,
         rtol: float = 1e-10,
+        seed: int = 4212312513432239834528672,
     ):
         super().__init__(
             analog_system,
@@ -73,6 +74,7 @@ class FullSimulator(_BaseSimulator):
             input_signal,
             initial_state_vector=initial_state_vector,
             state_noise_covariance_matrix=state_noise_covariance_matrix,
+            seed=seed,
         )
         self.atol = atol
         self.rtol = rtol
@@ -95,8 +97,10 @@ class FullSimulator(_BaseSimulator):
             if self._input_signal:
                 for ell in range(self.analog_system.L):
                     self._u[ell] = self.input_signals[ell].evaluate(t_old + self.t)
-            # update controls
+                    # help constant signals to progress at the clock edge
+                    self.input_signals[ell].tick()
 
+            # update controls
             self.digital_control.control_update(
                 t_old,
                 self.analog_system.control_observation(
@@ -125,13 +129,13 @@ class FullSimulator(_BaseSimulator):
                     array_like, shape=(N,)
                         vector of derivatives evaluated at time t.
                     """
-                    input_vector = np.zeros(self.analog_system.L)
+                    input_vector = np.zeros(self.analog_system.L, dtype=np.float64)
                     if len(self.input_signals) > 0:
                         for _l in range(self.analog_system.L):
                             input_vector[_l] = self.input_signals[_l].evaluate(
                                 t + self.t
                             )
-
+                    # print(input_vector, t + self.t, self.digital_control.clock.T)
                     control_vector = self.digital_control.control_contribution(t)
                     return self.analog_system.derivative(
                         y, t + self.t, input_vector, control_vector
@@ -172,12 +176,14 @@ class FullSimulator(_BaseSimulator):
                 # method='LSODA',
                 # method="BDF",
             )
+            # print(self.res.y[:, -1], t)
             self._state_vector[:] = self.res.y[:, -1]
 
         # if thermal noise
         if self.noisy:
-            self._state_vector += np.dot(
-                self._cov_deviation, np.random.randn(self.analog_system.N)
+            self._state_vector += (
+                np.dot(self._cov_deviation, self.rng.normal(size=self.analog_system.N))
+                * self.digital_control.clock.T
             )
 
         self.t += self.digital_control.clock.T
@@ -253,6 +259,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         state_noise_covariance_matrix: np.ndarray = None,
         atol: float = 1e-15,
         rtol: float = 1e-10,
+        seed: int = 4212312513432239834528672,
     ):
         super().__init__(
             analog_system,
@@ -260,6 +267,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             input_signal,
             initial_state_vector=initial_state_vector,
             state_noise_covariance_matrix=state_noise_covariance_matrix,
+            seed=seed,
         )
 
         for analog_signal in self.input_signals:
@@ -601,8 +609,9 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
         # if thermal noise
         if self.noisy:
-            self._state_vector += np.dot(
-                self._cov_deviation, np.random.randn(self.analog_system.N)
+            self._state_vector += (
+                np.dot(self._cov_deviation, self.rng.normal(size=self.analog_system.N))
+                * self.digital_control.clock.T
             )
 
         self.t += self.digital_control.clock.T

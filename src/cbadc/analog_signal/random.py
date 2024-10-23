@@ -147,6 +147,8 @@ class UniformReferenceSignal(_AnalogSignal):
         the upper bound (non inclusive) of the signal.
     offset : `float`, `optional`
         The offset of the signal, default is 0.0.
+    seed : `int`, `optional`
+        The seed for the random number generator.
     Example
     -------
     >>> from cbadc.analog_signal import UniformReferenceSignal
@@ -154,7 +156,9 @@ class UniformReferenceSignal(_AnalogSignal):
 
     """
 
-    def __init__(self, T: float, low: float, high: float, offset: float = 0.0):
+    def __init__(
+        self, T: float, low: float, high: float, offset: float = 0.0, seed: int = 42
+    ):
         self.low = low
         self.high = high
         self.offset = offset
@@ -162,8 +166,11 @@ class UniformReferenceSignal(_AnalogSignal):
         self.T = T
         self._buffer_size = 1 << 10
         self._buffer_index = 0
-        self._values = np.random.uniform(
-            self.low + self.offset, self.high + self.offset, self._buffer_size
+        self.rng = np.random.default_rng(seed)
+        self._values = self.rng.uniform(
+            self.low + self.offset,
+            self.high + self.offset,
+            self._buffer_size,
         )
         self.piecewise_constant = True
 
@@ -185,12 +192,16 @@ class UniformReferenceSignal(_AnalogSignal):
             The analog signal value
         """
         rel_t = t - self._t
-        if rel_t >= self.T:
-            self._t = t
+        if rel_t > self.T:
+            # if np.isclose(rel_t, self.T, atol=self.T * 1e-5, rtol=1e-10):
+            self._t += self.T
             self._buffer_index += 1
             if self._buffer_index == self._buffer_size:
-                self._values = np.random.uniform(
+                self._values = self.rng.uniform(
                     self.low + self.offset, self.high + self.offset, self._buffer_size
                 )
                 self._buffer_index = 0
         return self._values[self._buffer_index]
+
+    def tick(self):
+        self.evaluate(self.T + self._t + 1e-1)
