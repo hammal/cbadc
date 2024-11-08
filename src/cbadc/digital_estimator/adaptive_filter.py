@@ -336,7 +336,9 @@ Training using RLS for:
                 )
         return self.loss(x, y)
 
-    def lstsq(self, x: np.ndarray, y: np.ndarray, delay: int = 0, verbose=True):
+    def lstsq(
+        self, x: np.ndarray, y: np.ndarray, delay: int = 0, verbose=True, rcond=None
+    ):
         """
         Fits the filter to the given data using the least squares method.
 
@@ -350,6 +352,8 @@ Training using RLS for:
             The delay of the FIR filter. must be non-negative.
         verbose : bool
             Whether to print the loss function during training.
+        rcond : float
+            The reciprocal condition number for the least squares method.
 
         Returns
         -------
@@ -363,7 +367,7 @@ Training using RLS for:
             (x.reshape((x.shape[0], -1)), np.ones((x.shape[0], 1)))
         )
         # (M * K + 1, L)
-        sol = np.linalg.lstsq(np.conj(x_with_offset), y.T, rcond=None)
+        sol = np.linalg.lstsq(np.conj(x_with_offset), y.T, rcond=rcond)
         self._offset = sol[0][-1, :].T
         self._h = sol[0][:-1, :].T.reshape((self.L, -1, self.K))
         if verbose:
