@@ -29,10 +29,6 @@ def batch(signal: np.ndarray, batch_size: int, axis: int = 0) -> np.ndarray:
     batched_signal : np.ndarray
         The batched signal where the last dimension is the batch dimension
     """
-
-    if axis != 0:
-        raise NotImplementedError("Only axis=0 is supported for now")
-
     old_shape = signal.shape
     batch_shape = []
     total_number_of_samples = signal.shape[axis] - batch_size
@@ -42,11 +38,19 @@ def batch(signal: np.ndarray, batch_size: int, axis: int = 0) -> np.ndarray:
         else:
             batch_shape.append(dim)
     batch_shape += [batch_size]
+    print(old_shape, batch_shape)
 
     batched_signal = np.zeros(batch_shape, dtype=signal.dtype)
+    indices = [slice(None)] * signal.ndim
+    indices_batch = [slice(None)] * len(batch_shape)
+    axis = np.arange(signal.ndim)[axis]
     for i in range(total_number_of_samples):
-        batched_signal[i, ...] = signal[i : i + batch_size, ...].T
-
+        indices[axis] = slice(i, i + batch_size)
+        indices_batch[axis] = i
+        try:
+            batched_signal[tuple(indices_batch)] = signal[tuple(indices)]
+        except:
+            batched_signal[tuple(indices_batch)] = signal[tuple(indices)].T
     return batched_signal
 
 
