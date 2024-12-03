@@ -43,3 +43,5 @@ docs/source/autosummary
 *.raw
 notebooks
 venv
+cbadc
+.vscode

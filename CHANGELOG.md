@@ -1,3 +1,9 @@
+## 0.3.3
+Last stable release of 0.3 
+- Improved Adaptive Filter.
+- Added random signals.
+- Improved pre-compute simulator.
+
 ## 0.3.2
 Major code refactoring with
 - improved python simulators.
