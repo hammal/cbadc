@@ -1,7 +1,6 @@
 include LICENCE
 include requirements.txt
 include README.md
-include tox.ini
 include pyproject.toml
 graft src/cbadc
 global-exclude *.py[cod]
