@@ -1,4 +1,5 @@
 """The digital FIR estimator"""
+
 from dataclasses import dataclass
 from typing import Iterator, Union, List
 import cbadc
@@ -34,7 +35,7 @@ class FIRFilter(BatchEstimator):
 
     Parameters
     ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter: :py:class:`cbadc.analog_filter.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         a digital control (necessary to determine the corresponding DAC waveform).
@@ -62,8 +63,8 @@ class FIRFilter(BatchEstimator):
 
     Attributes
     ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
-        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or from
+    analog_filter: :py:class:`cbadc.analog_filter.AnalogSystem`
+        analog system as in :py:class:`cbadc.analog_filter.AnalogSystem` or from
         derived class.
     eta2: float
         eta2, or equivalently :math:`\eta^2`, sets the bandwidth of the estimator.
@@ -109,7 +110,7 @@ class FIRFilter(BatchEstimator):
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
         K1: int,
@@ -133,7 +134,7 @@ class FIRFilter(BatchEstimator):
         self.K2 = K2
         self.K3 = K1 + K2
         self._filter_lag = self.K2 - 2
-        self.analog_system = analog_system
+        self.analog_filter = analog_filter
         self.digital_control = digital_control
         if eta2 < 0.0:
             raise Exception("eta2 must be non negative.")
@@ -150,15 +151,15 @@ class FIRFilter(BatchEstimator):
         self.mid_point = mid_point
         self.downsample = int(downsample)
         self._temp_controls = np.zeros(
-            (self.downsample, self.analog_system.M), dtype=dtype
+            (self.downsample, self.analog_filter.M), dtype=dtype
         )
 
         if offset is not None:
             self.offset = np.array(offset, dtype=dtype)
-            if self.offset.size != self.analog_system.L:
+            if self.offset.size != self.analog_filter.L:
                 raise Exception("offset is not of size L")
         else:
-            self.offset = np.zeros(self.analog_system.L, dtype=dtype)
+            self.offset = np.zeros(self.analog_filter.L, dtype=dtype)
 
         if fixed_point is not None:
             self.fixed_point = True
@@ -169,19 +170,19 @@ class FIRFilter(BatchEstimator):
             self.fixed_point = False
 
         # For transfer functions
-        self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
+        self.eta2Matrix = np.eye(self.analog_filter.CT.shape[0]) * self.eta2
         # Compute filter coefficients
         self.solver_type = solver_type
-        self._compute_filter_coefficients(analog_system, digital_control, eta2)
+        self._compute_filter_coefficients(analog_filter, digital_control, eta2)
 
         # Initialize filter.
         if self.fixed_point:
             self.h = np.zeros(
-                (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.int64
+                (self.analog_filter.L, self.K3, self.analog_filter.M), dtype=np.int64
             )
         else:
             self.h = np.zeros(
-                (self.analog_system.L, self.K3, self.analog_system.M), dtype=np.double
+                (self.analog_filter.L, self.K3, self.analog_filter.M), dtype=np.double
             )
         # Compute lookback.
         temp1 = np.copy(self.Bf)
@@ -201,7 +202,7 @@ class FIRFilter(BatchEstimator):
                 self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
         self._control_signal_valued = np.zeros(
-            (self.K3, self.analog_system.M), dtype=dtype
+            (self.K3, self.analog_filter.M), dtype=dtype
         )
 
         # For modulation
@@ -237,9 +238,9 @@ class FIRFilter(BatchEstimator):
             logger.warning("Estimator received Stop Iteration")
             raise StopIteration
 
-        self._control_signal_valued[
-            self.K3 - self.downsample :, :
-        ] = self._temp_controls
+        self._control_signal_valued[self.K3 - self.downsample :, :] = (
+            self._temp_controls
+        )
 
         # self._control_signal_valued.shape -> (K3, M)
         # self.h.shape -> (L, K3, M)
@@ -311,8 +312,8 @@ class FIRFilter(BatchEstimator):
             filter to be applied for each digital control filter
             equivalently.
         """
-        for l in range(self.analog_system.L):
-            for m in range(self.analog_system.M):
+        for l in range(self.analog_filter.L):
+            for m in range(self.analog_filter.M):
                 # self.h.shape -> (L, K3, M)
                 temp = np.convolve(self.h[l, :, m], filter, mode="full")
                 if temp.size == self.K3:
@@ -341,8 +342,8 @@ class FIRFilter(BatchEstimator):
                 "// This file was autogenerated using the src/cbadc/digital_estimator.py FIRFilter class's write_C_header function."
                 + os.linesep
             )
-            f.write(f"#define L {self.analog_system.L}" + os.linesep)
-            f.write(f"#define M {self.analog_system.M}" + os.linesep)
+            f.write(f"#define L {self.analog_filter.L}" + os.linesep)
+            f.write(f"#define M {self.analog_filter.M}" + os.linesep)
             f.write(f"#define K1 {self.K1}" + os.linesep)
             f.write(f"#define K2 {self.K2}" + os.linesep)
             f.write(f"#define K3 {self.K3}" + os.linesep)
@@ -352,9 +353,9 @@ class FIRFilter(BatchEstimator):
             else:
                 f.write("double h[L][M][K3] = ")
             f.write("{")
-            for l in range(self.analog_system.L):
+            for l in range(self.analog_filter.L):
                 f.write("{")
-                for m in range(self.analog_system.M):
+                for m in range(self.analog_filter.M):
                     f.write("{")
                     if self.fixed_point:
                         for k in range(self.K3 - 1):
@@ -364,10 +365,10 @@ class FIRFilter(BatchEstimator):
                         for k in range(self.K3 - 1):
                             f.write(f"{self.h[l,k,m]:.17E},")
                         f.write(f"{self.h[l,-1,m]:.17E}" + "}")
-                    if m < (self.analog_system.M - 1):
+                    if m < (self.analog_filter.M - 1):
                         f.write(",")
                 f.write("}")
-                if l < (self.analog_system.L - 1):
+                if l < (self.analog_filter.L - 1):
                     f.write(",")
             f.write("};" + os.linesep)
 
@@ -387,8 +388,8 @@ class FIRFilter(BatchEstimator):
                 "// This file was autogenerated using the src/cbadc/digital_estimator.py FIRFilter class's write_rust_module function."
                 + os.linesep
             )
-            f.write(f"let L: usize = {self.analog_system.L};" + os.linesep)
-            f.write(f"let M: usize = {self.analog_system.M};" + os.linesep)
+            f.write(f"let L: usize = {self.analog_filter.L};" + os.linesep)
+            f.write(f"let M: usize = {self.analog_filter.M};" + os.linesep)
             f.write(f"let K1: usize = {self.K1};" + os.linesep)
             f.write(f"let K2: usize = {self.K2};" + os.linesep)
             f.write(f"let K3: usize = {self.K3};" + os.linesep)
@@ -398,9 +399,9 @@ class FIRFilter(BatchEstimator):
             else:
                 f.write("let mut h = ")
             f.write("[")
-            for l in range(self.analog_system.L):
+            for l in range(self.analog_filter.L):
                 f.write("[")
-                for m in range(self.analog_system.M):
+                for m in range(self.analog_filter.M):
                     f.write("[")
                     if self.fixed_point:
                         for k in range(self.K3 - 1):
@@ -410,10 +411,10 @@ class FIRFilter(BatchEstimator):
                         for k in range(self.K3 - 1):
                             f.write(f"{self.h[l,k,m]:.17e},")
                         f.write(f"{self.h[l,-1,m]:.17e}" + "]")
-                    if m < (self.analog_system.M - 1):
+                    if m < (self.analog_filter.M - 1):
                         f.write(",")
                 f.write("]")
-                if l < (self.analog_system.L - 1):
+                if l < (self.analog_filter.L - 1):
                     f.write(",")
             f.write("];" + os.linesep)
 
@@ -435,5 +436,5 @@ class FIRFilter(BatchEstimator):
         `array_like`, shape=(L, K3, M)
             the impulse response
         """
-        # (self.analog_system.L, self.K3, self.analog_system.M)
+        # (self.analog_filter.L, self.K3, self.analog_filter.M)
         return self.h[:, ::-1, :]

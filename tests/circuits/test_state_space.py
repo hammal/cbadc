@@ -60,31 +60,31 @@
 #     assert True
 
 
-# def test_analog_system_ngspice():
+# def test_analog_filter_ngspice():
 #     N = 4
 #     ENOB = 14
 #     BW = 1e6
 #     vdd = 1.2
 #     vgd = 0.0
-#     analog_system = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
+#     analog_filter = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
 
-#     integrator_analog_system = IntegratorAnalogSystem(analog_system.analog_system, vdd, vgd)
+#     integrator_analog_filter = IntegratorAnalogSystem(analog_filter.analog_filter, vdd, vgd)
 
 #     print('\n')
-#     print(integrator_analog_system.get_ngspice())
+#     print(integrator_analog_filter.get_ngspice())
 #     print('\n\n')
 
-#     for subckt_definition in integrator_analog_system.get_sub_circuit_definitions():
+#     for subckt_definition in integrator_analog_filter.get_sub_circuit_definitions():
 #         print(subckt_definition)
 #         print('\n')
 
 #     print('\n')
-#     for model in integrator_analog_system._get_model_set():
+#     for model in integrator_analog_filter._get_model_set():
 #         print(model.get_ngspice())
 
 #     assert True
 
-# def test_analog_system_spectre():
+# def test_analog_filter_spectre():
 #     N = 4
 #     ENOB = 14
 #     BW = 1e6
@@ -93,18 +93,18 @@
 
 #     analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
 
-#     integrator_analog_system = IntegratorAnalogSystem(analog_frontend.analog_system, vdd, vgd)
+#     integrator_analog_filter = IntegratorAnalogSystem(analog_frontend.analog_filter, vdd, vgd)
 
 #     print('\n')
-#     print(integrator_analog_system.get_spectre())
+#     print(integrator_analog_filter.get_spectre())
 #     print('\n\n')
 
-#     for subckt_definition in integrator_analog_system._get_spectre_sub_circuit_definition():
+#     for subckt_definition in integrator_analog_filter._get_spectre_sub_circuit_definition():
 #         print(subckt_definition)
 #         print('\n')
 
 #     print('\n')
-#     for model in integrator_analog_system._get_model_set():
+#     for model in integrator_analog_filter._get_model_set():
 #         if model.verilog_ams:
 #             print(model.get_verilog_ams())
 #         else:

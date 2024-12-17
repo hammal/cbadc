@@ -1,11 +1,11 @@
 """Synthesise functions for chain-of-integrators control-bounded ADCs."""
 
 from cbadc.analog_frontend import AnalogFrontend
-from cbadc.analog_system import AnalogSystem
+from cbadc.analog_filter import AnalogSystem
 from cbadc.synthesis.leap_frog import g_i, get_leap_frog
 from cbadc.digital_control.digital_control import DigitalControl, Clock
 from cbadc.analog_signal import StepResponse
-from cbadc.analog_system.topology import stack
+from cbadc.analog_filter.topology import stack
 from cbadc.fom import enob_to_snr, snr_from_dB, snr_to_enob
 
 import numpy as np
@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def _analog_system_factory(N, beta, rho, kappa, gamma, omega_p):
+def _analog_filter_factory(N, beta, rho, kappa, gamma, omega_p):
     A = np.zeros((2 * N, 2 * N))
     B = np.zeros((2 * N, 2))
     CT = np.eye(2 * N)
@@ -37,17 +37,17 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
     if not all(param in kwargs for param in ("analog_frontend", "fc")):
         raise NotImplementedError
     analog_frontend_baseband = kwargs["analog_frontend"]
-    analog_system_baseband = analog_frontend_baseband.analog_system
+    analog_filter_baseband = analog_frontend_baseband.analog_filter
     digital_control_baseband = analog_frontend_baseband.digital_control
-    N = analog_system_baseband.N
-    beta = analog_system_baseband.Gamma[0, 0]
+    N = analog_filter_baseband.N
+    beta = analog_filter_baseband.Gamma[0, 0]
     T = digital_control_baseband.clock.T
     fc = kwargs["fc"]
     omega_c = 2.0 * np.pi * fc
 
-    analog_system = stack([analog_system_baseband, analog_system_baseband])
-    analog_system.A[:N, N:] = -omega_c * np.eye(N)
-    analog_system.A[N:, :N] = omega_c * np.eye(N)
+    analog_filter = stack([analog_filter_baseband, analog_filter_baseband])
+    analog_filter.A[:N, N:] = -omega_c * np.eye(N)
+    analog_filter.A[N:, :N] = omega_c * np.eye(N)
 
     if not "modulate" in kwargs:
         # kappa = beta * T * omega_c / (2 * np.sin(omega_c * T / 2))
@@ -70,8 +70,8 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
         Gamma_tildeT[:N, N:] = -bar_tilde_kappa * np.eye(N)
         Gamma_tildeT[N:, :N] = bar_tilde_kappa * np.eye(N)
 
-        analog_system.Gamma = Gamma
-        analog_system.Gamma_tildeT = Gamma_tildeT
+        analog_filter.Gamma = Gamma
+        analog_filter.Gamma_tildeT = Gamma_tildeT
 
     digital_control = DigitalControl(
         digital_control_baseband.clock,
@@ -79,24 +79,24 @@ def get_bandpass(**kwargs) -> AnalogFrontend:
     )
 
     if "scalar_input" in kwargs:
-        analog_system.B[analog_system.N // 2 :, 0] = -analog_system.B[
-            analog_system.N // 2 :, 1
+        analog_filter.B[analog_filter.N // 2 :, 0] = -analog_filter.B[
+            analog_filter.N // 2 :, 1
         ]
-        analog_system.B = analog_system.B[:, 0].reshape((analog_system.N, 1))
+        analog_filter.B = analog_filter.B[:, 0].reshape((analog_filter.N, 1))
 
-        analog_system.B_tilde = (
-            analog_system.B_tilde[:, 0] - analog_system.B_tilde[:, 1]
+        analog_filter.B_tilde = (
+            analog_filter.B_tilde[:, 0] - analog_filter.B_tilde[:, 1]
         ).reshape((-1, 1))
 
     return AnalogFrontend(
-        analog_system=AnalogSystem(
-            analog_system.A,
-            analog_system.B,
-            analog_system.CT,
-            analog_system.Gamma,
-            analog_system.Gamma_tildeT,
-            B_tilde=analog_system.B_tilde,
-            A_tilde=analog_system.A_tilde,
+        analog_filter=AnalogSystem(
+            analog_filter.A,
+            analog_filter.B,
+            analog_filter.CT,
+            analog_filter.Gamma,
+            analog_filter.Gamma_tildeT,
+            B_tilde=analog_filter.B_tilde,
+            A_tilde=analog_filter.A_tilde,
         ),
         digital_control=digital_control,
     )
@@ -134,7 +134,7 @@ def get_chain_of_oscillators(**kwargs) -> AnalogFrontend:
 
     Returns
     -------
-    : (:py:class:`cbadc.analog_system.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
+    : (:py:class:`cbadc.analog_filter.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
         returns an analog system and digital control tuple
     """
     finite_gain = kwargs.get("finite_gain", False)
@@ -156,7 +156,7 @@ def get_chain_of_oscillators(**kwargs) -> AnalogFrontend:
         kappa = beta
         omega_p = 2 * np.pi * kwargs["fp"]
 
-        analog_system = _analog_system_factory(N, beta, rho, kappa, alpha, omega_p)
+        analog_filter = _analog_filter_factory(N, beta, rho, kappa, alpha, omega_p)
 
         t0 = T * kwargs.get("excess_delay", 0.0)
         if kwargs.get("digital_control") == "switch_cap":
@@ -169,9 +169,9 @@ def get_chain_of_oscillators(**kwargs) -> AnalogFrontend:
             digital_control = DigitalControl(Clock(T), 2 * N)
 
         if finite_gain:
-            analog_system.A += -omega_BW / (gamma ** (2 * N)) * np.eye(N)
+            analog_filter.A += -omega_BW / (gamma ** (2 * N)) * np.eye(N)
 
-        return AnalogFrontend(analog_system, digital_control)
+        return AnalogFrontend(analog_filter, digital_control)
     elif all(param in kwargs for param in ("SNR", "N", "BW", "fp")):
         return get_chain_of_oscillators(ENOB=snr_to_enob(kwargs["SNR"]), **kwargs)
     elif all(param in kwargs for param in ("OSR", "N", "BW", "fp")):
@@ -186,10 +186,10 @@ def get_chain_of_oscillators(**kwargs) -> AnalogFrontend:
         alpha = -((omega_BW / 2) ** 2) / beta
         omega_p = 2 * np.pi * kwargs["fp"]
 
-        analog_system = _analog_system_factory(N, beta, rho, kappa, alpha, omega_p)
+        analog_filter = _analog_filter_factory(N, beta, rho, kappa, alpha, omega_p)
 
         digital_control = DigitalControl(Clock(T), N)
-        return AnalogFrontend(analog_system, digital_control)
+        return AnalogFrontend(analog_filter, digital_control)
     elif all(param in kwargs for param in ("OSR", "N", "T", "fp")):
         N = kwargs["N"]
         T = kwargs["T"]
@@ -235,7 +235,7 @@ def get_parallel_leapfrog(**kwargs) -> AnalogSystem:
 
     Returns
     -------
-    : (:py:class:`cbadc.analog_system.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
+    : (:py:class:`cbadc.analog_filter.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
         returns an analog system and digital control tuple
     """
     # finite_gain = kwargs.get("finite_gain", False)
@@ -263,75 +263,75 @@ def get_parallel_leapfrog(**kwargs) -> AnalogSystem:
         # kappa = beta
         # omega_p = 2 * np.pi * kwargs['fp']
 
-        analog_system = stack(
-            [get_leap_frog(ENOB=ENOB, N=N, BW=BW).analog_system for _ in range(M)]
+        analog_filter = stack(
+            [get_leap_frog(ENOB=ENOB, N=N, BW=BW).analog_filter for _ in range(M)]
         )
 
         if M == 3:
-            analog_system.A[N : 2 * N, 0:N] = poles[0] * np.eye(N)
-            analog_system.A[
+            analog_filter.A[N : 2 * N, 0:N] = poles[0] * np.eye(N)
+            analog_filter.A[
                 0:N,
                 N : 2 * N,
             ] = -poles[
                 0
             ] * np.eye(N)
 
-            analog_system.A[2 * N : 3 * N, 0:N] = poles[1] * np.eye(N)
-            analog_system.A[0:N, 2 * N : 3 * N] = -poles[1] * np.eye(N)
+            analog_filter.A[2 * N : 3 * N, 0:N] = poles[1] * np.eye(N)
+            analog_filter.A[0:N, 2 * N : 3 * N] = -poles[1] * np.eye(N)
 
-            analog_system.A[2 * N : 3 * N, N : 2 * N] = poles[2] * np.eye(N)
-            analog_system.A[N : 2 * N, 2 * N : 3 * N] = -poles[2] * np.eye(N)
+            analog_filter.A[2 * N : 3 * N, N : 2 * N] = poles[2] * np.eye(N)
+            analog_filter.A[N : 2 * N, 2 * N : 3 * N] = -poles[2] * np.eye(N)
         elif M == 4:
-            analog_system.A[N : 2 * N, 0:N] = poles[0] * np.eye(N)
-            analog_system.A[
+            analog_filter.A[N : 2 * N, 0:N] = poles[0] * np.eye(N)
+            analog_filter.A[
                 0:N,
                 N : 2 * N,
             ] = -poles[
                 0
             ] * np.eye(N)
 
-            analog_system.A[2 * N : 3 * N, 0:N] = poles[1] * np.eye(N)
-            analog_system.A[0:N, 2 * N : 3 * N] = -poles[1] * np.eye(N)
-            analog_system.A[2 * N : 3 * N, N : 2 * N] = poles[2] * np.eye(N)
-            analog_system.A[N : 2 * N, 2 * N : 3 * N] = -poles[2] * np.eye(N)
+            analog_filter.A[2 * N : 3 * N, 0:N] = poles[1] * np.eye(N)
+            analog_filter.A[0:N, 2 * N : 3 * N] = -poles[1] * np.eye(N)
+            analog_filter.A[2 * N : 3 * N, N : 2 * N] = poles[2] * np.eye(N)
+            analog_filter.A[N : 2 * N, 2 * N : 3 * N] = -poles[2] * np.eye(N)
 
-            analog_system.A[3 * N : 4 * N, 0:N] = poles[3] * np.eye(N)
-            analog_system.A[0:N, 3 * N : 4 * N] = -poles[3] * np.eye(N)
-            analog_system.A[3 * N : 4 * N, N : 2 * N] = poles[4] * np.eye(N)
-            analog_system.A[N : 2 * N, 3 * N : 4 * N] = -poles[4] * np.eye(N)
-            analog_system.A[3 * N : 4 * N, 2 * N : 3 * N] = poles[5] * np.eye(N)
-            analog_system.A[2 * N : 3 * N, 3 * N : 4 * N] = -poles[5] * np.eye(N)
+            analog_filter.A[3 * N : 4 * N, 0:N] = poles[3] * np.eye(N)
+            analog_filter.A[0:N, 3 * N : 4 * N] = -poles[3] * np.eye(N)
+            analog_filter.A[3 * N : 4 * N, N : 2 * N] = poles[4] * np.eye(N)
+            analog_filter.A[N : 2 * N, 3 * N : 4 * N] = -poles[4] * np.eye(N)
+            analog_filter.A[3 * N : 4 * N, 2 * N : 3 * N] = poles[5] * np.eye(N)
+            analog_filter.A[2 * N : 3 * N, 3 * N : 4 * N] = -poles[5] * np.eye(N)
         else:
             for i in range(1, M):
                 for j in range(i):
                     print(i, j, (M - 1 - j), (M - j))
-                    analog_system.A[i * N : (i + 1) * N, j * N : (j + 1) * N] = poles[
+                    analog_filter.A[i * N : (i + 1) * N, j * N : (j + 1) * N] = poles[
                         i + j * M
                     ] * np.eye(
                         N
                     )  # / (i + 1) * (j)
-                    analog_system.A[
+                    analog_filter.A[
                         (M - i - 1) * N : (M - i) * N, (M - 1 - j) * N : (M - j) * N
                     ] = -poles[-(i + j * M)] * np.eye(
                         N
                     )  # / (i + 1) * (j )
 
-        analog_system.B = np.sum(analog_system.B, axis=1).reshape(
-            (analog_system.B.shape[0], 1)
+        analog_filter.B = np.sum(analog_filter.B, axis=1).reshape(
+            (analog_filter.B.shape[0], 1)
         )
-        analog_system.D = np.sum(analog_system.D, axis=1).reshape(
-            (analog_system.D.shape[0], 1)
+        analog_filter.D = np.sum(analog_filter.D, axis=1).reshape(
+            (analog_filter.D.shape[0], 1)
         )
-        analog_system.B_tilde = np.sum(analog_system.B_tilde, axis=1).reshape(
-            (analog_system.B_tilde.shape[0], 1)
+        analog_filter.B_tilde = np.sum(analog_filter.B_tilde, axis=1).reshape(
+            (analog_filter.B_tilde.shape[0], 1)
         )
-        analog_system.L = 1
+        analog_filter.L = 1
         return AnalogSystem(
-            analog_system.A,
-            analog_system.B,
-            analog_system.CT,
-            analog_system.Gamma,
-            analog_system.Gamma_tildeT,
+            analog_filter.A,
+            analog_filter.B,
+            analog_filter.CT,
+            analog_filter.Gamma,
+            analog_filter.Gamma_tildeT,
         )
 
         # t0 = T * kwargs.get('excess_delay', 0.0)
@@ -345,8 +345,8 @@ def get_parallel_leapfrog(**kwargs) -> AnalogSystem:
         #     digital_control = DigitalControl(Clock(T), 2 * N)
 
         # if finite_gain:
-        #     analog_system.A += -omega_BW / (gamma ** (2 * N)) * np.eye(N)
+        #     analog_filter.A += -omega_BW / (gamma ** (2 * N)) * np.eye(N)
 
-        # return AnalogFrontend(analog_system, digital_control)
+        # return AnalogFrontend(analog_filter, digital_control)
 
     raise NotImplementedError

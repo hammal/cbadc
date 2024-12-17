@@ -1,4 +1,5 @@
 """The digital NUV estimator."""
+
 from typing import Iterator
 import cbadc
 import logging
@@ -30,7 +31,7 @@ class NUVEstimator:
 
     Parameters
     ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter: :py:class:`cbadc.analog_filter.AnalogSystem`
         an analog system (necessary to compute the estimators filter
         coefficients).
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
@@ -56,8 +57,8 @@ class NUVEstimator:
 
     Attributes
     ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
-        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or
+    analog_filter: :py:class:`cbadc.analog_filter.AnalogSystem`
+        analog system as in :py:class:`cbadc.analog_filter.AnalogSystem` or
         from derived class.
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         digital control as in :py:class:`cbadc.digital_control.DigitalControl`
@@ -82,7 +83,7 @@ class NUVEstimator:
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
         covU: float,
         bound_y: float,
@@ -101,10 +102,10 @@ class NUVEstimator:
             raise Exception("K2 must be a non negative integer.")
         self.K2 = K2
         self.K3 = K1 + K2
-        self.analog_system = analog_system
+        self.analog_filter = analog_filter
         self.covU = covU
         self.bound_y = bound_y
-        # if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+        # if not np.allclose(self.analog_filter.D, np.zeros_like(self.analog_filter.D)):
         #     raise Exception(
         #         """Can't compute filter coefficients for system with non-zero
         #         D matrix. Consider chaining for removing D"""
@@ -122,51 +123,51 @@ class NUVEstimator:
         self.iterations_per_batch = iterations_per_batch
         self.gamma = gamma
         # Initialize filters
-        self._compute_filter_coefficients(analog_system, digital_control)
+        self._compute_filter_coefficients(analog_filter, digital_control)
         self._allocate_memory_buffers()
 
         # Set initial Covariances
-        self._forward_CoVariance[0, :, :] = 1e12 * np.eye(self.analog_system.N)
+        self._forward_CoVariance[0, :, :] = 1e12 * np.eye(self.analog_filter.N)
         self._oversample = oversample
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M))
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._control_signal = np.zeros((self.K3, self.analog_filter.M))
+        self._estimate = np.zeros((self.K1, self.analog_filter.L), dtype=np.double)
         self._control_signal_in_buffer = 0
-        self._forward_mean = np.zeros((self.K3, self.analog_system.N), dtype=np.double)
+        self._forward_mean = np.zeros((self.K3, self.analog_filter.N), dtype=np.double)
         self._forward_CoVariance = np.zeros(
-            (self.K3, self.analog_system.N, self.analog_system.N), dtype=np.double
+            (self.K3, self.analog_filter.N, self.analog_filter.N), dtype=np.double
         )
         self._G = np.zeros(
-            (self.K3, self.analog_system.N_tilde, self.analog_system.N_tilde),
+            (self.K3, self.analog_filter.N_tilde, self.analog_filter.N_tilde),
             dtype=np.double,
         )
         self._F = np.zeros(
-            (self.K3, self.analog_system.N, self.analog_system.N), dtype=np.double
+            (self.K3, self.analog_filter.N, self.analog_filter.N), dtype=np.double
         )
 
-        self._y_mean = np.zeros((self.K3, self.analog_system.N_tilde))
+        self._y_mean = np.zeros((self.K3, self.analog_filter.N_tilde))
         self._y_CoVariance = np.zeros(
-            (self.K3, self.analog_system.N_tilde, self.analog_system.N_tilde)
+            (self.K3, self.analog_filter.N_tilde, self.analog_filter.N_tilde)
         )
         # self._W_tilde = np.zeros(
         #     (
         #         self.K3,
-        #         self.analog_system.N,
-        #         self.analog_system.N
+        #         self.analog_filter.N,
+        #         self.analog_filter.N
         #     ),
         #     dtype=np.double
         # )
-        self._xi_tilde = np.zeros((self.K3 + 1, self.analog_system.N), dtype=np.double)
+        self._xi_tilde = np.zeros((self.K3 + 1, self.analog_filter.N), dtype=np.double)
         self._sigma_squared_1 = np.ones(
-            (self.K3, self.analog_system.N_tilde), dtype=np.double
+            (self.K3, self.analog_filter.N_tilde), dtype=np.double
         )
         self._sigma_squared_2 = np.ones(
-            (self.K3, self.analog_system.N_tilde), dtype=np.double
+            (self.K3, self.analog_filter.N_tilde), dtype=np.double
         )
         self._posterior_observation_mean = np.zeros(
-            (self.K3, self.analog_system.N_tilde), dtype=np.double
+            (self.K3, self.analog_filter.N_tilde), dtype=np.double
         )
 
     def set_iterator(self, control_signal_sequence: Iterator[np.ndarray]):
@@ -212,7 +213,7 @@ class NUVEstimator:
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M))
+                control_signal_sample = np.zeros((self.analog_filter.M))
             for _ in range(self._oversample):
                 full = self._input(control_signal_sample)
 
@@ -232,7 +233,7 @@ class NUVEstimator:
                 """Input buffer full. You must compute batch before adding
                 more control signals"""
             )
-        for _ in range(self.analog_system.M):
+        for _ in range(self.analog_filter.M):
             self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
                 2 * s - 1
             )
@@ -241,30 +242,30 @@ class NUVEstimator:
 
     def _compute_filter_coefficients(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
     ):
         logger.info("Compute filter coefficients.")
         # Compute filter coefficients
-        self.Af: np.ndarray = np.asarray(scipy.linalg.expm(analog_system.A * self.Ts))
-        Gamma = np.array(analog_system.Gamma)
+        self.Af: np.ndarray = np.asarray(scipy.linalg.expm(analog_filter.A * self.Ts))
+        Gamma = np.array(analog_filter.Gamma)
         # Solve IVPs
-        self.Bf: np.ndarray = np.zeros((self.analog_system.N, self.analog_system.M))
+        self.Bf: np.ndarray = np.zeros((self.analog_filter.N, self.analog_filter.M))
         atol = 1e-200
         rtol = 1e-12
         max_step = self.Ts / 1000.0
 
-        for m in range(self.analog_system.M):
+        for m in range(self.analog_filter.M):
 
             def _derivative_forward_2(t, x):
-                return np.dot(analog_system.A, x) + np.dot(
+                return np.dot(analog_filter.A, x) + np.dot(
                     Gamma, digital_control.impulse_response(m, t)
                 )
 
             solBf = scipy.integrate.solve_ivp(
                 _derivative_forward_2,
                 (0, self.Ts),
-                np.zeros(self.analog_system.N),
+                np.zeros(self.analog_filter.N),
                 atol=atol,
                 rtol=rtol,
                 max_step=max_step,
@@ -272,11 +273,11 @@ class NUVEstimator:
             ).y[:, -1]
             self.Bf[:, m] = solBf
 
-        BBT = np.dot(analog_system.B, np.dot(self.covU, analog_system.B.transpose()))
+        BBT = np.dot(analog_filter.B, np.dot(self.covU, analog_filter.B.transpose()))
 
         def _derivative_input(t, x):
             t_minus_tau = self.Ts - t
-            A_t_minus_tau = analog_system.A * t_minus_tau
+            A_t_minus_tau = analog_filter.A * t_minus_tau
             return np.dot(
                 scipy.linalg.expm(A_t_minus_tau),
                 np.dot(BBT, scipy.linalg.expm(A_t_minus_tau.transpose())),
@@ -287,14 +288,14 @@ class NUVEstimator:
             scipy.integrate.solve_ivp(
                 _derivative_input,
                 (0, self.Ts),
-                np.zeros(self.analog_system.N**2),
+                np.zeros(self.analog_filter.N**2),
                 atol=atol,
                 rtol=rtol,
                 max_step=max_step,
                 method="Radau",
             )
             .y[:, -1]
-            .reshape((self.analog_system.N, self.analog_system.N)),
+            .reshape((self.analog_filter.N, self.analog_filter.N)),
         )
 
     def _compute_batch(self):
@@ -344,18 +345,18 @@ class NUVEstimator:
             self._G[k, :, :] = np.linalg.inv(
                 self._y_CoVariance[k, :, :]
                 + np.dot(
-                    self.analog_system.CT,
+                    self.analog_filter.CT,
                     np.dot(
                         self._forward_CoVariance[k, :, :],
-                        self.analog_system.CT.transpose(),
+                        self.analog_filter.CT.transpose(),
                     ),
                 )
             )
-            self._F[k, :, :] = np.eye(self.analog_system.N) - np.dot(
+            self._F[k, :, :] = np.eye(self.analog_filter.N) - np.dot(
                 self._forward_CoVariance[k, :, :],
                 np.dot(
-                    self.analog_system.CT.transpose(),
-                    np.dot(self._G[k, :, :], self.analog_system.CT),
+                    self.analog_filter.CT.transpose(),
+                    np.dot(self._G[k, :, :], self.analog_filter.CT),
                 ),
             )
 
@@ -366,7 +367,7 @@ class NUVEstimator:
                     + np.dot(
                         self._forward_CoVariance[k, :, :],
                         np.dot(
-                            self.analog_system.CT.transpose(),
+                            self.analog_filter.CT.transpose(),
                             np.dot(self._G[k, :, :], self._y_mean[k, :]),
                         ),
                     ),
@@ -397,9 +398,9 @@ class NUVEstimator:
                 # )
             else:
                 # Initialize with zero vector.
-                xi_tilde_z = np.zeros(self.analog_system.N)
+                xi_tilde_z = np.zeros(self.analog_filter.N)
                 # W_tilde_z = np.zeros(
-                #     (self.analog_system.N, self.analog_system.N))
+                #     (self.analog_filter.N, self.analog_filter.N))
 
             # self._W_tilde[k, :, :] = np.dot(
             #     self._F[k, :, :],
@@ -408,22 +409,22 @@ class NUVEstimator:
             #         self._F[k, :, :]
             #     )
             # ) + np.dot(
-            #     self.analog_system.CT.transpose(),
+            #     self.analog_filter.CT.transpose(),
             #     np.dot(
             #         self._G[k, :, :],
-            #         self.analog_system.CT
+            #         self.analog_filter.CT
             #     )
             # )
 
             temp = (
-                np.dot(self.analog_system.CT.transpose(), self._forward_mean[k, :])
+                np.dot(self.analog_filter.CT.transpose(), self._forward_mean[k, :])
                 - self._y_mean[k, :]
             )
 
             self._xi_tilde[k, :] = np.dot(
                 self._F[k, :, :].transpose(), xi_tilde_z
             ) + np.dot(
-                self.analog_system.CT.transpose(), np.dot(self._G[k, :, :], temp)
+                self.analog_filter.CT.transpose(), np.dot(self._G[k, :, :], temp)
             )
             # if (k < 5):
             #     print(k,  self._xi_tilde[k, :])
@@ -432,18 +433,18 @@ class NUVEstimator:
         for k in range(self.K1):
             self._estimate[k, :] = -np.dot(
                 self.covU,
-                np.dot(self.analog_system.B.transpose(), self._xi_tilde[k, :]),
+                np.dot(self.analog_filter.B.transpose(), self._xi_tilde[k, :]),
             )
 
     def _update_observation_bound_variances(self):
         for k in range(self.K3):
             self._posterior_observation_mean[k, :] = np.dot(
-                self.analog_system.CT,
+                self.analog_filter.CT,
                 self._forward_mean[k]
                 - np.dot(self._forward_CoVariance[k, :, :], self._xi_tilde[k, :]),
             )
             # posterior_CoVariance = np.dot(
-            #     self.analog_system.CT,
+            #     self.analog_filter.CT,
             #     np.dot(
             #         self._forward_CoVariance[k, :, :] - np.dot(
             #             self._forward_CoVariance[k, :, :],
@@ -452,11 +453,11 @@ class NUVEstimator:
             #                 self._forward_CoVariance[k, :, :]
             #             )
             #         ),
-            #         self.analog_system.CT.transpose()
+            #         self.analog_filter.CT.transpose()
             #     )
             # )
             min_sigma_squared = 1e-100
-            for ell in range(self.analog_system.N_tilde):
+            for ell in range(self.analog_filter.N_tilde):
                 self._sigma_squared_1[k, ell] = max(
                     np.abs(self._posterior_observation_mean[k, ell] - self.bound_y)
                     / self.gamma,
@@ -484,10 +485,10 @@ class NUVEstimator:
 
     def _reset_between_batch(self):
         self._sigma_squared_1[1:, :] = np.ones(
-            (self.K3 - 1, self.analog_system.N_tilde), dtype=np.double
+            (self.K3 - 1, self.analog_filter.N_tilde), dtype=np.double
         )
         self._sigma_squared_2[1:, :] = np.ones(
-            (self.K3 - 1, self.analog_system.N_tilde), dtype=np.double
+            (self.K3 - 1, self.analog_filter.N_tilde), dtype=np.double
         )
 
     def __str__(self):

@@ -17,7 +17,7 @@ The cbadc Root Modules
 
 
     cbadc.analog_signal
-    cbadc.analog_system
+    cbadc.analog_filter
     cbadc.digital_control
     cbadc.digital_estimator
     cbadc.analog_frontend

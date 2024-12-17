@@ -1,7 +1,8 @@
 """Helper functions for synthesising sigma delta modulators as control-bounded converters."""
+
 import numpy as np
 from typing import Dict
-from cbadc.analog_system import AnalogSystem
+from cbadc.analog_filter import AnalogSystem
 from cbadc.digital_control.multi_level_digital_control import MultiLevelDigitalControl
 from cbadc.analog_signal.clock import Clock
 from cbadc.analog_frontend import AnalogFrontend
@@ -122,7 +123,7 @@ def ctsd_dict2af(
         Number of quantizer levels. If None, use the number of levels from the ctsd dictionary. Default: None
 
     Returns
-    analog_system: :py:class:`cbadc.analog_frontend.AnalogFrontend`
+    analog_filter: :py:class:`cbadc.analog_frontend.AnalogFrontend`
         An analog frontend
     """
     # Parse matrices
@@ -155,7 +156,7 @@ def ctsd_abcd2af(abcd, T, qlev, dac_scale=1.0, local_control=False) -> AnalogFro
         Whether or not to use local control. Default: False
 
     Returns
-    analog_system: :py:class:`cbadc.analog_frontend.AnalogFrontend`
+    analog_filter: :py:class:`cbadc.analog_frontend.AnalogFrontend`
         An analog frontend
     """
     ctsd_dict = _schreier_abcd_to_ulm_dict(abcd, qlev)

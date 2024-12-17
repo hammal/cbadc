@@ -21,27 +21,27 @@ def test_fixed_point():
     K2 = 1 << 10
     size = 1 << 13
 
-    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_filter = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     analog_signals = [cbadc.analog_signal.Sinusoidal(0.5, 10)]
     # analog_signals = [cbadc.analog_signal.ConstantSignal(0.25)]
     clock = cbadc.analog_signal.Clock(Ts)
     digital_control_floating_point = cbadc.digital_control.DigitalControl(clock, M)
     circuitSimulator_floating_point = cbadc.simulator.Simulator(
-        analog_system, digital_control_floating_point, analog_signals
+        analog_filter, digital_control_floating_point, analog_signals
     )
     estimator_floating_point = cbadc.digital_estimator.FIRFilter(
-        analog_system, digital_control_floating_point, eta2, K1, K2
+        analog_filter, digital_control_floating_point, eta2, K1, K2
     )
     estimator_floating_point(circuitSimulator_floating_point)
 
     digital_control_fixed_point = cbadc.digital_control.DigitalControl(clock, M)
     circuitSimulator_fixed_point = cbadc.simulator.Simulator(
-        analog_system, digital_control_fixed_point, analog_signals
+        analog_filter, digital_control_fixed_point, analog_signals
     )
 
     fixed_point = cbadc.utilities.FixedPoint(64, 5.0)
     estimator_fixed_point = cbadc.digital_estimator.FIRFilter(
-        analog_system,
+        analog_filter,
         digital_control_fixed_point,
         eta2,
         K1,

@@ -2,7 +2,7 @@ import numpy as np
 import cbadc
 import scipy.signal
 
-from cbadc.analog_system.topology import zpk2abcd
+from cbadc.analog_filter.topology import zpk2abcd
 
 
 def test_Butterworth():
@@ -10,13 +10,13 @@ def test_Butterworth():
     # Set critical frequency
     Wn = 1.0
 
-    cbadc.analog_system.ButterWorth(N, Wn)
+    cbadc.analog_filter.ButterWorth(N, Wn)
 
 
 def test_ButterWorth_transferfunction():
     N = 7
     Wn = 1e3
-    butter_worth_system = cbadc.analog_system.ButterWorth(N, Wn)
+    butter_worth_system = cbadc.analog_filter.ButterWorth(N, Wn)
     print(butter_worth_system)
     b, a = scipy.signal.butter(N, Wn, btype="low", analog=True)
     print("b, a\n")
@@ -49,14 +49,14 @@ def test_ChebyshevI():
     # Set maximum ripple
     rp = 1.0
 
-    cbadc.analog_system.ChebyshevI(N, Wn, rp)
+    cbadc.analog_filter.ChebyshevI(N, Wn, rp)
 
 
 def test_ChebyshevI_transferfunction():
     N = 4
     Wn = 1e3
     rp = np.sqrt(2)
-    chebyshevI_worth_system = cbadc.analog_system.ChebyshevI(N, Wn, rp)
+    chebyshevI_worth_system = cbadc.analog_filter.ChebyshevI(N, Wn, rp)
 
     b, a = scipy.signal.cheby1(N, rp, Wn, btype="low", analog=True)
 
@@ -85,14 +85,14 @@ def test_ChebyshevII():
     Wn = 2 * np.pi * 44e3
     # Set maximum ripple
     rs = 80
-    cbadc.analog_system.ChebyshevII(N, Wn, rs)
+    cbadc.analog_filter.ChebyshevII(N, Wn, rs)
 
 
 def test_ChebyshevII_transferfunction():
     N = 8
     Wn = 1e3
     rs = 60
-    chebyshevII_worth_system = cbadc.analog_system.ChebyshevII(N, Wn, rs)
+    chebyshevII_worth_system = cbadc.analog_filter.ChebyshevII(N, Wn, rs)
 
     b, a = scipy.signal.cheby2(N, rs, Wn, btype="low", analog=True)
     print("b, a\n")
@@ -128,7 +128,7 @@ def test_Cauer():
     rp = 0.1
     rs = 80
 
-    cbadc.analog_system.Cauer(N, Wn, rp, rs)
+    cbadc.analog_filter.Cauer(N, Wn, rp, rs)
 
 
 def test_Cauer_transferfunction():
@@ -136,7 +136,7 @@ def test_Cauer_transferfunction():
     Wn = 1e3
     rp = np.sqrt(2)
     rs = 60
-    cauer_worth_system = cbadc.analog_system.Cauer(N, Wn, rp, rs)
+    cauer_worth_system = cbadc.analog_filter.Cauer(N, Wn, rp, rs)
 
     b, a = scipy.signal.ellip(N, rp, rs, Wn, btype="low", analog=True)
     print("b, a\n")

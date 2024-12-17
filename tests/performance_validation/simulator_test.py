@@ -28,7 +28,7 @@ from cbadc.simulator import (
     [pytest.param(1e3, id="BW=1kHz"), pytest.param(1e8, id="BW=100MHz")],
 )
 @pytest.mark.parametrize(
-    "analog_system",
+    "analog_filter",
     [
         pytest.param("chain-of-integrators", id="chain_of_integrators_as"),
         pytest.param("leap_frog", id="leap_frog_as"),
@@ -66,7 +66,7 @@ def test_simulator(
     N,
     ENOB,
     BW,
-    analog_system,
+    analog_filter,
     digital_control,
     simulation_method,
     reference_method,
@@ -76,29 +76,29 @@ def test_simulator(
         return
     number_of_coherent_cycles = 1 << 12
     res = setup_filter(
-        N, ENOB, BW, analog_system, digital_control, excess_delay, local_feedback=True
+        N, ENOB, BW, analog_filter, digital_control, excess_delay, local_feedback=True
     )
     res2 = setup_filter(
-        N, ENOB, BW, analog_system, digital_control, excess_delay, local_feedback=True
+        N, ENOB, BW, analog_filter, digital_control, excess_delay, local_feedback=True
     )
 
     # input = cbadc.analog_signal.Sinusoidal(1e-7, BW / 100)
     input = cbadc.analog_signal.ConstantSignal(0.0)
     # initial_state = np.random.rand(N) * 2.0 - 1.0
     initial_state = np.ones(N) * 0.1
-    if N > 5 and analog_system == "leap_frog":
+    if N > 5 and analog_filter == "leap_frog":
         pytest.skip("No analytical solution for Leap-frog N > 2")
 
-    analog_system = res["analog_system"]
+    analog_filter = res["analog_filter"]
 
     ref_sim = reference_method(
-        res["analog_system"],
+        res["analog_filter"],
         res["digital_control"],
         [input],
         initial_state_vector=initial_state[:],
     )
     sim = simulation_method(
-        res2["analog_system"],
+        res2["analog_filter"],
         res2["digital_control"],
         [input],
         initial_state_vector=initial_state[:],

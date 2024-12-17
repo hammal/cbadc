@@ -1,5 +1,6 @@
 """The digital batch estimator
 """
+
 from typing import Iterator
 import cbadc
 from cbadc.digital_estimator._filter_coefficients import (
@@ -41,12 +42,12 @@ class BatchEstimator(Iterator[np.ndarray]):
     :math:`\mathbf{B}_f, \mathbf{B}_b \in \mathbb{R}^{N \\times M}`, and
     :math:`\mathbf{W}^\mathsf{T} \in \mathbb{R}^{L \\times N}` are the
     precomputed filter coefficient based on the choice of
-    :py:class:`cbadc.analog_system.AnalogSystem` and
+    :py:class:`cbadc.analog_filter.AnalogSystem` and
     :py:class:`cbadc.digital_control.DigitalControl`.
 
     Parameters
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
         an analog system (necessary to compute the estimators filter
         coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
@@ -76,8 +77,8 @@ class BatchEstimator(Iterator[np.ndarray]):
     Attributes
     ----------
 
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
-        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
+        analog system as in :py:class:`cbadc.analog_filter.AnalogSystem` or
         from derived class.
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         digital control as in :py:class:`cbadc.digital_control.DigitalControl`
@@ -123,7 +124,7 @@ class BatchEstimator(Iterator[np.ndarray]):
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
         K1: int,
@@ -144,9 +145,9 @@ class BatchEstimator(Iterator[np.ndarray]):
         self.K2 = K2
         self.K3 = K1 + K2
         self._filter_lag = -1
-        self.analog_system = analog_system
+        self.analog_filter = analog_filter
 
-        # if not np.allclose(self.analog_system.D, np.zeros_like(self.analog_system.D)):
+        # if not np.allclose(self.analog_filter.D, np.zeros_like(self.analog_filter.D)):
         #     raise Exception(
         #         """Can't compute filter coefficients for system with non-zero
         #         D matrix. Consider chaining for removing D"""
@@ -172,14 +173,14 @@ class BatchEstimator(Iterator[np.ndarray]):
         self._estimate_pointer = self.K1
 
         # For transfer functions
-        self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
+        self.eta2Matrix = np.eye(self.analog_filter.CT.shape[0]) * self.eta2
 
         self._stop_iteration = False
 
         self.mid_point = mid_point
         # Initialize filters
         self.solver_type = solver_type
-        self._compute_filter_coefficients(analog_system, digital_control, eta2)
+        self._compute_filter_coefficients(analog_filter, digital_control, eta2)
         self._allocate_memory_buffers()
         self._ntf_lambda = None
         self._stf_lambda = None
@@ -243,7 +244,7 @@ class BatchEstimator(Iterator[np.ndarray]):
 
     def _compute_filter_coefficients(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
     ):
@@ -252,38 +253,38 @@ class BatchEstimator(Iterator[np.ndarray]):
         )
 
         Af, Ab, Bf, Bb, WT = compute_filter_coefficients(
-            analog_system,
+            analog_filter,
             digital_control,
             eta2,
             solver_type=self.solver_type,
             mid_point=self.mid_point,
         )
         self.Af = np.array(Af, dtype=np.float64).reshape(
-            (analog_system.N, analog_system.N)
+            (analog_filter.N, analog_filter.N)
         )
         self.Bf = np.array(Bf, dtype=np.float64).reshape(
-            (analog_system.N, analog_system.M)
+            (analog_filter.N, analog_filter.M)
         )
         self.Ab = np.array(Ab, dtype=np.float64).reshape(
-            (analog_system.N, analog_system.N)
+            (analog_filter.N, analog_filter.N)
         )
         self.Bb = np.array(Bb, dtype=np.float64).reshape(
-            (analog_system.N, analog_system.M)
+            (analog_filter.N, analog_filter.M)
         )
         self.WT = np.array(WT, dtype=np.float64).reshape(
-            (analog_system.L, analog_system.N)
+            (analog_filter.L, analog_filter.N)
         )
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M))
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._control_signal = np.zeros((self.K3, self.analog_filter.M))
+        self._estimate = np.zeros((self.K1, self.analog_filter.L), dtype=np.double)
         self._control_signal_in_buffer = 0
-        self._mean = np.zeros((self.K1 + 1, self.analog_system.N), dtype=np.double)
+        self._mean = np.zeros((self.K1 + 1, self.analog_filter.N), dtype=np.double)
 
     def _compute_batch(self):
         logger.info("Computing batch.")
-        temp_forward_mean = np.zeros(self.analog_system.N, dtype=np.double)
+        temp_forward_mean = np.zeros(self.analog_filter.N, dtype=np.double)
         # check if ready to compute buffer
         if self._control_signal_in_buffer < self.K3:
             raise Exception("Control signal buffer not full")
@@ -292,7 +293,7 @@ class BatchEstimator(Iterator[np.ndarray]):
             temp = np.dot(self.Ab, self._mean[self.K1, :]) + np.dot(
                 self.Bb, self._control_signal[k1, :]
             )
-            for n in range(self.analog_system.N):
+            for n in range(self.analog_filter.N):
                 self._mean[self.K1, n] = temp[n]
         # compute forward recursion
         for k2 in range(self.K1):
@@ -300,10 +301,10 @@ class BatchEstimator(Iterator[np.ndarray]):
                 self.Bf, self._control_signal[k2, :]
             )
             if k2 < self.K1 - 1:
-                for n in range(self.analog_system.N):
+                for n in range(self.analog_filter.N):
                     self._mean[k2 + 1, n] = temp[n]
             else:
-                for n in range(self.analog_system.N):
+                for n in range(self.analog_filter.N):
                     temp_forward_mean[n] = temp[n]
         # compute backward recursion and estimate
         for k3 in range(self.K1 - 1, -1, -1):
@@ -314,7 +315,7 @@ class BatchEstimator(Iterator[np.ndarray]):
             self._estimate[k3, :] = temp_estimate[:]
             self._mean[k3, :] = temp[:]
         # reset intital means
-        for n in range(self.analog_system.N):
+        for n in range(self.analog_filter.N):
             self._mean[0, n] = temp_forward_mean[n]
             self._mean[self.K1, n] = 0
         # rotate buffer to make place for new control signals
@@ -327,7 +328,7 @@ class BatchEstimator(Iterator[np.ndarray]):
                 """Input buffer full. You must compute batch before adding
                 more control signals"""
             )
-        for m in range(self.analog_system.M):
+        for m in range(self.analog_filter.M):
             self._control_signal[self._control_signal_in_buffer, :] = np.asarray(
                 2 * s - 1
             )
@@ -371,7 +372,7 @@ class BatchEstimator(Iterator[np.ndarray]):
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M))
+                control_signal_sample = np.zeros((self.analog_filter.M))
             full = self._input(control_signal_sample)
 
         # Compute new batch of K1 estimates
@@ -389,25 +390,25 @@ class BatchEstimator(Iterator[np.ndarray]):
         Returns:
             np.ndarray: Demodulated signal.
         """
-        if self.analog_system.L % 2 != 0:
+        if self.analog_filter.L % 2 != 0:
             raise Exception("L must be an even number.")
 
         modulation_matrix = np.kron(
             _rotation_matrix(-self._modulation_frequency * self._time_index),
-            np.eye(self.analog_system.L // 2),
+            np.eye(self.analog_filter.L // 2),
         )
         return np.dot(modulation_matrix, self.__next__())
 
     def _lazy_initialise_ntf(self):
         logger.info("Computing analytical noise-transfer function")
-        if self.analog_system._atf_lambda is None:
-            self.analog_system._lazy_initialize_ATF()
-        GH = self.analog_system._atf_s_matrix.transpose().conjugate()
-        GGH = self.analog_system._atf_s_matrix * GH
+        if self.analog_filter._atf_lambda is None:
+            self.analog_filter._lazy_initialize_ATF()
+        GH = self.analog_filter._atf_s_matrix.transpose().conjugate()
+        GGH = self.analog_filter._atf_s_matrix * GH
         self._ntf_s_matrix = sp.simplify(
-            GH * (GGH + self.eta2 * sp.eye(self.analog_system.N_tilde)).inv()
+            GH * (GGH + self.eta2 * sp.eye(self.analog_filter.N_tilde)).inv()
         )
-        self._ntf_lambda = sp.lambdify((self.analog_system.omega), self._ntf_s_matrix)
+        self._ntf_lambda = sp.lambdify((self.analog_filter.omega), self._ntf_s_matrix)
 
     def noise_transfer_function(self, omega: np.ndarray):
         """Compute the noise transfer function (NTF) at the angular
@@ -434,14 +435,14 @@ class BatchEstimator(Iterator[np.ndarray]):
             return NTF evaluated at K different angular frequencies.
         """
         result = np.zeros(
-            (self.analog_system.L, self.analog_system.N_tilde, omega.size),
+            (self.analog_filter.L, self.analog_filter.N_tilde, omega.size),
             dtype=np.complex128,
         )
         # if self._ntf_lambda is None:
         #     self._lazy_initialise_ntf()
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function_matrix(np.array([o]))
-            G = G.reshape((self.analog_system.N_tilde, self.analog_system.L))
+            G = self.analog_filter.transfer_function_matrix(np.array([o]))
+            G = G.reshape((self.analog_filter.N_tilde, self.analog_filter.L))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
             result[:, :, index] = np.abs(
@@ -455,9 +456,9 @@ class BatchEstimator(Iterator[np.ndarray]):
         if self._ntf_lambda is None:
             self._lazy_initialise_ntf()
         self._stf_s_matrix = sp.simplify(
-            self._ntf_s_matrix * self.analog_system._atf_s_matrix
+            self._ntf_s_matrix * self.analog_filter._atf_s_matrix
         )
-        self._stf_lambda = sp.lambdify((self.analog_system.omega), self._stf_s_matrix)
+        self._stf_lambda = sp.lambdify((self.analog_filter.omega), self._stf_s_matrix)
 
     def signal_transfer_function(self, omega: np.ndarray):
         """Compute the signal transfer function (STF) at the angular
@@ -483,17 +484,17 @@ class BatchEstimator(Iterator[np.ndarray]):
         `array_like`, shape=(L, K)
             return STF evaluated at K different angular frequencies.
         """
-        result = np.zeros((self.analog_system.L, omega.size), dtype=np.complex128)
+        result = np.zeros((self.analog_filter.L, omega.size), dtype=np.complex128)
         # if self._stf_lambda is None:
         #     self._lazy_initialise_stf()
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function_matrix(np.array([o])).reshape(
-                (self.analog_system.N_tilde, self.analog_system.L)
+            G = self.analog_filter.transfer_function_matrix(np.array([o])).reshape(
+                (self.analog_filter.N_tilde, self.analog_filter.L)
             )
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
             STF_temp = np.dot(np.linalg.pinv(GGH + self.eta2Matrix), G)
-            for l_index in range(self.analog_system.L):
+            for l_index in range(self.analog_filter.L):
                 result[l_index, index] = np.abs(
                     np.dot(GH[l_index, :], STF_temp[:, l_index])
                 )
@@ -524,14 +525,14 @@ class BatchEstimator(Iterator[np.ndarray]):
         `array_like`, shape=(L, M, K)
             return STF evaluated at K different angular frequencies.
         """
-        result = np.zeros((self.analog_system.L, self.analog_system.M, omega.size))
+        result = np.zeros((self.analog_filter.L, self.analog_filter.M, omega.size))
         for index, o in enumerate(omega):
-            G = self.analog_system.transfer_function_matrix(np.array([o])).reshape(
-                (self.analog_system.N_tilde, self.analog_system.L)
+            G = self.analog_filter.transfer_function_matrix(np.array([o])).reshape(
+                (self.analog_filter.N_tilde, self.analog_filter.L)
             )
-            G_bar = self.analog_system.control_signal_transfer_function_matrix(
+            G_bar = self.analog_filter.control_signal_transfer_function_matrix(
                 np.array([o])
-            ).reshape((self.analog_system.N_tilde, self.analog_system.M))
+            ).reshape((self.analog_filter.N_tilde, self.analog_filter.M))
             GH = G.transpose().conjugate()
             GGH = np.dot(G, GH)
             result[:, :, index] = np.abs(
@@ -555,10 +556,10 @@ class BatchEstimator(Iterator[np.ndarray]):
             return transfer function from each state N to each input estimate L for each frequency K.
         """
         #  shape=(N_tilde, N, K)
-        stf_array = self.analog_system.transfer_function_matrix(omega, general=True)
+        stf_array = self.analog_filter.transfer_function_matrix(omega, general=True)
         # shape=(L, N_tilde, K)
         ntf_array = self.noise_transfer_function(omega)
-        return np.einsum('lnk,nxk->lxk', ntf_array, stf_array)
+        return np.einsum("lnk,nxk->lxk", ntf_array, stf_array)
 
     def max_transfer_function_peak(self, BW: np.ndarray):
         omega = np.geomspace(BW[0], BW[1], 1000)
@@ -598,15 +599,15 @@ class BatchEstimator(Iterator[np.ndarray]):
                 scipy.integrate.solve_ivp(
                     _derivative,
                     (BW[0], BW[-1]),
-                    np.zeros(self.analog_system.L * self.analog_system.N),
+                    np.zeros(self.analog_filter.L * self.analog_filter.N),
                 )
                 .y[:, -1]
-                .reshape((self.analog_system.L, self.analog_system.N), order="C")
+                .reshape((self.analog_filter.L, self.analog_filter.N), order="C")
             )
         # for n, sigma_z_2 in enumerate(noise_variances):
         #     integrated_tf[:, n] *= sigma_z_2
         # return integrated_tf
-        return np.max(res, axis=1) / res / self.analog_system.N
+        return np.max(res, axis=1) / res / self.analog_filter.N
 
     def white_noise_sensitivities(
         self,
@@ -638,13 +639,13 @@ class BatchEstimator(Iterator[np.ndarray]):
             admissable noise power to align with SNR requirement.
         """
         noise_variance = (
-            np.ones((self.analog_system.L, self.analog_system.N))
+            np.ones((self.analog_filter.L, self.analog_filter.N))
             * input_power
             / target_snr
         )
         balances = self.white_noise_balance(BW, max=max)
-        for l in range(self.analog_system.L):
-            for n in range(self.analog_system.N):
+        for l in range(self.analog_filter.L):
+            for n in range(self.analog_filter.N):
                 noise_variance[l, n] *= balances[l, n]
         if spectrum:
             return noise_variance / (BW[1] - BW[0])

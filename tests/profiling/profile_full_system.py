@@ -1,6 +1,6 @@
 # import module
 import cProfile
-from cbadc.analog_system import ChainOfIntegrators
+from cbadc.analog_filter import ChainOfIntegrators
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_signal import Sinusoidal, Clock
 from cbadc.simulator import get_simulator
@@ -43,7 +43,7 @@ end_time = T * (1 << 14)
 
 def main():
     # Analog system
-    analog_system = ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+    analog_filter = ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 
     # Clock
     clock = Clock(T)
@@ -56,17 +56,17 @@ def main():
 
     # Instantiate the simulator.
     simulator = get_simulator(
-        analog_system, digital_control, [analog_signal], t_stop=end_time
+        analog_filter, digital_control, [analog_signal], t_stop=end_time
     )
     K1 = 1 << 11
     K2 = K1
     eta2 = (
         np.linalg.norm(
-            analog_system.transfer_function_matrix(np.array([2 * np.pi * 100]))
+            analog_filter.transfer_function_matrix(np.array([2 * np.pi * 100]))
         )
         ** 2
     )
-    estimator = BatchEstimator(analog_system, digital_control, eta2, K1=K1, K2=K2)
+    estimator = BatchEstimator(analog_filter, digital_control, eta2, K1=K1, K2=K2)
     estimator(simulator)
     size = 1 << 12
     u_hat = np.zeros(size)

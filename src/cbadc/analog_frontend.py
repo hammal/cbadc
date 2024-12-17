@@ -11,14 +11,14 @@ class AnalogFrontend:
 
     Parameters
     ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter: :py:class:`cbadc.analog_filter.AnalogSystem`
         an analog system instance
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         a digital control instance
 
     Attributes
     ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter: :py:class:`cbadc.analog_filter.AnalogSystem`
         the analog frontend's analog system instance
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         the analog frontend's digital control instance
@@ -26,19 +26,19 @@ class AnalogFrontend:
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system._valid_analog_system_types,
+        analog_filter: cbadc.analog_filter._valid_analog_filter_types,
         digital_control: cbadc.digital_control._valid_digital_control_types,
     ):
-        self.analog_system = analog_system
+        self.analog_filter = analog_filter
         self.digital_control = digital_control
 
 
-def _analog_system_matrix_exponential(A: np.ndarray, t: float) -> np.ndarray:
+def _analog_filter_matrix_exponential(A: np.ndarray, t: float) -> np.ndarray:
     return np.asarray(scipy.linalg.expm(np.asarray(A) * t))
 
 
 def get_global_control(
-    analog_system: cbadc.analog_system.AnalogSystem,
+    analog_filter: cbadc.analog_filter.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     phi_delay: np.ndarray,
     atol=1e-12,
@@ -48,7 +48,7 @@ def get_global_control(
 
     Parameters
     ----------
-    analog_system: :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter: :py:class:`cbadc.analog_filter.AnalogSystem`
         an analog system instance
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         a digital control instance
@@ -66,22 +66,22 @@ def get_global_control(
     """
 
     def zero_order_hold(l: int, t: float) -> np.ndarray:
-        res = np.zeros(analog_system.L)
+        res = np.zeros(analog_filter.L)
         if t >= 0 and t < digital_control.clock.T:
             res[l] = 1.0
         return res
 
-    A_tilde = np.zeros((analog_system.M_tilde, analog_system.M))
-    B_tilde = np.zeros((analog_system.M_tilde, analog_system.L))
-    Gamma_tildeT = np.zeros((analog_system.M_tilde, analog_system.N))
-    # analog_system.CT = np.zeros((analog_system.N, analog_system.N))
-    # analog_system.CT[-1, -1] = 1.0
+    A_tilde = np.zeros((analog_filter.M_tilde, analog_filter.M))
+    B_tilde = np.zeros((analog_filter.M_tilde, analog_filter.L))
+    Gamma_tildeT = np.zeros((analog_filter.M_tilde, analog_filter.N))
+    # analog_filter.CT = np.zeros((analog_filter.N, analog_filter.N))
+    # analog_filter.CT[-1, -1] = 1.0
 
-    for m_tilde in range(analog_system.M_tilde):
+    for m_tilde in range(analog_filter.M_tilde):
         m_tilde_index = (
-            m_tilde + analog_system.M - analog_system.M_tilde + analog_system.L
+            m_tilde + analog_filter.M - analog_filter.M_tilde + analog_filter.L
         )
-        index_offset = (analog_system.M + analog_system.L) * analog_system.N
+        index_offset = (analog_filter.M + analog_filter.L) * analog_filter.N
 
         def derivative_m(t: float, x: np.ndarray) -> np.ndarray:
             res = np.zeros_like(x)
@@ -89,23 +89,23 @@ def get_global_control(
             # extract the relevant control vector
 
             psi_s_m = np.dot(
-                analog_system.CT,
+                analog_filter.CT,
                 x[
                     m_tilde_index
-                    * analog_system.N : (1 + m_tilde_index)
-                    * analog_system.N
+                    * analog_filter.N : (1 + m_tilde_index)
+                    * analog_filter.N
                 ],
             )
 
             # compute the input signal psi_u
-            for l in range(analog_system.L):
-                res[l * analog_system.N : (l + 1) * analog_system.N] = np.dot(
-                    analog_system.A, x[l * analog_system.N : (l + 1) * analog_system.N]
-                ) + np.dot(analog_system.B, zero_order_hold(l, t - phi_delay[m_tilde]))
+            for l in range(analog_filter.L):
+                res[l * analog_filter.N : (l + 1) * analog_filter.N] = np.dot(
+                    analog_filter.A, x[l * analog_filter.N : (l + 1) * analog_filter.N]
+                ) + np.dot(analog_filter.B, zero_order_hold(l, t - phi_delay[m_tilde]))
 
             # compute all control signal psi_s, with relevant impulse responses
-            for m in range(analog_system.M):
-                if m > m_tilde + analog_system.M - analog_system.M_tilde:
+            for m in range(analog_filter.M):
+                if m > m_tilde + analog_filter.M - analog_filter.M_tilde:
                     corrected_impulse_response = digital_control.impulse_response(
                         m, t + digital_control.clock.T
                     )
@@ -113,51 +113,51 @@ def get_global_control(
                     corrected_impulse_response = digital_control.impulse_response(m, t)
 
                 res[
-                    (m + analog_system.L)
-                    * analog_system.N : (m + 1 + analog_system.L)
-                    * analog_system.N
+                    (m + analog_filter.L)
+                    * analog_filter.N : (m + 1 + analog_filter.L)
+                    * analog_filter.N
                 ] = np.dot(
-                    analog_system.A,
+                    analog_filter.A,
                     x[
-                        (m + analog_system.L)
-                        * analog_system.N : (m + 1 + analog_system.L)
-                        * analog_system.N
+                        (m + analog_filter.L)
+                        * analog_filter.N : (m + 1 + analog_filter.L)
+                        * analog_filter.N
                     ],
                 ) + np.dot(
-                    analog_system.Gamma, corrected_impulse_response
+                    analog_filter.Gamma, corrected_impulse_response
                 )
 
             # compute inner product between homogeneous state vector and control signal
-            res[index_offset : index_offset + analog_system.N] = np.dot(
+            res[index_offset : index_offset + analog_filter.N] = np.dot(
                 psi_s_m.transpose(),
                 np.dot(
-                    analog_system.CT,
-                    _analog_system_matrix_exponential(
-                        analog_system.A, t - phi_delay[m_tilde]
+                    analog_filter.CT,
+                    _analog_filter_matrix_exponential(
+                        analog_filter.A, t - phi_delay[m_tilde]
                     ),
                 ),
             )
 
             # compute inner product between input signal and control vector
-            for l in range(analog_system.L):
-                res[index_offset + analog_system.N + l] = np.inner(
+            for l in range(analog_filter.L):
+                res[index_offset + analog_filter.N + l] = np.inner(
                     psi_s_m,
                     np.dot(
-                        analog_system.CT,
-                        x[l * analog_system.N : (l + 1) * analog_system.N],
+                        analog_filter.CT,
+                        x[l * analog_filter.N : (l + 1) * analog_filter.N],
                     ),
                 )
 
             # compute inner product between control signal and control vector
-            for m in range(analog_system.M):
-                res[index_offset + analog_system.N + analog_system.L + m] = np.inner(
+            for m in range(analog_filter.M):
+                res[index_offset + analog_filter.N + analog_filter.L + m] = np.inner(
                     psi_s_m,
                     np.dot(
-                        analog_system.CT,
+                        analog_filter.CT,
                         x[
-                            (m + analog_system.L)
-                            * analog_system.N : (m + 1 + analog_system.L)
-                            * analog_system.N
+                            (m + analog_filter.L)
+                            * analog_filter.N : (m + 1 + analog_filter.L)
+                            * analog_filter.N
                         ],
                     ),
                 )
@@ -166,7 +166,7 @@ def get_global_control(
 
         events = []
 
-        for m in range(analog_system.M_tilde):
+        for m in range(analog_filter.M_tilde):
 
             def event_function(t, x):
                 return t - phi_delay[m]
@@ -180,7 +180,7 @@ def get_global_control(
             derivative_m,
             (phi_delay[m_tilde], phi_delay[m_tilde] + digital_control.clock.T),
             np.zeros(
-                index_offset + analog_system.N + analog_system.L + analog_system.M
+                index_offset + analog_filter.N + analog_filter.L + analog_filter.M
             ),
             atol=atol,
             rtol=rtol,
@@ -189,37 +189,37 @@ def get_global_control(
 
         y = sol.y[:, -1]
 
-        Q = y[index_offset + analog_system.N + m_tilde_index]
+        Q = y[index_offset + analog_filter.N + m_tilde_index]
 
-        for l in range(analog_system.L):
-            B_tilde[m_tilde, l] = -1 / Q * y[index_offset + analog_system.N + l]
+        for l in range(analog_filter.L):
+            B_tilde[m_tilde, l] = -1 / Q * y[index_offset + analog_filter.N + l]
 
-        for m in range(analog_system.M):
-            if m != m_tilde - analog_system.M_tilde + analog_system.M:
+        for m in range(analog_filter.M):
+            if m != m_tilde - analog_filter.M_tilde + analog_filter.M:
                 A_tilde[m_tilde, m] = (
-                    -1 / Q * y[index_offset + analog_system.N + analog_system.L + m]
+                    -1 / Q * y[index_offset + analog_filter.N + analog_filter.L + m]
                 )
 
         Gamma_tildeT[m_tilde, :] = (
-            -1 / Q * y[index_offset : index_offset + analog_system.N]
+            -1 / Q * y[index_offset : index_offset + analog_filter.N]
         )
 
-    analog_system = cbadc.analog_system.AnalogSystem(
-        analog_system.A,
-        analog_system.B,
-        analog_system.CT,
-        analog_system.Gamma,
+    analog_filter = cbadc.analog_filter.AnalogSystem(
+        analog_filter.A,
+        analog_filter.B,
+        analog_filter.CT,
+        analog_filter.Gamma,
         Gamma_tildeT,
         A_tilde=A_tilde,
         B_tilde=B_tilde,
     )
 
-    return AnalogFrontend(analog_system, digital_control)
+    return AnalogFrontend(analog_filter, digital_control)
 
 
 def inverse_state_trajectory(A: np.ndarray, T: float):
     def derivative(t: float, x: np.ndarray) -> np.ndarray:
-        return _analog_system_matrix_exponential(A, t).reshape(x.shape)
+        return _analog_filter_matrix_exponential(A, t).reshape(x.shape)
 
     sol = scipy.integrate.solve_ivp(
         derivative, (0, T), np.zeros(A.size), atol=1e-10, rtol=1e-10

@@ -1,7 +1,7 @@
 from typing import Tuple
 from . import Terminal, SubCircuitElement, Ground
 from ..analog_frontend import AnalogFrontend
-from ..analog_system import AnalogSystem
+from ..analog_filter import AnalogSystem
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control.dither_control import DitherControl as NominalDitherControl
 from .components.passives import Resistor, Capacitor
@@ -20,7 +20,7 @@ class MultiInputOTA(SubCircuitElement):
     ----------
     instance_name : str
         The instance name of the OTA.
-    analog_system : AnalogSystem
+    analog_filter : AnalogSystem
         The analog system to which this OTA belongs.
     index : int
         The index of the OTA. To determine between which states the integrating capacitor belongs.
@@ -34,7 +34,7 @@ class MultiInputOTA(SubCircuitElement):
     def __init__(
         self,
         instance_name: str,
-        analog_system: AnalogSystem,
+        analog_filter: AnalogSystem,
         index: int,
         C: float,
         DC_gain: float,
@@ -43,27 +43,27 @@ class MultiInputOTA(SubCircuitElement):
             instance_name,
             f"multi_input_ota_{index}",
             [Terminal("VSS"), Terminal("VDD"), Terminal("VCM")]
-            + [Terminal(f"X{i}_P") for i in range(analog_system.N)]
-            + [Terminal(f"X{i}_N") for i in range(analog_system.N)]
-            + [Terminal(f"IN{i}_P") for i in range(analog_system.L)]
-            + [Terminal(f"IN{i}_N") for i in range(analog_system.L)]
-            + [Terminal(f"S{i}_P") for i in range(analog_system.M)]
-            + [Terminal(f"S{i}_N") for i in range(analog_system.M)],
+            + [Terminal(f"X{i}_P") for i in range(analog_filter.N)]
+            + [Terminal(f"X{i}_N") for i in range(analog_filter.N)]
+            + [Terminal(f"IN{i}_P") for i in range(analog_filter.L)]
+            + [Terminal(f"IN{i}_N") for i in range(analog_filter.L)]
+            + [Terminal(f"S{i}_P") for i in range(analog_filter.M)]
+            + [Terminal(f"S{i}_N") for i in range(analog_filter.M)],
         )
 
-        for n in range(analog_system.N):
-            if analog_system.A[index, n] != 0.0:
+        for n in range(analog_filter.N):
+            if analog_filter.A[index, n] != 0.0:
                 self._generate_ota_coupling(
-                    analog_system.A[index, n] * C,
+                    analog_filter.A[index, n] * C,
                     f"G_a_{index}_{n}",
                     (self[f"X{n}_P"], self[f"X{n}_N"]),
                     (self[f"X{index}_P"], self[f"X{index}_N"]),
                 )
 
-        for l in range(analog_system.L):
-            if analog_system.B[index, l] != 0.0:
+        for l in range(analog_filter.L):
+            if analog_filter.B[index, l] != 0.0:
                 self._generate_ota_coupling(
-                    analog_system.B[index, l] * C,
+                    analog_filter.B[index, l] * C,
                     f"G_b_{index}_{l}",
                     (
                         self[f"IN{l}_P"],
@@ -72,13 +72,13 @@ class MultiInputOTA(SubCircuitElement):
                     (self[f"X{index}_P"], self[f"X{index}_N"]),
                 )
 
-        if analog_system.Gamma is None:
+        if analog_filter.Gamma is None:
             raise ValueError("Gamma matrix must be defined")
 
-        for m in range(analog_system.M):
-            if analog_system.Gamma[index, m] != 0.0:
+        for m in range(analog_filter.M):
+            if analog_filter.Gamma[index, m] != 0.0:
                 self._generate_ota_coupling(
-                    analog_system.Gamma[index, m] * C,
+                    analog_filter.Gamma[index, m] * C,
                     f"G_gamma_{index}_{m}",
                     (
                         self[f"S{m}_P"],
@@ -89,7 +89,7 @@ class MultiInputOTA(SubCircuitElement):
 
         # Finite DC gain
         if DC_gain is not np.inf:
-            R_DC = DC_gain / (float(np.max(np.abs(analog_system.B))) * C)
+            R_DC = DC_gain / (float(np.max(np.abs(analog_filter.B))) * C)
             _RP = Resistor("Rp", 2 * R_DC)
             _RN = Resistor("Rn", 2 * R_DC)
 
@@ -169,13 +169,13 @@ class GmCFrontend(CircuitAnalogFrontend):
             instance_name="Xaf",
         )
 
-        self._generate_integrators(analog_frontend.analog_system, C_int, DC_gain)
+        self._generate_integrators(analog_frontend.analog_filter, C_int, DC_gain)
 
     def _generate_integrators(
-        self, analog_system: AnalogSystem, C_int: float, DC_gain: float
+        self, analog_filter: AnalogSystem, C_int: float, DC_gain: float
     ):
-        for n in range(analog_system.N):
-            gmc = MultiInputOTA(f"gm{n}", analog_system, n, C_int, DC_gain)
+        for n in range(analog_filter.N):
+            gmc = MultiInputOTA(f"gm{n}", analog_filter, n, C_int, DC_gain)
             self.add(gmc)
             self.connects(
                 (self["VSS"], gmc["VSS"]),
@@ -183,19 +183,19 @@ class GmCFrontend(CircuitAnalogFrontend):
                 (self["VCM"], gmc["VCM"]),
             )
             # States
-            for nn in range(analog_system.N):
+            for nn in range(analog_filter.N):
                 self.connects(
                     (self.xp[nn], gmc[f"X{nn}_P"]),
                     (self.xn[nn], gmc[f"X{nn}_N"]),
                 )
             # Inputs
-            for l in range(analog_system.L):
+            for l in range(analog_filter.L):
                 self.connects(
                     (self[f"IN{l}_P"], gmc[f"IN{l}_P"]),
                     (self[f"IN{l}_N"], gmc[f"IN{l}_N"]),
                 )
             # Outputs
-            for m in range(analog_system.M):
+            for m in range(analog_filter.M):
                 self.connects(
                     (self[f"OUT{m}_P"], gmc[f"S{m}_P"]),
                     (self[f"OUT{m}_N"], gmc[f"S{m}_N"]),

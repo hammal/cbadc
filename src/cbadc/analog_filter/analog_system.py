@@ -1,6 +1,6 @@
 """Analog systems
 
-This module provides a general :py:class:`cbadc.analog_system.AnalogSystem`
+This module provides a general :py:class:`cbadc.analog_filter.AnalogSystem`
 class with the necessary functionality to do transient simulations, compute
 transfer functions, and exposing the relevant system parameters as
 attributes. Additionally, several derived convenience classes are defined
@@ -100,7 +100,7 @@ class AnalogSystem:
     Example
     -------
     >>> import numpy as np
-    >>> from cbadc.analog_system import AnalogSystem
+    >>> from cbadc.analog_filter import AnalogSystem
     >>> A = np.array([[1, 2], [3, 4]])
     >>> B = np.array([[1], [2]])
     >>> CT = np.array([[1, 2], [0, 1]]).transpose()
@@ -604,7 +604,7 @@ class InvalidAnalogSystemError(Exception):
 
     Parameters
     ----------
-    system : :py:class:`cbadc.analog_system.AnalogSystem`
+    system : :py:class:`cbadc.analog_filter.AnalogSystem`
         An analog system object
     message: str
         error message

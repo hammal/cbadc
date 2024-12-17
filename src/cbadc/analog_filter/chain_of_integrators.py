@@ -1,4 +1,5 @@
 """The chain-of-integrators analog-system."""
+
 import numpy as np
 from .analog_system import AnalogSystem, InvalidAnalogSystemError
 from ..fom import enob_to_snr, snr_from_dB
@@ -7,7 +8,7 @@ from ..fom import enob_to_snr, snr_from_dB
 class ChainOfIntegrators(AnalogSystem):
     """Represents an chain-of-integrators analog system.
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and
+    This class inherits from :py:class:`cbadc.analog_filter.AnalogSystem` and
     creates a convenient way of creating chain-of-integrator A/D analog
     systems. For more information about chain-of-integrator ADCs see
     `chain-of-Integrator ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y&page=96/>`_.
@@ -69,12 +70,12 @@ class ChainOfIntegrators(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.analog_system.AnalogSystem`
+    :py:class:`cbadc.analog_filter.AnalogSystem`
 
     Example
     -------
     >>> import numpy as np
-    >>> from cbadc.analog_system import ChainOfIntegrators
+    >>> from cbadc.analog_filter import ChainOfIntegrators
     >>> beta = np.array([100, 100, 100])
     >>> rho = np.array([-1, -1, -1])
     >>> kappa = np.array([[100, 100, 100]]).transpose()

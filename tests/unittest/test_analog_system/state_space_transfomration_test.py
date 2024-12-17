@@ -2,7 +2,7 @@ from numpy.core.numeric import allclose
 import cbadc as cb
 import numpy as np
 import scipy.signal
-from cbadc import analog_system
+from cbadc import analog_filter
 
 
 def test_sos2abcd():
@@ -14,9 +14,9 @@ def test_sos2abcd():
     # b, a = scipy.signal.zpk2tf(z, p, k)
     # sos = np.array([[b[-1], b[-2], b[-3], a[-1], a[-2], a[-3]]])
 
-    # A, B, C, D = analog_system.sos2abcd(sos)
+    # A, B, C, D = analog_filter.sos2abcd(sos)
 
-    # ana_sys = analog_system.AnalogSystem(A, B, C, None, None, D)
+    # ana_sys = analog_filter.AnalogSystem(A, B, C, None, None, D)
     # z_new, p_new, k_new = ana_sys.zpk()
 
     # print(z, z_new)
@@ -41,30 +41,30 @@ def test_zpk2abcd_single_pole():
     print(f"poles = {poles}")
     print(f"k = {k}")
 
-    A, B, C, D = analog_system.topology.zpk2abcd(no_zero, pole, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(no_zero, pole, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, pole)
     assert np.allclose(k_new, k)
 
-    A, B, C, D = analog_system.topology.zpk2abcd(zero, pole, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(zero, pole, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, pole)
     assert np.allclose(z_new, zero)
     assert np.allclose(k_new, k)
 
-    # A, B, C, D = analog_system.zpk2abcd(no_zero, poles, k)
+    # A, B, C, D = analog_filter.zpk2abcd(no_zero, poles, k)
     # print(A, B, C, D)
-    # z_new, p_new, k_new = analog_system.AnalogSystem(
+    # z_new, p_new, k_new = analog_filter.AnalogSystem(
     #     A, B, C, None, None, D).zpk()
     # print(z_new, p_new, k_new)
     # assert(np.allclose(p_new, poles))
     # assert(np.allclose(k_new, k))
 
-    # A, B, C, D = analog_system.zpk2abcd(zero, poles, k)
+    # A, B, C, D = analog_filter.zpk2abcd(zero, poles, k)
     # print(A, B, C, D)
-    # z_new, p_new, k_new = analog_system.AnalogSystem(
+    # z_new, p_new, k_new = analog_filter.AnalogSystem(
     #     A, B, C, None, None, D).zpk()
     # print(z_new, p_new, k_new)
     # assert(np.allclose(p_new, poles))
@@ -89,41 +89,41 @@ def test_zpk2abcd_double_pole():
     print(f"double_real_pole = {double_real_pole}")
     print(f"k = {k}")
 
-    A, B, C, D = analog_system.topology.zpk2abcd(no_zero, pole_conjugate, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(no_zero, pole_conjugate, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, pole_conjugate)
     assert np.allclose(k_new, k)
 
-    A, B, C, D = analog_system.topology.zpk2abcd(single_zero, pole_conjugate, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(single_zero, pole_conjugate, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, pole_conjugate)
     assert np.allclose(z_new, single_zero)
     assert np.allclose(k_new, k)
 
-    A, B, C, D = analog_system.topology.zpk2abcd(zero_conjugate, pole_conjugate, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(zero_conjugate, pole_conjugate, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, pole_conjugate)
     assert np.allclose(z_new, zero_conjugate)
     assert np.allclose(k_new, k)
 
-    A, B, C, D = analog_system.topology.zpk2abcd(no_zero, double_real_pole, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(no_zero, double_real_pole, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, double_real_pole)
     assert np.allclose(k_new, k)
 
-    A, B, C, D = analog_system.topology.zpk2abcd(single_zero, double_real_pole, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(single_zero, double_real_pole, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, double_real_pole)
     assert np.allclose(z_new, single_zero)
     assert np.allclose(k_new, k)
 
-    A, B, C, D = analog_system.topology.zpk2abcd(zero_conjugate, double_real_pole, k)
-    z_new, p_new, k_new = analog_system.AnalogSystem(A, B, C, None, None, D).zpk()
+    A, B, C, D = analog_filter.topology.zpk2abcd(zero_conjugate, double_real_pole, k)
+    z_new, p_new, k_new = analog_filter.AnalogSystem(A, B, C, None, None, D).zpk()
     print(z_new, p_new, k_new)
     assert np.allclose(p_new, double_real_pole)
     assert np.allclose(z_new, zero_conjugate)
@@ -138,11 +138,11 @@ def test_tf2abcd():
     print(a, b)
 
     try:
-        cb.analog_system.topology.tf2abcd(temp, temp)
+        cb.analog_filter.topology.tf2abcd(temp, temp)
     except Exception:
         pass
 
-    A, B, CT, D = cb.analog_system.topology.tf2abcd(b, a)
+    A, B, CT, D = cb.analog_filter.topology.tf2abcd(b, a)
 
     assert np.allclose(
         A,
@@ -174,7 +174,7 @@ def test_chain():
     Gamma1 = 31.3 * np.eye(2)
     Gamma_tilde1 = np.eye(2)
     D1 = np.array([[1.2]])
-    system1 = cb.analog_system.AnalogSystem(A1, B1, C1, Gamma1, Gamma_tilde1, D1)
+    system1 = cb.analog_filter.AnalogSystem(A1, B1, C1, Gamma1, Gamma_tilde1, D1)
 
     A2 = np.array([[0, 0], [1.23, 0]])
     B2 = np.array([[1.0], [0.0]])
@@ -182,7 +182,7 @@ def test_chain():
     Gamma2 = None
     Gamma_tilde2 = None
     D2 = np.array([[1.0], [2.0]])
-    system2 = cb.analog_system.AnalogSystem(A2, B2, C2, Gamma2, Gamma_tilde2, D2)
+    system2 = cb.analog_filter.AnalogSystem(A2, B2, C2, Gamma2, Gamma_tilde2, D2)
 
     BCT2 = np.dot(B2, C1)
 
@@ -192,13 +192,13 @@ def test_chain():
     Gamma3 = np.arange(4).reshape((2, 2)) * 6260.0
     Gamma_tilde3 = np.eye(2)
     D3 = np.array([[1, 2], [3, 4]])
-    system3 = cb.analog_system.AnalogSystem(A3, B3, C3, Gamma3, Gamma_tilde3, D3)
+    system3 = cb.analog_filter.AnalogSystem(A3, B3, C3, Gamma3, Gamma_tilde3, D3)
 
     BCT3 = np.dot(B3, C2)
     B3D2C1 = np.dot(B3, np.dot(D2, C1))
 
-    chained_system = cb.analog_system.topology.chain([system1, system2])
-    chained_system = cb.analog_system.topology.chain([system1, system2, system3])
+    chained_system = cb.analog_filter.topology.chain([system1, system2])
+    chained_system = cb.analog_filter.topology.chain([system1, system2, system3])
     print(chained_system)
 
     assert np.allclose(
@@ -302,7 +302,7 @@ def test_stack():
     D1 = np.array([[1.2]])
     Gamma1 = 31.3 * np.eye(2)
     Gamma_tilde1 = np.eye(2)
-    system1 = cb.analog_system.AnalogSystem(A1, B1, C1, Gamma1, Gamma_tilde1, D1)
+    system1 = cb.analog_filter.AnalogSystem(A1, B1, C1, Gamma1, Gamma_tilde1, D1)
 
     A2 = np.array([[0, 0], [1.23, 0]])
     B2 = np.array([[1.0], [0.0]])
@@ -310,7 +310,7 @@ def test_stack():
     Gamma2 = None
     Gamma_tilde2 = None
     D2 = np.array([[1.0], [2.0]])
-    system2 = cb.analog_system.AnalogSystem(A2, B2, C2, Gamma2, Gamma_tilde2, D2)
+    system2 = cb.analog_filter.AnalogSystem(A2, B2, C2, Gamma2, Gamma_tilde2, D2)
 
     A3 = np.array([[-5.2, 0], [520, 0]])
     B3 = np.array([[1.0, 0.0], [0.0, -3.0]])
@@ -318,9 +318,9 @@ def test_stack():
     D3 = np.array([[1, 2], [3, 4]])
     Gamma3 = np.arange(4).reshape((2, 2)) * 6260.0
     Gamma_tilde3 = np.eye(2)
-    system3 = cb.analog_system.AnalogSystem(A3, B3, C3, Gamma3, Gamma_tilde3, D3)
+    system3 = cb.analog_filter.AnalogSystem(A3, B3, C3, Gamma3, Gamma_tilde3, D3)
 
-    stacked_system = cb.analog_system.topology.stack([system1, system2, system3])
+    stacked_system = cb.analog_filter.topology.stack([system1, system2, system3])
     print(stacked_system)
 
     assert np.allclose(

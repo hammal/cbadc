@@ -1,4 +1,5 @@
 """The digital IIR estimator"""
+
 import cbadc
 import logging
 import numpy as np
@@ -34,7 +35,7 @@ class IIRFilter(BatchEstimator):
 
     Parameters
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         a digital control (necessary to determine the corresponding DAC waveform).
@@ -56,8 +57,8 @@ class IIRFilter(BatchEstimator):
 
     Attributes
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
-        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or from
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
+        analog system as in :py:class:`cbadc.analog_filter.AnalogSystem` or from
         derived class.
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         digital control as in :py:class:`cbadc.digital_control.DigitalControl` or from
@@ -100,7 +101,7 @@ class IIRFilter(BatchEstimator):
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
         K2: int,
@@ -118,7 +119,7 @@ class IIRFilter(BatchEstimator):
             raise Exception("K2 must be non negative integer.")
         self.K2 = K2
         self._filter_lag = self.K2 - 2
-        self.analog_system = analog_system
+        self.analog_filter = analog_filter
         self.digital_control = digital_control
         if eta2 < 0:
             raise Exception("eta2 must be non negative.")
@@ -136,25 +137,25 @@ class IIRFilter(BatchEstimator):
         self.mid_point = mid_point
 
         # For transfer functions
-        self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
+        self.eta2Matrix = np.eye(self.analog_filter.CT.shape[0]) * self.eta2
 
         # Compute filter coefficients
         self.solver_type = solver_type
         BatchEstimator._compute_filter_coefficients(
-            self, analog_system, digital_control, eta2
+            self, analog_filter, digital_control, eta2
         )
 
         # Initialize filter
         self.h = np.zeros(
-            (self.analog_system.L, self.K2, self.analog_system.M), dtype=np.double
+            (self.analog_filter.L, self.K2, self.analog_filter.M), dtype=np.double
         )
         # Compute lookback
         temp2 = np.copy(self.Bb)
         for k2 in range(self.K2):
             self.h[:, k2, :] = np.dot(self.WT, temp2)
             temp2 = np.dot(self.Ab, temp2)
-        self._control_signal_valued = np.zeros((self.K2, self.analog_system.M))
-        self._mean = np.zeros(self.analog_system.N, dtype=np.double)
+        self._control_signal_valued = np.zeros((self.K2, self.analog_filter.M))
+        self._mean = np.zeros(self.analog_filter.N, dtype=np.double)
 
         # For modulation
         self._time_index = 0

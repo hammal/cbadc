@@ -17,7 +17,7 @@
 # def get_eta2(AF, fc):
 #     eta2 = (
 #         np.linalg.norm(
-#             AF.analog_system.transfer_function_matrix(
+#             AF.analog_filter.transfer_function_matrix(
 #                 np.array([2 * np.pi * fc])
 #             )) ** 2 )
 #     return eta2
@@ -53,8 +53,8 @@
 #                 0
 #             ]
 #             )
-#     analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-#     return cbadc.analog_frontend.AnalogFrontend(analog_system, digital_control)
+#     analog_filter = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+#     return cbadc.analog_frontend.AnalogFrontend(analog_filter, digital_control)
 
 
 # def test_testbench_to_file():
@@ -154,7 +154,7 @@
 #         save_to_filename=observation_filename,
 #     )
 #     simulator = testbench.get_spectre_simulator(observation_filename)
-#     eta2 = testbench.analog_frontend.analog_system.analog_system.eta2(BW)
+#     eta2 = testbench.analog_frontend.analog_filter.analog_filter.eta2(BW)
 #     K1 = 1 << 8
 #     K2 = K1
 #     estimator = testbench.analog_frontend.get_estimator(

@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Start-up cmd: pytest tests/cadence_validation/verilog-ams_test.py
-if __name__ == '__main__':
+if __name__ == "__main__":
     REWRITE_NETLIST = 1
     DEBUG = 0
     RERUN_SIM = 1
@@ -17,22 +17,22 @@ if __name__ == '__main__':
     N = 4
     ENOB = 12
     BW = 1e6
-    analog_system = 'leap_frog'
-    eta2 = 'snr'
+    analog_filter = "leap_frog"
+    eta2 = "snr"
 
-    # if N >= 12 and analog_system == 'leap_frog' and BW >= 1e8:
+    # if N >= 12 and analog_filter == 'leap_frog' and BW >= 1e8:
     #     pytest.skip("Known limitation")
 
     work_dir = shlib.to_path(__file__).parent
     logger = init_logger()
     # Instantiate analog frontend
     # Instantiate analog frontend
-    if analog_system == 'chain-of-integrators':
+    if analog_filter == "chain-of-integrators":
         xi = 6e-2
         AF = cbadc.synthesis.get_chain_of_integrator(
             N=N, ENOB=ENOB, BW=BW, xi=xi, finite_gain=True
         )
-    elif analog_system == 'leap_frog':
+    elif analog_filter == "leap_frog":
         xi = 1e-1
         AF = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW, xi=xi)
     else:
@@ -41,12 +41,12 @@ if __name__ == '__main__':
 
     A_DC = 1e3
     GBWP = 2 * np.pi * BW * A_DC
-    # AF.analog_system.A *= -1
-    # AF.analog_system.B *= -1
-    # AF.analog_system.Gamma *= -1
+    # AF.analog_filter.A *= -1
+    # AF.analog_filter.B *= -1
+    # AF.analog_filter.Gamma *= -1
 
-    verilog_analog_system = cbadc.old_circuit.AnalogSystemFirstOrderPoleOpAmp(
-        analog_system=AF.analog_system, C=C, A_DC=A_DC, GBWP=GBWP
+    verilog_analog_filter = cbadc.old_circuit.AnalogSystemFirstOrderPoleOpAmp(
+        analog_filter=AF.analog_filter, C=C, A_DC=A_DC, GBWP=GBWP
     )
 
     verilog_digital_control = cbadc.old_circuit.DigitalControl(
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     )
 
     verilog_analog_frontend = cbadc.old_circuit.AnalogFrontend(
-        verilog_analog_system, verilog_digital_control
+        verilog_analog_filter, verilog_digital_control
     )
 
     CLK = AF.digital_control.clock
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     if REWRITE_NETLIST:
         TB.to_file(filename=tb_filename, path=work_dir)
 
-    print(verilog_analog_system)
+    print(verilog_analog_filter)
 
     # Simulate
     if RERUN_SIM:
@@ -87,26 +87,26 @@ if __name__ == '__main__':
         )
 
     if DEBUG:
-        logger.info('DEBUG active, terminating')
+        logger.info("DEBUG active, terminating")
         quit()
 
     # Parse the raw data file
-    raw_data_dir = shlib.to_path(work_dir, 'simulation_output')
-    parser = PSFParser(logger, raw_data_dir, 'tran')
+    raw_data_dir = shlib.to_path(work_dir, "simulation_output")
+    parser = PSFParser(logger, raw_data_dir, "tran")
     parser.parse()
 
     s_array = np.array(
-        [parser.get_signal(f's_{index}', 'tran').trace for index in range(N)]
+        [parser.get_signal(f"s_{index}", "tran").trace for index in range(N)]
     ).transpose()
-    u_0 = parser.get_signal('u_0', 'tran').trace
-    simulated_control_signals = cbadc.simulator.NumpySimulator('', array=s_array)
+    u_0 = parser.get_signal("u_0", "tran").trace
+    simulated_control_signals = cbadc.simulator.NumpySimulator("", array=s_array)
 
     K1 = 1 << 10
     K2 = K1
-    if eta2 == 'snr':
+    if eta2 == "snr":
         eta2 = (
             np.linalg.norm(
-                verilog_analog_system.analog_system.transfer_function_matrix(
+                verilog_analog_filter.analog_filter.transfer_function_matrix(
                     np.array([2 * np.pi * BW])
                 )
             )
@@ -140,17 +140,17 @@ if __name__ == '__main__':
         psd, signal_index, noise_index, fs=1 / CLK.T
     )
 
-    est_SNR = cbadc.fom.snr_to_dB(fom['snr'])
+    est_SNR = cbadc.fom.snr_to_dB(fom["snr"])
 
     plt.figure()
-    plt.title(f"Power spectral density:\nN={N},as={analog_system},ENOB={ENOB}")
+    plt.title(f"Power spectral density:\nN={N},as={analog_filter},ENOB={ENOB}")
     plt.semilogx(
         f,
         10 * np.log10(np.abs(psd)),
         label=f"Verilog-AMS, SNR={est_SNR}",
     )
 
-    plt.xlabel('Hz')
-    plt.ylabel('V^2 / Hz dB')
+    plt.xlabel("Hz")
+    plt.ylabel("V^2 / Hz dB")
     plt.legend()
-    plt.savefig('debug_psd.png')
+    plt.savefig("debug_psd.png")

@@ -55,21 +55,21 @@ DEBUG = False
     ],
 )
 @pytest.mark.parametrize(
-    "analog_system",
+    "analog_filter",
     [
-        pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
-        pytest.param('leap_frog', id="leap_frog_as"),
+        pytest.param("chain-of-integrators", id="chain_of_integrators_as"),
+        pytest.param("leap_frog", id="leap_frog_as"),
     ],
 )
 @pytest.mark.parametrize(
     "digital_control",
     [
         # pytest.param('default', id="default_dc"),
-        pytest.param('switch-cap', id="switch_cap_dc"),
+        pytest.param("switch-cap", id="switch_cap_dc"),
     ],
 )
 @pytest.mark.parametrize(
-    'simulation_method',
+    "simulation_method",
     [
         # pytest.param(AnalyticalSimulator, id="an_sim"),
         # pytest.param(FullSimulator, id="full_num_sim"),
@@ -78,7 +78,7 @@ DEBUG = False
     ],
 )
 @pytest.mark.parametrize(
-    'reconstruction_method',
+    "reconstruction_method",
     [
         pytest.param(BatchEstimator, id="batch_de"),
         # pytest.param(ParallelEstimator, id="par-batch-de"),
@@ -87,7 +87,7 @@ DEBUG = False
     ],
 )
 @pytest.mark.parametrize(
-    'filter_computation_method',
+    "filter_computation_method",
     [
         # pytest.param(FilterComputationBackend.numpy, id="numpy"),
         # pytest.param(FilterComputationBackend.sympy, id="sympy"),
@@ -95,21 +95,21 @@ DEBUG = False
     ],
 )
 @pytest.mark.parametrize(
-    'eta2',
+    "eta2",
     [
         # pytest.param(1.0, id="eta2=1"),
-        pytest.param('snr', id="eta2=ENOB")
+        pytest.param("snr", id="eta2=ENOB")
     ],
 )
 @pytest.mark.parametrize(
-    'excess_delay',
+    "excess_delay",
     [pytest.param(0.0, id="excess_delay=0"), pytest.param(1e-1, id="excess_delay=0.1")],
 )
 def test_full_system(
     N,
     ENOB,
     BW,
-    analog_system,
+    analog_filter,
     digital_control,
     simulation_method,
     reconstruction_method,
@@ -117,19 +117,19 @@ def test_full_system(
     eta2,
     excess_delay,
 ):
-    if N >= 12 and analog_system == 'leap_frog' and BW >= 1e8:
+    if N >= 12 and analog_filter == "leap_frog" and BW >= 1e8:
         pytest.skip("Known limitation")
 
-    # if N >= 12 and digital_control == 'switch-cap' and analog_system == 'leap_frog':
+    # if N >= 12 and digital_control == 'switch-cap' and analog_filter == 'leap_frog':
     #     pytest.skip("Filter coefficients not good enough.")
 
-    res = setup_filter(N, ENOB, BW, analog_system, digital_control, excess_delay)
+    res = setup_filter(N, ENOB, BW, analog_filter, digital_control, excess_delay)
     K1 = 1 << 10
     K2 = K1
-    if eta2 == 'snr':
+    if eta2 == "snr":
         eta2 = (
             np.linalg.norm(
-                res['analog_system'].transfer_function_matrix(
+                res["analog_filter"].transfer_function_matrix(
                     np.array([2 * np.pi * BW])
                 )
             )
@@ -137,23 +137,23 @@ def test_full_system(
         )
     # Simulator
     de = reconstruction_method(
-        res['analog_system'],
-        res['digital_control'],
+        res["analog_filter"],
+        res["digital_control"],
         eta2,
         K1=K1,
         K2=K2,
         solver_type=filter_computation_method,
     )
     amplitude = 1e0
-    frequency = 1.0 / res['digital_control'].clock.T
+    frequency = 1.0 / res["digital_control"].clock.T
     while frequency > BW:
         frequency /= 2
     phase = 0.0
     offset = 0.0
     input = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
     sim = simulation_method(
-        res['analog_system'],
-        res['digital_control'],
+        res["analog_filter"],
+        res["digital_control"],
         [input],
         initial_state_vector=np.random.randn(N) * 1e-1,
     )
@@ -165,7 +165,7 @@ def test_full_system(
         u_hat[index] = next(de)
     u_hat_cut = u_hat[K1 + K2 :]
     f, psd = cbadc.utilities.compute_power_spectral_density(
-        u_hat_cut[:], fs=1 / res['digital_control'].clock.T, nperseg=u_hat_cut.size
+        u_hat_cut[:], fs=1 / res["digital_control"].clock.T, nperseg=u_hat_cut.size
     )
     signal_index = cbadc.utilities.find_sinusoidal(psd, 15)
     noise_index = np.ones(psd.size, dtype=bool)
@@ -173,24 +173,24 @@ def test_full_system(
     noise_index[f < (BW * 1e-2)] = False
     noise_index[f > BW] = False
     fom = cbadc.utilities.snr_spectrum_computation_extended(
-        psd, signal_index, noise_index, fs=1 / res['digital_control'].clock.T
+        psd, signal_index, noise_index, fs=1 / res["digital_control"].clock.T
     )
-    est_SNR = snr_to_dB(fom['snr'])
+    est_SNR = snr_to_dB(fom["snr"])
     est_ENOB = snr_to_enob(est_SNR)
 
     if DEBUG:
         plt.title(
-            f"Power spectral density:\nN={N},as={analog_system},dc={digital_control},ed={excess_delay:0.1e},ENOB={ENOB}"
+            f"Power spectral density:\nN={N},as={analog_filter},dc={digital_control},ed={excess_delay:0.1e},ENOB={ENOB}"
         )
         plt.semilogx(
             f,
             10 * np.log10(np.abs(psd)),
             label=f"est_ENOB={est_ENOB:.1f} bits, est_SNR={est_SNR:.1f} dB, BW={BW:.0e}",
         )
-        plt.xlabel('Hz')
-        plt.ylabel('V^2 / Hz dB')
+        plt.xlabel("Hz")
+        plt.ylabel("V^2 / Hz dB")
         plt.legend()
         plt.show()
-        print(res['analog_system'].A)
+        print(res["analog_filter"].A)
         print(de)
     assert est_ENOB >= ENOB

@@ -2,8 +2,8 @@
 .DS_Store
 ._profile_simulator_stats.txt
 .pytest_cache
-cbadc
 docs/build
+build
 src/cbadc.egg-info
 tests/cadence_validation/.cadence/
 tests/cadence_validation/analog_frontend.vams

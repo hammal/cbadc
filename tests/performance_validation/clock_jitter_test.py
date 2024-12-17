@@ -30,11 +30,11 @@
 #     Gamma = -1 / (R_s * C_x) * np.eye(M)
 #     Gamma_tildeT = np.eye(M)
 
-#     analog_system_sc = cbadc.analog_system.AnalogSystem(
+#     analog_filter_sc = cbadc.analog_filter.AnalogSystem(
 #         A, B, CT, Gamma, Gamma_tildeT)
 
 #     print(digital_control_sc)
-#     print(analog_system_sc)
+#     print(analog_filter_sc)
 
 #     amplitude = 1e-2
 #     analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, 1 / T / 64)
@@ -42,7 +42,7 @@
 #     size = 1 << 10
 
 #     simulator_sc = cbadc.simulator.StateSpaceSimulator(
-#         analog_system_sc,
+#         analog_filter_sc,
 #         digital_control_sc,
 #         [analog_signal],
 #         Ts=T,
@@ -54,7 +54,7 @@
 #         T, M, impulse_response=impulse_response
 #     )
 #     simulator_ref = cbadc.simulator.StateSpaceSimulator(
-#         analog_system_sc,
+#         analog_filter_sc,
 #         digital_control_ref,
 #         [analog_signal],
 #         Ts=T,
@@ -71,10 +71,10 @@
 #     # ws = omega_3dB
 #     # gpass = 1.0
 #     # gstop = 60
-#     # filter = cbadc.analog_system.IIRDesign(wp, ws, gpass, gstop, ftype="ellip")
+#     # filter = cbadc.analog_filter.IIRDesign(wp, ws, gpass, gstop, ftype="ellip")
 #     digital_estimator_sc = cbadc.digital_estimator.FIRFilter(
-#         # cbadc.analog_system.chain([filter, analog_system_sc]),
-#         analog_system_sc,
+#         # cbadc.analog_filter.chain([filter, analog_filter_sc]),
+#         analog_filter_sc,
 #         digital_control_sc,
 #         eta2,
 #         K1,
@@ -82,8 +82,8 @@
 #     )
 #     digital_estimator_sc(simulator_sc)
 #     digital_estimator_ref = cbadc.digital_estimator.FIRFilter(
-#         # cbadc.analog_system.chain([filter, analog_system_sc]),
-#         analog_system_sc,
+#         # cbadc.analog_filter.chain([filter, analog_filter_sc]),
+#         analog_filter_sc,
 #         digital_control_ref,
 #         eta2,
 #         K1,

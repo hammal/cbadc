@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from cbadc.analog_system import AnalogSystem
+from cbadc.analog_filter import AnalogSystem
 import cbadc
 
 
@@ -84,8 +84,8 @@ def chain_of_integrators_op_amp_small():
 
 @pytest.fixture()
 def get_simulator(chain_of_integrators):
-    Ts = 1 / (2 * chain_of_integrators['beta'])
-    M = chain_of_integrators['M']
+    Ts = 1 / (2 * chain_of_integrators["beta"])
+    M = chain_of_integrators["M"]
     analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
     clock = cbadc.analog_signal.Clock(Ts)
     digitalControl = cbadc.digital_control.DigitalControl(clock, M)

@@ -1,7 +1,7 @@
 from typing import Tuple
 from . import Terminal, SubCircuitElement, Ground
 from ..analog_frontend import AnalogFrontend
-from ..analog_system import AnalogSystem
+from ..analog_filter import AnalogSystem
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control.dither_control import DitherControl as NominalDitherControl
 from .components.passives import Resistor, Capacitor
@@ -51,10 +51,10 @@ class OpAmpFrontend(CircuitAnalogFrontend):
         self.analog_frontend = analog_frontend
 
         self.vgndp = [
-            Terminal(f"VGND_{i}_P") for i in range(analog_frontend.analog_system.N)
+            Terminal(f"VGND_{i}_P") for i in range(analog_frontend.analog_filter.N)
         ]
         self.vgndn = [
-            Terminal(f"VGND_{i}_N") for i in range(analog_frontend.analog_system.N)
+            Terminal(f"VGND_{i}_N") for i in range(analog_frontend.analog_filter.N)
         ]
 
         super().__init__(
@@ -67,15 +67,15 @@ class OpAmpFrontend(CircuitAnalogFrontend):
         )
 
         self._generate_state_resistor_network(analog_frontend, C_int)
-        # self._generate_observation_network(analog_frontend.analog_system)
+        # self._generate_observation_network(analog_frontend.analog_filter)
 
         self._generate_integrators(
-            analog_frontend.analog_system, GBWP, DC_gain, C_amp, C_int
+            analog_frontend.analog_filter, GBWP, DC_gain, C_amp, C_int
         )
 
     def _generate_integrators(
         self,
-        analog_system: AnalogSystem,
+        analog_filter: AnalogSystem,
         GBWP: float,
         DC_gain: float,
         C_amp: float,
@@ -89,12 +89,12 @@ class OpAmpFrontend(CircuitAnalogFrontend):
                 DC_gain=DC_gain,
                 C=C_amp,
             )
-            for n in range(analog_system.N)
+            for n in range(analog_filter.N)
         ]
 
         self.add(*opamps)
 
-        for n in range(analog_system.N):
+        for n in range(analog_filter.N):
             self.connects(
                 (self.xp[n], opamps[n]["OUT_P"]),
                 (self.xn[n], opamps[n]["OUT_N"]),
@@ -110,19 +110,19 @@ class OpAmpFrontend(CircuitAnalogFrontend):
                 f"CP_{index}",
                 C_int,
             )
-            for index in range(analog_system.N)
+            for index in range(analog_filter.N)
         ]
         _caps_n = [
             Capacitor(
                 f"CN_{index}",
                 C_int,
             )
-            for index in range(analog_system.N)
+            for index in range(analog_filter.N)
         ]
 
         self.add(*_caps_p, *_caps_n)
 
-        for n in range(analog_system.N):
+        for n in range(analog_filter.N):
             self.connects(
                 (self.xp[n], _caps_p[n][1]),
                 (self.vgndp[n], _caps_p[n][0]),
@@ -157,15 +157,15 @@ class OpAmpFrontend(CircuitAnalogFrontend):
     def _generate_state_resistor_network(
         self, analog_frontend: AnalogFrontend, C_int: float
     ):
-        if analog_frontend.analog_system.Gamma is None:
+        if analog_frontend.analog_filter.Gamma is None:
             raise BaseException("Gamma must not be Nonw")
 
         # B Matrix
-        for n in range(analog_frontend.analog_system.N):
-            for l in range(analog_frontend.analog_system.L):
-                if analog_frontend.analog_system.B[n, l] != 0.0:
+        for n in range(analog_frontend.analog_filter.N):
+            for l in range(analog_frontend.analog_filter.L):
+                if analog_frontend.analog_filter.B[n, l] != 0.0:
                     self._generate_resistor_pair(
-                        analog_frontend.analog_system.B[n, l],
+                        analog_frontend.analog_filter.B[n, l],
                         f"b_{n}_{l}",
                         (
                             self[f"IN{l}_P"],
@@ -176,11 +176,11 @@ class OpAmpFrontend(CircuitAnalogFrontend):
                     )
 
         # A Matrix
-        for n in range(analog_frontend.analog_system.N):
-            for nn in range(analog_frontend.analog_system.N):
-                if analog_frontend.analog_system.A[n, nn] != 0.0:
+        for n in range(analog_frontend.analog_filter.N):
+            for nn in range(analog_frontend.analog_filter.N):
+                if analog_frontend.analog_filter.A[n, nn] != 0.0:
                     self._generate_resistor_pair(
-                        analog_frontend.analog_system.A[n, nn],
+                        analog_frontend.analog_filter.A[n, nn],
                         f"a_{n}_{nn}",
                         (self.xp[nn], self.xn[nn]),
                         (self.vgndp[n], self.vgndn[n]),
@@ -188,11 +188,11 @@ class OpAmpFrontend(CircuitAnalogFrontend):
                     )
 
         # Gamma Matrix
-        for n in range(analog_frontend.analog_system.N):
-            for m in range(analog_frontend.analog_system.M):
-                if analog_frontend.analog_system.Gamma[n, m] != 0.0:
+        for n in range(analog_frontend.analog_filter.N):
+            for m in range(analog_frontend.analog_filter.M):
+                if analog_frontend.analog_filter.Gamma[n, m] != 0.0:
                     self._generate_resistor_pair(
-                        analog_frontend.analog_system.Gamma[n, m],
+                        analog_frontend.analog_filter.Gamma[n, m],
                         f"gamma_{n}_{m}",
                         (
                             self[f"OUT{m}_P"],

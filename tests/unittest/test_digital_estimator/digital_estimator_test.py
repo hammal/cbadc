@@ -5,7 +5,7 @@ from cbadc.digital_estimator import (
     IIRFilter,
 )
 from cbadc.analog_signal import ConstantSignal, Clock
-from cbadc.analog_system import AnalogSystem
+from cbadc.analog_filter import AnalogSystem
 from cbadc.digital_control import DigitalControl
 from cbadc.simulator import Simulator
 import pytest
@@ -34,11 +34,11 @@ def controlSequence():
 def test_initialization():
     clock = Clock(Ts)
     digitalControl = DigitalControl(clock, M)
-    analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_filter = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     eta2 = 1.0
     K1 = 100
     K2 = 0
-    BatchEstimator(analog_system, digitalControl, eta2, K1, K2)
+    BatchEstimator(analog_filter, digitalControl, eta2, K1, K2)
 
 
 def test_estimation():

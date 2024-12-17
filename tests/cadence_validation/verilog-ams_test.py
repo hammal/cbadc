@@ -51,7 +51,7 @@
 #     ],
 # )
 # @pytest.mark.parametrize(
-#     "analog_system",
+#     "analog_filter",
 #     [
 #         pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
 #         pytest.param('leap_frog', id="leap_frog_as"),
@@ -76,40 +76,40 @@
 #     ],
 # )
 # def test_verilog_ams_in_cadence(
-#     N, ENOB, BW, analog_system, eta2, analog_circuit_implementation
+#     N, ENOB, BW, analog_filter, eta2, analog_circuit_implementation
 # ):
-#     # if N >= 12 and analog_system == 'leap_frog' and BW >= 1e8:
+#     # if N >= 12 and analog_filter == 'leap_frog' and BW >= 1e8:
 #     #     pytest.skip("Known limitation")
 
 #     work_dir = shlib.to_path(__file__).parent
 #     logger = init_logger()
 #     # Instantiate analog frontend
 #     # Instantiate analog frontend
-#     if analog_system == 'chain-of-integrators':
+#     if analog_filter == 'chain-of-integrators':
 #         xi = 6e-2
 #         AF = cbadc.synthesis.get_chain_of_integrator(
 #             N=N, ENOB=ENOB, BW=BW, xi=xi, finite_gain=True
 #         )
-#     elif analog_system == 'leap_frog':
+#     elif analog_filter == 'leap_frog':
 #         xi = 1e-1
 #         AF = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW, xi=xi)
 #     else:
 #         raise ValueError("Unknown analog system")
 #     C = 1e-12
 #     if analog_circuit_implementation == cbadc.old_circuit.AnalogSystemIdealOpAmp:
-#         verilog_analog_system = cbadc.old_circuit.AnalogSystemIdealOpAmp(
-#             analog_system=AF.analog_system, C=C
+#         verilog_analog_filter = cbadc.old_circuit.AnalogSystemIdealOpAmp(
+#             analog_filter=AF.analog_filter, C=C
 #         )
 #     elif analog_circuit_implementation == cbadc.old_circuit.AnalogSystemFirstOrderPoleOpAmp:
 #         A_DC = 1e3
 #         GBWP = 2 * np.pi * BW * A_DC
 
-#         verilog_analog_system = cbadc.old_circuit.AnalogSystemFirstOrderPoleOpAmp(
-#             analog_system=AF.analog_system, C=C, A_DC=A_DC, GBWP=GBWP
+#         verilog_analog_filter = cbadc.old_circuit.AnalogSystemFirstOrderPoleOpAmp(
+#             analog_filter=AF.analog_filter, C=C, A_DC=A_DC, GBWP=GBWP
 #         )
 #     elif analog_circuit_implementation == cbadc.old_circuit.AnalogSystemStateSpaceEquations:
-#         verilog_analog_system = cbadc.old_circuit.AnalogSystemStateSpaceEquations(
-#             analog_system=AF.analog_system
+#         verilog_analog_filter = cbadc.old_circuit.AnalogSystemStateSpaceEquations(
+#             analog_filter=AF.analog_filter
 #         )
 #     elif analog_circuit_implementation == cbadc.old_circuit.AnalogSystemHigherOrderOpAmp:
 #         amplifier_order = 2
@@ -118,7 +118,7 @@
 #         stop_band_ripple = 12
 #         # Set frequency characteristics of the op-amp
 #         amplifiers = [
-#             cbadc.analog_system.Cauer(
+#             cbadc.analog_filter.Cauer(
 #                 amplifier_order, cutoff_freq, pass_band_ripple, stop_band_ripple
 #             )
 #             for _ in range(N)
@@ -128,8 +128,8 @@
 #         for amp in amplifiers:
 #             amp.B = -amplification * amp.B
 
-#         verilog_analog_system = cbadc.old_circuit.AnalogSystemHigherOrderOpAmp(
-#             analog_system=AF.analog_system, C=C, amplifiers=amplifiers
+#         verilog_analog_filter = cbadc.old_circuit.AnalogSystemHigherOrderOpAmp(
+#             analog_filter=AF.analog_filter, C=C, amplifiers=amplifiers
 #         )
 #     else:
 #         raise ValueError("Unknown analog_circuit_implementation")
@@ -139,7 +139,7 @@
 #     )
 
 #     verilog_analog_frontend = cbadc.old_circuit.AnalogFrontend(
-#         verilog_analog_system, verilog_digital_control
+#         verilog_analog_filter, verilog_digital_control
 #     )
 
 #     CLK = AF.digital_control.clock
@@ -181,7 +181,7 @@
 #     if eta2 == 'snr':
 #         eta2 = (
 #             np.linalg.norm(
-#                 verilog_analog_system.analog_system.transfer_function_matrix(
+#                 verilog_analog_filter.analog_filter.transfer_function_matrix(
 #                     np.array([2 * np.pi * BW])
 #                 )
 #             )
@@ -218,7 +218,7 @@
 #         # )
 
 #         plt.figure()
-#         plt.title(f"Power spectral density:\nN={N},as={analog_system},ENOB={ENOB}")
+#         plt.title(f"Power spectral density:\nN={N},as={analog_filter},ENOB={ENOB}")
 #         plt.semilogx(
 #             f,
 #             10 * np.log10(np.abs(psd)),
@@ -245,7 +245,7 @@
 #         # print(s_array)
 #         # print("uhat:")
 #         # print(u_hat)
-#         # print(verilog_analog_system.analog_system.A)
+#         # print(verilog_analog_filter.analog_filter.A)
 #         # print(digital_estimator)
 
 #     signal_index = cbadc.utilities.find_sinusoidal(psd, 15)

@@ -60,10 +60,10 @@ def test_pre_and_non_pre_computations():
     Gamma = -beta * np.eye(M)
     Gamma_tildeT = np.eye(M)
 
-    analog_system_sc = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_filter_sc = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
 
     print(digital_control_sc)
-    print(analog_system_sc)
+    print(analog_filter_sc)
 
     amplitude = 0.1
     analog_signal = cbadc.analog_signal.Sinusoidal(amplitude, 1 / T / 32)
@@ -75,7 +75,7 @@ def test_pre_and_non_pre_computations():
 
     simulator_sc = cbadc.simulator.extended_simulation_result(
         cbadc.simulator.PreComputedControlSignalsSimulator(
-            analog_system_sc,
+            analog_filter_sc,
             digital_control_sc,
             [analog_signal],
             atol=atol,
@@ -87,7 +87,7 @@ def test_pre_and_non_pre_computations():
     digital_control_ref = cbadc.digital_control.DigitalControl(clock, M)
     simulator_ref = cbadc.simulator.extended_simulation_result(
         cbadc.simulator.FullSimulator(
-            analog_system_sc,
+            analog_filter_sc,
             digital_control_ref,
             [analog_signal],
             atol=atol,

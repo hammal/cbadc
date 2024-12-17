@@ -47,33 +47,33 @@
 # def non_homogenious_weights(
 #     analog_frontend: AnalogFrontend, input_function
 # ) -> np.ndarray:
-#     analog_system = analog_frontend.analog_system
+#     analog_filter = analog_frontend.analog_filter
 #     digital_control = analog_frontend.digital_control
 
 #     def input_derivative(t: float, x: np.ndarray):
-#         return np.dot(analog_system.A, x) + analog_system.B.flatten() * input_function(
+#         return np.dot(analog_filter.A, x) + analog_filter.B.flatten() * input_function(
 #             t
 #         )
 
 #     y = scipy.integrate.solve_ivp(
 #         input_derivative,
 #         (0, digital_control.clock.T),
-#         np.zeros(analog_system.N),
+#         np.zeros(analog_filter.N),
 #     ).y[:, -1]
 
-#     A = np.zeros((analog_system.N, analog_system.M))
+#     A = np.zeros((analog_filter.N, analog_filter.M))
 
-#     for m in range(analog_system.M):
-#         identity_vector = np.zeros(analog_system.N)
+#     for m in range(analog_filter.M):
+#         identity_vector = np.zeros(analog_filter.N)
 #         identity_vector[m] = 1.0
 
 #         def control_derivative(t: float, x: np.ndarray):
-#             return np.dot(analog_system.A, x) + identity_vector
+#             return np.dot(analog_filter.A, x) + identity_vector
 
 #         A[:, m] = scipy.integrate.solve_ivp(
 #             control_derivative,
 #             (0, digital_control.clock.T),
-#             np.zeros(analog_system.N),
+#             np.zeros(analog_filter.N),
 #         ).y[:, -1]
 
 #     return np.linalg.lstsq(A, y)[0]
@@ -125,11 +125,11 @@
 #         C=C,
 #         vdd_voltage=vdd,
 #     )
-#     analog_system = testbench.Xaf.extended_analog_frontend.analog_system
+#     analog_filter = testbench.Xaf.extended_analog_frontend.analog_filter
 
 #     # Compute the transfer function
 #     omega = 2 * np.pi * np.logspace(6, 10, 1000)
-#     tf = analog_system.transfer_function_matrix(omega)
+#     tf = analog_filter.transfer_function_matrix(omega)
 
 #     print(tf.shape)
 #     for n in range(tf.shape[0]):
@@ -159,7 +159,7 @@
 #         vdd_voltage=vdd,
 #     )
 
-#     print(testbench.Xaf.analog_frontend.analog_system)
+#     print(testbench.Xaf.analog_frontend.analog_filter)
 #     print(testbench.Xaf.analog_frontend.digital_control)
 
 #     ngspice_simulator = NGSpiceSimulator(
@@ -206,8 +206,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     # plt.ylim((-1, 1))
 #     plt.xlabel('t/T')

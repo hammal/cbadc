@@ -1,4 +1,5 @@
 """A selection of standard filters expressed as analog systems."""
+
 import scipy.signal
 import logging
 from .analog_system import AnalogSystem
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 class ButterWorth(AnalogSystem):
     """A Butterworth filter analog system
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
+    This class inherits from :py:class:`cbadc.analog_filter.AnalogSystem` and creates a convenient
     way of creating Butterworth filter analog system representation.
 
     Specifically, we specify the filter by the differential equations
@@ -69,9 +70,9 @@ class ButterWorth(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.analog_system.ChebyshevI`
-    :py:class:`cbadc.analog_system.ChebyshevII`
-    :py:class:`cbadc.analog_system.Cauer`
+    :py:class:`cbadc.analog_filter.ChebyshevI`
+    :py:class:`cbadc.analog_filter.ChebyshevII`
+    :py:class:`cbadc.analog_filter.Cauer`
 
 
 
@@ -98,7 +99,7 @@ class ButterWorth(AnalogSystem):
 class ChebyshevI(AnalogSystem):
     """A Chebyshev type I filter's analog system
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and is a convenient
+    This class inherits from :py:class:`cbadc.analog_filter.AnalogSystem` and is a convenient
     way of creating Chebyshev type I filter's analog system representation.
 
     Specifically, we specify the filter by the differential equations
@@ -159,9 +160,9 @@ class ChebyshevI(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.analog_system.ButterWorth`
-    :py:class:`cbadc.analog_system.ChebyshevII`
-    :py:class:`cbadc.analog_system.Cauer`
+    :py:class:`cbadc.analog_filter.ButterWorth`
+    :py:class:`cbadc.analog_filter.ChebyshevII`
+    :py:class:`cbadc.analog_filter.Cauer`
 
 
 
@@ -187,7 +188,7 @@ class ChebyshevI(AnalogSystem):
 class ChebyshevII(AnalogSystem):
     """A Chebyshev type II filter's analog system
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and is a convenient
+    This class inherits from :py:class:`cbadc.analog_filter.AnalogSystem` and is a convenient
     way of creating Chebyshev type II filter's analog system representation.
 
     Specifically, we specify the filter by the differential equations
@@ -250,9 +251,9 @@ class ChebyshevII(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.analog_system.ButterWorth`
-    :py:class:`cbadc.analog_system.ChebyshevI`
-    :py:class:`cbadc.analog_system.Cauer`
+    :py:class:`cbadc.analog_filter.ButterWorth`
+    :py:class:`cbadc.analog_filter.ChebyshevI`
+    :py:class:`cbadc.analog_filter.Cauer`
 
 
 
@@ -277,7 +278,7 @@ class ChebyshevII(AnalogSystem):
 class Cauer(AnalogSystem):
     """A Cauer (elliptic) filter's analog system
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and is a convenient
+    This class inherits from :py:class:`cbadc.analog_filter.AnalogSystem` and is a convenient
     way of creating Cauer filter's analog system representation.
 
     Specifically, we specify the filter by the differential equations
@@ -344,9 +345,9 @@ class Cauer(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.analog_system.ButterWorth`
-    :py:class:`cbadc.analog_system.ChebyshevI`
-    :py:class:`cbadc.analog_system.ChebyshevII`
+    :py:class:`cbadc.analog_filter.ButterWorth`
+    :py:class:`cbadc.analog_filter.ChebyshevI`
+    :py:class:`cbadc.analog_filter.ChebyshevII`
 
 
 
@@ -373,7 +374,7 @@ class Cauer(AnalogSystem):
 class IIRDesign(AnalogSystem):
     """An analog signal designed using standard IIRDesign tools
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and is a convenient
+    This class inherits from :py:class:`cbadc.analog_filter.AnalogSystem` and is a convenient
     way of creating IIR filters in an analog system representation.
 
     Specifically, we specify the filter by the differential equations
@@ -452,7 +453,7 @@ class IIRDesign(AnalogSystem):
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import matplotlib.ticker
-    >>> from cbadc.analog_system import IIRDesign
+    >>> from cbadc.analog_filter import IIRDesign
     >>> wp = 2 * np.pi * 1e3
     >>> ws = 2 * np.pi * 2e3
     >>> gpass = 0.1
@@ -479,10 +480,10 @@ class IIRDesign(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.analog_system.ButterWorth`
-    :py:class:`cbadc.analog_system.ChebyshevI`
-    :py:class:`cbadc.analog_system.ChebyshevII`
-    :py:class:`cbadc.analog_system.Cauer`
+    :py:class:`cbadc.analog_filter.ButterWorth`
+    :py:class:`cbadc.analog_filter.ChebyshevI`
+    :py:class:`cbadc.analog_filter.ChebyshevII`
+    :py:class:`cbadc.analog_filter.Cauer`
 
     Raises
     ------

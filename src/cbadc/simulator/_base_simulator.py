@@ -5,7 +5,7 @@ from typing import Iterator, List
 # import digital_control
 from .. import digital_control
 from .. import analog_signal
-from .. import analog_system
+from .. import analog_filter
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -17,7 +17,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
 
     Parameters
     ----------
-    analog_system : :py:class:`analog_system.AnalogSystem`
+    analog_filter : :py:class:`analog_filter.AnalogSystem`
         the analog system
     digital_control: :py:class:`digital_control.DigitalControl`
         the digital control
@@ -37,7 +37,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
 
     Attributes
     ----------
-    analog_system : :py:class:`analog_system.AnalogSystem`
+    analog_filter : :py:class:`analog_filter.AnalogSystem`
         the analog system being simulated.
     digital_control : :py:class:`digital_control.DigitalControl`
         the digital control being simulated.
@@ -58,19 +58,19 @@ class _BaseSimulator(Iterator[np.ndarray]):
 
     def __init__(
         self,
-        analog_system: analog_system._valid_analog_system_types,
+        analog_filter: analog_filter._valid_analog_filter_types,
         digital_control: digital_control._valid_digital_control_types,
         input_signal: List[analog_signal._AnalogSignal],
         initial_state_vector: np.ndarray = None,
         state_noise_covariance_matrix: np.ndarray = None,
         seed: int = 4212312513432239834528672,
     ):
-        if len(input_signal) > 0 and analog_system.L != len(input_signal):
+        if len(input_signal) > 0 and analog_filter.L != len(input_signal):
             raise Exception(
                 """The analog system does not have as many inputs as in input
             list"""
             )
-        self.analog_system = analog_system
+        self.analog_filter = analog_filter
         self.digital_control = digital_control
         self.input_signals = input_signal
         self.t: float = 0.0
@@ -80,13 +80,13 @@ class _BaseSimulator(Iterator[np.ndarray]):
             self._state_vector = np.array(initial_state_vector, dtype=np.float64)
             logger.debug(f"initial state vector: {self._state_vector}")
             if (
-                self._state_vector.size != self.analog_system.N
+                self._state_vector.size != self.analog_filter.N
                 or len(self._state_vector.shape) > 1
             ):
                 raise Exception("initial_state_vector not single dimension of length N")
         else:
-            self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
-        self._res = np.zeros(self.analog_system.N, dtype=np.double)
+            self._state_vector = np.zeros(self.analog_filter.N, dtype=np.double)
+        self._res = np.zeros(self.analog_filter.N, dtype=np.double)
 
         if state_noise_covariance_matrix is None:
             self.noisy = False
@@ -98,7 +98,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
         """reset initial time of simulator and digital control"""
         self.t = t
         self.digital_control.reset(t)
-        self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
+        self._state_vector = np.zeros(self.analog_filter.N, dtype=np.double)
 
     def state_vector(self) -> np.ndarray:
         """return current analog system state vector :math:`\mathbf{x}(t)`
@@ -123,7 +123,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
         `array_like`, shape=(N_tilde,)
             returns the analog system observation :math:`\mathbf{y}(t)
         """
-        return self.analog_system.signal_observation(self.state_vector())
+        return self.analog_filter.signal_observation(self.state_vector())
 
     def __iter__(self):
         """Use simulator as an iterator"""
@@ -145,7 +145,7 @@ The Simulator is parameterized by the:
 {80 * '-'}
 
 Analog System:
-{self.analog_system}
+{self.analog_filter}
 
 Digital Control:
 {self.digital_control}

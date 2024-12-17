@@ -53,7 +53,7 @@ DEBUG = False
     ],
 )
 @pytest.mark.parametrize(
-    "analog_system",
+    "analog_filter",
     [
         pytest.param("chain-of-integrators", id="chain_of_integrators_as"),
         pytest.param("leap_frog", id="leap_frog_as"),
@@ -107,7 +107,7 @@ def test_full_system(
     N,
     ENOB,
     BW,
-    analog_system,
+    analog_filter,
     digital_control,
     simulation_method,
     reconstruction_method,
@@ -115,19 +115,19 @@ def test_full_system(
     eta2,
     excess_delay,
 ):
-    if N >= 12 and analog_system == "leap_frog" and BW >= 1e8:
+    if N >= 12 and analog_filter == "leap_frog" and BW >= 1e8:
         pytest.skip("Known limitation")
 
-    # if N >= 12 and digital_control == 'switch-cap' and analog_system == 'leap_frog':
+    # if N >= 12 and digital_control == 'switch-cap' and analog_filter == 'leap_frog':
     #     pytest.skip("Filter coefficients not good enough.")
 
-    res = setup_filter(N, ENOB, BW, analog_system, digital_control, excess_delay)
+    res = setup_filter(N, ENOB, BW, analog_filter, digital_control, excess_delay)
     K1 = 1 << 10
     K2 = K1
     if eta2 == "snr":
         eta2 = (
             np.linalg.norm(
-                res["analog_system"].transfer_function_matrix(
+                res["analog_filter"].transfer_function_matrix(
                     np.array([2 * np.pi * BW])
                 )
             )
@@ -135,7 +135,7 @@ def test_full_system(
         )
     # Simulator
     de = reconstruction_method(
-        res["analog_system"],
+        res["analog_filter"],
         res["digital_control"],
         eta2,
         K1=K1,
@@ -150,7 +150,7 @@ def test_full_system(
     offset = 0.0
     input = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
     sim = simulation_method(
-        res["analog_system"],
+        res["analog_filter"],
         res["digital_control"],
         [input],
         initial_state_vector=np.random.randn(N) * 1e-1,
@@ -178,7 +178,7 @@ def test_full_system(
 
     if DEBUG:
         plt.title(
-            f"Power spectral density:\nN={N},as={analog_system},dc={digital_control},ed={excess_delay:0.1e},ENOB={ENOB}"
+            f"Power spectral density:\nN={N},as={analog_filter},dc={digital_control},ed={excess_delay:0.1e},ENOB={ENOB}"
         )
         plt.semilogx(
             f,
@@ -189,6 +189,6 @@ def test_full_system(
         plt.ylabel("V^2 / Hz dB")
         plt.legend()
         plt.show()
-        print(res["analog_system"].A)
+        print(res["analog_filter"].A)
         print(de)
     assert est_ENOB >= ENOB

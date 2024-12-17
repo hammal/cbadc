@@ -1,4 +1,4 @@
-from cbadc.analog_frontend import get_global_control, _analog_system_matrix_exponential
+from cbadc.analog_frontend import get_global_control, _analog_filter_matrix_exponential
 from cbadc.synthesis.leap_frog import get_leap_frog
 import numpy as np
 import scipy.integrate
@@ -13,7 +13,7 @@ analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW, xi=1e-2)
 
 def test_exponential_integral():
     def homogeneous_exponential_integral(t, x):
-        return np.dot(analog_frontend.analog_system.A, x)
+        return np.dot(analog_frontend.analog_filter.A, x)
 
     x_sol = np.zeros((N, N))
 
@@ -28,8 +28,8 @@ def test_exponential_integral():
         )
         x_sol[:, n] = sol.y[:, -1]
 
-    direct_solution = _analog_system_matrix_exponential(
-        analog_frontend.analog_system.A, analog_frontend.digital_control.clock.T
+    direct_solution = _analog_filter_matrix_exponential(
+        analog_frontend.analog_filter.A, analog_frontend.digital_control.clock.T
     )
     print(x_sol)
     assert np.allclose(x_sol, direct_solution)
@@ -41,8 +41,8 @@ def test_magnitude_of_control():
     for m in range(N):
 
         def derivative(t, x):
-            return np.dot(analog_frontend.analog_system.A, x) + np.dot(
-                analog_frontend.analog_system.Gamma,
+            return np.dot(analog_frontend.analog_filter.A, x) + np.dot(
+                analog_frontend.analog_filter.Gamma,
                 analog_frontend.digital_control.impulse_response(m, t),
             )
 
@@ -57,8 +57,8 @@ def test_magnitude_of_control():
 
 def test_minimum_energy_control():
     def controlability_gramian(t, x):
-        exp_a = _analog_system_matrix_exponential(analog_frontend.analog_system.A, t)
-        exp_a_b = np.dot(exp_a, analog_frontend.analog_system.B)
+        exp_a = _analog_filter_matrix_exponential(analog_frontend.analog_filter.A, t)
+        exp_a_b = np.dot(exp_a, analog_frontend.analog_filter.B)
         return np.dot(exp_a_b, exp_a_b.T).flatten()
 
     CA = (
@@ -71,11 +71,11 @@ def test_minimum_energy_control():
         .reshape((N, N))
     )
 
-    exp_A = _analog_system_matrix_exponential(
-        analog_frontend.analog_system.A, analog_frontend.digital_control.clock.T
+    exp_A = _analog_filter_matrix_exponential(
+        analog_frontend.analog_filter.A, analog_frontend.digital_control.clock.T
     )
     exp_A_Gamma_transpose = np.dot(
-        exp_A, analog_frontend.analog_system.Gamma
+        exp_A, analog_frontend.analog_filter.Gamma
     ).transpose()
 
     Gamma = -np.dot(np.dot(exp_A_Gamma_transpose, np.linalg.inv(CA)), exp_A)
@@ -88,8 +88,8 @@ def test_gramian():
     T = 1 / (2 * BW) / 16
 
     def controlability_gramian(t, x):
-        exp_a = _analog_system_matrix_exponential(analog_frontend.analog_system.A, t)
-        exp_a_b = np.dot(exp_a, analog_frontend.analog_system.B)
+        exp_a = _analog_filter_matrix_exponential(analog_frontend.analog_filter.A, t)
+        exp_a_b = np.dot(exp_a, analog_frontend.analog_filter.B)
         return np.dot(exp_a_b, exp_a_b.T).flatten()
 
     CA = (
@@ -107,12 +107,12 @@ def test_gramian():
         gamma_vec[n] = 1.0
 
         def derivative(t, x):
-            return np.dot(analog_frontend.analog_system.A, x) + gamma_vec
+            return np.dot(analog_frontend.analog_filter.A, x) + gamma_vec
 
         exp_A[:, n] = scipy.integrate.solve_ivp(derivative, (0, T), np.zeros(N)).y[
             :, -1
         ]
-    # exp_A = _analog_system_matrix_exponential(analog_frontend.analog_system.A, T)
+    # exp_A = _analog_filter_matrix_exponential(analog_frontend.analog_filter.A, T)
     L = np.linalg.cholesky(CA)
     # sol = np.dot(L, np.linalg.inv(exp_A))
     sol = np.linalg.lstsq(exp_A, L, rcond=None)[0]
@@ -133,8 +133,8 @@ def test_linspace_sin_cos():
 
         def derivative(t, x):
             return np.dot(
-                analog_frontend.analog_system.A, x
-            ) + analog_frontend.analog_system.B.flatten() * np.sin(w * t)
+                analog_frontend.analog_filter.A, x
+            ) + analog_frontend.analog_filter.B.flatten() * np.sin(w * t)
 
         Y[:, i] = scipy.integrate.solve_ivp(
             derivative,
@@ -144,7 +144,7 @@ def test_linspace_sin_cos():
 
     print(Y)
 
-    A = _analog_system_matrix_exponential(analog_frontend.analog_system.A, T)
+    A = _analog_filter_matrix_exponential(analog_frontend.analog_filter.A, T)
 
     sol = np.linalg.lstsq(
         np.vstack([A for _ in range(len(omega))]), Y.flatten(), rcond=None

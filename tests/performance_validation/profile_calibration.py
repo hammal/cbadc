@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 N = 4
 ENOB = 12
 BW = 1e6
-analog_system = 'leap_frog'
-digital_control = 'default'
+analog_filter = "leap_frog"
+digital_control = "default"
 calibration_method = {
     "name": "rls",
     "label": "rls_K_9_v2",
@@ -65,7 +65,7 @@ def test_calibration(
     N,
     ENOB,
     BW,
-    analog_system,
+    analog_filter,
     digital_control,
     calibration_method,
     evaluation_data_size,
@@ -74,43 +74,43 @@ def test_calibration(
     kappa_0_scale,
     simulation_method,
 ):
-    # if N >= 12 and analog_system == 'leap_frog' and BW >= 1e8:
+    # if N >= 12 and analog_filter == 'leap_frog' and BW >= 1e8:
     #     pytest.skip("Known limitation")
 
-    # if N >= 12 and digital_control == 'switch-cap' and analog_system == 'leap_frog':
+    # if N >= 12 and digital_control == 'switch-cap' and analog_filter == 'leap_frog':
     #     pytest.skip("Filter coefficients not good enough.")
 
-    K = [calibration_method['kwargs']['K'](x) for x in range(N + 1)]
+    K = [calibration_method["kwargs"]["K"](x) for x in range(N + 1)]
 
-    res = setup_filter(N, ENOB, BW, analog_system, digital_control, 0.0)
-    analog_system = res['analog_system']
+    res = setup_filter(N, ENOB, BW, analog_filter, digital_control, 0.0)
+    analog_filter = res["analog_filter"]
     ref_vector = np.zeros((N, 1))
-    ref_vector[0] = analog_system.Gamma[0, 0] * kappa_0_scale
-    analog_system = cbadc.analog_system.AnalogSystem(
-        res['analog_system'].A,
-        res['analog_system'].B,
-        res['analog_system'].CT,
+    ref_vector[0] = analog_filter.Gamma[0, 0] * kappa_0_scale
+    analog_filter = cbadc.analog_filter.AnalogSystem(
+        res["analog_filter"].A,
+        res["analog_filter"].B,
+        res["analog_filter"].CT,
         np.hstack(
             (
                 ref_vector,
-                res['analog_system'].Gamma,
+                res["analog_filter"].Gamma,
             )
         ),
-        res['analog_system'].Gamma_tildeT,
+        res["analog_filter"].Gamma_tildeT,
     )
-    digital_control = res['digital_control']
+    digital_control = res["digital_control"]
     K1 = max(K) // 2
     K2 = K1
     eta2 = (
         np.linalg.norm(
-            analog_system.transfer_function_matrix(np.array([2 * np.pi * BW]))
+            analog_filter.transfer_function_matrix(np.array([2 * np.pi * BW]))
         )
         ** 2
     )
 
     # Simulator
     wiener_filter_reference = cbadc.digital_estimator.FIRFilter(
-        analog_system,
+        analog_filter,
         cbadc.digital_control.DitherControl(
             1,
             cbadc.digital_control.DigitalControl(
@@ -182,7 +182,7 @@ def test_calibration(
         raise ValueError("Unknown method")
 
     amplitude = 0.5
-    frequency = 1.0 / res['digital_control'].clock.T
+    frequency = 1.0 / res["digital_control"].clock.T
     while frequency > BW / 5:
         frequency /= 2
     phase = 0.0
@@ -190,7 +190,7 @@ def test_calibration(
     testing_input = cbadc.analog_signal.Sinusoidal(amplitude, frequency, phase, offset)
     training_input = cbadc.analog_signal.ConstantSignal(offset)
     testing_reference = simulation_method(
-        analog_system,
+        analog_filter,
         cbadc.digital_control.DitherControl(
             1,
             cbadc.digital_control.DigitalControl(
@@ -201,7 +201,7 @@ def test_calibration(
         [testing_input],
     )
     testing_validation = simulation_method(
-        analog_system,
+        analog_filter,
         cbadc.digital_control.DitherControl(
             1,
             cbadc.digital_control.DigitalControl(
@@ -212,7 +212,7 @@ def test_calibration(
         [testing_input],
     )
     training = simulation_method(
-        analog_system,
+        analog_filter,
         cbadc.digital_control.DitherControl(
             1,
             cbadc.digital_control.DigitalControl(
@@ -232,9 +232,9 @@ def test_calibration(
     testing_errors = []
     u_hat = np.zeros(evaluation_data_size)
 
-    for epoch in range(calibration_method['kwargs']['epochs']):
+    for epoch in range(calibration_method["kwargs"]["epochs"]):
         training_errors.append(
-            adaptive_filter.train(calibration_method['kwargs']['batch_size'])
+            adaptive_filter.train(calibration_method["kwargs"]["batch_size"])
         )
         if epoch % evaluation_interval == 0:
             for i in range(evaluation_data_size):
@@ -244,7 +244,7 @@ def test_calibration(
                     u_hat[max(K) :],
                     fs,
                     BW,
-                    epoch * calibration_method['kwargs']['batch_size'],
+                    epoch * calibration_method["kwargs"]["batch_size"],
                 )
             )
             logger.info(
@@ -271,7 +271,7 @@ def test_calibration(
     fom = cbadc.utilities.snr_spectrum_computation_extended(
         psd_ref, signal_index, noise_index, fs=1 / digital_control.clock.T
     )
-    est_SNR_ref = snr_to_dB(fom['snr'])
+    est_SNR_ref = snr_to_dB(fom["snr"])
     est_ENOB_ref = snr_to_enob(est_SNR_ref)
 
     f, psd_val = cbadc.utilities.compute_power_spectral_density(
@@ -285,7 +285,7 @@ def test_calibration(
     fom = cbadc.utilities.snr_spectrum_computation_extended(
         psd_val, signal_index, noise_index, fs=1 / digital_control.clock.T
     )
-    est_SNR_val = snr_to_dB(fom['snr'])
+    est_SNR_val = snr_to_dB(fom["snr"])
     est_ENOB_val = snr_to_enob(est_SNR_val)
 
 
@@ -294,7 +294,7 @@ def test_profile():
         N,
         ENOB,
         BW,
-        analog_system,
+        analog_filter,
         digital_control,
         calibration_method,
         evaluation_data_size,
@@ -305,4 +305,4 @@ def test_profile():
     )
 
 
-cProfile.run('test_profile()')
+cProfile.run("test_profile()")

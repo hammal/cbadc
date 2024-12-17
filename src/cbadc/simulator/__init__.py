@@ -5,7 +5,7 @@ interaction between an analog system and digital control.
 These are mainly intended to produce control signals
 :math:`\mathbf{s}[k]` and evaluate state vector trajectories
 :math:`\mathbf{x}(t)` for various Analog system
-:py:class:`cbadc.analog_system.AnalogSystem` and
+:py:class:`cbadc.analog_filter.AnalogSystem` and
 :py:class:`cbadc.digital_control.DigitalControl` interactions.
 """
 

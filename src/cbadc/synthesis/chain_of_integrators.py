@@ -1,6 +1,7 @@
 """Synthesise functions for chain-of-integrators control-bounded ADCs."""
+
 from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_enob
-from cbadc.analog_system.chain_of_integrators import ChainOfIntegrators
+from cbadc.analog_filter.chain_of_integrators import ChainOfIntegrators
 from cbadc.digital_control.digital_control import DigitalControl
 from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepResponse
 from cbadc.analog_signal.clock import Clock
@@ -53,7 +54,7 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
 
     Returns
     -------
-    : (:py:class:`cbadc.analog_system.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
+    : (:py:class:`cbadc.analog_filter.ChainOfIntegrators`, :py:class:`cbadc.digital_control.DigitalControl`)
         returns an analog system and digital control tuple
     """
     finite_gain = kwargs.get("finite_gain", False)
@@ -74,7 +75,7 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         kappa = beta
         T = 1.0 / np.abs(2.0 * beta)
         all_ones = np.ones(N)
-        analog_system = ChainOfIntegrators(
+        analog_filter = ChainOfIntegrators(
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
         t0 = T * kwargs.get("excess_delay", 0.0)
@@ -94,14 +95,14 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
             )
             digital_control = DigitalControl(Clock(T), N)
 
-        analog_system = ChainOfIntegrators(
+        analog_filter = ChainOfIntegrators(
             beta * all_ones, rho * all_ones, kappa * np.eye(N)
         )
 
         if finite_gain:
-            analog_system.A += -omega_3dB / (gamma ** (2 * N)) * np.eye(N)
+            analog_filter.A += -omega_3dB / (gamma ** (2 * N)) * np.eye(N)
 
-        return AnalogFrontend(analog_system, digital_control)
+        return AnalogFrontend(analog_filter, digital_control)
     elif all(param in kwargs for param in ("SNR", "N", "BW")):
         return get_chain_of_integrator(ENOB=snr_to_enob(kwargs["SNR"]), **kwargs)
     elif all(param in kwargs for param in ("OSR", "N", "BW")):
@@ -112,13 +113,13 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
         beta = 1 / (2 * T)
         kappa = beta
         rho = kwargs.get("rho", 0.0)
-        analog_system = ChainOfIntegrators(
+        analog_filter = ChainOfIntegrators(
             beta * np.ones(N),
             rho * np.ones(N),
             kappa * np.eye(N),
         )
         digital_control = DigitalControl(Clock(T), N)
-        return AnalogFrontend(analog_system, digital_control)
+        return AnalogFrontend(analog_filter, digital_control)
     elif all(param in kwargs for param in ("OSR", "N", "T")):
         N = kwargs["N"]
         T = kwargs["T"]
@@ -137,9 +138,9 @@ def get_chain_of_integrator(**kwargs) -> AnalogFrontend:
     #     kappa = beta_adjusted
     #     T = 1.0 / (2.0 * beta_adjusted)
     #     all_ones = np.ones((N, 1))
-    #     analog_system = ChainOfIntegrators(
+    #     analog_filter = ChainOfIntegrators(
     #         beta_adjusted * all_ones, rho * all_ones, kappa * np.eye(N)
     #     )
     #     digital_control = DigitalControl(Clock(T), N)
-    #     return (analog_system, digital_control)
+    #     return (analog_filter, digital_control)
     raise NotImplementedError

@@ -1,6 +1,6 @@
 import numpy as np
 import sympy as sp
-from cbadc.analog_system import AnalogSystem
+from cbadc.analog_filter import AnalogSystem
 from cbadc.analog_signal import Sinusoidal
 
 
@@ -17,15 +17,15 @@ Gamma = Gamma_tildeT * (-beta)
 
 
 def test_homogenous_equations():
-    analog_system = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_filter = AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     analog_signal = Sinusoidal(1.0, 2 * np.pi)
-    sp.pprint(analog_system._A_s)
-    eqs, funcs = analog_system.symbolic_differential_equations(
+    sp.pprint(analog_filter._A_s)
+    eqs, funcs = analog_filter.symbolic_differential_equations(
         analog_signal.symbolic(), 0
     )
     sp.pprint(eqs)
     sp.pprint(funcs)
-    sp.pprint(analog_system.homogenius_solution())
+    sp.pprint(analog_filter.homogenius_solution())
     # assert False
 
 

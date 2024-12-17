@@ -1,7 +1,7 @@
 """Numerical solvers."""
 
 import logging
-import cbadc.analog_system
+import cbadc.analog_filter
 import cbadc.digital_control
 import cbadc.analog_signal
 import numpy as np
@@ -22,7 +22,7 @@ class FullSimulator(_BaseSimulator):
 
     Parameters
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
         the analog system
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         the digital control
@@ -39,7 +39,7 @@ class FullSimulator(_BaseSimulator):
 
     Attributes
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
         the analog system being simulated.
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         the digital control being simulated.
@@ -59,7 +59,7 @@ class FullSimulator(_BaseSimulator):
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system._valid_analog_system_types,
+        analog_filter: cbadc.analog_filter._valid_analog_filter_types,
         digital_control: cbadc.digital_control._valid_digital_control_types,
         input_signal: List[cbadc.analog_signal._AnalogSignal],
         initial_state_vector: np.array = None,
@@ -69,7 +69,7 @@ class FullSimulator(_BaseSimulator):
         seed: int = 4212312513432239834528672,
     ):
         super().__init__(
-            analog_system,
+            analog_filter,
             digital_control,
             input_signal,
             initial_state_vector=initial_state_vector,
@@ -79,7 +79,7 @@ class FullSimulator(_BaseSimulator):
         self.atol = atol
         self.rtol = rtol
         self.res: OdeResult = None
-        self._u = np.zeros(self.analog_system.L)
+        self._u = np.zeros(self.analog_filter.L)
         self._input_signal = len(self.input_signals) > 0
 
     def __next__(self) -> np.ndarray:
@@ -95,7 +95,7 @@ class FullSimulator(_BaseSimulator):
             self.digital_control.clock_pulses[1:],
         ):
             if self._input_signal:
-                for ell in range(self.analog_system.L):
+                for ell in range(self.analog_filter.L):
                     self._u[ell] = self.input_signals[ell].evaluate(t_old + self.t)
                     # help constant signals to progress at the clock edge
                     self.input_signals[ell].tick()
@@ -103,7 +103,7 @@ class FullSimulator(_BaseSimulator):
             # update controls
             self.digital_control.control_update(
                 t_old,
-                self.analog_system.control_observation(
+                self.analog_filter.control_observation(
                     t_old + self.t,
                     self.state_vector(),
                     self._u,
@@ -129,15 +129,15 @@ class FullSimulator(_BaseSimulator):
                     array_like, shape=(N,)
                         vector of derivatives evaluated at time t.
                     """
-                    input_vector = np.zeros(self.analog_system.L, dtype=np.float64)
+                    input_vector = np.zeros(self.analog_filter.L, dtype=np.float64)
                     if len(self.input_signals) > 0:
-                        for _l in range(self.analog_system.L):
+                        for _l in range(self.analog_filter.L):
                             input_vector[_l] = self.input_signals[_l].evaluate(
                                 t + self.t
                             )
                     # print(input_vector, t + self.t, self.digital_control.clock.T)
                     control_vector = self.digital_control.control_contribution(t)
-                    return self.analog_system.derivative(
+                    return self.analog_filter.derivative(
                         y, t + self.t, input_vector, control_vector
                     )
 
@@ -159,8 +159,8 @@ class FullSimulator(_BaseSimulator):
                     array_like, shape=(N,)
                         vector of derivatives evaluated at time t.
                     """
-                    return np.dot(self.analog_system.A, self.state_vector()) + np.dot(
-                        self.analog_system.Gamma,
+                    return np.dot(self.analog_filter.A, self.state_vector()) + np.dot(
+                        self.analog_filter.Gamma,
                         self.digital_control.control_contribution(t),
                     )
 
@@ -171,7 +171,7 @@ class FullSimulator(_BaseSimulator):
                 atol=self.atol,
                 rtol=self.rtol,
                 # method="Radau",
-                # jac=self.analog_system.A,
+                # jac=self.analog_filter.A,
                 method="DOP853",
                 # method='LSODA',
                 # method="BDF",
@@ -182,7 +182,7 @@ class FullSimulator(_BaseSimulator):
         # if thermal noise
         if self.noisy:
             self._state_vector += (
-                np.dot(self._cov_deviation, self.rng.normal(size=self.analog_system.N))
+                np.dot(self._cov_deviation, self.rng.normal(size=self.analog_filter.N))
                 * self.digital_control.clock.T
             )
 
@@ -206,7 +206,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
     Parameters
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
         the analog system
     digital_control: :py:class:`cbadc.digital_control.DigitalControl`
         the digital control
@@ -227,7 +227,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
     Attributes
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
         the analog system being simulated.
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         the digital control being simulated.
@@ -252,7 +252,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system._valid_analog_system_types,
+        analog_filter: cbadc.analog_filter._valid_analog_filter_types,
         digital_control: cbadc.digital_control._valid_digital_control_types,
         input_signal: List[cbadc.analog_signal.Sinusoidal],
         initial_state_vector: np.array = None,
@@ -262,7 +262,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         seed: int = 4212312513432239834528672,
     ):
         super().__init__(
-            analog_system,
+            analog_filter,
             digital_control,
             input_signal,
             initial_state_vector=initial_state_vector,
@@ -278,7 +278,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                     "Only piecewise constant and sinusoidal signals are supported in this simulator."
                 )
 
-        if not analog_system.pre_computable:
+        if not analog_filter.pre_computable:
             raise ValueError(
                 "The analog system must be pre-computable to use this simulator."
             )
@@ -288,7 +288,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
         self.atol = atol
         self.rtol = rtol
-        self._u = np.zeros(self.analog_system.L)
+        self._u = np.zeros(self.analog_filter.L)
         self._input_signal = len(self.input_signals) > 0
 
         self._pre_computations()
@@ -298,18 +298,18 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         self._ordinary_differential_solution()
         return self.digital_control.control_signal()
 
-    def _analog_system_matrix_exponential(self, t: float) -> np.ndarray:
-        return np.asarray(scipy.linalg.expm(np.asarray(self.analog_system.A) * t))
+    def _analog_filter_matrix_exponential(self, t: float) -> np.ndarray:
+        return np.asarray(scipy.linalg.expm(np.asarray(self.analog_filter.A) * t))
 
-    def _analog_system_matrix_exponential_with_ivp(self, T: float) -> np.ndarray:
-        a_exp = np.zeros_like(self.analog_system.A, dtype=np.float64)
+    def _analog_filter_matrix_exponential_with_ivp(self, T: float) -> np.ndarray:
+        a_exp = np.zeros_like(self.analog_filter.A, dtype=np.float64)
 
-        for n in range(self.analog_system.N):
+        for n in range(self.analog_filter.N):
 
             def derivative(t, x):
-                return np.dot(self.analog_system.A, x)
+                return np.dot(self.analog_filter.A, x)
 
-            unit_vector = np.zeros(self.analog_system.N)
+            unit_vector = np.zeros(self.analog_filter.N)
             unit_vector[n] = 1.0
 
             self.res = scipy.integrate.solve_ivp(
@@ -323,7 +323,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                 method="DOP853",
                 # method="BDF",
                 # method="LSODA",
-                # jac=self.analog_system.A,
+                # jac=self.analog_filter.A,
             )
             a_exp[:, n] = self.res.y[:, -1]
 
@@ -373,14 +373,14 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         # Pre-compute the transfer function and angular frequencies
         number_of_sin = len(self._sinusoidal_signals)
         self._pre_computed_transfer_function = np.zeros(
-            (2, self.analog_system.N, number_of_sin), dtype=np.float64
+            (2, self.analog_filter.N, number_of_sin), dtype=np.float64
         )
         self._pre_computed_angular_frequencies = np.zeros((number_of_sin, 1))
 
         for l, (l_index, analog_signal) in enumerate(
             zip(self._sinusoidal_signals_index, self._sinusoidal_signals)
         ):
-            tf = self.analog_system.transfer_function_matrix(
+            tf = self.analog_filter.transfer_function_matrix(
                 np.array([analog_signal.angularFrequency])
             )
             self._pre_computed_transfer_function[0, :, l] = (
@@ -403,17 +403,17 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         ):
             # expm(A T_s)
             self._pre_computed_state_transition_matrices.append(
-                self._analog_system_matrix_exponential(t - t_old)
+                self._analog_filter_matrix_exponential(t - t_old)
             )
             # self._pre_computed_state_transition_matrices.append(
-            #     self._analog_system_matrix_exponential_with_ivp(t - t_old)
+            #     self._analog_filter_matrix_exponential_with_ivp(t - t_old)
             # )
 
             temp = np.zeros(
-                (self.analog_system.N, self.analog_system.M), dtype=np.float64
+                (self.analog_filter.N, self.analog_filter.M), dtype=np.float64
             )
 
-            for m in range(self.analog_system.M):
+            for m in range(self.analog_filter.M):
                 if t > self.digital_control._impulse_response[m].t0:
 
                     def dac_waveform(m, t):
@@ -427,14 +427,14 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                         )
 
                 def derivative(t, x):
-                    return np.dot(self.analog_system.A, x) + np.dot(
-                        self.analog_system.Gamma, dac_waveform(m, t)
+                    return np.dot(self.analog_filter.A, x) + np.dot(
+                        self.analog_filter.Gamma, dac_waveform(m, t)
                     )
 
                 self.res = scipy.integrate.solve_ivp(
                     derivative,
                     (t_old, t),
-                    np.zeros((self.analog_system.N)),
+                    np.zeros((self.analog_filter.N)),
                     atol=self.atol,
                     rtol=self.rtol,
                     # method="RK45",
@@ -442,14 +442,14 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                     method="DOP853",
                     # method="BDF",
                     # method="LSODA",
-                    # jac=self.analog_system.A,
+                    # jac=self.analog_filter.A,
                 )
                 temp[:, m] = self.res.y[:, -1]
 
             self._pre_computed_control_matrices.append(temp)
 
             temp_piecewise = np.zeros(
-                (self.analog_system.N, number_of_piecewise), dtype=np.float64
+                (self.analog_filter.N, number_of_piecewise), dtype=np.float64
             )
             for l, (l_index, analog_signal) in enumerate(
                 zip(
@@ -460,14 +460,14 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
 
                 def derivative(t, x):
                     return (
-                        np.dot(self.analog_system.A, x)
-                        + self.analog_system.B[:, l_index]
+                        np.dot(self.analog_filter.A, x)
+                        + self.analog_filter.B[:, l_index]
                     ).flatten()
 
                 self.res = scipy.integrate.solve_ivp(
                     derivative,
                     (t_old, t),
-                    np.zeros((self.analog_system.N)),
+                    np.zeros((self.analog_filter.N)),
                     atol=self.atol,
                     rtol=self.rtol,
                     # method="RK45",
@@ -475,7 +475,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                     method="DOP853",
                     # method="BDF",
                     # method="LSODA",
-                    # jac=self.analog_system.A,
+                    # jac=self.analog_filter.A,
                 )
                 temp_piecewise[:, l] = self.res.y[:, -1]
             self._precomputed_piecewise_constant_transition.append(temp_piecewise)
@@ -490,12 +490,12 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             )
         ):
             if self._input_signal:
-                for ell in range(self.analog_system.L):
+                for ell in range(self.analog_filter.L):
                     self._u[ell] = self.input_signals[ell].evaluate(self.t + t_old)
 
             self.digital_control.control_update(
                 t_old,
-                self.analog_system.control_observation(
+                self.analog_filter.control_observation(
                     t_old + self.t,
                     self.state_vector(),
                     self._u,
@@ -550,10 +550,10 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                 self._state_vector += pre_comp
 
                 # def f(_t, x):
-                #     res = np.dot(self.analog_system.A, x)
+                #     res = np.dot(self.analog_filter.A, x)
                 #     for _l in self._piecewise_constant_signals_index:
                 #         res += np.dot(
-                #             self.analog_system.B[:, _l],
+                #             self.analog_filter.B[:, _l],
                 #             self.input_signals[_l].evaluate(_t + self.t),
                 #         )
                 #     return res.flatten()
@@ -561,7 +561,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                 # self.res = scipy.integrate.solve_ivp(
                 #     f,
                 #     (t_old, t),
-                #     np.zeros(self.analog_system.N),
+                #     np.zeros(self.analog_filter.N),
                 #     atol=self.atol,
                 #     rtol=self.rtol,
                 #     # method="RK45",
@@ -569,7 +569,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
                 #     method="DOP853",
                 #     # method="BDF",
                 #     # method="LSODA",
-                #     # jac=self.analog_system.A,
+                #     # jac=self.analog_filter.A,
                 # )
                 # self._state_vector += self.res.y[:, -1]
 
@@ -578,10 +578,10 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             ## The old way of computing the piecewise constant and sinusoidal signals
             # if self._input_signal:
             #     def f(_t, x):
-            #         res = np.dot(self.analog_system.A, x)
-            #         for _l in range(self.analog_system.L):
+            #         res = np.dot(self.analog_filter.A, x)
+            #         for _l in range(self.analog_filter.L):
             #             res += np.dot(
-            #                 self.analog_system.B[:, _l],
+            #                 self.analog_filter.B[:, _l],
             #                 self.input_signals[_l].evaluate(_t + self.t),
             #             )
             #         return res.flatten()
@@ -589,7 +589,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             #     self.res = scipy.integrate.solve_ivp(
             #         f,
             #         (t_old, t),
-            #         np.zeros(self.analog_system.N),
+            #         np.zeros(self.analog_filter.N),
             #         atol=self.atol,
             #         rtol=self.rtol,
             #         # method="RK45",
@@ -597,7 +597,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
             #         method="DOP853",
             #         # method="BDF",
             #         # method="LSODA",
-            #         # jac=self.analog_system.A,
+            #         # jac=self.analog_filter.A,
             #     )
             #     self._state_vector += self.res.y[:, -1]
 
@@ -610,7 +610,7 @@ class PreComputedControlSignalsSimulator(_BaseSimulator):
         # if thermal noise
         if self.noisy:
             self._state_vector += (
-                np.dot(self._cov_deviation, self.rng.normal(size=self.analog_system.N))
+                np.dot(self._cov_deviation, self.rng.normal(size=self.analog_filter.N))
                 * self.digital_control.clock.T
             )
 

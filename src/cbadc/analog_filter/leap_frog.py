@@ -1,4 +1,5 @@
 """The leap-frog analog system"""
+
 import numpy as np
 from .analog_system import AnalogSystem, InvalidAnalogSystemError
 
@@ -6,7 +7,7 @@ from .analog_system import AnalogSystem, InvalidAnalogSystemError
 class LeapFrog(AnalogSystem):
     """Represents an leap-frog analog system.
 
-    This class inherits from :py:class:`cbadc.analog_system.AnalogSystem` and creates a convenient
+    This class inherits from :py:class:`cbadc.analog_filter.AnalogSystem` and creates a convenient
     way of creating leap-frog A/D analog systems. For more information about leap-frog ADCs see
     `Leap Frog ADC <https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/469192/control-bounded_converters_a_dissertation_by_hampus_malmberg.pdf?sequence=1&isAllowed=y&page=126/>`_.
 
@@ -67,12 +68,12 @@ class LeapFrog(AnalogSystem):
 
     See also
     --------
-    :py:class:`cbadc.analog_system.ChainOfIntegrators`
+    :py:class:`cbadc.analog_filter.ChainOfIntegrators`
 
     Example
     -------
     >>> import numpy as np
-    >>> from cbadc.analog_system import LeapFrog
+    >>> from cbadc.analog_filter import LeapFrog
     >>> beta = np.array([101, 102, 103])
     >>> alpha = np.array([-1, -2])
     >>> rho = np.array([0, 0, 0])

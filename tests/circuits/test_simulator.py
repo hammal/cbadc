@@ -14,7 +14,7 @@ from cbadc.utilities import (
 from cbadc.fom import snr_to_dB, snr_to_enob
 from cbadc.analog_signal import Sinusoidal
 from cbadc.digital_control.dither_control import DitherControl
-from cbadc.analog_system import AnalogSystem
+from cbadc.analog_filter import AnalogSystem
 from cbadc.analog_frontend import AnalogFrontend, get_global_control
 from cbadc.analog_signal import Clock
 from cbadc.simulator import Simulator
@@ -92,7 +92,7 @@ def test_nominal():
     omega = 2 * np.pi * frequencies
 
     # Compute transfer functions for each frequency in frequencies
-    transfer_function = analog_frontend.analog_system.transfer_function_matrix(omega)
+    transfer_function = analog_frontend.analog_filter.transfer_function_matrix(omega)
     transfer_function_dB = 20 * np.log10(np.abs(transfer_function))
 
     # For each output 1,...,N compute the corresponding tranfer function seen
@@ -113,14 +113,14 @@ def test_nominal():
     plt.savefig(figure_name)
 
     simulator = Simulator(
-        analog_frontend.analog_system,
+        analog_frontend.analog_filter,
         analog_frontend.digital_control,
         [Sinusoidal(amplitude, frequency, phase, offset)],
     )
 
     eta2 = (
         np.linalg.norm(
-            analog_frontend.analog_system.transfer_function_matrix(
+            analog_frontend.analog_filter.transfer_function_matrix(
                 np.array([2 * np.pi * BW])
             )
         )
@@ -129,7 +129,7 @@ def test_nominal():
     # K1 = 1 << 12
     # K2 = K1
     digital_estimator = BatchEstimator(
-        analog_frontend.analog_system, analog_frontend.digital_control, eta2, K1, K2
+        analog_frontend.analog_filter, analog_frontend.digital_control, eta2, K1, K2
     )
 
     digital_estimator(simulator)
@@ -208,15 +208,15 @@ def test_ngspice_simulator_with_opamp_testbench():
     figure_name = "ngspice_state_trajectories_1.png"
 
     headers, data = ngspice_simulator.get_input_signals()
-    for i in range(1, analog_frontend.analog_system.L + 1):
+    for i in range(1, analog_frontend.analog_filter.L + 1):
         plt.plot(data[:, 0], data[:, i], label=headers[i])
 
     headers, data = ngspice_simulator.get_state_trajectories()
-    for i in range(1, analog_frontend.analog_system.N + 1):
+    for i in range(1, analog_frontend.analog_filter.N + 1):
         plt.plot(
             data[:, 0],
-            data[:, i] - data[:, i + analog_frontend.analog_system.N],
-            label=f"{headers[i]}-{headers[i + analog_frontend.analog_system.N]}",
+            data[:, i] - data[:, i + analog_frontend.analog_filter.N],
+            label=f"{headers[i]}-{headers[i + analog_frontend.analog_filter.N]}",
         )
         # plt.plot(
         #     data[:, 0],
@@ -225,8 +225,8 @@ def test_ngspice_simulator_with_opamp_testbench():
         # )
         # plt.plot(
         #     data[:, 0],
-        #     data[:, i + analog_frontend.analog_system.N],
-        #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+        #     data[:, i + analog_frontend.analog_filter.N],
+        #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
         # )
 
     plt.xlabel("time [s]")
@@ -269,12 +269,12 @@ def test_ngspice_simulator_with_opamp_testbench():
     # os.remove(figure_name_2)
     # os.remove(figure_name_3)
     diff_states = (
-        data[:, 1 : 1 + analog_frontend.analog_system.N]
+        data[:, 1 : 1 + analog_frontend.analog_filter.N]
         - data[
             :,
             1
-            + analog_frontend.analog_system.N : 1
-            + 2 * analog_frontend.analog_system.N,
+            + analog_frontend.analog_filter.N : 1
+            + 2 * analog_frontend.analog_filter.N,
         ]
     )
     plot_state_dist(diff_states.transpose(), "ngspice_opamp_ref_state_dist.png")
@@ -316,7 +316,7 @@ def test_ngspice_opamp_simulator_estimate():
 
     eta2 = (
         np.linalg.norm(
-            analog_frontend.analog_system.transfer_function_matrix(
+            analog_frontend.analog_filter.transfer_function_matrix(
                 np.array([2 * np.pi * BW])
             )
         )
@@ -325,7 +325,7 @@ def test_ngspice_opamp_simulator_estimate():
     # K1 = 1 << 12
     # K2 = K1
     digital_estimator = BatchEstimator(
-        analog_frontend.analog_system, analog_frontend.digital_control, eta2, K1, K2
+        analog_frontend.analog_filter, analog_frontend.digital_control, eta2, K1, K2
     )
 
     digital_estimator(ngspice_simulator)
@@ -515,7 +515,7 @@ def test_ngspice_ota_simulator_estimate():
 
     eta2 = (
         np.linalg.norm(
-            analog_frontend.analog_system.transfer_function_matrix(
+            analog_frontend.analog_filter.transfer_function_matrix(
                 np.array([2 * np.pi * BW])
             )
         )
@@ -523,7 +523,7 @@ def test_ngspice_ota_simulator_estimate():
     )
 
     digital_estimator = BatchEstimator(
-        analog_frontend.analog_system, analog_frontend.digital_control, eta2, K1, K2
+        analog_frontend.analog_filter, analog_frontend.digital_control, eta2, K1, K2
     )
 
     digital_estimator(ngspice_simulator)
@@ -590,16 +590,16 @@ def test_ngspice_ota_simulator_estimate():
 def test_ngspice_simulator_with_opamp_testbench_and_dither_control():
     number_of_simulated_samples = 1 << 4
     # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
-    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_system.Gamma))
-    Gamma[0, 0] = analog_frontend.analog_system.Gamma[0, 0] / 10.0
+    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_filter.Gamma))
+    Gamma[0, 0] = analog_frontend.analog_filter.Gamma[0, 0] / 10.0
 
     analog_frontend_modified = AnalogFrontend(
         AnalogSystem(
-            analog_frontend.analog_system.A,
-            analog_frontend.analog_system.B,
-            analog_frontend.analog_system.CT,
+            analog_frontend.analog_filter.A,
+            analog_frontend.analog_filter.B,
+            analog_frontend.analog_filter.CT,
             Gamma,
-            analog_frontend.analog_system.Gamma_tildeT,
+            analog_frontend.analog_filter.Gamma_tildeT,
         ),
         DitherControl(1, analog_frontend.digital_control),
     )
@@ -673,16 +673,16 @@ def test_ngspice_opamp_simulator_estimate_and_dither_control():
     kappa_0 = 0.05
     number_of_simulated_samples = estimate_simulation_length
     # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
-    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_system.Gamma))
-    Gamma[0, 0] = analog_frontend.analog_system.Gamma[0, 0] * kappa_0
+    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_filter.Gamma))
+    Gamma[0, 0] = analog_frontend.analog_filter.Gamma[0, 0] * kappa_0
 
     analog_frontend_modified = AnalogFrontend(
         AnalogSystem(
-            analog_frontend.analog_system.A,
-            analog_frontend.analog_system.B,
-            analog_frontend.analog_system.CT,
+            analog_frontend.analog_filter.A,
+            analog_frontend.analog_filter.B,
+            analog_frontend.analog_filter.CT,
             Gamma,
-            analog_frontend.analog_system.Gamma_tildeT,
+            analog_frontend.analog_filter.Gamma_tildeT,
         ),
         DitherControl(1, analog_frontend.digital_control),
     )
@@ -718,7 +718,7 @@ def test_ngspice_opamp_simulator_estimate_and_dither_control():
 
     eta2 = (
         np.linalg.norm(
-            analog_frontend.analog_system.transfer_function_matrix(
+            analog_frontend.analog_filter.transfer_function_matrix(
                 np.array([2 * np.pi * BW])
             )
         )
@@ -727,7 +727,7 @@ def test_ngspice_opamp_simulator_estimate_and_dither_control():
     # K1 = 1 << 12
     # K2 = K1
     digital_estimator = BatchEstimator(
-        analog_frontend_modified.analog_system,
+        analog_frontend_modified.analog_filter,
         analog_frontend_modified.digital_control,
         eta2,
         K1,
@@ -795,16 +795,16 @@ def test_ngspice_opamp_simulator_estimate_and_dither_control():
 def test_ngspice_simulator_with_ota_and_dither_control_testbench():
     number_of_simulated_samples = 1 << 8
     # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
-    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_system.Gamma))
-    Gamma[0, 0] = analog_frontend.analog_system.Gamma[0, 0] / 10.0
+    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_filter.Gamma))
+    Gamma[0, 0] = analog_frontend.analog_filter.Gamma[0, 0] / 10.0
 
     analog_frontend_modified = AnalogFrontend(
         AnalogSystem(
-            analog_frontend.analog_system.A,
-            analog_frontend.analog_system.B,
-            analog_frontend.analog_system.CT,
+            analog_frontend.analog_filter.A,
+            analog_frontend.analog_filter.B,
+            analog_frontend.analog_filter.CT,
             Gamma,
-            analog_frontend.analog_system.Gamma_tildeT,
+            analog_frontend.analog_filter.Gamma_tildeT,
         ),
         DitherControl(1, analog_frontend.digital_control),
     )
@@ -878,16 +878,16 @@ def test_ngspice_ota_simulator_estimate_and_dither_control():
     kappa_0 = 0.05
     number_of_simulated_samples = estimate_simulation_length
     # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
-    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_system.Gamma))
-    Gamma[0, 0] = analog_frontend.analog_system.Gamma[0, 0] * kappa_0
+    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_filter.Gamma))
+    Gamma[0, 0] = analog_frontend.analog_filter.Gamma[0, 0] * kappa_0
 
     analog_frontend_modified = AnalogFrontend(
         AnalogSystem(
-            analog_frontend.analog_system.A,
-            analog_frontend.analog_system.B,
-            analog_frontend.analog_system.CT,
+            analog_frontend.analog_filter.A,
+            analog_frontend.analog_filter.B,
+            analog_frontend.analog_filter.CT,
             Gamma,
-            analog_frontend.analog_system.Gamma_tildeT,
+            analog_frontend.analog_filter.Gamma_tildeT,
         ),
         DitherControl(1, analog_frontend.digital_control),
     )
@@ -921,7 +921,7 @@ def test_ngspice_ota_simulator_estimate_and_dither_control():
 
     eta2 = (
         np.linalg.norm(
-            analog_frontend.analog_system.transfer_function_matrix(
+            analog_frontend.analog_filter.transfer_function_matrix(
                 np.array([2 * np.pi * BW])
             )
         )
@@ -930,7 +930,7 @@ def test_ngspice_ota_simulator_estimate_and_dither_control():
     # K1 = 1 << 12
     # K2 = K1
     digital_estimator = BatchEstimator(
-        analog_frontend_modified.analog_system,
+        analog_frontend_modified.analog_filter,
         analog_frontend_modified.digital_control,
         eta2,
         K1,
@@ -1019,16 +1019,16 @@ def test_ngspice_ota_simulator_calibration():
     testing_data_name = os.path.join(results_folder, "test.npy")
 
     # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
-    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_system.Gamma))
-    Gamma[0, 0] = analog_frontend.analog_system.Gamma[0, 0] / 10.0
+    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_filter.Gamma))
+    Gamma[0, 0] = analog_frontend.analog_filter.Gamma[0, 0] / 10.0
 
     analog_frontend_modified = AnalogFrontend(
         AnalogSystem(
-            analog_frontend.analog_system.A,
-            analog_frontend.analog_system.B,
-            analog_frontend.analog_system.CT,
+            analog_frontend.analog_filter.A,
+            analog_frontend.analog_filter.B,
+            analog_frontend.analog_filter.CT,
             Gamma,
-            analog_frontend.analog_system.Gamma_tildeT,
+            analog_frontend.analog_filter.Gamma_tildeT,
         ),
         DitherControl(1, analog_frontend.digital_control),
     )
@@ -1083,7 +1083,7 @@ def test_ngspice_ota_simulator_calibration():
                 "-bw",
                 str(BW_rel),
                 "-m",
-                str(analog_frontend_modified.analog_system.M),
+                str(analog_frontend_modified.analog_filter.M),
                 "-k",
                 str(K1),
                 filter_name,
@@ -1257,16 +1257,16 @@ def test_ngspice_opamp_simulator_calibration():
     testing_data_name = os.path.join(results_folder, "test.npy")
 
     # analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW)
-    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_system.Gamma))
-    Gamma[0, 0] = analog_frontend.analog_system.Gamma[0, 0] / 10.0
+    Gamma = np.hstack((np.zeros((N, 1)), analog_frontend.analog_filter.Gamma))
+    Gamma[0, 0] = analog_frontend.analog_filter.Gamma[0, 0] / 10.0
 
     analog_frontend_modified = AnalogFrontend(
         AnalogSystem(
-            analog_frontend.analog_system.A,
-            analog_frontend.analog_system.B,
-            analog_frontend.analog_system.CT,
+            analog_frontend.analog_filter.A,
+            analog_frontend.analog_filter.B,
+            analog_frontend.analog_filter.CT,
             Gamma,
-            analog_frontend.analog_system.Gamma_tildeT,
+            analog_frontend.analog_filter.Gamma_tildeT,
         ),
         DitherControl(1, analog_frontend.digital_control),
     )
@@ -1326,7 +1326,7 @@ def test_ngspice_opamp_simulator_calibration():
                 "-bw",
                 str(BW_rel),
                 "-m",
-                str(analog_frontend_modified.analog_system.M),
+                str(analog_frontend_modified.analog_filter.M),
                 "-k",
                 str(K1),
                 filter_name,

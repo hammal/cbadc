@@ -1,4 +1,5 @@
 """The digital parallel estimator."""
+
 import cbadc
 import numpy as np
 import logging
@@ -37,7 +38,7 @@ class ParallelEstimator(BatchEstimator):
 
     Parameters
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
         an analog system (necessary to compute the estimators filter coefficients).
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         a digital control (necessary to determine the corresponding DAC waveform).
@@ -62,8 +63,8 @@ class ParallelEstimator(BatchEstimator):
 
     Attributes
     ----------
-    analog_system : :py:class:`cbadc.analog_system.AnalogSystem`
-        analog system as in :py:class:`cbadc.analog_system.AnalogSystem` or from
+    analog_filter : :py:class:`cbadc.analog_filter.AnalogSystem`
+        analog system as in :py:class:`cbadc.analog_filter.AnalogSystem` or from
         derived class.
     digital_control : :py:class:`cbadc.digital_control.DigitalControl`
         digital control as in :py:class:`cbadc.digital_control.DigitalControl` or from
@@ -117,7 +118,7 @@ class ParallelEstimator(BatchEstimator):
 
     def __init__(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
         K1: int,
@@ -138,7 +139,7 @@ class ParallelEstimator(BatchEstimator):
         self.K2 = K2
         self.K3 = K1 + K2
         self._filter_lag = -1
-        self.analog_system = analog_system
+        self.analog_filter = analog_filter
         self.digital_control = digital_control
         if eta2 < 0:
             raise Exception("eta2 must be non negative.")
@@ -159,7 +160,7 @@ class ParallelEstimator(BatchEstimator):
         self._estimate_pointer = self.K1
 
         # For transfer functions
-        self.eta2Matrix = np.eye(self.analog_system.CT.shape[0]) * self.eta2
+        self.eta2Matrix = np.eye(self.analog_filter.CT.shape[0]) * self.eta2
 
         self._stop_iteration = False
 
@@ -167,7 +168,7 @@ class ParallelEstimator(BatchEstimator):
 
         # Initialize filters
         self.solver_type = solver_type
-        self._compute_filter_coefficients(analog_system, digital_control, eta2)
+        self._compute_filter_coefficients(analog_filter, digital_control, eta2)
         self._allocate_memory_buffers()
 
         # For modulation
@@ -179,13 +180,13 @@ class ParallelEstimator(BatchEstimator):
 
     def _compute_filter_coefficients(
         self,
-        analog_system: cbadc.analog_system.AnalogSystem,
+        analog_filter: cbadc.analog_filter.AnalogSystem,
         digital_control: cbadc.digital_control.DigitalControl,
         eta2: float,
     ):
         # Compute filter coefficients from base class
         BatchEstimator._compute_filter_coefficients(
-            self, analog_system, digital_control, eta2
+            self, analog_filter, digital_control, eta2
         )
         # Parallelize
         temp, Q_f = np.linalg.eig(self.Af)
@@ -203,10 +204,10 @@ class ParallelEstimator(BatchEstimator):
 
     def _allocate_memory_buffers(self):
         # Allocate memory buffers
-        self._control_signal = np.zeros((self.K3, self.analog_system.M))
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._control_signal = np.zeros((self.K3, self.analog_filter.M))
+        self._estimate = np.zeros((self.K1, self.analog_filter.L), dtype=np.double)
         self._control_signal_in_buffer = 0
-        self._mean = np.zeros((self.analog_system.N), dtype=np.complex128)
+        self._mean = np.zeros((self.analog_filter.N), dtype=np.complex128)
 
     def _compute_batch(self):
         logger.info("Computing Batch")
@@ -215,15 +216,15 @@ class ParallelEstimator(BatchEstimator):
         if self._control_signal_in_buffer < self.K3:
             raise Exception("Control signal buffer not full")
 
-        self._estimate = np.zeros((self.K1, self.analog_system.L), dtype=np.double)
+        self._estimate = np.zeros((self.K1, self.analog_filter.L), dtype=np.double)
 
-        for n in range(self.analog_system.N):
+        for n in range(self.analog_filter.N):
             mean = self._mean[n]
             for k1 in range(self.K1):
-                for l in range(self.analog_system.L):
+                for l in range(self.analog_filter.L):
                     self._estimate[k1, l] += np.real(self.forward_w[l, n] * mean)
                 mean = self.forward_a[n] * mean
-                for m in range(self.analog_system.M):
+                for m in range(self.analog_filter.M):
                     if self._control_signal[k1, m]:
                         mean += self.forward_b[n, m]
                     else:
@@ -232,13 +233,13 @@ class ParallelEstimator(BatchEstimator):
             mean = np.complex128(0.0)
             for k3 in range(self.K3 - 1, -1, -1):
                 mean = self.backward_a[n] * mean
-                for m in range(self.analog_system.M):
+                for m in range(self.analog_filter.M):
                     if self._control_signal[k3, m]:
                         mean += self.backward_b[n, m]
                     else:
                         mean -= self.backward_b[n, m]
                 if k3 < self.K1:
-                    for l in range(self.analog_system.L):
+                    for l in range(self.analog_filter.L):
                         self._estimate[k3, l] += np.real(self.backward_w[l, n] * mean)
         self._control_signal = np.roll(self._control_signal, -self.K1, axis=0)
         self._control_signal_in_buffer -= self.K1
@@ -287,7 +288,7 @@ class ParallelEstimator(BatchEstimator):
                 control_signal_sample = next(self.control_signal)
             except RuntimeError:
                 self._stop_iteration = True
-                control_signal_sample = np.zeros((self.analog_system.M))
+                control_signal_sample = np.zeros((self.analog_filter.M))
             full = self._input(control_signal_sample)
 
         # Compute new batch of K1 estimates

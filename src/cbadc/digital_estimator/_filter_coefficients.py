@@ -1,4 +1,5 @@
 """Filter coefficient computations."""
+
 import cbadc
 import logging
 import time
@@ -165,24 +166,24 @@ def _mpmath_care(
 
 
 def compute_filter_coefficients(
-    analog_system: cbadc.analog_system.AnalogSystem,
+    analog_filter: cbadc.analog_filter.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     eta2: float,
     solver_type: FilterComputationBackend = FilterComputationBackend.mpmath,
     mid_point: bool = False,
 ):
     # Compute filter coefficients
-    A = np.array(analog_system.A).transpose()
-    B = np.array(analog_system.CT).transpose()
-    Q = np.dot(np.array(analog_system.B), np.array(analog_system.B).transpose())
-    R = eta2 * np.eye(analog_system.N_tilde)
+    A = np.array(analog_filter.A).transpose()
+    B = np.array(analog_filter.CT).transpose()
+    Q = np.dot(np.array(analog_filter.B), np.array(analog_filter.B).transpose())
+    R = eta2 * np.eye(analog_filter.N_tilde)
     # Solve care
     Vf = care(A, B, Q, R)
     Vb = care(-A, B, Q, R)
 
     if solver_type == FilterComputationBackend.sympy:
         return _analytical_solver(
-            analog_system,
+            analog_filter,
             digital_control,
             sp.Matrix(R),
             sp.Matrix(Vf),
@@ -191,14 +192,14 @@ def compute_filter_coefficients(
         )
     if solver_type == FilterComputationBackend.mpmath:
         return _mp_solver(
-            analog_system, digital_control, mp.matrix(R), mp.matrix(Vf), mp.matrix(Vb)
+            analog_filter, digital_control, mp.matrix(R), mp.matrix(Vf), mp.matrix(Vb)
         )
     else:  # FilterComputationBackend.numpy
-        return _numerical_solver(analog_system, digital_control, R, Vf, Vb, mid_point)
+        return _numerical_solver(analog_filter, digital_control, R, Vf, Vb, mid_point)
 
 
 def _analytical_solver(
-    analog_system: cbadc.analog_system.AnalogSystem,
+    analog_filter: cbadc.analog_filter.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     R: sp.Matrix,
     Vf: sp.Matrix,
@@ -208,20 +209,20 @@ def _analytical_solver(
     if mid_point:
         raise NotImplementedError
     Ts = digital_control.clock.T
-    A_sym = sp.Matrix(analog_system.A)
+    A_sym = sp.Matrix(analog_filter.A)
     Vf_sym = sp.Matrix(Vf)
     Vb_sym = sp.Matrix(Vb)
     # eta2_sym = sp.Float(eta2)
     CCT_sym = (
-        sp.Matrix(analog_system.CT).T
+        sp.Matrix(analog_filter.CT).T
         * sp.Matrix(R) ** (-1)
-        * sp.Matrix(analog_system.CT)
+        * sp.Matrix(analog_filter.CT)
     )
     tempAf = A_sym - Vf_sym * CCT_sym
     tempAb = A_sym + Vb_sym * CCT_sym
-    Af, Bf = _ode_solver(tempAf, analog_system._Gamma_s, digital_control, Ts)
-    Ab, Bb = _ode_solver(-tempAb, -analog_system._Gamma_s, digital_control, Ts)
-    W = (Vf_sym + Vb_sym) ** (-1) * sp.Matrix(analog_system.B)
+    Af, Bf = _ode_solver(tempAf, analog_filter._Gamma_s, digital_control, Ts)
+    Ab, Bb = _ode_solver(-tempAb, -analog_filter._Gamma_s, digital_control, Ts)
+    W = (Vf_sym + Vb_sym) ** (-1) * sp.Matrix(analog_filter.B)
     return (
         np.array(Af).astype(np.float64),
         np.array(Ab).astype(np.float64),
@@ -250,7 +251,7 @@ def _ode_solver(
 
 
 def _mp_solver(
-    analog_system: cbadc.analog_system.AnalogSystem,
+    analog_filter: cbadc.analog_filter.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     R: mp.matrix,
     Vf: mp.matrix,
@@ -263,17 +264,17 @@ def _mp_solver(
     mp.dps = dps
 
     CetaCT = mp.matrix(
-        mp.matrix(analog_system.CT).transpose()
+        mp.matrix(analog_filter.CT).transpose()
         * R ** (-1)
-        * mp.matrix(analog_system.CT)
+        * mp.matrix(analog_filter.CT)
     )
     Ts = mp.mpf(digital_control.clock.T)
-    t_span = (mp.mpf('0'), Ts)
-    tempAf = mp.matrix(analog_system._A_s) - Vf * CetaCT
-    tempAb = mp.matrix(analog_system._A_s) + Vb * CetaCT
+    t_span = (mp.mpf("0"), Ts)
+    tempAf = mp.matrix(analog_filter._A_s) - Vf * CetaCT
+    tempAb = mp.matrix(analog_filter._A_s) + Vb * CetaCT
     Af, Bf = mp_system_solver(
         tempAf,
-        mp.matrix(analog_system.Gamma),
+        mp.matrix(analog_filter.Gamma),
         digital_control._impulse_response,
         t_span,
         tol=tol,
@@ -282,13 +283,13 @@ def _mp_solver(
         map(lambda s: reverse_signal(s, Ts), digital_control._impulse_response)
     )
     Ab, Bb = mp_system_solver(
-        -tempAb, -mp.matrix(analog_system.Gamma), reversed_signals, t_span, tol=tol
+        -tempAb, -mp.matrix(analog_filter.Gamma), reversed_signals, t_span, tol=tol
     )
-    WT = mp.matrix(analog_system.L, analog_system.N)
+    WT = mp.matrix(analog_filter.L, analog_filter.N)
     VfVb = Vf + Vb
-    for l in range(analog_system.L):
-        WT[l, :] = mp.qr_solve(VfVb, mp.matrix(analog_system.B[:, l]))[0].transpose()
-        # WT[l, :] = mp.lu_solve(VfVb, mp.matrix(analog_system.B))[l].transpose()
+    for l in range(analog_filter.L):
+        WT[l, :] = mp.qr_solve(VfVb, mp.matrix(analog_filter.B[:, l]))[0].transpose()
+        # WT[l, :] = mp.lu_solve(VfVb, mp.matrix(analog_filter.B))[l].transpose()
     mp.dps = tmp_dps
     return Af, Ab, Bf, Bb, WT
 
@@ -302,14 +303,14 @@ def reverse_signal(signal: cbadc.analog_signal._AnalogSignal, T0: float = 0.0):
 
     Parameters
     ----------
-    signal: :py:class:`cbadc.analog_system._AnalogSystem`
+    signal: :py:class:`cbadc.analog_filter._AnalogSystem`
         the signal to be reversed
     T0: `float`
         the point around which the signal is reversed.
 
     Returns
     -------
-    : :py:class:`cbadc.analog_system._AnalogSignal`
+    : :py:class:`cbadc.analog_filter._AnalogSignal`
         a new analog signal.
     """
     new_signal = copy.deepcopy(signal)
@@ -321,7 +322,7 @@ def reverse_signal(signal: cbadc.analog_signal._AnalogSignal, T0: float = 0.0):
 
 
 def _numerical_solver(
-    analog_system: cbadc.analog_system.AnalogSystem,
+    analog_filter: cbadc.analog_filter.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     R: np.ndarray,
     Vf: np.ndarray,
@@ -329,39 +330,39 @@ def _numerical_solver(
     mid_point: bool,
 ):
     CCT: np.ndarray = np.dot(
-        np.array(analog_system.CT).transpose(),
-        np.dot(np.linalg.inv(R), np.array(analog_system.CT)),
+        np.array(analog_filter.CT).transpose(),
+        np.dot(np.linalg.inv(R), np.array(analog_filter.CT)),
     )
     Ts = digital_control.clock.T
-    tempAf: np.ndarray = analog_system.A - np.dot(Vf, CCT)
-    tempAb: np.ndarray = analog_system.A + np.dot(Vb, CCT)
+    tempAf: np.ndarray = analog_filter.A - np.dot(Vf, CCT)
+    tempAb: np.ndarray = analog_filter.A + np.dot(Vb, CCT)
     Af: np.ndarray = np.asarray(scipy.linalg.expm(tempAf * Ts))
     Ab: np.ndarray = np.asarray(scipy.linalg.expm(-tempAb * Ts))
-    W, _, _, _ = np.linalg.lstsq(Vf + Vb, analog_system.B, rcond=-1)
+    W, _, _, _ = np.linalg.lstsq(Vf + Vb, analog_filter.B, rcond=-1)
     WT = W.transpose()
     if mid_point:
-        Bf, Bb = _mid_point(analog_system, digital_control, tempAf, tempAb)
+        Bf, Bb = _mid_point(analog_filter, digital_control, tempAf, tempAb)
     else:
-        Bf, Bb = _regular(analog_system, digital_control, tempAf, tempAb)
+        Bf, Bb = _regular(analog_filter, digital_control, tempAf, tempAb)
     return Af, Ab, Bf, Bb, WT
 
 
 def _regular(
-    analog_system: cbadc.analog_system.AnalogSystem,
+    analog_filter: cbadc.analog_filter.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     tempAf: np.ndarray,
     tempAb: np.ndarray,
 ):
     Ts = digital_control.clock.T
-    Gamma = np.array(analog_system.Gamma)
+    Gamma = np.array(analog_filter.Gamma)
     # Solve IVPs
-    Bf: np.ndarray = np.zeros((analog_system.N, analog_system.M))
-    Bb: np.ndarray = np.zeros((analog_system.N, analog_system.M))
+    Bf: np.ndarray = np.zeros((analog_filter.N, analog_filter.M))
+    Bb: np.ndarray = np.zeros((analog_filter.N, analog_filter.M))
 
     atol = 1e-100
     rtol = 1e-14
     # max_step = Ts * 1e-5
-    for m in range(analog_system.M):
+    for m in range(analog_filter.M):
 
         def _derivative_forward_2(t, x):
             return np.dot(tempAf, x) + np.dot(
@@ -378,7 +379,7 @@ def _regular(
             _derivative_forward_2,
             (0, Ts),
             # (digital_control._impulse_response[m].t0, Ts),
-            np.zeros(analog_system.N),
+            np.zeros(analog_filter.N),
             atol=atol,
             rtol=rtol,
             # max_step=max_step,
@@ -401,7 +402,7 @@ def _regular(
         solBb = scipy.integrate.solve_ivp(
             _derivative_backward_2,
             (0, Ts),
-            np.zeros(analog_system.N),
+            np.zeros(analog_filter.N),
             # solBf,
             atol=atol,
             rtol=rtol,
@@ -416,21 +417,21 @@ def _regular(
 
 
 def _mid_point(
-    analog_system: cbadc.analog_system.AnalogSystem,
+    analog_filter: cbadc.analog_filter.AnalogSystem,
     digital_control: cbadc.digital_control.DigitalControl,
     tempAf: np.ndarray,
     tempAb: np.ndarray,
 ):
     Ts = digital_control.clock.T
-    Gamma = np.array(analog_system.Gamma)
+    Gamma = np.array(analog_filter.Gamma)
     # Solve IVPs
-    Bf: np.ndarray = np.zeros((analog_system.N, analog_system.M))
-    Bb: np.ndarray = np.zeros((analog_system.N, analog_system.M))
+    Bf: np.ndarray = np.zeros((analog_filter.N, analog_filter.M))
+    Bb: np.ndarray = np.zeros((analog_filter.N, analog_filter.M))
 
     atol = 1e-200
     rtol = 1e-10
     max_step = Ts / 1000.0
-    for m in range(analog_system.M):
+    for m in range(analog_filter.M):
 
         def _derivative_forward(t, x):
             return np.dot(tempAf, x) + np.dot(
@@ -440,7 +441,7 @@ def _mid_point(
         solBf = scipy.integrate.solve_ivp(
             _derivative_forward,
             (0, Ts / 2.0),
-            np.zeros(analog_system.N),
+            np.zeros(analog_filter.N),
             atol=atol,
             rtol=rtol,
             max_step=max_step,
@@ -455,15 +456,15 @@ def _mid_point(
         solBb = scipy.integrate.solve_ivp(
             _derivative_backward,
             (0, Ts / 2.0),
-            np.zeros(analog_system.N),
+            np.zeros(analog_filter.N),
             atol=atol,
             rtol=rtol,
             max_step=max_step,
             # method="Radau",
         ).y[:, -1]
-        for n in range(analog_system.N):
+        for n in range(analog_filter.N):
             Bf[n, m] = solBf[n]
             Bb[n, m] = solBb[n]
-    Bf = np.dot(np.eye(analog_system.N) + scipy.linalg.expm(tempAf * Ts / 2.0), Bf)
-    Bb = np.dot(np.eye(analog_system.N) + scipy.linalg.expm(tempAb * Ts / 2.0), Bb)
+    Bf = np.dot(np.eye(analog_filter.N) + scipy.linalg.expm(tempAf * Ts / 2.0), Bf)
+    Bb = np.dot(np.eye(analog_filter.N) + scipy.linalg.expm(tempAb * Ts / 2.0), Bb)
     return Bf, Bb

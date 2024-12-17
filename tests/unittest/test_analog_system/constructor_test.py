@@ -2,7 +2,7 @@ from tests.fixture.chain_of_integrators import chain_of_integrators
 import pytest
 import numpy as np
 
-from cbadc.analog_system import AnalogSystem, InvalidAnalogSystemError
+from cbadc.analog_filter import AnalogSystem, InvalidAnalogSystemError
 
 _ = chain_of_integrators
 

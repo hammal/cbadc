@@ -42,7 +42,7 @@ def test_analog_signals(pickle_unpickle):
     pickle_unpickle(cbadc.analog_signal.Sinusoidal(amplitude, frequency))
 
 
-def test_analog_system(pickle_unpickle):
+def test_analog_filter(pickle_unpickle):
     beta = 6250.0
     rho = -62.5
     N = 5
@@ -53,8 +53,8 @@ def test_analog_system(pickle_unpickle):
     CT[-1] = 1.0
     Gamma_tildeT = np.eye(N)
     Gamma = Gamma_tildeT * (-beta)
-    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    pickle_unpickle(analog_system)
+    analog_filter = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    pickle_unpickle(analog_filter)
 
 
 def test_chain_of_integrator(pickle_unpickle):
@@ -63,10 +63,10 @@ def test_chain_of_integrator(pickle_unpickle):
     N = 5
     Gamma_tildeT = np.eye(N)
     Gamma = Gamma_tildeT * (-beta)
-    analog_system = cbadc.analog_system.ChainOfIntegrators(
+    analog_filter = cbadc.analog_filter.ChainOfIntegrators(
         beta * np.ones(N), rho * np.ones(N), Gamma
     )
-    pickle_unpickle(analog_system)
+    pickle_unpickle(analog_filter)
 
 
 def test_leapfrog(pickle_unpickle):
@@ -76,10 +76,10 @@ def test_leapfrog(pickle_unpickle):
     N = 5
     Gamma_tildeT = np.eye(N)
     Gamma = Gamma_tildeT * (-beta)
-    analog_system = cbadc.analog_system.LeapFrog(
+    analog_filter = cbadc.analog_filter.LeapFrog(
         beta * np.ones(N), alpha * np.ones(N - 1), rho * np.ones(N), Gamma
     )
-    pickle_unpickle(analog_system)
+    pickle_unpickle(analog_filter)
 
 
 def test_filters(pickle_unpickle):
@@ -87,21 +87,21 @@ def test_filters(pickle_unpickle):
     Wn = (1e2, 1e3)
     rp = 3e0
     rs = 1.0
-    analog_system = cbadc.analog_system.ButterWorth(N, Wn[0])
-    pickle_unpickle(analog_system)
-    analog_system = cbadc.analog_system.ChebyshevI(N, Wn[1], rp)
-    pickle_unpickle(analog_system)
-    analog_system = cbadc.analog_system.ChebyshevII(N, Wn[0], rs)
-    pickle_unpickle(analog_system)
-    # analog_system = cbadc.analog_system.Cauer(N, Wn[0], rp, rs)
-    # pickle_unpickle(analog_system)
+    analog_filter = cbadc.analog_filter.ButterWorth(N, Wn[0])
+    pickle_unpickle(analog_filter)
+    analog_filter = cbadc.analog_filter.ChebyshevI(N, Wn[1], rp)
+    pickle_unpickle(analog_filter)
+    analog_filter = cbadc.analog_filter.ChebyshevII(N, Wn[0], rs)
+    pickle_unpickle(analog_filter)
+    # analog_filter = cbadc.analog_filter.Cauer(N, Wn[0], rp, rs)
+    # pickle_unpickle(analog_filter)
     wp = 0.2
     ws = 0.3
     gpass = 0.1
     gstop = 2.0
     for ftype in ["butter", "cheby1", "cheby2", "ellip"]:
-        analog_system = cbadc.analog_system.IIRDesign(wp, ws, gpass, gstop, ftype=ftype)
-        pickle_unpickle(analog_system)
+        analog_filter = cbadc.analog_filter.IIRDesign(wp, ws, gpass, gstop, ftype=ftype)
+        pickle_unpickle(analog_filter)
 
 
 def test_digital_control(pickle_unpickle):
@@ -146,11 +146,11 @@ def test_digital_estimator(reconstruction_method, pickle_unpickle):
     Ts = 1 / (2 * beta)
     clock = cbadc.analog_signal.Clock(Ts)
     digitalControl = cbadc.digital_control.DigitalControl(clock, M)
-    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_filter = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
     eta2 = 1.0
     K1 = 100
     K2 = K1
-    pickle_unpickle(reconstruction_method(analog_system, digitalControl, eta2, K1, K2))
+    pickle_unpickle(reconstruction_method(analog_filter, digitalControl, eta2, K1, K2))
 
 
 @pytest.mark.parametrize(
@@ -178,8 +178,8 @@ def test_simulator(simulation_method, pickle_unpickle):
     analogSignals = [cbadc.analog_signal.ConstantSignal(0.1)]
     clock = cbadc.analog_signal.Clock(Ts)
     digitalControl = cbadc.digital_control.DigitalControl(clock, M)
-    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    pickle_unpickle(simulation_method(analog_system, digitalControl, analogSignals))
+    analog_filter = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    pickle_unpickle(simulation_method(analog_filter, digitalControl, analogSignals))
 
 
 def test_analog_frontend(pickle_unpickle):
@@ -197,8 +197,8 @@ def test_analog_frontend(pickle_unpickle):
     Ts = 1 / (2 * beta)
     clock = cbadc.analog_signal.Clock(Ts)
     digitalControl = cbadc.digital_control.DigitalControl(clock, M)
-    analog_system = cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
-    pickle_unpickle(cbadc.analog_frontend.AnalogFrontend(analog_system, digitalControl))
+    analog_filter = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    pickle_unpickle(cbadc.analog_frontend.AnalogFrontend(analog_filter, digitalControl))
 
 
 @pytest.fixture
@@ -221,7 +221,7 @@ def chain_of_integrators():
         "M": N,
         "Gamma": Gamma,
         "Gamma_tildeT": Gamma_tildeT,
-        "system": cbadc.analog_system.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT),
+        "system": cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT),
         "beta": beta,
         "rho": rho,
     }

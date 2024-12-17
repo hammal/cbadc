@@ -5,7 +5,7 @@ from typing import Tuple, List
 from .analog_system import AnalogSystem
 
 
-def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
+def chain(analog_filters: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by chaining several analog systems.
 
     The chaining is achieved by chainging :math:`\hat{N}` systems,
@@ -32,69 +32,69 @@ def chain(analog_systems: List[AnalogSystem]) -> AnalogSystem:
 
     Parameters
     ----------
-    analog_systems: List[:py:class:`cbadc.analog_system.AnalogSystem`]
+    analog_filters: List[:py:class:`cbadc.analog_filter.AnalogSystem`]
         a list of analog systems to be chained.
 
     Returns
     -------
-    :py:class:`cbadc.analog_system.AnalogSystem`
+    :py:class:`cbadc.analog_filter.AnalogSystem`
         a new analog system
     """
-    N: int = np.sum(np.array([analog_system.N for analog_system in analog_systems]))
-    M: int = np.sum(np.array([analog_system.M for analog_system in analog_systems]))
+    N: int = np.sum(np.array([analog_filter.N for analog_filter in analog_filters]))
+    M: int = np.sum(np.array([analog_filter.M for analog_filter in analog_filters]))
     M_tilde: int = np.sum(
-        np.array([analog_system.M_tilde for analog_system in analog_systems])
+        np.array([analog_filter.M_tilde for analog_filter in analog_filters])
     )
-    L: int = analog_systems[0].L
+    L: int = analog_filters[0].L
 
     A = np.zeros((N, N))
     B = np.zeros((N, L))
-    CT = np.zeros((analog_systems[0].CT.shape[0], N))
-    CT[
-        : analog_systems[0].CT.shape[0], : analog_systems[0].CT.shape[1]
-    ] = analog_systems[0].CT
+    CT = np.zeros((analog_filters[0].CT.shape[0], N))
+    CT[: analog_filters[0].CT.shape[0], : analog_filters[0].CT.shape[1]] = (
+        analog_filters[0].CT
+    )
 
     A_tilde = np.zeros((M_tilde, M))
     B_tilde = np.zeros((M_tilde, L))
 
     Gamma = np.zeros((N, M))
     Gamma_tilde = np.zeros((M_tilde, N))
-    D = np.eye(analog_systems[0].N_tilde, analog_systems[0].L)
+    D = np.eye(analog_filters[0].N_tilde, analog_filters[0].L)
 
     n: int = 0
     m: int = 0
     m_tilde: int = 0
-    for analog_system in analog_systems:
-        n_end = n + analog_system.N
-        m_end = m + analog_system.M
-        m_tilde_end = m_tilde + analog_system.M_tilde
+    for analog_filter in analog_filters:
+        n_end = n + analog_filter.N
+        m_end = m + analog_filter.M
+        m_tilde_end = m_tilde + analog_filter.M_tilde
 
-        A[n:n_end, :] = np.dot(analog_system.B, CT)
-        A[n:n_end, n:n_end] = analog_system.A
+        A[n:n_end, :] = np.dot(analog_filter.B, CT)
+        A[n:n_end, n:n_end] = analog_filter.A
 
-        A_tilde[m_tilde:m_tilde_end, m:m_end] = analog_system.A_tilde
-        # B_tilde[m_tilde:m_tilde_end, :] = analog_system.B_tilde
+        A_tilde[m_tilde:m_tilde_end, m:m_end] = analog_filter.A_tilde
+        # B_tilde[m_tilde:m_tilde_end, :] = analog_filter.B_tilde
 
-        B[n:n_end, :] = np.dot(analog_system.B, D)
+        B[n:n_end, :] = np.dot(analog_filter.B, D)
 
-        D = np.dot(analog_system.D, D)
+        D = np.dot(analog_filter.D, D)
 
-        CT = np.dot(analog_system.D, CT)
-        CT[:, n:n_end] = analog_system.CT
+        CT = np.dot(analog_filter.D, CT)
+        CT[:, n:n_end] = analog_filter.CT
 
-        Gamma[n:n_end, m:m_end] = analog_system.Gamma
+        Gamma[n:n_end, m:m_end] = analog_filter.Gamma
 
-        Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_system.Gamma_tildeT
+        Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_filter.Gamma_tildeT
 
-        n += analog_system.N
-        m += analog_system.M
-        m_tilde += analog_system.M_tilde
+        n += analog_filter.N
+        m += analog_filter.M
+        m_tilde += analog_filter.M_tilde
     return AnalogSystem(
         A, B, CT, Gamma, Gamma_tilde, D, B_tilde=B_tilde, A_tilde=A_tilde
     )
 
 
-def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
+def stack(analog_filters: List[AnalogSystem]) -> AnalogSystem:
     """Construct an analog system by stacking several analog systems in parallel.
 
     The parallel stack is achieved by constructing
@@ -118,22 +118,22 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
 
     Parameters
     ----------
-    analog_systems: List[:py:class:`cbadc.analog_system.AnalogSystem`]
+    analog_filters: List[:py:class:`cbadc.analog_filter.AnalogSystem`]
         a list of analog systems to be chained.
 
     Returns
     -------
-    :py:class:`cbadc.analog_system.AnalogSystem`
+    :py:class:`cbadc.analog_filter.AnalogSystem`
         a new analog system
     """
-    N: int = np.sum(np.array([analog_system.N for analog_system in analog_systems]))
-    M: int = np.sum(np.array([analog_system.M for analog_system in analog_systems]))
+    N: int = np.sum(np.array([analog_filter.N for analog_filter in analog_filters]))
+    M: int = np.sum(np.array([analog_filter.M for analog_filter in analog_filters]))
     M_tilde: int = np.sum(
-        np.array([analog_system.M_tilde for analog_system in analog_systems])
+        np.array([analog_filter.M_tilde for analog_filter in analog_filters])
     )
-    L: int = np.sum(np.array([analog_system.L for analog_system in analog_systems]))
+    L: int = np.sum(np.array([analog_filter.L for analog_filter in analog_filters]))
     N_tilde: int = np.sum(
-        np.array([analog_system.N_tilde for analog_system in analog_systems])
+        np.array([analog_filter.N_tilde for analog_filter in analog_filters])
     )
 
     A = np.zeros((N, N))
@@ -150,28 +150,28 @@ def stack(analog_systems: List[AnalogSystem]) -> AnalogSystem:
     m_tilde: int = 0
     l: int = 0
     n_tilde = 0
-    for analog_system in analog_systems:
-        n_end = n + analog_system.N
-        m_end = m + analog_system.M
-        m_tilde_end = m_tilde + analog_system.M_tilde
-        l_end = l + analog_system.L
-        n_tilde_end = n_tilde + analog_system.N_tilde
+    for analog_filter in analog_filters:
+        n_end = n + analog_filter.N
+        m_end = m + analog_filter.M
+        m_tilde_end = m_tilde + analog_filter.M_tilde
+        l_end = l + analog_filter.L
+        n_tilde_end = n_tilde + analog_filter.N_tilde
 
-        A[n:n_end, n:n_end] = analog_system.A
-        B[n:n_end, l:l_end] = analog_system.B
-        CT[n_tilde:n_tilde_end, n:n_end] = analog_system.CT
-        Gamma[n:n_end, m:m_end] = analog_system.Gamma
-        Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_system.Gamma_tildeT
+        A[n:n_end, n:n_end] = analog_filter.A
+        B[n:n_end, l:l_end] = analog_filter.B
+        CT[n_tilde:n_tilde_end, n:n_end] = analog_filter.CT
+        Gamma[n:n_end, m:m_end] = analog_filter.Gamma
+        Gamma_tilde[m_tilde:m_tilde_end, n:n_end] = analog_filter.Gamma_tildeT
 
-        D[n_tilde:n_tilde_end, l:l_end] = analog_system.D
-        A_tilde[m_tilde:m_tilde_end, m:m_end] = analog_system.A_tilde
-        # B_tilde[m_tilde:m_tilde_end, :] = analog_system.B_tilde
+        D[n_tilde:n_tilde_end, l:l_end] = analog_filter.D
+        A_tilde[m_tilde:m_tilde_end, m:m_end] = analog_filter.A_tilde
+        # B_tilde[m_tilde:m_tilde_end, :] = analog_filter.B_tilde
 
-        l += analog_system.L
-        n += analog_system.N
-        n_tilde += analog_system.N_tilde
-        m += analog_system.M
-        m_tilde += analog_system.M_tilde
+        l += analog_filter.L
+        n += analog_filter.N
+        n_tilde += analog_filter.N_tilde
+        m += analog_filter.M
+        m_tilde += analog_filter.M_tilde
     return AnalogSystem(
         A, B, CT, Gamma, Gamma_tilde, D, B_tilde=B_tilde, A_tilde=A_tilde
     )
@@ -325,7 +325,7 @@ def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.nd
 
     :math:`y_\ell(t) = \\begin{pmatrix}b_{\ell,2} - b_{\ell,0} * a_{\ell,2}, & b_{\ell,1} - b_{\ell,0}*a_{\ell,1} \\end{pmatrix} \\begin{pmatrix} x_{\ell,1}(t) \\\ x_{\ell,2}(t) \\end{pmatrix}  + \\begin{pmatrix}b_{\ell,0}\\end{pmatrix} u_\ell(t)`
 
-    which are then chained together using :py:func:`cbadc.analog_system.chain`.
+    which are then chained together using :py:func:`cbadc.analog_filter.chain`.
 
     Parameters
     ----------
@@ -343,7 +343,7 @@ def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.nd
     D: numpy.ndarray, shape=(1, 1)
         The direct matrix.
     """
-    biquadratic_analog_systems = []
+    biquadratic_analog_filters = []
     for row in range(sos.shape[0]):
         b_0 = sos[row, 0]
         b_1 = sos[row, 1]
@@ -364,8 +364,8 @@ def sos2abcd(sos: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.nd
         B = np.array([[0.0], [1.0]])
         CT = np.array([[(b_2 - b_0 * a_2), (b_1 - b_0 * a_1)]])
         D = np.array([[b_0]])
-        biquadratic_analog_systems.append(AnalogSystem(A, B, CT, None, None, D))
-    chained_system = chain(biquadratic_analog_systems)
+        biquadratic_analog_filters.append(AnalogSystem(A, B, CT, None, None, D))
+    chained_system = chain(biquadratic_analog_filters)
     return chained_system.A, chained_system.B, chained_system.CT, chained_system.D
 
 

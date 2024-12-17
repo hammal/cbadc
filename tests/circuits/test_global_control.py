@@ -15,7 +15,7 @@
 # from cbadc.fom import snr_to_dB, snr_to_enob
 # from cbadc.analog_signal import Sinusoidal
 # from cbadc.digital_control import DitherControl, MultiPhaseDigitalControl
-# from cbadc.analog_system import AnalogSystem
+# from cbadc.analog_filter import AnalogSystem
 # from cbadc.analog_frontend import AnalogFrontend, get_global_control
 # from cbadc.simulator import get_simulator
 # from cbadc.analog_signal import Clock
@@ -97,15 +97,15 @@
 
 #     headers, data = ngspice_simulator.get_input_signals()
 
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0], data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
-#     for i in range(1, analog_frontend.analog_system.N + 1):
+#     for i in range(1, analog_frontend.analog_filter.N + 1):
 #         plt.plot(
 #             data[:, 0],
-#             data[:, i] - data[:, i + analog_frontend.analog_system.N],
-#             label=f"{headers[i]}-{headers[i + analog_frontend.analog_system.N]}",
+#             data[:, i] - data[:, i + analog_frontend.analog_filter.N],
+#             label=f"{headers[i]}-{headers[i + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -114,8 +114,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 
 #     plt.xlabel('time [s]')
@@ -138,12 +138,12 @@
 #     plt.legend()
 #     plt.savefig(figure_name_2)
 #     diff_states = (
-#         data[:, 1 : 1 + analog_frontend.analog_system.N]
+#         data[:, 1 : 1 + analog_frontend.analog_filter.N]
 #         - data[
 #             :,
 #             1
-#             + analog_frontend.analog_system.N : 1
-#             + 2 * analog_frontend.analog_system.N,
+#             + analog_frontend.analog_filter.N : 1
+#             + 2 * analog_frontend.analog_filter.N,
 #         ]
 #     )
 #     plot_state_dist(
@@ -174,7 +174,7 @@
 # #     )
 # #     # Create a global control object
 # #     global_control_frontend = get_global_control(
-# #         analog_frontend.analog_system, digital_control, phi_delay
+# #         analog_frontend.analog_filter, digital_control, phi_delay
 # #     )
 
 # #     testbench = OpAmpTestBench(
@@ -205,15 +205,15 @@
 # #     figure_name = os.path.join(figure_path, 'ngspice_state_m_phase_trajectories_1.png')
 
 # #     headers, data = ngspice_simulator.get_input_signals()
-# #     for i in range(1, analog_frontend.analog_system.L + 1):
+# #     for i in range(1, analog_frontend.analog_filter.L + 1):
 # #         plt.plot(data[:, 0], data[:, i], label=headers[i])
 
 # #     headers, data = ngspice_simulator.get_state_trajectories()
-# #     for i in range(1, analog_frontend.analog_system.N + 1):
+# #     for i in range(1, analog_frontend.analog_filter.N + 1):
 # #         plt.plot(
 # #             data[:, 0],
-# #             data[:, i] - data[:, i + analog_frontend.analog_system.N],
-# #             label=f"{headers[i]}-{headers[i + analog_frontend.analog_system.N]}",
+# #             data[:, i] - data[:, i + analog_frontend.analog_filter.N],
+# #             label=f"{headers[i]}-{headers[i + analog_frontend.analog_filter.N]}",
 # #         )
 # #         # plt.plot(
 # #         #     data[:, 0],
@@ -222,8 +222,8 @@
 # #         # )
 # #         # plt.plot(
 # #         #     data[:, 0],
-# #         #     data[:, i + analog_frontend.analog_system.N],
-# #         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+# #         #     data[:, i + analog_frontend.analog_filter.N],
+# #         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 # #         # )
 
 # #     plt.xlabel('time [s]')
@@ -263,17 +263,17 @@
 #     T = analog_frontend.digital_control.clock.T
 #     phi_delay = np.zeros(N)
 
-#     analog_system = analog_frontend.analog_system
-#     Gamma = analog_frontend.analog_system.Gamma
+#     analog_filter = analog_frontend.analog_filter
+#     Gamma = analog_frontend.analog_filter.Gamma
 
 #     digital_control = MultiPhaseDigitalControl(Clock(T), phi_delay)
 
 #     # Create a global control object
 #     global_control_frontend = get_global_control(
 #         AnalogSystem(
-#             analog_system.A,
-#             analog_system.B,
-#             analog_system.CT,
+#             analog_filter.A,
+#             analog_filter.B,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -281,7 +281,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -314,21 +314,21 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_system.N]
-#         - data[:, 1 + analog_system.N : 1 + 2 * analog_system.N]
+#         data[:, 1 : 1 + analog_filter.N]
+#         - data[:, 1 + analog_filter.N : 1 + 2 * analog_filter.N]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -337,8 +337,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     plt.ylim((-1, 1))
 #     plt.xlabel('t/T')
@@ -399,14 +399,14 @@
 #     T = analog_frontend.digital_control.clock.T
 #     phi_delay = np.linspace(0, T, multiplier * N, endpoint=False)
 
-#     analog_system = analog_frontend.analog_system
+#     analog_filter = analog_frontend.analog_filter
 #     Gamma = np.hstack(
-#         [analog_frontend.analog_system.Gamma for _ in range(multiplier)]
+#         [analog_frontend.analog_filter.Gamma for _ in range(multiplier)]
 #     ) / float(multiplier)
 
 #     digital_control = MultiPhaseDigitalControl(Clock(T), phi_delay)
 
-#     A = analog_system.A
+#     A = analog_filter.A
 #     for n in range(N - 1):
 #         A[n + 1, n] *= multiplier
 #         A[n, n + 1] /= multiplier
@@ -414,8 +414,8 @@
 #     global_control_frontend = get_global_control(
 #         AnalogSystem(
 #             A,
-#             multiplier * analog_system.B,
-#             analog_system.CT,
+#             multiplier * analog_filter.B,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -423,7 +423,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -456,21 +456,21 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_system.N]
-#         - data[:, 1 + analog_system.N : 1 + 2 * analog_system.N]
+#         data[:, 1 : 1 + analog_filter.N]
+#         - data[:, 1 + analog_filter.N : 1 + 2 * analog_filter.N]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -479,8 +479,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     plt.ylim((-1, 1))
 #     plt.xlabel('t/T')
@@ -541,19 +541,19 @@
 #     T = analog_frontend.digital_control.clock.T * multiplier
 #     phi_delay = np.linspace(0, T, multiplier * N, endpoint=False)
 
-#     analog_system = analog_frontend.analog_system
+#     analog_filter = analog_frontend.analog_filter
 
 #     Gamma = np.hstack(
-#         [analog_frontend.analog_system.Gamma for _ in range(multiplier)]
+#         [analog_frontend.analog_filter.Gamma for _ in range(multiplier)]
 #     ) / float(multiplier)
 
 #     digital_control = MultiPhaseDigitalControl(Clock(T), phi_delay)
 
 #     global_control_frontend = get_global_control(
 #         AnalogSystem(
-#             analog_system.A,
-#             analog_system.B,
-#             analog_system.CT,
+#             analog_filter.A,
+#             analog_filter.B,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -561,7 +561,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -594,26 +594,26 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_frontend.analog_system.N]
+#         data[:, 1 : 1 + analog_frontend.analog_filter.N]
 #         - data[
 #             :,
 #             1
-#             + analog_frontend.analog_system.N : 1
-#             + 2 * analog_frontend.analog_system.N,
+#             + analog_frontend.analog_filter.N : 1
+#             + 2 * analog_frontend.analog_filter.N,
 #         ]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -622,8 +622,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     # plt.ylim((-1, 1))
 #     plt.xlabel('t/T')
@@ -684,19 +684,19 @@
 #     T = analog_frontend.digital_control.clock.T * multiplier
 #     phi_delay = np.linspace(0, T, multiplier * N, endpoint=False)
 
-#     analog_system = analog_frontend.analog_system
+#     analog_filter = analog_frontend.analog_filter
 
 #     Gamma = np.hstack(
-#         [analog_frontend.analog_system.Gamma for _ in range(multiplier)]
+#         [analog_frontend.analog_filter.Gamma for _ in range(multiplier)]
 #     ) / float(multiplier)
 
 #     digital_control = MultiPhaseDigitalControl(Clock(T), phi_delay)
 
 #     global_control_frontend = get_global_control(
 #         AnalogSystem(
-#             analog_system.A,
-#             analog_system.B,
-#             analog_system.CT,
+#             analog_filter.A,
+#             analog_filter.B,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -704,7 +704,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -737,26 +737,26 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_frontend.analog_system.N]
+#         data[:, 1 : 1 + analog_frontend.analog_filter.N]
 #         - data[
 #             :,
 #             1
-#             + analog_frontend.analog_system.N : 1
-#             + 2 * analog_frontend.analog_system.N,
+#             + analog_frontend.analog_filter.N : 1
+#             + 2 * analog_frontend.analog_filter.N,
 #         ]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -765,8 +765,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     # plt.ylim((-1, 1))
 #     plt.xlabel('t/T')
@@ -814,8 +814,8 @@
 #     T = analog_frontend.digital_control.clock.T
 #     phi_delay = np.linspace(0, T, N, endpoint=False)
 
-#     analog_system = analog_frontend.analog_system
-#     Gamma = analog_frontend.analog_system.Gamma
+#     analog_filter = analog_frontend.analog_filter
+#     Gamma = analog_frontend.analog_filter.Gamma
 
 #     for n in range(N):
 #         Gamma[n, n] *= 0.7**n
@@ -825,9 +825,9 @@
 #     # Create a global control object
 #     global_control_frontend = get_global_control(
 #         AnalogSystem(
-#             analog_system.A,
-#             analog_system.B,
-#             analog_system.CT,
+#             analog_filter.A,
+#             analog_filter.B,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -835,7 +835,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -868,21 +868,21 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_system.N]
-#         - data[:, 1 + analog_system.N : 1 + 2 * analog_system.N]
+#         data[:, 1 : 1 + analog_filter.N]
+#         - data[:, 1 + analog_filter.N : 1 + 2 * analog_filter.N]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -891,8 +891,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     plt.ylim((-1, 1))
 #     plt.xlabel('t/T')
@@ -941,11 +941,11 @@
 #     T = analog_frontend.digital_control.clock.T
 #     phi_delay = np.linspace(0, T, N, endpoint=False)
 
-#     analog_system = analog_frontend.analog_system
-#     Gamma = analog_frontend.analog_system.Gamma
+#     analog_filter = analog_frontend.analog_filter
+#     Gamma = analog_frontend.analog_filter.Gamma
 
-#     B = analog_frontend.analog_system.B
-#     A = analog_frontend.analog_system.A
+#     B = analog_frontend.analog_filter.B
+#     A = analog_frontend.analog_filter.A
 #     for n in range(N - 1):
 #         A[n + 1, n] *= mul
 #         A[n, n + 1] /= mul
@@ -957,7 +957,7 @@
 #         AnalogSystem(
 #             A,
 #             B,
-#             analog_system.CT,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -965,7 +965,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -998,21 +998,21 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_system.N]
-#         - data[:, 1 + analog_system.N : 1 + 2 * analog_system.N]
+#         data[:, 1 : 1 + analog_filter.N]
+#         - data[:, 1 + analog_filter.N : 1 + 2 * analog_filter.N]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -1021,8 +1021,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     plt.ylim((-1, 1))
 #     plt.xlabel('t/T')
@@ -1070,17 +1070,17 @@
 #     T = analog_frontend.digital_control.clock.T
 #     phi_delay = np.linspace(0, T, N, endpoint=False)
 
-#     analog_system = analog_frontend.analog_system
-#     Gamma = np.dot(scipy.linalg.hadamard(N) / np.sqrt(N), analog_system.Gamma)
+#     analog_filter = analog_frontend.analog_filter
+#     Gamma = np.dot(scipy.linalg.hadamard(N) / np.sqrt(N), analog_filter.Gamma)
 
 #     digital_control = MultiPhaseDigitalControl(Clock(T), phi_delay)
 
 #     # Create a global control object
 #     global_control_frontend = get_global_control(
 #         AnalogSystem(
-#             analog_system.A,
-#             analog_system.B,
-#             analog_system.CT,
+#             analog_filter.A,
+#             analog_filter.B,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -1088,7 +1088,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -1121,21 +1121,21 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_system.N]
-#         - data[:, 1 + analog_system.N : 1 + 2 * analog_system.N]
+#         data[:, 1 : 1 + analog_filter.N]
+#         - data[:, 1 + analog_filter.N : 1 + 2 * analog_filter.N]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -1144,8 +1144,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     plt.ylim((-1, 1))
 #     plt.xlabel('t/T')
@@ -1193,8 +1193,8 @@
 #     T = analog_frontend.digital_control.clock.T
 #     phi_delay = np.linspace(0, T, N, endpoint=False)
 
-#     analog_system = analog_frontend.analog_system
-#     Gamma = np.dot(scipy.linalg.hadamard(N) / np.sqrt(N), analog_system.Gamma)
+#     analog_filter = analog_frontend.analog_filter
+#     Gamma = np.dot(scipy.linalg.hadamard(N) / np.sqrt(N), analog_filter.Gamma)
 #     for n in range(N):
 #         Gamma[:, n] *= 0.7**n
 
@@ -1203,9 +1203,9 @@
 #     # Create a global control object
 #     global_control_frontend = get_global_control(
 #         AnalogSystem(
-#             analog_system.A,
-#             analog_system.B,
-#             analog_system.CT,
+#             analog_filter.A,
+#             analog_filter.B,
+#             analog_filter.CT,
 #             Gamma,
 #             -Gamma.transpose(),
 #         ),
@@ -1213,7 +1213,7 @@
 #         phi_delay,
 #     )
 
-#     print(global_control_frontend.analog_system)
+#     print(global_control_frontend.analog_filter)
 #     print(global_control_frontend.digital_control)
 
 #     testbench = OpAmpTestBench(
@@ -1246,21 +1246,21 @@
 #     )
 
 #     headers, data = ngspice_simulator.get_input_signals()
-#     for i in range(1, analog_frontend.analog_system.L + 1):
+#     for i in range(1, analog_frontend.analog_filter.L + 1):
 #         plt.plot(data[:, 0] / T, data[:, i], label=headers[i])
 
 #     headers, data = ngspice_simulator.get_state_trajectories()
 
 #     diff_states = (
-#         data[:, 1 : 1 + analog_system.N]
-#         - data[:, 1 + analog_system.N : 1 + 2 * analog_system.N]
+#         data[:, 1 : 1 + analog_filter.N]
+#         - data[:, 1 + analog_filter.N : 1 + 2 * analog_filter.N]
 #     )
 #     print(diff_states.shape)
-#     for i in range(analog_frontend.analog_system.N):
+#     for i in range(analog_frontend.analog_filter.N):
 #         plt.plot(
 #             data[:, 0] / T,
 #             diff_states[:, i],
-#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_system.N]}",
+#             label=f"{headers[i + 1]}-{headers[i + 1 + analog_frontend.analog_filter.N]}",
 #         )
 #         # plt.plot(
 #         #     data[:, 0],
@@ -1269,8 +1269,8 @@
 #         # )
 #         # plt.plot(
 #         #     data[:, 0],
-#         #     data[:, i + analog_frontend.analog_system.N],
-#         #     label=f"{headers[i + analog_frontend.analog_system.N]}",
+#         #     data[:, i + analog_frontend.analog_filter.N],
+#         #     label=f"{headers[i + analog_frontend.analog_filter.N]}",
 #         # )
 #     plt.ylim((-1, 1))
 #     plt.xlabel('t/T')

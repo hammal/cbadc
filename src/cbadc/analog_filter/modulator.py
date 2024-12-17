@@ -28,18 +28,18 @@ class SineWaveModulator(AnalogSystem):
 
     def __init__(
         self,
-        analog_system: AnalogSystem,
+        analog_filter: AnalogSystem,
         modulation_frequency: float,
     ):
         super().__init__(
-            analog_system.A,
-            analog_system.B,
-            analog_system.CT,
-            analog_system.Gamma,
-            analog_system.Gamma_tildeT,
-            analog_system.D,
-            analog_system.B_tilde,
-            analog_system.A_tilde,
+            analog_filter.A,
+            analog_filter.B,
+            analog_filter.CT,
+            analog_filter.Gamma,
+            analog_filter.Gamma_tildeT,
+            analog_filter.D,
+            analog_filter.B_tilde,
+            analog_filter.A_tilde,
         )
         self.angular_modulation_frequency = 2 * np.pi * modulation_frequency
 
@@ -178,22 +178,22 @@ class SquareWaveModulator(SineWaveModulator):
 
     def __init__(
         self,
-        analog_system: AnalogSystem,
+        analog_filter: AnalogSystem,
         modulation_frequency: float,
         permuation_matrix: np.ndarray,
         base_band_bandwidth: float,
     ):
         self.omega_q = 2 * np.pi * base_band_bandwidth
-        A = np.zeros((2 * analog_system.N, 2 * analog_system.N))
-        A[: analog_system.N, : analog_system.N] = analog_system.A
-        A[analog_system.N :, analog_system.N :] = -self.omega_q * np.eye(
-            analog_system.N
+        A = np.zeros((2 * analog_filter.N, 2 * analog_filter.N))
+        A[: analog_filter.N, : analog_filter.N] = analog_filter.A
+        A[analog_filter.N :, analog_filter.N :] = -self.omega_q * np.eye(
+            analog_filter.N
         )
-        B = np.vstack((analog_system.B, np.zeros_like(analog_system.B)))
-        CT = np.hstack((analog_system.CT, np.zeros_like(analog_system.CT)))
-        Gamma = np.vstack((analog_system.Gamma, np.zeros_like(analog_system.Gamma)))
+        B = np.vstack((analog_filter.B, np.zeros_like(analog_filter.B)))
+        CT = np.hstack((analog_filter.CT, np.zeros_like(analog_filter.CT)))
+        Gamma = np.vstack((analog_filter.Gamma, np.zeros_like(analog_filter.Gamma)))
         Gamma_tildeT = np.hstack(
-            (np.zeros_like(analog_system.Gamma_tildeT), analog_system.Gamma_tildeT)
+            (np.zeros_like(analog_filter.Gamma_tildeT), analog_filter.Gamma_tildeT)
         )
         super().__init__(
             AnalogSystem(
@@ -217,9 +217,9 @@ class SquareWaveModulator(SineWaveModulator):
         self._square_rotation[0, 1] = -sin_wave
         self._square_rotation[1, 0] = sin_wave
         for n in range(self.N // 4):
-            self._full_rotation_matrix[
-                2 * n : 2 * (n + 1), 2 * n : 2 * (n + 1)
-            ] = self._square_rotation
+            self._full_rotation_matrix[2 * n : 2 * (n + 1), 2 * n : 2 * (n + 1)] = (
+                self._square_rotation
+            )
         return self._full_rotation_matrix
 
     def _rotation_matrix_half_clock_cycle(self, phi: float) -> np.ndarray:
@@ -230,9 +230,9 @@ class SquareWaveModulator(SineWaveModulator):
         self._square_rotation[0, 1] = -sin_wave
         self._square_rotation[1, 0] = sin_wave
         for n in range(self.N // 4):
-            self._full_rotation_matrix[
-                2 * n : 2 * (n + 1), 2 * n : 2 * (n + 1)
-            ] = self._square_rotation
+            self._full_rotation_matrix[2 * n : 2 * (n + 1), 2 * n : 2 * (n + 1)] = (
+                self._square_rotation
+            )
         return self._full_rotation_matrix
 
     def demodulate(self, t: float) -> np.ndarray:

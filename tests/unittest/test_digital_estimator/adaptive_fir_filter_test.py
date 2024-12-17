@@ -24,7 +24,7 @@ def setup():
     atol = 1e-15
     rtol = 1e-12
     simulator = cbadc.simulator.PreComputedControlSignalsSimulator(
-        analog_frontend.analog_system,
+        analog_frontend.analog_filter,
         analog_frontend.digital_control,
         [
             r_signal,
@@ -64,7 +64,7 @@ def setup():
         frequency=frequency, amplitude=amplitude, phase=0.0, offset=0.0
     )
     test_simulator = cbadc.simulator.PreComputedControlSignalsSimulator(
-        analog_frontend.analog_system,
+        analog_frontend.analog_filter,
         analog_frontend.digital_control,
         [
             test_signal,
@@ -133,7 +133,7 @@ def check_ENOB(f, psd, target_ENOB, fs, BW):
 
 
 def test_calibration(setup):
-    M = setup["analog_frontend"].analog_system.M
+    M = setup["analog_frontend"].analog_filter.M
     K = setup["K"]
     s_decimated = setup["s_decimated"]
     r_filtered = setup["r_filtered"]

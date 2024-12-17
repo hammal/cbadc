@@ -29,21 +29,21 @@ from .fixtures import setup_filter
     [pytest.param(1e3, id="BW=1kHz"), pytest.param(1e7, id="BW=10MHz")],
 )
 @pytest.mark.parametrize(
-    "analog_system",
+    "analog_filter",
     [
-        pytest.param('chain-of-integrators', id="chain_of_integrators_as"),
-        pytest.param('leap_frog', id="leap_frog_as"),
+        pytest.param("chain-of-integrators", id="chain_of_integrators_as"),
+        pytest.param("leap_frog", id="leap_frog_as"),
     ],
 )
 @pytest.mark.parametrize(
     "digital_control",
     [
-        pytest.param('default', id="default_dc"),
-        pytest.param('switch-cap', id="switch_cap_dc"),
+        pytest.param("default", id="default_dc"),
+        pytest.param("switch-cap", id="switch_cap_dc"),
     ],
 )
 @pytest.mark.parametrize(
-    'computation_method',
+    "computation_method",
     [
         pytest.param(FilterComputationBackend.numpy, id="numpy"),
         # pytest.param(FilterComputationBackend.sympy, id="sympy"),
@@ -51,18 +51,18 @@ from .fixtures import setup_filter
     ],
 )
 @pytest.mark.parametrize(
-    'eta2',
+    "eta2",
     [
         # pytest.param(1.0, id="eta2=1"),
-        pytest.param('snr', id="eta2=ENOB")
+        pytest.param("snr", id="eta2=ENOB")
     ],
 )
 @pytest.mark.parametrize(
-    'excess_delay',
+    "excess_delay",
     [pytest.param(0.0, id="excess_delay=0"), pytest.param(1e-1, id="excess_delay=0.1")],
 )
 def test_filter(
-    N, ENOB, BW, analog_system, digital_control, computation_method, eta2, excess_delay
+    N, ENOB, BW, analog_filter, digital_control, computation_method, eta2, excess_delay
 ):
     if N < 5 and ENOB > 12:
         pytest.skip("Can't compute care. I'll conditioned")
@@ -71,7 +71,7 @@ def test_filter(
         pytest.skip("Sympy don't work for filter orders > 1")
 
     if (
-        digital_control == 'switch-cap'
+        digital_control == "switch-cap"
         and computation_method == FilterComputationBackend.numpy
         and excess_delay > 0
     ):
@@ -80,29 +80,29 @@ def test_filter(
     if computation_method == FilterComputationBackend.numpy and ENOB == 20 and N == 10:
         pytest.skip("Known limitation")
 
-    res = setup_filter(N, ENOB, BW, analog_system, digital_control, excess_delay)
+    res = setup_filter(N, ENOB, BW, analog_filter, digital_control, excess_delay)
     K1 = 1 << 8
     K2 = 1 << 8
-    if eta2 == 'snr':
+    if eta2 == "snr":
         eta2 = (
             np.linalg.norm(
-                res['analog_system'].transfer_function_matrix(
+                res["analog_filter"].transfer_function_matrix(
                     np.array([2 * np.pi * BW])
                 )
             )
             ** 2
         )
     ref = BatchEstimator(
-        res['analog_system'],
-        res['digital_control'],
+        res["analog_filter"],
+        res["digital_control"],
         eta2,
         K1,
         K2,
         solver_type=FilterComputationBackend.mpmath,
     )
     filter = BatchEstimator(
-        res['analog_system'],
-        res['digital_control'],
+        res["analog_filter"],
+        res["digital_control"],
         eta2,
         K1,
         K2,

@@ -1,7 +1,8 @@
 """Synthesise functions for leap-frog control-bounded ADCs.
 """
+
 from cbadc.fom import snr_from_dB, enob_to_snr, snr_to_enob
-from cbadc.analog_system.leap_frog import LeapFrog
+from cbadc.analog_filter.leap_frog import LeapFrog
 from cbadc.digital_control.digital_control import DigitalControl
 from cbadc.analog_signal.impulse_responses import RCImpulseResponse, StepResponse
 from cbadc.analog_signal import Clock, ConstantSignal
@@ -67,7 +68,7 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
 
     Returns
     -------
-    : (:py:class:`cbadc.analog_system.LeapFrog`, :py:class:`cbadc.digital_control.DigitalControl`)
+    : (:py:class:`cbadc.analog_filter.LeapFrog`, :py:class:`cbadc.digital_control.DigitalControl`)
         returns an analog system and digital control tuple
     """
 
@@ -108,10 +109,10 @@ def get_leap_frog(**kwargs) -> AnalogFrontend:
     else:
         raise NotImplementedError
 
-    analog_system = LeapFrog(
+    analog_filter = LeapFrog(
         beta * np.ones(N),
         alpha * np.ones(N - 1),
         rho * np.ones(N),
         np.diag([kappa * delta**n for n in range(N)]),
     )
-    return AnalogFrontend(analog_system, DigitalControl(Clock(T), N))
+    return AnalogFrontend(analog_filter, DigitalControl(Clock(T), N))

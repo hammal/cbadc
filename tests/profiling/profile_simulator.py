@@ -1,6 +1,6 @@
 # import module
 import cProfile
-from cbadc.analog_system import ChainOfIntegrators
+from cbadc.analog_filter import ChainOfIntegrators
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_signal import Sinusoidal, Clock
 from cbadc.simulator import get_simulator
@@ -42,7 +42,7 @@ end_time = T * (1 << 14)
 
 def main():
     # Analog system
-    analog_system = ChainOfIntegrators(betaVec, rhoVec, kappaVec)
+    analog_filter = ChainOfIntegrators(betaVec, rhoVec, kappaVec)
 
     # Clock
     clock = Clock(T)
@@ -55,7 +55,7 @@ def main():
 
     # Instantiate the simulator.
     simulator = get_simulator(
-        analog_system, digital_control, [analog_signal], t_stop=end_time
+        analog_filter, digital_control, [analog_signal], t_stop=end_time
     )
     # Depending on your analog system the step above might take some time to
     # compute as it involves precomputing solutions to initial value problems.
