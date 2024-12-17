@@ -115,7 +115,7 @@ def test_gramian():
     # exp_A = _analog_system_matrix_exponential(analog_frontend.analog_system.A, T)
     L = np.linalg.cholesky(CA)
     # sol = np.dot(L, np.linalg.inv(exp_A))
-    sol = np.linalg.lstsq(exp_A, L)[0]
+    sol = np.linalg.lstsq(exp_A, L, rcond=None)[0]
 
     print(CA)
     print(L)

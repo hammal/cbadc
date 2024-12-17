@@ -7,6 +7,7 @@ signals. However, since the control-bounded A/D converters are converting
 continuous-time signals we need tools to define signals that can be evaluated
 over their whole continuous domain.
 """
+
 from typing import Union
 from ._analog_signal import _AnalogSignal
 from .constant_signal import ConstantSignal
@@ -17,6 +18,12 @@ from .clock import Clock
 from .impulse_responses import StepResponse, RCImpulseResponse
 from .quadrature import get_quadrature_signal_pair, QuadratureSignal, SineWaveModulator
 from .zero_order_hold import ZeroOrderHold, RaisedCosine, BandLimitedSignal
+from .random import (
+    BinaryReferenceSignal,
+    TernaryReferenceSignal,
+    GaussianReferenceSignal,
+    UniformReferenceSignal,
+)
 
 from . import clock
 from . import constant_signal
@@ -25,8 +32,24 @@ from . import ramp
 from . import sinc_pulse
 from . import sinusoidal
 from . import quadrature
+from . import zero_order_hold
+from . import random
 
-_valid_input_signal_types = Union[ConstantSignal, Ramp, SincPulse, Sinusoidal, Clock]
+_valid_input_signal_types = Union[
+    ConstantSignal,
+    Ramp,
+    SincPulse,
+    Sinusoidal,
+    Clock,
+    ZeroOrderHold,
+    RaisedCosine,
+    BandLimitedSignal,
+    QuadratureSignal,
+    SineWaveModulator,
+    BinaryReferenceSignal,
+    TernaryReferenceSignal,
+    GaussianReferenceSignal,
+]
 
 _valid_impulse_response_types = Union[StepResponse, RCImpulseResponse]
 

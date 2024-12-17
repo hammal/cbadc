@@ -496,4 +496,6 @@ class IIRDesign(AnalogSystem):
             wp, ws, gpass, gstop, analog=True, ftype=ftype, output="zpk"
         )
         A, B, CT, D = zpk2abcd(z, p, k)
+        CT = CT[-1:, :]
+        D = D[-1:, :]
         AnalogSystem.__init__(self, A, B, CT, None, None, D)

@@ -1,4 +1,5 @@
 """Sinusoidal signals."""
+
 from typing import Iterable
 from ._analog_signal import _AnalogSignal
 from sympy import sin
@@ -56,6 +57,7 @@ class ZeroOrderHold(_AnalogSignal):
         super().__init__()
         self._data = data
         self.T = T
+        self.piecewise_constant = True
 
     def __str__(self):
         return f"""Zero-order-hold signal with period {self.T}"""

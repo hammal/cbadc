@@ -1,5 +1,6 @@
 """
 """
+
 import logging
 from typing import Union, List
 from sympy import Symbol
@@ -15,6 +16,7 @@ class _AnalogSignal:
         self.t = Symbol("t", real=True)
         self.sym_phase = Symbol("\u03C6", real=True)
         self.t0 = 0.0
+        self.piecewise_constant = False
 
     def symbolic(self) -> Symbol:
         """Returns as symbolic exression
@@ -41,6 +43,10 @@ class _AnalogSignal:
         """
         return 0.0
 
+    def tick(self):
+        """Tick the signal, i.e., update the internal state."""
+        pass
+
     def _mpmath(self, t: Union[mp.mpf, float]):
         return mp.mpmathify(self.evaluate(t))
 
@@ -66,6 +72,11 @@ class _AnalogSignal:
 class ModulatedSignal(_AnalogSignal):
     def __init__(self, *signals: _AnalogSignal):
         self._signals = signals
+        # Check if piecewise constant
+        self.piecewise_constant = True
+        for signal in self._signals:
+            if not signal.piecewise_constant:
+                self.piecewise_constant = False
 
     def evaluate(self, t: float) -> float:
         """Evaluate the signal at time :math:`t`.
@@ -96,6 +107,11 @@ class SuperpositionSignal(_AnalogSignal):
 
     def __init__(self, *signals: _AnalogSignal):
         self._signals = signals
+        # Check if piecewise constant
+        self.piecewise_constant = True
+        for signal in self._signals:
+            if not signal.piecewise_constant:
+                self.piecewise_constant = False
 
     def evaluate(self, t: float) -> float:
         """Evaluate the signal at time :math:`t`.

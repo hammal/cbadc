@@ -6,6 +6,7 @@ transfer functions, and exposing the relevant system parameters as
 attributes. Additionally, several derived convenience classes are defined
 to quickly initialize analog systems of particular structures.
 """
+
 import numpy as np
 import scipy.signal
 import logging
@@ -555,7 +556,7 @@ class AnalogSystem:
                 result[:, :, index] = self._general_atf(omega[index])
             else:
                 result[:, :, index] = self._atf(omega[index])
-            resp[:, :, index] = self.D
+            # resp[:, :, index] = self.D
         # resp = np.einsum('ij,jkl', self.CT, result)
         resp = resp + np.tensordot(self.CT, result, axes=((1), (0)))
         return np.asarray(resp)

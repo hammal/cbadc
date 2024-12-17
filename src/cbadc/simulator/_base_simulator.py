@@ -63,6 +63,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
         input_signal: List[analog_signal._AnalogSignal],
         initial_state_vector: np.ndarray = None,
         state_noise_covariance_matrix: np.ndarray = None,
+        seed: int = 4212312513432239834528672,
     ):
         if len(input_signal) > 0 and analog_system.L != len(input_signal):
             raise Exception(
@@ -73,6 +74,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
         self.digital_control = digital_control
         self.input_signals = input_signal
         self.t: float = 0.0
+        self.rng = np.random.default_rng(seed)
 
         if initial_state_vector is not None:
             self._state_vector = np.array(initial_state_vector, dtype=np.float64)
@@ -96,6 +98,7 @@ class _BaseSimulator(Iterator[np.ndarray]):
         """reset initial time of simulator and digital control"""
         self.t = t
         self.digital_control.reset(t)
+        self._state_vector = np.zeros(self.analog_system.N, dtype=np.double)
 
     def state_vector(self) -> np.ndarray:
         """return current analog system state vector :math:`\mathbf{x}(t)`
