@@ -3,6 +3,7 @@
 This module provides tools to evaluate standard figures of merit as well as
 provides an interface to Prof. Boris Murmann's famous `ADC Survey <https://web.stanford.edu/~murmann/adcsurvey.html>`_.
 """
+
 import logging
 import os
 from typing import List, Tuple
@@ -193,7 +194,8 @@ class MurmannSurvey:
 
     def __init__(self):
         self._version = [
-            "https://web.stanford.edu/~murmann/publications/ADCsurvey_rev20210628.xls"
+            # "https://web.stanford.edu/~murmann/publications/ADCsurvey_rev20210628.xls"
+            "https://github.com/bmurmann/ADC-survey/blob/34b77796ec2c981b20836b3fc369270a23c89944/xls/ADCsurvey_latest.xlsx"
         ]
 
         self._current_year = 2021
@@ -209,16 +211,16 @@ class MurmannSurvey:
         if not os.path.isfile(filename):
             logging.info("Downloading Murmann Survey.")
             req = requests.get(self._version[-1], allow_redirects=True)
-            with open(filename, 'wb') as f:
+            with open(filename, "wb") as f:
                 f.write(req.content)
         else:
             logging.info(f"Found local version of {filename}")
 
-        _temp = pd.read_excel(filename, sheet_name=['ISSCC', 'VLSI'])
-        _temp['ISSCC']['CONFERENCE'] = 'ISSCC'
-        _temp['VLSI']['CONFERENCE'] = 'VLSI'
+        _temp = pd.read_excel(filename, sheet_name=["ISSCC", "VLSI"])
+        _temp["ISSCC"]["CONFERENCE"] = "ISSCC"
+        _temp["VLSI"]["CONFERENCE"] = "VLSI"
         self.db = pd.concat(_temp, ignore_index=True)
-        self._architecture = pd.unique(self.db['ARCHITECTURE'])
+        self._architecture = pd.unique(self.db["ARCHITECTURE"])
         self._color_map = matplotlib.cm.viridis
         self._color_list = [
             matplotlib.colors.rgb2hex(self._color_map(i))
@@ -226,7 +228,7 @@ class MurmannSurvey:
         ]
 
         # Fix some data problems
-        self.db['AREA [mm^2]'] = pd.to_numeric(self.db['AREA [mm^2]'], errors='coerce')
+        self.db["AREA [mm^2]"] = pd.to_numeric(self.db["AREA [mm^2]"], errors="coerce")
 
     def columns(self) -> List[str]:
         """Returns the columns of the dataframe
@@ -264,19 +266,19 @@ class MurmannSurvey:
         ax = plt.gca()
 
         # Plot from Murmann survey
-        self._Murmann_style_data_and_legends('SNDR_hf [dB]', 'P/fsnyq [pJ]', ax)
+        self._Murmann_style_data_and_legends("SNDR_hf [dB]", "P/fsnyq [pJ]", ax)
 
         # Plot FoM lines
         _x = [40, 120]
         _y = [1e12 * self._FoMW_SNDR_to_p_fs(1e-15, x) for x in _x]
-        ax.plot(_x, _y, '--', color='green', label='FoMW 1fJ/conv-step')
+        ax.plot(_x, _y, "--", color="green", label="FoMW 1fJ/conv-step")
         _x = [40, 120]
         _y = [1e12 * self._FoMS_SNDR_to_p_fs(185, x) for x in _x]
-        ax.plot(_x, _y, color='green', label='FoMS=185dB')
+        ax.plot(_x, _y, color="green", label="FoMS=185dB")
 
         # Estetics
         _ = ax.legend()
-        ax.set_yscale('log')
+        ax.set_yscale("log")
         ax.set_title("Energy")
         ax.grid(True, which="both")
         ax.set_xlim((10, 120))
@@ -298,19 +300,19 @@ class MurmannSurvey:
         ax = plt.gca()
 
         # Plot from Murmann survey.
-        self._Murmann_style_data_and_legends('SNDR_hf [dB]', 'fin_hf [Hz]', ax)
+        self._Murmann_style_data_and_legends("SNDR_hf [dB]", "fin_hf [Hz]", ax)
 
         # Jitter lines
         _y = [1e6, 1e11]
         _x = [self._f_sigma_to_jitter_sndr(1e-12, y) for y in _y]
-        ax.plot(_x, _y, color='red', label='Jitter=1psrms')
+        ax.plot(_x, _y, color="red", label="Jitter=1psrms")
         _y = [1e6, 1e11]
         _x = [self._f_sigma_to_jitter_sndr(1e-13, y) for y in _y]
-        ax.plot(_x, _y, '--', color='red', label='Jitter=0.1psrms')
+        ax.plot(_x, _y, "--", color="red", label="Jitter=0.1psrms")
 
         # Estetics
         _ = ax.legend()
-        ax.set_yscale('log')
+        ax.set_yscale("log")
         ax.set_title("Aperture")
         ax.grid(True, which="both")
         ax.set_xlim((10, 120))
@@ -332,17 +334,17 @@ class MurmannSurvey:
         ax = plt.gca()
 
         # Plot from Murmann Survey
-        self._Murmann_style_data_and_legends('fsnyq [Hz]', 'FOMW_hf [fJ/conv-step]', ax)
+        self._Murmann_style_data_and_legends("fsnyq [Hz]", "FOMW_hf [fJ/conv-step]", ax)
 
         # Envelope
         _x = np.logspace(3, 12, 100)
         _y = [self._FoMW_envelope(x) for x in _x]
-        ax.plot(_x, _y, '--', color='black', label='Envelope')
+        ax.plot(_x, _y, "--", color="black", label="Envelope")
 
         # Estetics
         _ = ax.legend()
-        ax.set_yscale('log')
-        ax.set_xscale('log')
+        ax.set_yscale("log")
+        ax.set_xscale("log")
         ax.set_title("Walden's FoM vs Speed")
         ax.grid(True, which="both")
         ax.set_xlim((1e4, 5e11))
@@ -364,16 +366,16 @@ class MurmannSurvey:
         ax = plt.gca()
 
         # Plot from Murmann Survey
-        self._Murmann_style_data_and_legends('fsnyq [Hz]', 'FOMS_hf [dB]', ax)
+        self._Murmann_style_data_and_legends("fsnyq [Hz]", "FOMS_hf [dB]", ax)
 
         # Envelope
         _x = np.logspace(2, 12, 100)
         _y = [self._FoMS_envelope(x) for x in _x]
-        ax.plot(_x, _y, '--', color='black', label='Envelope')
+        ax.plot(_x, _y, "--", color="black", label="Envelope")
 
         # Estetics
         _ = ax.legend()
-        ax.set_xscale('log')
+        ax.set_xscale("log")
         ax.set_title("Schreier's FoM vs Speed")
         ax.grid(True, which="both")
         ax.set_xlim((1e2, 1e12))
@@ -406,41 +408,41 @@ class MurmannSurvey:
             raise Exception("ENOB must be a tuple with accsending values like (8, 10)")
 
         return self.db[
-            (self.db['fsnyq [Hz]'] >= BW[0])
-            & (self.db['fsnyq [Hz]'] < BW[1])
-            & (self.db['SNR [dB]'] >= enob_to_snr(ENOB[0]))
-            & (self.db['SNR [dB]'] < enob_to_snr(ENOB[1]))
+            (self.db["fsnyq [Hz]"] >= BW[0])
+            & (self.db["fsnyq [Hz]"] < BW[1])
+            & (self.db["SNR [dB]"] >= enob_to_snr(ENOB[0]))
+            & (self.db["SNR [dB]"] < enob_to_snr(ENOB[1]))
         ]
 
     def _Murmann_style_data_and_legends(self, x, y, ax):
         self.db[
-            (self.db['CONFERENCE'] == 'ISSCC') & (self.db['YEAR'] == self._current_year)
+            (self.db["CONFERENCE"] == "ISSCC") & (self.db["YEAR"] == self._current_year)
         ].plot.scatter(
-            x, y, label=f"ISSCC {self._current_year}", color='red', marker='s', ax=ax
+            x, y, label=f"ISSCC {self._current_year}", color="red", marker="s", ax=ax
         )
         self.db[
-            (self.db['CONFERENCE'] == 'VLSI') & (self.db['YEAR'] == self._current_year)
+            (self.db["CONFERENCE"] == "VLSI") & (self.db["YEAR"] == self._current_year)
         ].plot.scatter(
-            x, y, label=f"VLSI {self._current_year}", color='blue', marker='D', ax=ax
+            x, y, label=f"VLSI {self._current_year}", color="blue", marker="D", ax=ax
         )
         self.db[
-            (self.db['CONFERENCE'] == 'ISSCC') & (self.db['YEAR'] < self._current_year)
+            (self.db["CONFERENCE"] == "ISSCC") & (self.db["YEAR"] < self._current_year)
         ].plot.scatter(
             x,
             y,
             label=f"ISSCC 1997-{self._current_year - 1}",
-            color='black',
-            marker='o',
+            color="black",
+            marker="o",
             ax=ax,
         )
         self.db[
-            (self.db['CONFERENCE'] == 'VLSI') & (self.db['YEAR'] < self._current_year)
+            (self.db["CONFERENCE"] == "VLSI") & (self.db["YEAR"] < self._current_year)
         ].plot.scatter(
             x,
             y,
             label=f"VLSI 1997-{self._current_year - 1}",
-            color='black',
-            marker='x',
+            color="black",
+            marker="x",
             ax=ax,
         )
 
