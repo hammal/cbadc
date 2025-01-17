@@ -294,7 +294,7 @@ def _mp_solver(
     return Af, Ab, Bf, Bb, WT
 
 
-def reverse_signal(signal: cbadc.analog_signal._AnalogSignal, T0: float = 0.0):
+def reverse_signal(signal: cbadc.analog_signal.AnalogSignal, T0: float = 0.0):
     """
     A function to reverse a signal around T0,
     i.e.,
@@ -366,7 +366,7 @@ def _regular(
 
         def _derivative_forward_2(t, x):
             return np.dot(tempAf, x) + np.dot(
-                Gamma, digital_control.impulse_response(m, t)
+                Gamma, digital_control._impulse_response(m, t)
             )
 
         def impulse_start(t, x):
@@ -390,7 +390,7 @@ def _regular(
 
         def _derivative_backward_2(t, x):
             return np.dot(-tempAb, x) - np.dot(
-                Gamma, digital_control.impulse_response(m, Ts - t)
+                Gamma, digital_control._impulse_response(m, Ts - t)
             )
 
         def impulse_stop(t, x):
@@ -435,7 +435,7 @@ def _mid_point(
 
         def _derivative_forward(t, x):
             return np.dot(tempAf, x) + np.dot(
-                Gamma, digital_control.impulse_response(m, t)
+                Gamma, digital_control._impulse_response(m, t)
             )
 
         solBf = scipy.integrate.solve_ivp(
@@ -450,7 +450,7 @@ def _mid_point(
 
         def _derivative_backward(t, x):
             return np.dot(-tempAb, x) - np.dot(
-                Gamma, digital_control.impulse_response(m, Ts - t)
+                Gamma, digital_control._impulse_response(m, Ts - t)
             )
 
         solBb = scipy.integrate.solve_ivp(

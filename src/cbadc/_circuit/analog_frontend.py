@@ -7,7 +7,7 @@ from ..analog_frontend import AnalogFrontend
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control.dither_control import DitherControl as NominalDitherControl
 from .digital_control import DigitalControl, DitherControl, MultiPhaseDigitalControl
-from ..analog_system import AnalogSystem
+from ..analog_filter import AnalogSystem
 
 
 class CircuitAnalogFrontend(SubCircuitElement):
@@ -25,8 +25,8 @@ class CircuitAnalogFrontend(SubCircuitElement):
         instance_name: str = "Xaf",
     ):
         self.analog_frontend = analog_frontend
-        self.xp = [Terminal(f"X{i}_P") for i in range(analog_frontend.analog_system.N)]
-        self.xn = [Terminal(f"X{i}_N") for i in range(analog_frontend.analog_system.N)]
+        self.xp = [Terminal(f"X{i}_P") for i in range(analog_frontend.analog_filter.N)]
+        self.xn = [Terminal(f"X{i}_N") for i in range(analog_frontend.analog_filter.N)]
         super().__init__(
             terminals=[
                 Terminal("VSS"),
@@ -34,16 +34,16 @@ class CircuitAnalogFrontend(SubCircuitElement):
                 Terminal("CLK"),
                 Terminal("VCM"),
             ]
-            + [Terminal(f"IN{i}_P") for i in range(analog_frontend.analog_system.L)]
-            + [Terminal(f"IN{i}_N") for i in range(analog_frontend.analog_system.L)]
-            + [Terminal(f"OUT{i}_P") for i in range(analog_frontend.analog_system.M)]
-            + [Terminal(f"OUT{i}_N") for i in range(analog_frontend.analog_system.M)],
+            + [Terminal(f"IN{i}_P") for i in range(analog_frontend.analog_filter.L)]
+            + [Terminal(f"IN{i}_N") for i in range(analog_frontend.analog_filter.L)]
+            + [Terminal(f"OUT{i}_P") for i in range(analog_frontend.analog_filter.M)]
+            + [Terminal(f"OUT{i}_N") for i in range(analog_frontend.analog_filter.M)],
             subckt_name=subckt_name,
             instance_name=instance_name,
         )
 
         self._generate_digital_control(
-            analog_frontend.analog_system,
+            analog_frontend.analog_filter,
             analog_frontend.digital_control,
             in_high,
             in_low,
@@ -53,7 +53,7 @@ class CircuitAnalogFrontend(SubCircuitElement):
 
     def _generate_digital_control(
         self,
-        analog_system: AnalogSystem,
+        analog_filter: AnalogSystem,
         digital_control: Union[NominalDigitalControl, NominalDitherControl],
         in_high: float,
         in_low: float,
@@ -63,7 +63,7 @@ class CircuitAnalogFrontend(SubCircuitElement):
         if isinstance(digital_control, NominalDitherControl):
             self.Xdc = DitherControl(
                 "dc",
-                analog_system,
+                analog_filter,
                 digital_control,
                 in_high,
                 in_low,
@@ -74,7 +74,7 @@ class CircuitAnalogFrontend(SubCircuitElement):
             if digital_control._mulit_phase:
                 self.Xdc = MultiPhaseDigitalControl(
                     "dc",
-                    analog_system,
+                    analog_filter,
                     digital_control,
                     in_high,
                     in_low,
@@ -84,7 +84,7 @@ class CircuitAnalogFrontend(SubCircuitElement):
             else:
                 self.Xdc = DigitalControl(
                     "dc",
-                    analog_system,
+                    analog_filter,
                     digital_control,
                     in_high,
                     in_low,
@@ -100,21 +100,21 @@ class CircuitAnalogFrontend(SubCircuitElement):
         )
 
         # Connect States
-        for n in range(analog_system.N):
+        for n in range(analog_filter.N):
             self.connects(
                 (self.xp[n], self.Xdc[f"X{n}_P"]),
                 (self.xn[n], self.Xdc[f"X{n}_N"]),
             )
 
         # Connect inputs
-        for l in range(analog_system.L):
+        for l in range(analog_filter.L):
             self.connects(
                 (self[f"IN{l}_P"], self.Xdc[f"IN{l}_P"]),
                 (self[f"IN{l}_N"], self.Xdc[f"IN{l}_N"]),
             )
 
         # Connect outputs (control signals)
-        for m in range(analog_system.M):
+        for m in range(analog_filter.M):
             self.connects(
                 (self[f"OUT{m}_P"], self.Xdc[f"S{m}_P"]),
                 (self[f"OUT{m}_N"], self.Xdc[f"S{m}_N"]),

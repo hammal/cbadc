@@ -191,6 +191,9 @@ Training using LMS for:
 - momentum = {momentum},
 - and shuffle set to {shuffle}."""
             )
+
+        # x.shape = (batch_size, M, K)
+        # y.shape = (L, batch_size)
         x, y = self._batch(x, y, delay)
 
         for e in cbadc.utilities.show_status(range(epochs)):
@@ -291,12 +294,11 @@ Training using LMS for:
         """
         if verbose:
             logger.info(
-                f"""
-Training using RLS for:
-- epochs = {epochs},
-- delta = {delta},
-- lambda = {lambda_},
-- and shuffle set to {shuffle}."""
+                "Training using RLS for:"
+                "- epochs = {epochs}"
+                "- delta = {delta}"
+                "- lambda = {lambda_}"
+                "- and shuffle set to {shuffle}"
             )
 
         x, y = self._batch(x, y, delay)

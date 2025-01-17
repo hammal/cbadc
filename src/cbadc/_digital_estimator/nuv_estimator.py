@@ -259,7 +259,7 @@ class NUVEstimator:
 
             def _derivative_forward_2(t, x):
                 return np.dot(analog_filter.A, x) + np.dot(
-                    Gamma, digital_control.impulse_response(m, t)
+                    Gamma, digital_control._impulse_response(m, t)
                 )
 
             solBf = scipy.integrate.solve_ivp(

@@ -1,11 +1,12 @@
 """Analog clock signals.
 """
-from cbadc.analog_signal._analog_signal import _AnalogSignal
+
+from cbadc.analog_signal.analog_signal import AnalogSignal
 from sympy import Piecewise
 import numpy as np
 
 
-class Clock(_AnalogSignal):
+class Clock(AnalogSignal):
     """An analog computer clock signal.
 
     Specifically, based on a clock period T a
@@ -58,15 +59,15 @@ class Clock(_AnalogSignal):
         self._neq_pulse_time = self.duty_cycle * self.T
         self.max_value = max_swing / 2.0
         if duty_cycle > 1.0 or duty_cycle <= 0.0:
-            raise Exception(
+            raise ValueError(
                 f"duty_cycle must be a number between 0 and up to 1. Not {duty_cycle}"
             )
         if tt > self.max_step():
-            raise Exception(
+            raise ValueError(
                 "transition time tt can't be longer than smallest clock period"
             )
         if td > T:
-            raise Exception(
+            raise ValueError(
                 "Does not make sense to have longer global delay than time period."
             )
 
@@ -107,32 +108,18 @@ class Clock(_AnalogSignal):
             return t
         return t + self.T - t_
 
-    def symbolic(self) -> Piecewise:
-        """Returns as symbolic exression
-
-        Returns
-        -------
-        : :py:class:`sympy.Symbol`
-            the resulting function
-        """
-        t_ = (self.t - self.td + self._tt_2) % self.T
-        return Piecewise(
-            (-self._pos_edge(t_), t_ > self.duty_cycle * self.T),
-            (self._pos_edge(t_), True),
-        )
-
-    def evaluate(self, t: float) -> float:
-        """Evaluate the signal at time :math:`t`.
+    def evaluate(self, t: np.ndarray) -> np.ndarray:
+        """Evaluate the signal at time t.
 
         Parameters
         ----------
-        t : `float`
-            the time instance for evaluation.
+        t : `numpy.ndarray`, shape=(size,)
+            the time instances for evaluation.
 
         Returns
         -------
-        float
-            The analog signal value
+        numpy.ndarray, shape=(size, L)
+            The analog signal values
         """
         return self.clock_edge(t)
 

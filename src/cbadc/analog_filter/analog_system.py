@@ -12,6 +12,7 @@ import scipy.signal
 import logging
 from typing import Union
 import sympy as sp
+from scipy.signal import StateSpace
 
 logger = logging.getLogger(__name__)
 
@@ -613,3 +614,26 @@ class InvalidAnalogSystemError(Exception):
     def __init__(self, system, message):
         self.analog_system = system
         self.message = message
+
+
+def as2af(analog_system: AnalogSystem) -> StateSpace:
+    A = analog_system.A
+    B = np.zeros((analog_system.N, analog_system.L + analog_system.M))
+    B[:, : analog_system.L] = analog_system.B
+    B[:, analog_system.L :] = analog_system.Gamma
+    C = analog_system.Gamma_tildeT
+    D = np.zeros((analog_system.N_tilde, analog_system.L + analog_system.M))
+    D[:, : analog_system.L] = analog_system.B_tilde
+    D[:, analog_system.L :] = analog_system.A_tilde
+    return StateSpace(A, B, C, D)
+
+
+# def af2as(analog_filter: StateSpace, L: int, M: int) -> AnalogSystem:
+#     A = analog_filter.A
+#     B = analog_filter.B[:, :L]
+#     CT = np.eye(A.shape[0])
+#     Gamma = analog_filter.B[:, L:]
+#     Gamma_tildeT = analog_filter.C
+#     D_tilde = analog_filter.D[:, :L]
+#     A_tilde = analog_filter.D[:, L:]
+#     return AnalogSystem(A, B, CT, Gamma, Gamma_tildeT, D_tilde=D_tilde, A_tilde=A_tilde)

@@ -3,7 +3,7 @@
 
 from typing import Iterator
 import cbadc
-from cbadc.digital_estimator._filter_coefficients import (
+from cbadc._digital_estimator._filter_coefficients import (
     compute_filter_coefficients,
     FilterComputationBackend,
 )

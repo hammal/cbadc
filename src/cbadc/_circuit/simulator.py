@@ -1,5 +1,5 @@
-from typing import Iterator
-from ..circuit.testbench import TestBench
+from typing import Iterator, Union
+from .testbench import TestBench
 from jinja2 import Environment, PackageLoader, select_autoescape
 from ltspice import Ltspice
 from pandas import read_csv
@@ -31,8 +31,6 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
     step: float
     t_end: float
     control_vector: np.ndarray
-    state_vector: np.ndarray
-    time_vector: np.ndarray
     testbench: TestBench
     netlist_filename: str
     raw_output_filename: str
@@ -46,18 +44,19 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
         testbench: TestBench,
         step: float,
         t_end: float,
-        netlist_filename: str = 'ngspice_sim.cir',
-        raw_output_filename: str = 'ngspice_sim.raw',
-        stdout_filename: str = 'ngspice_sim.stdout',
-        stderr_filename: str = 'ngspice_sim.stderr',
+        netlist_filename: str = "ngspice_sim.cir",
+        raw_output_filename: str = "ngspice_sim.raw",
+        stdout_filename: str = "ngspice_sim.stdout",
+        stderr_filename: str = "ngspice_sim.stderr",
         ac_freq_range=(1e3, 1e7),
+        options: dict[str] = {},
     ):
         self.testbench = testbench
         self.transient_analysis = {
-            'start_time': 0.0,
-            'stop_time': t_end,
-            'step': step,
-            'max_step': step / 10.0,
+            "start_time": 0.0,
+            "stop_time": t_end,
+            "step": step,
+            "max_step": step / 1.0,
         }
 
         self._save_variable_names = []
@@ -67,15 +66,15 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
             )
         self._save_variable_names.extend(
             [
-                f'Xaf.{term.name}'
+                f"Xaf.{term.name}"
                 for term in self.testbench.Xaf.xp + self.testbench.Xaf.xn
             ]
         )
 
         self.ac_analysis = {
-            'number_of_points': 1 << 8,
-            'start_frequency': ac_freq_range[0],
-            'stop_frequency': ac_freq_range[1],
+            "number_of_points": 1 << 8,
+            "start_frequency": ac_freq_range[0],
+            "stop_frequency": ac_freq_range[1],
         }
 
         self.options = {
@@ -84,26 +83,23 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
             # 'itl4': 100,
             # 'itl5': 10000,
             # 'maxord': 6,
-            # 'reltol': 1e-6,
+            "reltol": 1e-4,
             # 'abstol': 1e-18,
-            'opts': None,
-            'warn': 1,
+            "opts": None,
+            "warn": 1,
+            "ACCT": None,
+            **options,
         }
-        size = int(
-            np.ceil(t_end / testbench.Xaf.analog_frontend.digital_control.clock.T)
-        )
+
         self.control_vector = np.zeros(
             (
-                size,
-                testbench.Xaf.analog_frontend.analog_system.M,
+                int(
+                    np.ceil(
+                        t_end / testbench.Xaf.analog_frontend.digital_control.clock.T
+                    )
+                ),
+                testbench.Xaf.analog_frontend.analog_filter.M,
             )
-        )
-
-        self.state_vector = np.zeros(
-            (size, testbench.Xaf.analog_frontend.analog_system.N)
-        )
-        self.time_vector = (
-            np.arange(size) * testbench.Xaf.analog_frontend.digital_control.clock.T
         )
 
         self.testbench = testbench
@@ -119,7 +115,7 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
 
     def run(self):
         """Run the simulation"""
-        cmd = ['ngspice', '-b', '-r', self.raw_output_filename, self.netlist_filename]
+        cmd = ["ngspice", "-b", "-r", self.raw_output_filename, self.netlist_filename]
         start_time = time.time()
         completed_process = subprocess.run(cmd, check=True, capture_output=True)
         end_time = time.time()
@@ -130,49 +126,42 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
         logger.debug(completed_process.stdout)
         if completed_process.stderr:
             logger.error(completed_process.stderr)
-        with open(self.stdout_filename, 'w') as f:
+        with open(self.stdout_filename, "w") as f:
             f.write(completed_process.stdout.decode())
-        with open(self.stderr_filename, 'w') as f:
+        with open(self.stderr_filename, "w") as f:
             f.write(completed_process.stderr.decode())
         self._ran = True
 
     def get_input_signals(self):
         """Get the input signals from the simulation"""
-        if 'input' not in self.testbench.highlighted_terminals:
-            raise ValueError('No input signals to plot')
+        if "input" not in self.testbench.highlighted_terminals:
+            raise ValueError("No input signals to plot")
         time = self.raw_file.get_time()
-        headers = ['t']
+        headers = ["t"]
         input_signal_terminal_names = [
-            term.name for term in self.testbench.highlighted_terminals['input']
+            term.name for term in self.testbench.highlighted_terminals["input"]
         ]
         headers.extend(input_signal_terminal_names)
         u_hat = [
-            np.array(self.raw_file.get_data(f'V({term_name})'))
+            np.array(self.raw_file.get_data(f"V({term_name})"))
             for term_name in input_signal_terminal_names
         ]
         return headers, np.vstack((time, *u_hat)).transpose()
-
-    def get_sampled_state_trajectories(self):
-        headers = ['t'] + [
-            f'x_{i+1}'
-            for i in range(self.testbench.Xaf.analog_frontend.analog_system.N)
-        ]
-        return headers, np.hstack((self.time_vector, self.state_vector))
 
     def get_state_trajectories(self):
         """Get the state trajectories from the simulation"""
         time = self.raw_file.get_time()
 
-        headers = ['t']
+        headers = ["t"]
 
         state_terminal_names = [
-            f'XAF.{term.name}' for term in self.testbench.Xaf.xp + self.testbench.Xaf.xn
+            f"XAF.{term.name}" for term in self.testbench.Xaf.xp + self.testbench.Xaf.xn
         ]
 
         headers.extend(state_terminal_names)
 
         data = [
-            np.array(self.raw_file.get_data(f'V({term_name})'))
+            np.array(self.raw_file.get_data(f"V({term_name})"))
             for term_name in state_terminal_names
         ]
 
@@ -192,50 +181,33 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
         self.raw_file = Ltspice(self.raw_output_filename)
         self.raw_file.parse()
         # time = raw_file.get_time()
-        clk = np.array(self.raw_file.get_data('V(CLK)'))
+        clk = np.array(self.raw_file.get_data("V(CLK)"))
 
-        if 'control' not in self.testbench.highlighted_terminals:
-            raise ValueError('No control signals highlighted in testbench')
+        if "control" not in self.testbench.highlighted_terminals:
+            raise ValueError("No control signals highlighted in testbench")
 
         control_signal_terminals = [
             term.name
-            for term in self.testbench.highlighted_terminals['control'][
-                : self.testbench.Xaf.analog_frontend.analog_system.M
+            for term in self.testbench.highlighted_terminals["control"][
+                : self.testbench.Xaf.analog_frontend.analog_filter.M
             ]
         ]
 
-        vcm = float(self.testbench.Vdd._parameters_dict['dc'])
+        vcm = float(self.testbench.Vdd._parameters_dict["dc"])
 
         s_raw = [
-            np.array(self.raw_file.get_data(f'V({control_signal_terminals[i]})'))
+            np.array(self.raw_file.get_data(f"V({control_signal_terminals[i]})"))
             / (vcm * 2.0)
             for i in range(self.control_vector.shape[1])
-        ]
-
-        state_terminal_names = [
-            f'XAF.{term.name}' for term in self.testbench.Xaf.xp + self.testbench.Xaf.xn
-        ]
-
-        state_raw = [
-            np.array(self.raw_file.get_data(f'V({term_name})'))
-            for term_name in state_terminal_names
         ]
         trigger_enable = False
         index: int = 0
         float_to_ternary = np.vectorize(_float_to_ternary)
-        for s in zip(clk, *s_raw, *state_raw):
+        for s in zip(clk, *s_raw):
             if not trigger_enable and s[0] <= vcm:
                 trigger_enable = True
                 if index < self.control_vector.shape[0]:
-                    self.control_vector[index, :] = float_to_ternary(
-                        s[1 : self.testbench.Xaf.analog_frontend.analog_system.M + 1]
-                    )
-                    self.state_vector[index, :] = s[
-                        1
-                        + self.testbench.Xaf.analog_frontend.analog_system.M : 1
-                        + self.testbench.Xaf.analog_frontend.analog_system.M
-                        + self.testbench.Xaf.analog_frontend.analog_system.N
-                    ]
+                    self.control_vector[index, :] = float_to_ternary(s[1:])
                     index += 1
             elif trigger_enable and s[0] > vcm:
                 trigger_enable = False
@@ -249,20 +221,20 @@ class NGSpiceSimulator(Iterator[np.ndarray]):
 
     def make_netlist(self):
         """Make the netlist for the simulation"""
-        netlist = _template_env.get_template('ngspice/simulator.cir.j2').render(
+        netlist = _template_env.get_template("ngspice/simulator.cir.j2").render(
             {
-                'testbench': self.testbench.get_ngspice(),
-                'transient_analysis': self.transient_analysis,
-                'ac_analysis': self.ac_analysis,
-                'state_variables': [
-                    (f'Xaf.{x[0]}', f'Xaf.{x[1]}')
+                "testbench": self.testbench.get_ngspice(),
+                "transient_analysis": self.transient_analysis,
+                "ac_analysis": self.ac_analysis,
+                "state_variables": [
+                    (f"Xaf.{x[0]}", f"Xaf.{x[1]}")
                     for x in zip(self.testbench.Xaf.xp, self.testbench.Xaf.xn)
                 ],
-                'save_variables': self._save_variable_names,
-                'options': self.options,
+                "save_variables": self._save_variable_names,
+                "options": self.options,
             }
         )
-        with open(self.netlist_filename, 'w') as f:
+        with open(self.netlist_filename, "w") as f:
             f.write(netlist)
 
         self._made_netlist = True
@@ -304,8 +276,8 @@ class SpectreSimulator(NGSpiceSimulator):
         strobedelay: float,
         skipdc: bool = False,
         cmin: float = 0.0,
-        netlist_filename: str = 'spectre_sim.cir',
-        raw_output_filename: str = 'spectre_sim.raw',
+        netlist_filename: str = "spectre_sim.cir",
+        raw_output_filename: str = "spectre_sim.raw",
     ):
         self.stop = stop
         self.strobedelay = strobedelay
@@ -331,32 +303,32 @@ class SpectreSimulator(NGSpiceSimulator):
 
     def make_netlist(self):
         testbench_netlist, verilog_ams = self.testbench.get_spectre()
-        netlist = _template_env.get_template('spectre/simulator.cir.j2').render(
+        netlist = _template_env.get_template("spectre/simulator.cir.j2").render(
             {
-                'testbench': testbench_netlist,
-                'cmin': self.cmin,
-                'stop': self.stop,
-                'strobedelay': self.strobedelay,
-                'strobefreq': self.strobefreq,
-                'skipdc': ['no', 'yes'][self.skipdc],
+                "testbench": testbench_netlist,
+                "cmin": self.cmin,
+                "stop": self.stop,
+                "strobedelay": self.strobedelay,
+                "strobefreq": self.strobefreq,
+                "skipdc": ["no", "yes"][self.skipdc],
             }
         )
-        with open(self.netlist_filename, 'w') as f:
+        with open(self.netlist_filename, "w") as f:
             f.write(netlist)
-        with open(self.testbench.verilog_ams_library_name, 'w') as f:
+        with open(self.testbench.verilog_ams_library_name, "w") as f:
             f.write(verilog_ams)
 
     def run(self):
         cmd = [
-            'spectre',
+            "spectre",
             self.netlist_filename,
-            '-format psfascii',
-            '-raw',
+            "-format psfascii",
+            "-raw",
             self.raw_output_filename,
-            '++aps',
-            '-ahdllibdir',
+            "++aps",
+            "-ahdllibdir",
             os.path.abspath(self.testbench.verilog_ams_library_name),
-            '-log',
+            "-log",
         ]
         completed_process = subprocess.run(cmd, check=True, capture_output=True)
         logger.info(completed_process.args)
