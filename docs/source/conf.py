@@ -29,7 +29,7 @@ print(f"system path: {sys.path}")
 # -- Project information -----------------------------------------------------
 
 project = "cbadc"
-copyright = "2023, Hampus Malmberg"
+copyright = "2025, Hampus Malmberg"
 author = "Hampus Malmberg"
 
 # The full version, including alpha/beta/rc tags
@@ -61,6 +61,7 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.autosummary",
     "sphinx.ext.extlinks",
+    "myst_parser",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -91,6 +92,11 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
 }
 
+myst_enable_extensions = [
+    "dollarmath",  # Support for LaTeX math
+    "colon_fence",  # Support for colon-delimited fences
+    "substitution",  # Support for variable substitution
+]
 
 # generate autosummary even if no references
 autosummary_generate = True

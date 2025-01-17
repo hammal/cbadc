@@ -18,15 +18,12 @@ The cbadc Root Modules
 
     cbadc.analog_signal
     cbadc.analog_filter
-    cbadc.digital_control
-    cbadc.digital_estimator
     cbadc.analog_frontend
-    cbadc.simulator
-    cbadc.circuit
+    cbadc.digital_control
+    cbadc.digital_backend
+    cbadc.delsig
     cbadc.utilities
     cbadc.fom
-    cbadc.digital_calibration
-    cbadc.synthesis
 
 ======
 Github
