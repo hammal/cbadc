@@ -1352,6 +1352,8 @@ class AnalogFrontend:
         )
         sim = self.simulate(fft_bins + warm_up)
 
+        avg_pow = np.sum(np.mean(self.avg_power(sim["x"]), axis=1))
+
         # OSR = 1 / (2 * dt * BW)
         wf = self.wiener_filter(OSR=OSR)
         # shape = (fft_bins+warm_up, J)
@@ -1366,7 +1368,7 @@ class AnalogFrontend:
         # reset the analog signal
         self.analog_signal = _old_analog_signal
 
-        return snr, amp_dB.flatten()
+        return snr, amp_dB.flatten(), avg_pow
 
     def calculateSNR_from_fft(self, fft: np.ndarray, extra_bins: int = 2):
         """Calculate the SNR from an FFT
@@ -1666,6 +1668,21 @@ class AnalogFrontend:
             M, dt=dt, quantization_levels=quantization_levels
         )
         return AnalogFrontend(analog_filter, digital_control)
+
+    def avg_power(self, states: np.ndarray):
+        """Compute the power consumption
+
+        Parameters
+        ----------
+        states: `numpy.ndarray`, shape=(size, N, J)
+            the state vector
+
+        Returns
+        -------
+        : :py:class:`numpy.ndarray`, shape=(N,J)
+            the power consumption
+        """
+        return np.inf * np.ones(states.shape[1:], dtype=float)
 
 
 class GmC(AnalogFrontend):

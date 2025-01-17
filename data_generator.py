@@ -60,21 +60,15 @@ for config in configuration:
         ABCDc, _, _ = ds.scaleABCD(ABCDc, nlev=nlev)
     except Exception as e:
         logger.error(f"Error in scaling ABCDc: {e}")
+        break
     af = AnalogFrontend.ctsdm(ABCDc, tdac, 1.0 / fs, quantization_levels=nlev)
     gmc = GmC(af, ro * np.ones(af.N), cint * np.ones(af.N))
 
     try:
-        snr, amp = gmc.simulateSNR(osr)
+        snr, amp, avg_power = gmc.simulateSNR(osr)
     except Exception as e:
-        snr = np.array([0.0])
-
-    f = gmc.fs
-    while f > bw / 5.0:
-        f /= 2.0
-    frequency = np.array([[f]])
-    gmc.analog_signal = Sinusoidal(amplitude, frequency)
-    sim = gmc.simulate(1 << 13)
-    avg_power = np.sum(gmc.avg_power(sim["x"]))
+        logger.error(f"Error in simulateSNR: {e}")
+        break
 
     res.append(
         {
