@@ -1,13 +1,13 @@
-from cbadc.circuit import Terminal, SubCircuitElement
-from cbadc.circuit.components.observer import Observer
-from cbadc.circuit.components.integrator import Integrator
-from cbadc.circuit.components.summer import Summer
+from cbadc._circuit import Terminal, SubCircuitElement
+from cbadc._circuit.components.observer import Observer
+from cbadc._circuit.components.integrator import Integrator
+from cbadc._circuit.components.summer import Summer
 
 
 def test_integrator_model_ngspice():
     integrator = Integrator(
-        model_name='int1',
-        instance_name='2',
+        model_name="int1",
+        instance_name="2",
         input_offset=0.0,
         gain=1.0,
         out_lower_limit=-10.0,
@@ -16,22 +16,22 @@ def test_integrator_model_ngspice():
         out_initial_condition=0.0,
     )
 
-    two_terminals = [Terminal('IN'), Terminal('OUT')]
+    two_terminals = [Terminal("IN"), Terminal("OUT")]
 
-    subckt = SubCircuitElement('Xsub', 'subckt', two_terminals)
+    subckt = SubCircuitElement("Xsub", "subckt", two_terminals)
     subckt.add(integrator)
 
-    subckt.connect(subckt['IN'], integrator[0])
-    subckt.connect(subckt['OUT'], integrator[1])
+    subckt.connect(subckt["IN"], integrator[0])
+    subckt.connect(subckt["OUT"], integrator[1])
 
     print(integrator.get_ngspice(subckt._internal_connections))
-    assert integrator.get_ngspice(subckt._internal_connections) == 'A2 IN OUT int1'
+    assert integrator.get_ngspice(subckt._internal_connections) == "A2 IN OUT int1"
     print(subckt.get_ngspice(subckt._internal_connections))
-    assert subckt.get_ngspice(subckt._internal_connections) == 'Xsub IN OUT subckt'
+    assert subckt.get_ngspice(subckt._internal_connections) == "Xsub IN OUT subckt"
     print([model.get_ngspice() for model in subckt._get_model_set()][0])
     assert [model.get_ngspice() for model in subckt._get_model_set()][
         0
-    ] == '.model int1 int(in_offset=0.0 gain=1.0 out_lower_limit=-10.0 out_upper_limit=10.0 out_ic=0.0 limit_range=1e-06)'
+    ] == ".model int1 int(in_offset=0.0 gain=1.0 out_lower_limit=-10.0 out_upper_limit=10.0 out_ic=0.0 limit_range=1e-06)"
     assert True
 
 
@@ -69,16 +69,16 @@ def test_integrator_model_ngspice():
 
 
 def test_summer_model_ngspice():
-    summer = Summer('As1', 'sum1', 3, [0.1, 0.2, 0.3], [1, -1, 2], 0, 1, ["No comment"])
+    summer = Summer("As1", "sum1", 3, [0.1, 0.2, 0.3], [1, -1, 2], 0, 1, ["No comment"])
 
     four_terminals = [
-        Terminal('IN0'),
-        Terminal('IN1'),
-        Terminal('IN2'),
-        Terminal('OUT'),
+        Terminal("IN0"),
+        Terminal("IN1"),
+        Terminal("IN2"),
+        Terminal("OUT"),
     ]
 
-    subckt = SubCircuitElement('Xsub', 'subckt', four_terminals)
+    subckt = SubCircuitElement("Xsub", "subckt", four_terminals)
     subckt.add(summer)
 
     subckt.connects(
@@ -91,17 +91,17 @@ def test_summer_model_ngspice():
     print(summer.get_ngspice(subckt._internal_connections))
     assert (
         summer.get_ngspice(subckt._internal_connections)
-        == 'As1 [%vd(IN0,VCM) %vd(IN1,VCM) %vd(IN2,VCM)] OUT sum1'
+        == "As1 [%vd(IN0,VCM) %vd(IN1,VCM) %vd(IN2,VCM)] OUT sum1"
     )
     print(subckt.get_ngspice(subckt._internal_connections))
     assert (
         subckt.get_ngspice(subckt._internal_connections)
-        == 'Xsub IN0 IN1 IN2 OUT subckt'
+        == "Xsub IN0 IN1 IN2 OUT subckt"
     )
     print([model.get_ngspice() for model in subckt._get_model_set()][0])
     assert [model.get_ngspice() for model in subckt._get_model_set()][
         0
-    ] == '.model sum1 summer(in_offset=[0.1, 0.2, 0.3] in_gain=[1, -1, 2] out_offset=0 out_gain=1)'
+    ] == ".model sum1 summer(in_offset=[0.1, 0.2, 0.3] in_gain=[1, -1, 2] out_offset=0 out_gain=1)"
     assert True
 
 
@@ -146,15 +146,15 @@ def test_summer_model_ngspice():
 
 
 def test_observation_model_ngspice():
-    input_signals = ['IN0', 'IN1', 's0', 's1', 's2']
-    terminals = [Terminal('clk')] + [Terminal(s) for s in input_signals]
+    input_signals = ["IN0", "IN1", "s0", "s1", "s2"]
+    terminals = [Terminal("clk")] + [Terminal(s) for s in input_signals]
     observer = Observer(
-        'Aobs1',
-        'obs1',
+        "Aobs1",
+        "obs1",
         input_signals,
     )
 
-    subckt = SubCircuitElement('Xsub1', 'test_subckt', terminals)
+    subckt = SubCircuitElement("Xsub1", "test_subckt", terminals)
     subckt.add(observer)
 
     subckt.connects(
@@ -169,12 +169,12 @@ def test_observation_model_ngspice():
     print(observer.get_ngspice(subckt._internal_connections))
     assert (
         observer.get_ngspice(subckt._internal_connections)
-        == 'Aobs1 CLK IN0 IN1 S0 S1 S2 obs1'
+        == "Aobs1 CLK IN0 IN1 S0 S1 S2 obs1"
     )
     print(subckt.get_ngspice(subckt._internal_connections))
     assert (
         subckt.get_ngspice(subckt._internal_connections)
-        == 'Xsub1 CLK IN0 IN1 S0 S1 S2 test_subckt'
+        == "Xsub1 CLK IN0 IN1 S0 S1 S2 test_subckt"
     )
     print([model.get_ngspice() for model in subckt._get_model_set()][0])
     # assert [model.get_ngspice() for model in subckt._get_model_set()][

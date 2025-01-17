@@ -1,4 +1,4 @@
-from cbadc.digital_estimator import (
+from cbadc._digital_estimator import (
     BatchEstimator,
     ParallelEstimator,
     FIRFilter,

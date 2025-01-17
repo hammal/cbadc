@@ -4,7 +4,7 @@ from cbadc.analog_filter import ChainOfIntegrators
 from cbadc.digital_control import DigitalControl
 from cbadc.analog_signal import Sinusoidal, Clock
 from cbadc.simulator import get_simulator
-from cbadc.digital_estimator.batch_estimator import BatchEstimator
+from cbadc._digital_estimator.batch_estimator import BatchEstimator
 from cbadc.utilities import write_byte_stream_to_file
 from cbadc.utilities import control_signal_2_byte_stream
 import numpy as np

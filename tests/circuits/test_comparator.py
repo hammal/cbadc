@@ -1,5 +1,5 @@
-from cbadc.circuit import Terminal, SubCircuitElement
-from cbadc.circuit.components.comparator import ClockedComparator
+from cbadc._circuit import Terminal, SubCircuitElement
+from cbadc._circuit.components.comparator import ClockedComparator
 
 
 def test_comparator_ngspice():
@@ -11,12 +11,12 @@ def test_comparator_ngspice():
     out_high = vdd
     out_undef = vdd / 2
 
-    terminals = [Terminal('clk'), Terminal('in'), Terminal('out'), Terminal('VCM')]
-    subckt = SubCircuitElement('Xsub', 'subckt', terminals)
+    terminals = [Terminal("clk"), Terminal("in"), Terminal("out"), Terminal("VCM")]
+    subckt = SubCircuitElement("Xsub", "subckt", terminals)
     subckt.add(
         ClockedComparator(
-            'Xcc',
-            'comp',
+            "Xcc",
+            "comp",
             in_low,
             in_high,
             out_low,
@@ -25,26 +25,26 @@ def test_comparator_ngspice():
         )
     )
     subckt.connects(
-        (subckt['CLK'], subckt.Xcc['CLK']),
-        (subckt['IN'], subckt.Xcc['IN']),
-        (subckt['OUT'], subckt.Xcc['OUT']),
-        (subckt['VCM'], subckt.Xcc['VCM']),
+        (subckt["CLK"], subckt.Xcc["CLK"]),
+        (subckt["IN"], subckt.Xcc["IN"]),
+        (subckt["OUT"], subckt.Xcc["OUT"]),
+        (subckt["VCM"], subckt.Xcc["VCM"]),
     )
 
     print(subckt.Xcc.get_ngspice(subckt._internal_connections))
     assert (
         subckt.Xcc.get_ngspice(subckt._internal_connections)
-        == 'Xcc CLK VCM IN OUT comp'
+        == "Xcc CLK VCM IN OUT comp"
     )
     print(subckt.get_ngspice(subckt._internal_connections))
     assert (
-        subckt.get_ngspice(subckt._internal_connections) == 'Xsub CLK IN OUT VCM subckt'
+        subckt.get_ngspice(subckt._internal_connections) == "Xsub CLK IN OUT VCM subckt"
     )
     print([model.get_ngspice() for model in subckt._get_model_set()][0])
-    print('\n\n')
+    print("\n\n")
     for subckt_definition in subckt.get_sub_circuit_definitions():
         print(subckt_definition)
-        print('\n\n')
+        print("\n\n")
     assert True
 
 

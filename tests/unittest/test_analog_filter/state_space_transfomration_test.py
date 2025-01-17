@@ -1,4 +1,3 @@
-from numpy.core.numeric import allclose
 import cbadc as cb
 import numpy as np
 import scipy.signal

@@ -1,5 +1,5 @@
-from cbadc.synthesis import get_chain_of_integrator, get_leap_frog
-from cbadc.digital_estimator import BatchEstimator
+from cbadc._digital_estimator import BatchEstimator
+from cbadc import AnalogFrontend
 import cbadc
 import cbadc.fom
 import numpy as np
@@ -14,7 +14,7 @@ K2 = 1 << 9
 
 
 def test_get_white_noise():
-    analog_frontend = get_chain_of_integrator(N=N, ENOB=ENOB, BW=BW, xi=xi)
+    analog_frontend = AnalogFrontend.chain_of_integrators(N=N, ENOB=ENOB, BW=BW, xi=xi)
     digital_estimator = BatchEstimator(
         analog_frontend.analog_filter, analog_frontend.digital_control, eta2, K1, K2
     )
@@ -25,7 +25,7 @@ def test_get_white_noise():
 
 
 def test_get_white_noise_leap_frog():
-    analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW, xi=xi)
+    analog_frontend = AnalogFrontend.leapfrog(N=N, ENOB=ENOB, BW=BW, xi=xi)
     digital_estimator = BatchEstimator(
         analog_frontend.analog_filter, analog_frontend.digital_control, eta2, K1, K2
     )
@@ -36,7 +36,7 @@ def test_get_white_noise_leap_frog():
 
 
 def test_verify_get_white_noise_leap_frog():
-    analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW, xi=xi)
+    analog_frontend = AnalogFrontend.leapfrog(N=N, ENOB=ENOB, BW=BW, xi=xi)
     digital_estimator = BatchEstimator(
         analog_frontend.analog_filter, analog_frontend.digital_control, eta2, K1, K2
     )

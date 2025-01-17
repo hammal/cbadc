@@ -1,6 +1,8 @@
 import cbadc
 import numpy as np
 import pytest
+from cbadc.analog_frontend import _g_i_leapfrog
+from cbadc.analog_frontend import _g_i_chain_of_integrators
 
 
 @pytest.mark.parametrize(
@@ -16,7 +18,7 @@ import pytest
 def test_g_i_leap_frog(N_gi):
     n = N_gi[0]
     value = N_gi[1]
-    g_i = cbadc.synthesis.leap_frog.g_i(n)
+    g_i = _g_i_leapfrog(n)
     assert np.abs(value - g_i) / g_i < 1e-1
 
 
@@ -33,5 +35,5 @@ def test_g_i_leap_frog(N_gi):
 def test_g_i_chain_of_integrators(N):
     n = N
     value = 2 * n + 1
-    g_i = cbadc.synthesis.chain_of_integrators.g_i(n)
+    g_i = _g_i_chain_of_integrators(n)
     assert np.abs(value - g_i) / g_i < 1e-1

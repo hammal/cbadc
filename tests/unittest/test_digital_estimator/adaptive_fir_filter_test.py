@@ -12,7 +12,7 @@ def setup():
     K = 1 << 5
     simulation_length = 1 << 14
     warm_up = 1 << 10
-    analog_frontend = cbadc.synthesis.get_leap_frog(ENOB=ENOB, N=N, BW=BW)
+    analog_frontend = cbadc.AnalogFrontend.leapfrog(ENOB=ENOB, N=N, BW=BW)
     T = analog_frontend.digital_control.clock.T
     fs = 1.0 / T
     OSR = fs / (2 * BW)

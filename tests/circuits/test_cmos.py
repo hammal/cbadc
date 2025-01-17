@@ -1,5 +1,5 @@
-from cbadc.circuit import Terminal, SubCircuitElement
-from cbadc.circuit.components.cmos import NMOS, PMOS
+from cbadc._circuit import Terminal, SubCircuitElement
+from cbadc._circuit.components.cmos import NMOS, PMOS
 
 
 def test_nmos_model_ngspice():

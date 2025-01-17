@@ -1,5 +1,5 @@
-from cbadc.circuit import Terminal
-from cbadc.circuit.testbench import OpAmpTestBench
+from cbadc._circuit import Terminal
+from cbadc._circuit.testbench import OpAmpTestBench
 from cbadc.synthesis.leap_frog import get_leap_frog
 from cbadc.analog_signal import Sinusoidal
 
@@ -33,6 +33,6 @@ def test__dict__property():
         DC_gain=DC_gain,
     )
 
-    testbench.__dict__['test'] = 1
+    testbench.__dict__["test"] = 1
 
     assert testbench.test == 1

@@ -1,10 +1,10 @@
 import pytest
 import numpy as np
 import cbadc
-from cbadc.digital_estimator import (
+from cbadc._digital_estimator import (
     BatchEstimator,
 )
-from cbadc.digital_estimator._filter_coefficients import FilterComputationBackend
+from cbadc._digital_estimator._filter_coefficients import FilterComputationBackend
 from cbadc.fom import snr_to_dB, snr_to_enob
 from tests.performance_validation.fixtures import setup_filter
 from cbadc.simulator import PreComputedControlSignalsSimulator, FullSimulator

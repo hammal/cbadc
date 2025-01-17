@@ -3,7 +3,7 @@ from cbadc.digital_control import DigitalControl
 from cbadc.analog_filter import AnalogSystem
 from cbadc.analog_signal import Sinusoidal, Clock
 from cbadc.simulator import Simulator
-from cbadc.digital_estimator import (
+from cbadc._digital_estimator import (
     BatchEstimator,
     ParallelEstimator,
     FIRFilter,

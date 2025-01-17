@@ -1,5 +1,5 @@
-from cbadc.circuit import Terminal, SubCircuitElement
-from cbadc.circuit.components.reference_source import ReferenceSource
+from cbadc._circuit import Terminal, SubCircuitElement
+from cbadc._circuit.components.reference_source import ReferenceSource
 import numpy as np
 
 

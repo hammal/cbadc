@@ -1,4 +1,4 @@
-from cbadc.synthesis import get_leap_frog
+from cbadc import AnalogFrontend
 
 N = 6
 ENOB = 14
@@ -10,4 +10,4 @@ K2 = 1 << 9
 
 
 def test_get_leap_frog():
-    analog_frontend = get_leap_frog(N=N, ENOB=ENOB, BW=BW, xi=xi)
+    analog_frontend = AnalogFrontend.leapfrog(N=N, ENOB=ENOB, BW=BW, xi=xi)

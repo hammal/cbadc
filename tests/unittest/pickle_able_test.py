@@ -21,7 +21,7 @@ def pickle_unpickle():
         os.remove(filename)
 
 
-def test_analog_signals(pickle_unpickle):
+def testanalog_signals(pickle_unpickle):
     pickle_unpickle(cbadc.analog_signal.ConstantSignal())
     T = 1e-3
     tt = 1e-6
@@ -197,7 +197,9 @@ def test_analog_frontend(pickle_unpickle):
     Ts = 1 / (2 * beta)
     clock = cbadc.analog_signal.Clock(Ts)
     digitalControl = cbadc.digital_control.DigitalControl(clock, M)
-    analog_filter = cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    analog_filter = cbadc.analog_filter.analog_system.as2af(
+        cbadc.analog_filter.AnalogSystem(A, B, CT, Gamma, Gamma_tildeT)
+    )
     pickle_unpickle(cbadc.analog_frontend.AnalogFrontend(analog_filter, digitalControl))
 
 

@@ -1,11 +1,11 @@
-from cbadc.circuit.components.sources import (
+from cbadc._circuit.components.sources import (
     SinusoidalVoltageSource,
 )
-from cbadc.circuit import Terminal, SpiceDialect
-from cbadc.circuit.testbench import OpAmpTestBench, OTATestBench
+from cbadc._circuit import Terminal, SpiceDialect
+from cbadc._circuit.testbench import OpAmpTestBench, OTATestBench
 from cbadc.synthesis.leap_frog import get_leap_frog
-from cbadc.circuit.simulator import NGSpiceSimulator, SpectreSimulator
-from cbadc.digital_estimator import BatchEstimator
+from cbadc._circuit.simulator import NGSpiceSimulator, SpectreSimulator
+from cbadc._digital_estimator import BatchEstimator
 from cbadc.utilities import (
     compute_power_spectral_density,
     find_sinusoidal,

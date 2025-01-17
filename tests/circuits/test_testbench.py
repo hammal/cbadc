@@ -1,8 +1,8 @@
-from cbadc.circuit.components.sources import (
+from cbadc._circuit.components.sources import (
     SinusoidalVoltageSource,
 )
-from cbadc.circuit import Terminal, SpiceDialect
-from cbadc.circuit.testbench import OpAmpTestBench
+from cbadc._circuit import Terminal, SpiceDialect
+from cbadc._circuit.testbench import OpAmpTestBench
 from cbadc.synthesis.leap_frog import get_leap_frog
 from cbadc.analog_signal import Sinusoidal
 import os
