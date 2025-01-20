@@ -483,7 +483,11 @@ def changeFig(
 
 
 def PlotExampleSpectrum(
-    ntf: ZerosPolesGain, M: int, OSR: int, f0: float, quadrature: bool
+    ntf: ZerosPolesGain,
+    M: int = 1,
+    OSR: int = 64,
+    f0: float = 0.0,
+    quadrature: bool = False,
 ):
     """A wrapper for :py:func:`deltasigma.PlotExampleSpectrum`
 
