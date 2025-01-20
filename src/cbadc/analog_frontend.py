@@ -1405,6 +1405,8 @@ class AnalogFrontend:
             the signal-to-noise ratio
         : :py:class:`numpy.ndarray`, shape=(J,)
             the corresponding amplitude of the input signal
+        : `float`
+            the average power of the input signal
         """
         if amp_dB is None:
             amp_dB = np.concatenate(
@@ -1874,6 +1876,17 @@ class GmC(AnalogFrontend):
             self.v_n = v_n.flatten()
 
         self._compute_ABCD()
+
+    @property
+    def dc_gain(self) -> np.ndarray:
+        """The DC gain
+
+        Returns
+        -------
+        : :py:class:`numpy.ndarray`, shape=(N, L + M + N)
+            the DC gain vector.
+        """
+        return self.gm * self.Ro[:, np.newaxis]
 
     @property
     def Ro(self):
