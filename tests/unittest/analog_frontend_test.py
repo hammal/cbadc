@@ -490,12 +490,12 @@ def test_simulateSNR():
     lf, _ = AnalogFrontend.leapfrog(OSR=OSR, N=N, BW=1e7)
     print(lf)
     start_time = time.time()
-    snr_lf, amp_lf = lf.simulateSNR(OSR, k=k)
+    snr_lf, amp_lf, _ = lf.simulateSNR(OSR, k=k)
     end_time = time.time()
 
     ci, _ = AnalogFrontend.chain_of_integrators(OSR=OSR, N=N, BW=1e7)
     print(ci)
-    snr_ci, amp_ci = ci.simulateSNR(OSR, k=k)
+    snr_ci, amp_ci, _ = ci.simulateSNR(OSR, k=k)
 
     nlev = 1 << 2
 
@@ -505,7 +505,7 @@ def test_simulateSNR():
     ABCD = ds.stuffABCD(*args)
     ABCD, _, _ = ds.scaleABCD(ABCD, nlev=nlev)
     afd = AnalogFrontend.dtsdm(ABCD, quantization_levels=nlev)
-    snr_dsm_CRFB, amp_crfb = afd.simulateSNR(OSR, k=k)
+    snr_dsm_CRFB, amp_crfb, _ = afd.simulateSNR(OSR, k=k)
 
     # H_inf_CRFF = 1.5
     # H = ds.synthesizeNTF(N, OSR, 1, H_inf_CRFF)
@@ -539,7 +539,7 @@ def test_GmC():
     ENOB = 14.0
     N = 3
     Bw = 1e7
-    af, _ = AnalogFrontend.leapfrog(ENOB=ENOB, N=N, BW=Bw)
+    af, OSR = AnalogFrontend.leapfrog(ENOB=ENOB, N=N, BW=Bw)
     Ro = np.ones(N) * 1e5
     Co = np.ones(N) * 1e-12
     gmc = GmC(af, Ro, Co)
@@ -552,6 +552,12 @@ def test_GmC():
 
     af_sim = af.simulate(size)
     gmc_sim = gmc.simulate(size)
+
+    wf = af.wiener_filter(OSR=int(np.ceil(OSR)))
+    wf_gmc = gmc.wiener_filter(OSR=int(np.ceil(OSR)))
+
+    u_hat = wf.evaluate(af_sim["s"])[:, 0, :]
+    u_hat_gmc = wf_gmc.evaluate(gmc_sim["s"])[:, 0, :]
 
     plt.figure()
     plt.plot(af_sim["t"], af_sim["x"][:, -1, 0], label="AnalogFrontend")
@@ -594,34 +600,58 @@ def test_GmC():
     print(af.A)
     print(gmc.A)
 
+    plt.figure()
+    length = 200
+    plt.plot(af_sim["t"][:length], u_hat[:length], label="ideal")
+    plt.plot(gmc_sim["t"][:length], u_hat_gmc[:length], label="GmC")
+    plt.legend()
+    plt.xlabel("Time [s]")
+    plt.ylabel("Input")
+
+    plt.figure()
+    plt.psd(u_hat.flatten(), NFFT=1024, Fs=1 / af.dt, label="u_hat")
+    plt.psd(u_hat_gmc.flatten(), NFFT=1024, Fs=1 / af.dt, label="u_hat GmC")
+    plt.legend()
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("PSD [dB/Hz]")
+    plt.title("Power Spectral Density")
+    plt.xscale("log")
+
     plt.show()
     # assert False
 
 
 def test_active_RC():
-    ENOB = 14.0
+    ENOB = 12.0
     N = 5
     Bw = 1e7
-    af, _ = AnalogFrontend.leapfrog(ENOB=ENOB, N=N, BW=Bw)
-    Ro = np.ones(N) * 1e8
-    Co = np.ones(N) * 1e-12
+    af, OSR = AnalogFrontend.leapfrog(ENOB=ENOB, N=N, BW=Bw)
+    Ro = 1e9 * np.ones(N)
+    Co = np.ones(N) * 1e-15
     Cint = np.ones(N) * 1e-12
     gm = 1e-6 * np.ones(N)
-    gmc = ActiveRC(af, Cint, gm, Ro, Co)
-    size = 1 << 12
+    active_RC = ActiveRC(af, Cint, gm, Ro, Co)
+    print(active_RC)
+    size = 1 << 14
     amplitude = np.array([1], dtype=float)
     freq = np.array([af.fs / 128], dtype=float)
     sinusoidal = Sinusoidal(amplitude, freq)
     af.analog_signal = sinusoidal
-    gmc.analog_signal = sinusoidal
+    active_RC.analog_signal = sinusoidal
 
-    print(gmc)
+    print(active_RC)
     af_sim = af.simulate(size)
-    gmc_sim = gmc.simulate(size)
+    active_RC_sim = active_RC.simulate(size)
+
+    wf = af.wiener_filter(OSR=int(np.ceil(OSR)))
+    wf_RC = active_RC.wiener_filter(OSR=int(np.ceil(OSR)))
+
+    u_hat = wf.evaluate(af_sim["s"])[:, 0, :]
+    u_hat_RC = wf_RC.evaluate(active_RC_sim["s"])[:, 0, :]
 
     plt.figure()
     plt.plot(af_sim["t"], af_sim["x"][:, -1, 0], label="AnalogFrontend")
-    plt.plot(gmc_sim["t"], gmc_sim["x"][:, -1, 0], label="ActiveRC")
+    plt.plot(active_RC_sim["t"], active_RC_sim["x"][:, -1, 0], label="ActiveRC")
     plt.legend()
     plt.xlabel("Time [s]")
     plt.ylabel("Output")
@@ -632,8 +662,8 @@ def test_active_RC():
         f = np.fft.rfftfreq(size, d=af.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(af_fft)), label=f"AnalogFrontend {m}")
 
-        gmc_fft = np.fft.rfft(gmc_sim["s"][:, m, 0])
-        f = np.fft.rfftfreq(size, d=gmc.dt)
+        gmc_fft = np.fft.rfft(active_RC_sim["s"][:, m, 0])
+        f = np.fft.rfftfreq(size, d=active_RC.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(gmc_fft)), label=f"ActiveRC {m}")
         plt.legend()
         plt.xlabel("Frequency [Hz]")
@@ -647,15 +677,56 @@ def test_active_RC():
             label=f"AnalogFrontend {m}",
         )
         plt.plot(
-            gmc_sim["t"][:length], gmc_sim["s"][:length, m, 0], label=f"ActiveRC {m}"
+            active_RC_sim["t"][:length],
+            active_RC_sim["s"][:length, m, 0],
+            label=f"ActiveRC {m}",
         )
         plt.legend()
         plt.xlabel("Time [s]")
         plt.ylabel("s amplitude")
+
     # power = gmc.avg_power(gmc_sim["x"])
     # print(power)
     print(af.A)
-    print(gmc.A)
+    print(active_RC.A)
 
-    plt.show()
-    assert False
+    plt.figure()
+    length = 200
+    plt.plot(af_sim["t"][:length], u_hat[:length], label="ideal")
+    plt.plot(active_RC_sim["t"][:length], u_hat_RC[:length], label="ActiveRC")
+    plt.legend()
+    plt.xlabel("Time [s]")
+    plt.ylabel("Input")
+
+    plt.figure()
+    plt.psd(u_hat.flatten(), NFFT=1024, Fs=1 / af.dt, label="u_hat")
+    plt.psd(u_hat_RC.flatten(), NFFT=1024, Fs=1 / af.dt, label="u_hat active RC")
+    plt.legend()
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("PSD [dB/Hz]")
+    plt.title("Power Spectral Density")
+    plt.xscale("log")
+
+    # plt.show()
+    # assert False
+
+
+def test_covariance_and_input_covariance():
+    ENOB = 12
+    Bw = 1e7
+    N = 4
+
+    af, _ = AnalogFrontend.leapfrog(ENOB=ENOB, N=N, BW=Bw)
+
+    cov = 1e-6 * np.eye(N)
+
+    af = AnalogFrontend(
+        af.analog_filter, af.digital_control, af.analog_signal, state_covariance=cov
+    )
+
+    assert (af.state_covariance == cov).all()
+
+    input_covariance = 1e-5 * np.eye(af.L)
+    cov = AnalogFrontend.input_referred_covariance_matrix(af, input_covariance)
+
+    assert cov.shape == (af.N, af.N)

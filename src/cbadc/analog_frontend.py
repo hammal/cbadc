@@ -94,6 +94,12 @@ class AnalogFrontend:
         the state covariance matrix, defaults to None.
     output_covariance: `np.ndarray`, optional
         the output covariance matrix, defaults to None.
+    slew_rate: `np.ndarray`, optional
+        the slew rate, defaults to np.inf * np.ones(N).
+    v_o_max: `np.ndarray`, optional
+        the maximum output voltage, defaults to np.inf * np.ones(M).
+    v_o_min: `np.ndarray`, optional
+        the minimum output voltage, defaults to -np.inf * np.ones(M).
     seed: `int`, optional
         the random seed, defaults to 98123591265830293457639481.
 
@@ -131,6 +137,8 @@ class AnalogFrontend:
         state_covariance: Optional[np.ndarray] = None,
         output_covariance: Optional[np.ndarray] = None,
         slew_rate: Optional[np.ndarray] = None,
+        state_max: Optional[np.ndarray] = None,
+        state_min: Optional[np.ndarray] = None,
         seed: int = 98123591265830293457639481,
     ):
 
@@ -164,13 +172,31 @@ class AnalogFrontend:
 
         if slew_rate is None:
             # V/s
-            self._slew_rate = 1e15 * np.ones((N))
+            self.slew_rate = np.inf * np.ones((N))
         elif isinstance(slew_rate, np.ndarray):
             if slew_rate.size != N:
                 raise ValueError(f"slew_rate must have size {N}, got {slew_rate.size}")
-            self._slew_rate = slew_rate.flatten()
+            self.slew_rate = slew_rate.flatten()
         else:
             raise ValueError(f"slew_rate must be None or a {N}-sized numpy array")
+
+        if state_max is None:
+            self.state_max = np.inf * np.ones((N))
+        elif isinstance(state_max, np.ndarray):
+            if state_max.size != N:
+                raise ValueError(f"state_max must have size {N}, got {state_max.size}")
+            self.state_max = state_max.flatten()
+        else:
+            raise ValueError(f"state_max must be None or a {N}-sized numpy array")
+
+        if state_min is None:
+            self.state_min = -np.inf * np.ones((N))
+        elif isinstance(state_min, np.ndarray):
+            if state_min.size != N:
+                raise ValueError(f"state_min must have size {N}, got {state_min.size}")
+            self.state_min = state_min.flatten()
+        else:
+            raise ValueError(f"state_min must be None or a {N}-sized numpy array")
 
     def __str__(self) -> str:
         return (
@@ -473,6 +499,44 @@ class AnalogFrontend:
         self._slew_rate = value
 
     @property
+    def state_min(self):
+        """The minimum output voltage
+
+        Returns
+        -------
+        : :py:class:`numpy.ndarray`, shape=(N,)
+            the minimum output voltage matrix.
+        """
+        return self._v_o_min
+
+    @state_min.setter
+    def state_min(self, value: np.ndarray):
+        if not isinstance(value, np.ndarray):
+            raise ValueError("v_o_min must be a numpy array")
+        if value.size != self.N:
+            raise ValueError(f"v_o_min must have size {self.N}, got {value.size}")
+        self._v_o_min = value.flatten()
+
+    @property
+    def state_max(self):
+        """The maximum output voltage
+
+        Returns
+        -------
+        : :py:class:`numpy.ndarray`, shape=(N,)
+            the maximum output voltage matrix.
+        """
+        return self._v_o_max
+
+    @state_max.setter
+    def state_max(self, value: np.ndarray):
+        if not isinstance(value, np.ndarray):
+            raise ValueError("v_o_max must be a numpy array")
+        if value.size != self.N:
+            raise ValueError(f"v_o_max must have size {self.N}, got {value.size}")
+        self._v_o_max = value.flatten()
+
+    @property
     def is_discrete_time(self) -> bool:
         """Whether the analog frontend is discrete-time
 
@@ -514,13 +578,48 @@ class AnalogFrontend:
                 tmp = np.vstack(
                     (
                         np.hstack((-self.A, state_covariance)),
-                        (np.zeros((self.N, self.N), dtype=float), self.A.T),
+                        np.hstack((np.zeros((self.N, self.N), dtype=float), self.A.T)),
                     )
                 )
                 tmp = _linalg.expm(tmp * self.dt)
                 state_cov_d = tmp[self.N :, self.N :].T @ tmp[: self.N, self.N :]
             self._state_covariance = state_covariance
             self._state_cov_cholesky = np.linalg.cholesky(state_cov_d)
+
+    @staticmethod
+    def input_referred_covariance_matrix(
+        analog_frontend: "AnalogFrontend", input_covariance: np.ndarray
+    ):
+        """Compute the input-referred covariance matrix
+
+        Parameters
+        ----------
+        analog_filter: :py:class:`scipy.signal.StateSpace`
+            the analog filter
+        input_covariance: :py:class`numpy.ndarray`, shape=(L, L)
+            the input covariance matrix
+
+
+        Returns
+        -------
+        : :py:class:`numpy.ndarray`, shape=(N, N)
+            the input-referred covariance matrix
+        """
+        if not isinstance(analog_frontend, AnalogFrontend):
+            raise ValueError("analog_filter must be an AnalogFrontend instance")
+        if not isinstance(input_covariance, np.ndarray):
+            raise ValueError("input_covariance must be a numpy array")
+        if input_covariance.shape != (
+            analog_frontend.L,
+            analog_frontend.L,
+        ):
+            raise ValueError(
+                f"input_covariance must have shape {(analog_frontend.L, analog_frontend.L)}, got {input_covariance.shape}"
+            )
+        if not np.allclose(input_covariance, input_covariance.T):
+            raise ValueError("input_covariance must be symmetric")
+        B = analog_frontend.B[:, : analog_frontend.L]
+        return B @ input_covariance @ B.transpose()
 
     @property
     def output_covariance(self) -> Union[None, np.ndarray]:
@@ -701,7 +800,9 @@ class AnalogFrontend:
         # initialize the states
         if x is None:
             x = np.zeros((self.N, self.J))
-        states[0, :, :] = x
+        states[0, :, :] = np.clip(
+            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis]
+        )
 
         if sub_samples < 1:
             raise ValueError("sub_samples must be greater than 0")
@@ -745,6 +846,11 @@ class AnalogFrontend:
                     self.A @ states[i] + self.B @ inputs[i],
                     -slew_rate_dt[:, np.newaxis],
                     slew_rate_dt[:, np.newaxis],
+                )
+                states[i + 1] = np.clip(
+                    states[i + 1],
+                    self.state_min[:, np.newaxis],
+                    self.state_max[:, np.newaxis],
                 )
                 # output computation
                 outputs[i + 1] += self.C @ states[i + 1] + self.D @ inputs[i + 1]
@@ -860,6 +966,11 @@ class AnalogFrontend:
                     -slew_rate_dt[:, np.newaxis],
                     slew_rate_dt[:, np.newaxis],
                 )
+                states[i + 1] = np.clip(
+                    states[i + 1],
+                    self.state_min[:, np.newaxis],
+                    self.state_max[:, np.newaxis],
+                )
                 # output computation
                 outputs[i + 1] += C_d @ states[i + 1] + D_d @ inputs[i + 1]
                 # control update
@@ -884,7 +995,7 @@ class AnalogFrontend:
 
             inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
             # populate first output and control
-            outputs[0] = self.C @ states[0] + self.D @ inputs[0]
+            outputs[0] += self.C @ states[0] + self.D @ inputs[0]
             inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
 
             def derivative(t: float, x: np.ndarray, *args) -> np.ndarray:
@@ -917,6 +1028,11 @@ class AnalogFrontend:
                     # method="DOP853",
                 )
                 states[i + 1] += res.y[:, -1].reshape((self.N, self.J))
+                states[i + 1] = np.clip(
+                    states[i + 1],
+                    self.state_min[:, np.newaxis],
+                    self.state_max[:, np.newaxis],
+                )
                 # output computation
                 outputs[i + 1] += self.C @ states[i + 1] + self.D @ inputs[i + 1]
                 # control update
@@ -1246,9 +1362,9 @@ class AnalogFrontend:
 
         if eta2 is not None and OSR is not None:
             logger.warning("Both eta2 and OSR are provided, using eta2")
-        if eta2 is not None:
+        elif eta2 is not None:
             eta2 = float(eta2)
-        if eta2 is None and OSR is not None:
+        elif eta2 is None and OSR is not None:
             # Compute the signal transfer function
             jomega_Bw = 1j * np.pi / (OSR * self.dt)
             _, tf = self.transfer_function(
@@ -1693,56 +1809,80 @@ class GmC(AnalogFrontend):
     ----------
     analog_frontend: : :py:class:`cbadc.analog_frontend.AnalogFrontend`
         the analog frontend
+    Cint: : :py:class:`numpy.ndarray`, shape=(N,)
+        the larger integration capacitor
     Ro: : :py:class:`numpy.ndarray`, shape=(N,)
-        the resistance vector
-    Co: : :py:class:`numpy.ndarray`, shape=(N,)
-        the capacitance vector
+        the output resistance, defaults to np.zeros(N)
+    Cp: : :py:class:`numpy.ndarray`, shape=(N,)
+        the parasitic capacitance, defaults to np.zeros(N)
+    v_n: : :py:class:`numpy.ndarray`, shape=(N,)
+        the input referred noise density in V rms, defaults to np.zeros(N)
+    v_out_min: : :py:class:`numpy.ndarray`, shape=(N,)
+        the minimum output voltage, defalts to -np.inf * np.ones(N)
+    v_out_max: : :py:class:`numpy.ndarray`, shape=(N,)
+        the maximum output voltage, defaults to np.inf * np.ones(N)
+    slew_rate: : :py:class:`numpy.ndarray`, shape=(N,)
+        the slew rate, defaults to np.inf * np.ones(N)
 
     """
 
     def __init__(
         self,
         analog_frontend: AnalogFrontend,
-        Ro: np.ndarray,
-        Co: np.ndarray,
+        Cint: np.ndarray,
+        Ro: Optional[np.ndarray] = None,
+        Cp: Optional[np.ndarray] = None,
+        v_n: Optional[np.ndarray] = None,
+        v_out_min: Optional[np.ndarray] = None,
+        v_out_max: Optional[np.ndarray] = None,
+        slew_rate: Optional[np.ndarray] = None,
     ):
-        if not isinstance(analog_frontend, AnalogFrontend):
-            raise ValueError("analog_frontend must be an instance of AnalogFrontend")
-        if analog_frontend.is_discrete_time:
-            raise ValueError("Analog frontend must be continuous-time")
-        if not isinstance(Ro, np.ndarray):
-            raise ValueError("R must be a numpy array")
-        if Ro.size != analog_frontend.N:
-            raise ValueError(
-                "R must have the same number of rows as the analog frontend"
-            )
-        if not isinstance(Co, np.ndarray):
-            raise ValueError("C must be a numpy array")
-        if Co.size != analog_frontend.N:
-            raise ValueError(
-                "C must have the same number of rows as the analog frontend"
-            )
-        self._Ro = Ro.flatten()
-        self._Co = Co.flatten()
-
         super().__init__(
             _deepcopy(analog_frontend.analog_filter),
             _deepcopy(analog_frontend.digital_control),
             _deepcopy(analog_frontend.analog_signal),
-            _deepcopy(analog_frontend.state_covariance),
-            _deepcopy(analog_frontend.output_covariance),
-            _deepcopy(analog_frontend.slew_rate),
+            state_max=v_out_max,
+            state_min=v_out_min,
+            slew_rate=slew_rate,
         )
+        if not isinstance(analog_frontend, AnalogFrontend):
+            raise ValueError("analog_frontend must be an instance of AnalogFrontend")
+        if analog_frontend.is_discrete_time:
+            raise ValueError("Analog frontend must be continuous-time")
+
+        if not isinstance(Cint, np.ndarray):
+            raise ValueError("C must be a numpy array")
+        if Cint.size != analog_frontend.N:
+            raise ValueError(
+                "C must have the same number of rows as the analog frontend"
+            )
+        self._C_int = Cint.flatten()
+
+        if Ro is not None:
+            self._Ro = Ro.flatten()
+        else:
+            # No output resistance
+            self._Ro = np.zeros_like(Cint)
+
+        if Cp is not None:
+            self._Cp = Cp.flatten()
+        else:
+            # No parasitic capacitance
+            self._Cp = np.zeros_like(self.Cint, dtype=float)
+
+        if v_n is not None:
+            self.v_n = v_n.flatten()
+
         self._compute_ABCD()
 
     @property
     def Ro(self):
-        """The resistance matrix
+        """The output resistance
 
         Returns
         -------
         : :py:class:`numpy.ndarray`, shape=(N,)
-            the resistance matrix.
+            the Ro resistance vector.
         """
         return self._Ro
 
@@ -1756,23 +1896,23 @@ class GmC(AnalogFrontend):
         self._compute_ABCD()
 
     @property
-    def Co(self):
-        """The capacitance matrix
+    def Cint(self):
+        """The larger integration capacitor
 
         Returns
         -------
         : :py:class:`numpy.ndarray`, shape=(N,)
             the capacitance matrix.
         """
-        return self._Co
+        return self._C_int
 
-    @Co.setter
-    def Co(self, value: np.ndarray):
+    @Cint.setter
+    def Cint(self, value: np.ndarray):
         if not isinstance(value, np.ndarray):
-            raise ValueError("C must be a numpy array")
+            raise ValueError("Cint must be a numpy array")
         if value.size != self.N:
-            raise ValueError(f"C must have size {self.N}, got {value.size}")
-        self._Co = value.flatten()
+            raise ValueError(f"Cint must have size {self.N}, got {value.size}")
+        self._C_int = value.flatten()
         self._compute_ABCD()
 
     @property
@@ -1785,12 +1925,52 @@ class GmC(AnalogFrontend):
             the transconductance matrix.
         """
         gm = np.zeros((self.N, self.L + self.M + self.N), dtype=float)
-        gm[: self.N, : self.N] = self._Co * (self.A - np.diag(np.diag(self.A)))
-        gm[: self.N, self.N :] = self._Co * self.B
+        gm[: self.N, : self.N] = self._C_int * (self.A - np.diag(np.diag(self.A)))
+        gm[: self.N, self.N :] = self._C_int * self.B
         return gm
 
+    @property
+    def Cp(self):
+        """The parasitic capacitance
+
+        Returns
+        -------
+        : :py:class:`numpy.ndarray`, shape=(N,)
+            the capacitance matrix.
+        """
+        return self._Cp
+
+    @Cp.setter
+    def Cp(self, value: np.ndarray):
+        if not isinstance(value, np.ndarray):
+            raise ValueError("Cp must be a numpy array")
+        if value.size != self.N:
+            raise ValueError(f"Cp must have size {self.N}, got {value.size}")
+        self._Cp = value.flatten()
+        self._compute_ABCD()
+
+    @property
+    def v_n(self):
+        """The input referred noise density in V
+
+        Returns
+        -------
+        : :py:class:`numpy.ndarray`, shape=(N,)
+            the noise voltage matrix.
+        """
+        return self._v_n
+
+    @v_n.setter
+    def v_n(self, value: np.ndarray):
+        if not isinstance(value, np.ndarray):
+            raise ValueError("v_n must be a numpy array")
+        if value.size != self.N:
+            raise ValueError(f"v_n must have size {self.N}, got {value.size}")
+        self._v_n = value.flatten()
+        self.state_covariance = np.diag(self._v_n**2).astype(float)
+
     def _compute_ABCD(self):
-        one_over_RC = 1.0 / (self._Ro * self._Co)
+        one_over_RC = 1.0 / (self._Ro * (self._C_int + self._Cp))
         self.A -= np.diag(one_over_RC)
 
     def avg_power(self, states: np.ndarray):
@@ -1875,17 +2055,13 @@ class ActiveRC(AnalogFrontend):
         A[N_2:, N_2:] = -np.diag(1.0 / (self._Ro * self._Co))
         A[N_2:, :N_2] = -np.diag(self._gm / self._Co)
 
-        A[:N_2, :N_2] = analog_frontend.A
-        A[:N_2, :N_2] -= np.diag(
-            np.sum(
-                np.abs(analog_frontend.A - np.diag(np.diag(analog_frontend.A))), axis=1
-            )
-        )
+        A[:N_2, N_2:] = -analog_frontend.A
+        A[:N_2, :N_2] -= np.diag(np.sum(np.abs(analog_frontend.A), axis=1))
         # + dV_int /dt
         A[:N_2, :] += A[N_2:, :]
 
         B[:N_2, :] = analog_frontend.B
-        C[:, :N_2] = analog_frontend.C
+        C[:, N_2:] = -analog_frontend.C
 
         analog_filter = StateSpace(A, B, C, D)
 

@@ -410,3 +410,41 @@ def simulateSNR(
     quadrature: bool = False,
 ):
     return ds.simulateSNR(ABCD, OSR, amp, f0, nlev, f, k, quadrature)
+
+
+def plotPZ(
+    ntf: ZerosPolesGain, color: str = "b", markersize: int = 5, showlist: bool = False
+):
+    """A wrapper for :py:func:`deltasigma.plotPZ`
+
+    Parameters
+    ----------
+    ntf : :py:class:`scipy.signal.ZerosPolesGain`
+        The noise transfer function to plot
+    color : str, optional
+        The color of the plot, by default 'b'
+    markersize : int, optional
+        The size of the markers, by default 5
+    showlist : bool, optional
+        Whether to show the list of poles and zeros, by default False
+
+    """
+    ds.plotPZ((ntf.zeros, ntf.poles, ntf.gain), color, markersize, showlist)
+
+
+def DocumentNTF(ntf: ZerosPolesGain, OSR: int, f0: float, quadrature: bool):
+    """A wrapper for :py:func:`deltasigma.DocumentNTF`
+
+    Parameters
+    ----------
+    ntf : :py:class:`scipy.signal.ZerosPolesGain`
+        The noise transfer function to plot
+    OSR : int
+        The oversampling ratio
+    f0 : float
+        The baseband frequency
+    quadrature : bool
+        Whether the modulator is quadrature or not
+
+    """
+    ds.DocumentNTF((ntf.zeros, ntf.poles, ntf.gain), OSR, f0, quadrature)

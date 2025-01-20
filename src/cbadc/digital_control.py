@@ -75,6 +75,7 @@ class DigitalControl:
         quantization_level: Optional[np.ndarray] = None,
         quantization_gain: Optional[np.ndarray] = None,
         dac_waveform: Optional[str] = None,
+        out_max: Optional[np.ndarray] = None,
         **kwargs,
     ):
         if not isinstance(M, int) or M <= 0:
@@ -122,6 +123,17 @@ class DigitalControl:
                 self.dac_waveform = "nrz"
             else:
                 self.dac_waveform = "rz"
+
+        if out_max is not None:
+            if not isinstance(out_max, np.ndarray) or out_max.ndim != 1:
+                raise ValueError("out_max must be a 1D numpy array.")
+            if out_max.size != self.M:
+                raise ValueError("out_max must be of length M.")
+        else:
+            out_max = self._max
+
+        # how to rescale the quantizer output.
+        self._o_scale = out_max.reshape(self.M, 1) / self._max
 
     @property
     def M(self):
@@ -281,7 +293,10 @@ class DigitalControl:
         # note that tmp is (1, t.size) shaped and
         # self.t0 and self.tend are (M, 1) shaped.
         tmp = t.reshape((1, -1))
-        return np.array((tmp >= self.t0) & (tmp < self.tend), dtype=float)
+        return np.array(
+            (tmp >= self.t0[:, np.newaxis]) & (tmp < self.tend[:, np.newaxis]),
+            dtype=float,
+        )
 
     def return2zero(self, t: np.ndarray) -> np.ndarray:
         """Return-to-zero DAC impulse response
@@ -304,7 +319,10 @@ class DigitalControl:
             the impulse response evaluated at time t.
         """
         tmp = t.reshape((1, -1))
-        return np.array((tmp >= self.td) & (tmp < self.t1), dtype=float)
+        return np.array(
+            (tmp >= self.td[:, np.newaxis]) & (tmp < self.t1[:, np.newaxis]),
+            dtype=float,
+        )
 
     def _lineardecaying(self, t: np.ndarray) -> np.ndarray:
         tmp = t.reshape((1, -1))
@@ -348,7 +366,7 @@ class DigitalControl:
         broadcasting_shape = np.ones(value.ndim, dtype=int)
         broadcasting_shape[0] = self.M
 
-        return np.clip(
+        return self._o_scale.reshape(broadcasting_shape) * np.clip(
             2.0
             * np.floor(
                 self._pre_gain.reshape(broadcasting_shape) * value

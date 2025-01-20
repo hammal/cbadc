@@ -49,9 +49,19 @@ def test_quantize():
     levels = 4 * np.ones(M)
     gain = 4 * np.ones(M)
     dc = DigitalControl(M, dt, quantization_level=levels, quantization_gain=gain)
-    values = np.array([0.1, 0.3, 0.6, 0.9])
+    values = np.array([0.1, 0.3, 0.6, 0.9]).reshape(-1, 1)
     res = dc.quantize(values)
     expected = np.array([1, 1, 3, 3], dtype=float)
+    np.testing.assert_array_almost_equal(res.flatten(), expected)
+
+
+def test_quantize_with_scaling():
+    levels = 4 * np.ones(M)
+    out_max = np.ones(M, dtype=float)
+    dc = DigitalControl(M, dt, quantization_level=levels, out_max=out_max)
+    values = np.array([0.5, 1, 1.5, 2]).reshape(-1, 1)
+    res = dc.quantize(values)
+    expected = np.array([1 / 3, 1 / 3, 1.0 / 3, 1.0], dtype=float)
     np.testing.assert_array_almost_equal(res.flatten(), expected)
 
 
