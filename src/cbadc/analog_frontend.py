@@ -1938,8 +1938,10 @@ class GmC(AnalogFrontend):
             the transconductance matrix.
         """
         gm = np.zeros((self.N, self.L + self.M + self.N), dtype=float)
-        gm[: self.N, : self.N] = self._C_int * (self.A - np.diag(np.diag(self.A)))
-        gm[: self.N, self.N :] = self._C_int * self.B
+        gm[: self.N, : self.N] = self._C_int[:, np.newaxis] * (
+            self.A - np.diag(np.diag(self.A))
+        )
+        gm[: self.N, self.N :] = self._C_int[:, np.newaxis] * self.B
         return gm
 
     @property

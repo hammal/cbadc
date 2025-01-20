@@ -730,3 +730,15 @@ def test_covariance_and_input_covariance():
     cov = AnalogFrontend.input_referred_covariance_matrix(af, input_covariance)
 
     assert cov.shape == (af.N, af.N)
+
+
+def test_compute_gm_and_dc_gain_for_GmC():
+    ENOB = 12
+    Bw = 1e7
+    N = 4
+
+    af, _ = AnalogFrontend.leapfrog(ENOB=ENOB, N=N, BW=Bw)
+
+    gmc = GmC(af, np.ones(N), np.ones(N))
+    print(gmc.gm)
+    print(gmc.dc_gain)
