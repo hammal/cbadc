@@ -448,3 +448,56 @@ def DocumentNTF(ntf: ZerosPolesGain, OSR: int, f0: float, quadrature: bool):
 
     """
     ds.DocumentNTF((ntf.zeros, ntf.poles, ntf.gain), OSR, f0, quadrature)
+
+
+def changeFig(
+    fontsize: int = 12,
+    linewidth: int = 1,
+    markersize: int = 6,
+    xfticks: Optional[str] = None,
+    yfticks: Optional[str] = None,
+    bw: bool = False,
+    fig=None,
+):
+    """A wrapper for :py:func:`deltasigma.changeFig`
+
+    Parameters
+    ----------
+    fontsize : int, optional
+        The font size of the labels, by default 12
+    linewidth : int, optional
+        The width of the lines, by default 1
+    markersize : int, optional
+        The size of the markers, by default 6
+    xfticks : Optional[str], optional
+        The format of the x-axis ticks, by default None
+    yfticks : Optional[str], optional
+        The format of the y-axis ticks, by default None
+    bw : bool, optional
+        Whether to use black and white colors, by default False
+    fig : Optional, optional
+        The figure to change, by default None
+
+    """
+    ds.changeFig(fontsize, linewidth, markersize, xfticks, yfticks, bw, fig)
+
+
+def PlotExampleSpectrum(
+    ntf: ZerosPolesGain, M: int, OSR: int, f0: float, quadrature: bool
+):
+    """A wrapper for :py:func:`deltasigma.PlotExampleSpectrum`
+
+    Parameters
+    ----------
+    ntf : :py:class:`scipy.signal.ZerosPolesGain`
+        The noise transfer function to plot
+    M : int
+        The number of tones to simulate
+    OSR : int
+        The oversampling ratio
+    f0 : float
+        The baseband frequency
+    quadrature : bool
+        Whether the modulator is quadrature or not
+    """
+    ds.PlotExampleSpectrum((ntf.zeros, ntf.poles, ntf.gain), M, OSR, f0, quadrature)
