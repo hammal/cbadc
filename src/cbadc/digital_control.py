@@ -439,3 +439,6 @@ class DigitalControl:
             the number of delay steps.
         """
         return np.ceil(np.maximum(self.tend, self.t1) / self.dt).astype(int) - 1
+
+    def __str__(self):
+        return f"DigitalControl(M={self.M}, dt={self.dt}, dac_waveform={self.dac_waveform})"
