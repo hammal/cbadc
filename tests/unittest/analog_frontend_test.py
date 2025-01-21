@@ -414,6 +414,7 @@ def test_simulateDSM():
 
 def test_calculateSNR_from_fft():
     lf, OSR = AnalogFrontend.leapfrog(ENOB=14, N=6, BW=1e7)
+    # lf = GmC(lf, np.ones(lf.N) * 1e5, np.ones(lf.N) * 1e-12)
     amplitude = np.array([[1e0, 0.5, 1e-1, 5e-2, 1e-2, 5e-3, 1e-3]])
     size = 1 << 13
     warm_up = 1 << 7
@@ -493,6 +494,10 @@ def test_simulateSNR():
     snr_lf, amp_lf, _ = lf.simulateSNR(OSR, k=k)
     end_time = time.time()
 
+    gmc = GmC(lf, np.ones(N) * 1e5, np.ones(N) * 1e-12)
+    print(gmc)
+    snr_gmc, amp_gmc, _ = gmc.simulateSNR(OSR, k=k)
+
     ci, _ = AnalogFrontend.chain_of_integrators(OSR=OSR, N=N, BW=1e7)
     print(ci)
     snr_ci, amp_ci, _ = ci.simulateSNR(OSR, k=k)
@@ -520,6 +525,7 @@ def test_simulateSNR():
         f"OSR = {OSR}, N = {N}, time = {end_time - start_time:0.1e} s, size = {1 << k} samples, for {amp_crfb.size} amplitudes"
     )
     plt.plot(amp_lf, snr_lf, "go", label="Leapfrog")
+    plt.plot(amp_gmc, snr_gmc, "bo", label="GmC")
     plt.plot(amp_ci, snr_ci, "yo", label="Chain of Integrators")
     plt.plot(amp_crfb, snr_dsm_CRFB, "ro", label=f"DT-CRFB, H_inf = {H_inf_CRFB}")
     # plt.plot(amp_crff, snr_dsm_CRFF, "bo", label=f"DT-CRFF, H_inf_CRFF = {H_inf_CRFF}")

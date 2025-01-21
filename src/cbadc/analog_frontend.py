@@ -2175,4 +2175,4 @@ class ActiveRC(AnalogFrontend):
         : `float`
             the power consumption
         """
-        return np.mean(states**2 / self.Ro.reshape((1, -1)), axis=0)
+        return np.inf * np.ones_like(states, dtype=float)
