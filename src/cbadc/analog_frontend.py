@@ -1180,8 +1180,9 @@ class AnalogFrontend:
                     (C_d, np.zeros((self.M, additional_states), dtype=float))
                 )
 
-        analog_filter = StateSpace(A_d, B_d, C_d, D_d, dt=dt)
+        analog_filter = StateSpace(A_d, B_d, C_d, D_d, dt=1.0)
         digital_control = _deepcopy(self.digital_control)
+        digital_control.dt = 1.0
         analog_signal = _deepcopy(self.analog_signal)
         return AnalogFrontend(analog_filter, digital_control, analog_signal)
 
