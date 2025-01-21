@@ -206,7 +206,7 @@ class AnalogFrontend:
             f"B=\n{self.B},\n"
             f"C=\n{self.C},\n"
             f"D=\n{self.D}),\n"
-            "   )"
+            ")\n"
             f"digital_control={self.digital_control},\n"
             f"analog_signal={self.analog_signal},\n"
             f"state_covariance={self.state_covariance},\n"
