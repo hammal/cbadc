@@ -117,7 +117,7 @@ def stuffABCD(
         The [[A, B];[C, D]] matrix representation of the modulator
 
     """
-    return ds.stuffABCD(a, g, b, c)
+    return ds.stuffABCD(a, g, b, c, form=form)
 
 
 def mapABCD(
