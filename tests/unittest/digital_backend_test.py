@@ -8,7 +8,7 @@ from cbadc import (
     ZeroOrderHold,
 )
 from cbadc.digital_backend import decimate
-from scipy.signal import dlti
+from scipy.signal import dlti, firwin2, fftconvolve
 import pytest
 
 ENOB = 12.0
@@ -97,7 +97,7 @@ def test_wiener_filter():
     plt.title("Power Spectral Density")
     plt.xscale("log")
 
-    plt.show()
+    # plt.show()
 
 
 K = 1 << 7
@@ -132,9 +132,9 @@ def test_adaptive_fir_filter_calibration():
     dsr = 1.0 / (2 * Bw * af.dt)
     print(dsr, int(dsr))
     size = 1 << 16
-    amplitude = np.array([1], dtype=float)
-    freq = np.array([1e7], dtype=float)
-    sinusoidal = Sinusoidal(amplitude, freq)
+    # amplitude = np.array([1], dtype=float)
+    # freq = np.array([1e7], dtype=float)
+    # sinusoidal = Sinusoidal(amplitude, freq)
     uniform_reference = ZeroOrderHold.uniform_reference_signal(
         af.dt, np.array([-1]), np.array([1])
     )
@@ -148,21 +148,67 @@ def test_adaptive_fir_filter_calibration():
     afir_rls = AdaptiveFIRFilter(M, K, L, dtype=float, dt=af.dt, analog_frontend=af)
 
     s, u = decimate(sim["s"], dsr), decimate(sim["u"], dsr)
-
-    print(f"LSTSQ loss = {afir_lstsq.lstsq(s, u)}")
+    h0 = firwin2(K, [0.0, 1 / dsr, 1.0], [1.0, 1.0, 0.0])
+    r = fftconvolve(u, h0[:, np.newaxis, np.newaxis], mode="valid")
+    print(s.shape, r.shape)
+    print(f"LSTSQ loss = {afir_lstsq.lstsq(s[:,:,0], r[:,:,0])}")
     print(
         f"LMS loss = {afir_lms.lms(
-            s,
-            u,
-            batch_size=1 << 8,
-            epochs=1 << 2,
-            learning_rate=1e-5,
-            momentum=0.95,
+            s[:,:,0],
+            r[:,:,0],
+            batch_size=1 << 7,
+            epochs=1 << 10,
+            learning_rate=1e-2,
+            momentum=0.97,
             verbose=True,
         )}"
     )
     print(
-        f"RLS loss = {afir_rls.rls(s, u, epochs=1 << 0, delta=1e-2, lambda_=1 - 1e-6, verbose=True)}"
+        f"RLS loss = {afir_rls.rls(s[:,:,0], r[:,:,0], epochs=1 << 0, delta=1e-2, lambda_=1e0 - 1e-6, verbose=True)}"
     )
 
-    assert False
+    # jw = np.geomspace(Bw * 1e-2, Bw * 1e1, 1000) * 2j * np.pi
+    jw = np.geomspace(0.5e-2, 0.5, 1000) * 2j * np.pi
+    _, tf_lstsq = afir_lstsq.transfer_function(jw)
+    # print(afir_lstsq.h)
+    # print(tf_lstsq.shape)
+    # print(tf_lstsq)
+
+    afir_lstsq.plot_impulse_response()
+    afir_lstsq.plot_amplitude_response(jw)
+    afir_lms.plot_impulse_response()
+    afir_lms.plot_amplitude_response(jw)
+    afir_rls.plot_impulse_response()
+    afir_rls.plot_amplitude_response(jw)
+
+    # plt.show()
+
+    # assert False
+
+
+def test_adaptive_fir_impulse_response():
+    af, _ = AnalogFrontend.chain_of_integrators(ENOB=ENOB, N=N, BW=Bw)
+    dsr = int(1.0 / (2 * Bw * af.dt))
+    print(dsr, int(dsr))
+    size = 1 << 16
+    # amplitude = np.array([1], dtype=float)
+    # freq = np.array([1e7], dtype=float)
+    uniform_reference = ZeroOrderHold.uniform_reference_signal(
+        af.dt, np.array([-1]), np.array([1])
+    )
+    af.analog_signal = uniform_reference
+
+    afd = af.discretize(af.dt)
+    sim = afd.simulate(size)
+
+    afir_lstsq = AdaptiveFIRFilter(M, K, L, dtype=float, dt=af.dt, analog_frontend=af)
+
+    s, u = decimate(sim["s"], dsr), decimate(sim["u"], dsr)
+    h0 = firwin2(K, [0.0, 1 / dsr, 1.0], [1.0, 1.0, 0.0])
+    r = fftconvolve(u, h0[:, np.newaxis, np.newaxis], mode="valid")
+    print(s.shape, r.shape)
+    print(f"LSTSQ loss = {afir_lstsq.lstsq(s[:,:,0], r[:,:,0])}")
+
+    afir_lstsq.plot_impulse_response()
+    # plt.show()
+    # assert False

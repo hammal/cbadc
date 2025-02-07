@@ -7,7 +7,11 @@ post-processing of the analog frontend output.
 from typing import Optional, Union
 import numpy as np
 from .analog_frontend import AnalogFrontend
-from scipy.linalg import solve_continuous_are as _care, expm as _expm
+from scipy.linalg import (
+    solve_continuous_are as _care,
+    expm as _expm,
+    solve_discrete_are as _dare,
+)
 from scipy.integrate import solve_ivp as _solve_ivp
 from scipy.signal import (
     fftconvolve as _fftconvolve,
@@ -18,6 +22,8 @@ from scipy.signal import (
 from numpy.lib.stride_tricks import sliding_window_view as _sliding_window_view
 from .utilities import show_status as _show_status
 import logging as _logging
+import matplotlib.pyplot as plt
+
 
 logger = _logging.getLogger(__name__)
 
@@ -83,81 +89,96 @@ class WienerFilter:
         N = self._analog_frontend.N
         M = self._analog_frontend.M
 
-        # Compute the Wiener filter
-        # Algebraic Riccati equation Notation
-        A: np.ndarray = self._analog_frontend.A.T
-        B = np.eye(N, dtype=float)
-        # Q = B B^T
-        Q = self._analog_frontend.B[:, :L] @ self._analog_frontend.B[:, :L].T
-        R = self._eta2 * np.eye(N, dtype=float)
-
-        # Compute stationary covariance matrices
-        V_f = _care(A, B, Q, R)
-        V_b = _care(-A, B, Q, R)
-
-        self._W = np.linalg.solve(V_f + V_b, self._analog_frontend.B[:, :L]).T
-
-        dt = self._analog_frontend.dt
-
-        if self._analog_frontend.digital_control.dac_waveform == "nrz":
-            tmp_arg = np.vstack(
-                (
-                    np.hstack(
-                        (
-                            self._analog_frontend.A - V_f / self._eta2,
-                            self._analog_frontend.B[:, L:],
-                        )
-                    ),
-                    np.zeros((M, N + M), dtype=float),
-                )
-            )
-            tmp = _expm(tmp_arg * dt)
-            self._Af = tmp[:N, :N]
-            self._Bf = tmp[:N, N:]
-
-            tmp_arg = np.vstack(
-                (
-                    np.hstack(
-                        (
-                            -self._analog_frontend.A - V_b / self._eta2,
-                            -self._analog_frontend.B[:, L:],
-                        )
-                    ),
-                    np.zeros((M, N + M), dtype=float),
-                )
-            )
-            tmp = _expm(tmp_arg * dt)
-            self._Ab = tmp[:N, :N]
-            self._Bb = tmp[:N, N:]
+        if self._analog_frontend.is_discrete_time:
+            # Compute modified Bryson-Frazier smoother
+            A_dare: np.ndarray = self._analog_frontend.A.T.conjugate()
+            B_dare = np.eye(N, dtype=float)
+            Q_dare = self._analog_frontend.B[:, :L] @ self._analog_frontend.B[:, :L].T
+            R_dare = self._eta2 * np.eye(N, dtype=float)
+            V_X_f = _dare(A_dare, B_dare, Q_dare, R_dare)
+            G = np.linalg.inv(R_dare + V_X_f)
+            F = np.eye(N, dtype=float) - V_X_f @ G
+            self._Af = self._analog_frontend.A @ F
+            self._Bf = self._analog_frontend.B[:, L:]
+            self._Ab = F.transpose() @ self._analog_frontend.A.transpose()
+            self._Bb = G
+            self._W = -self._analog_frontend.B[:, :L].transpose()
         else:
-            tmp_Af = self._analog_frontend.A - V_f / self._eta2
-            tmp_Ab = -self._analog_frontend.A - V_b / self._eta2
-            self._A_f = _expm(tmp_Af * dt)
-            self._A_b = _expm(tmp_Ab * dt)
+            # Compute the Wiener filter
+            # Algebraic Riccati equation Notation
+            A_care: np.ndarray = self._analog_frontend.A.T
+            B_care = np.eye(N, dtype=float)
+            # Q = B B^T
+            Q_care = self._analog_frontend.B[:, :L] @ self._analog_frontend.B[:, :L].T
+            R_care = self._eta2 * np.eye(N, dtype=float)
 
-            def der_f(t: float, x: np.ndarray):
-                return tmp_Af @ x + self._analog_frontend.B[
-                    :, L:
-                ] * self._analog_frontend.digital_control.impulse_response(
-                    np.array([t])
-                ).reshape(
-                    (1, -1)
+            # Compute stationary covariance matrices
+            V_f = _care(A_care, B_care, Q_care, R_care)
+            V_b = _care(-A_care, B_care, Q_care, R_care)
+
+            self._W = np.linalg.solve(V_f + V_b, self._analog_frontend.B[:, :L]).T
+
+            dt = self._analog_frontend.dt
+
+            if self._analog_frontend.digital_control.dac_waveform == "nrz":
+                tmp_arg = np.vstack(
+                    (
+                        np.hstack(
+                            (
+                                self._analog_frontend.A - V_f / self._eta2,
+                                self._analog_frontend.B[:, L:],
+                            )
+                        ),
+                        np.zeros((M, N + M), dtype=float),
+                    )
                 )
+                tmp = _expm(tmp_arg * dt)
+                self._Af = tmp[:N, :N]
+                self._Bf = tmp[:N, N:]
 
-            res = _solve_ivp(der_f, (0, dt), np.zeros(N * M, dtype=float))
-            self._Bf = res.y[:, -1].reshape((N, M))
-
-            def der_b(t: float, x: np.ndarray):
-                return tmp_Ab @ x - self._analog_frontend.B[
-                    :, L:
-                ] * self._analog_frontend.digital_control.impulse_response(
-                    np.array([t])
-                ).reshape(
-                    (1, -1)
+                tmp_arg = np.vstack(
+                    (
+                        np.hstack(
+                            (
+                                -self._analog_frontend.A - V_b / self._eta2,
+                                -self._analog_frontend.B[:, L:],
+                            )
+                        ),
+                        np.zeros((M, N + M), dtype=float),
+                    )
                 )
+                tmp = _expm(tmp_arg * dt)
+                self._Ab = tmp[:N, :N]
+                self._Bb = tmp[:N, N:]
+            else:
+                tmp_Af = self._analog_frontend.A - V_f / self._eta2
+                tmp_Ab = -self._analog_frontend.A - V_b / self._eta2
+                self._A_f = _expm(tmp_Af * dt)
+                self._A_b = _expm(tmp_Ab * dt)
 
-            res = _solve_ivp(der_b, (0, dt), np.zeros(N * M, dtype=float))
-            self._Bb = res.y[:, -1].reshape((N, M))
+                def der_f(t: float, x: np.ndarray):
+                    return tmp_Af @ x + self._analog_frontend.B[
+                        :, L:
+                    ] * self._analog_frontend.digital_control.impulse_response(
+                        np.array([t])
+                    ).reshape(
+                        (1, -1)
+                    )
+
+                res = _solve_ivp(der_f, (0, dt), np.zeros(N * M, dtype=float))
+                self._Bf = res.y[:, -1].reshape((N, M))
+
+                def der_b(t: float, x: np.ndarray):
+                    return tmp_Ab @ x - self._analog_frontend.B[
+                        :, L:
+                    ] * self._analog_frontend.digital_control.impulse_response(
+                        np.array([t])
+                    ).reshape(
+                        (1, -1)
+                    )
+
+                res = _solve_ivp(der_b, (0, dt), np.zeros(N * M, dtype=float))
+                self._Bb = res.y[:, -1].reshape((N, M))
 
     def G(self, jw: np.ndarray) -> np.ndarray:
         """Compute the open loop transfer function.
@@ -447,7 +468,7 @@ class AdaptiveFIRFilter:
     def h(self) -> list[list[TransferFunction]]:
         tfs = []
         a = np.zeros(self.K, dtype=self.dtype)
-        a[0] = 1
+        a[-1] = 1
         for l in range(self.L):
             tmp_tfs = []
             for m in range(self.M):
@@ -798,7 +819,12 @@ class AdaptiveFIRFilter:
         loss : np.ndarray (L,)
             The loss function evaluated on the given data.
         """
-        # (size - K + 1, M, K)
+        if x.shape[1] != self.M:
+            raise ValueError("x must have the shape (size, M)")
+        if y.shape[1] != self.L:
+            raise ValueError("y must have the shape (size, L)")
+
+        # (size - K + 1, M, J, K)
         x_window = _sliding_window_view(x, self.K, axis=0)
         new_size = np.minimum(x_window.shape[0], y.shape[0])
         # shape = (size - K + 1, L)
@@ -813,9 +839,7 @@ class AdaptiveFIRFilter:
         sol = np.linalg.lstsq(np.conj(x_vec_with_offset), y_window, rcond=rcond)
         self._offset[:] = sol[0][-1, :]
         self._h[:] = (
-            sol[0][:-1, :]
-            .reshape((self.M, self.K, self.L))
-            .transpose(2, 0, 1)[:, :, ::-1]
+            sol[0][:-1, :].reshape((self.M, self.K, self.L)).transpose(2, 0, 1)[:, :, :]
         )
         if verbose:
             loss = sol[1] / new_size
@@ -847,8 +871,31 @@ class AdaptiveFIRFilter:
         h = self.h
         for l in range(self.L):
             for m in range(self.M):
-                _, tf[:, l, m] = h[l][m].freqresp(jw)
+                _, tf[:, l, m] = h[l][m].freqresp(np.abs(jw))
         return jw, tf
+
+    def plot_amplitude_response(self, jw: np.ndarray, ax=None):
+        if ax is None:
+            _, ax = plt.subplots(2)
+        jw, tf = self.transfer_function(jw)
+        for l in range(self.L):
+            for m in range(self.M):
+                ax[0].plot(
+                    np.abs(jw) / (2 * np.pi),
+                    20 * np.log10(np.abs(tf[:, l, m])),
+                    label=f"m={m}->l={l}",
+                )
+                ax[1].semilogx(
+                    np.abs(jw) / (2 * np.pi),
+                    20 * np.log10(np.abs(tf[:, l, m])),
+                    label=f"m={m}->l={l}",
+                )
+        ax[1].set_xlabel("Frequency [Hz]")
+        ax[0].set_ylabel("Magnitude [dB]")
+        ax[1].set_ylabel("Magnitude [dB]")
+        ax[0].legend()
+        ax[0].grid()
+        ax[1].grid()
 
     def G(self, jw: np.ndarray) -> np.ndarray:
         """Compute the open loop transfer function.
@@ -918,6 +965,28 @@ class AdaptiveFIRFilter:
         """
         # shape=(size, L, M)
         return self.transfer_function(jw)
+
+    def plot_impulse_response(self, ax=None):
+        """
+        Plot the impulse response of the filter.
+
+        Parameters
+        ----------
+        ax : :py:class:`matplotlib
+        """
+        if ax is None:
+            _, ax = plt.subplots(2)
+        h = self._h
+        for l in range(self.L):
+            for m in range(self.M):
+                ax[0].plot(h[l, m, :], label=f"l={l}, m={m}")
+                ax[1].semilogy(np.abs(h[l, m, :]), label=f"l={l}, m={m}")
+        ax[0].legend()
+        ax[1].set_xlabel("taps")
+        ax[0].set_ylabel("$h$")
+        ax[1].set_ylabel("$|h|$")
+        ax[0].grid()
+        ax[1].grid()
 
 
 def decimate(
