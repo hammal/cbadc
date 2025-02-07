@@ -179,7 +179,7 @@ def test_tranfer_function():
     plt.xlabel("frequency [hz]")
     plt.ylabel("Magnitude [dB]")
 
-    plt.show()
+    # plt.show()
 
 
 def test_quadrature():
@@ -317,7 +317,7 @@ def test_simulate():
     plt.xlabel("Time [s]")
     plt.ylabel("Input")
 
-    plt.show()
+    # plt.show()
     # print(af)
     # print(afd)
     # assert False
@@ -403,7 +403,7 @@ def test_simulateDSM():
     plt.xlabel("Time [s]")
     plt.ylabel("Input")
 
-    plt.show()
+    # plt.show()
     print(afd)
     np.testing.assert_almost_equal(dt_sim["s"], dt_simSDM["s"])
     np.testing.assert_almost_equal(dt_sim["u"], dt_simSDM["u"])
@@ -476,7 +476,7 @@ def test_calculateSNR_from_fft():
     plt.ylabel("Magnitude [dB]")
     plt.legend()
     plt.grid(True)
-    plt.show()
+    # plt.show()
 
     snr_2 = lf.calculateSNR_from_fft(fft_spec)
     print(f"snr: {snr}")
@@ -537,7 +537,7 @@ def test_simulateSNR():
     plt.yticks(yaxis, labels=[f"({y:.0f}, {fom.snr_to_enob(y):.0f})" for y in yaxis])
     plt.tight_layout()
 
-    plt.show()
+    # plt.show()
     # assert False
 
 
@@ -623,7 +623,7 @@ def test_GmC():
     plt.title("Power Spectral Density")
     plt.xscale("log")
 
-    plt.show()
+    # plt.show()
     # assert False
 
 
