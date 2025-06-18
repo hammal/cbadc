@@ -1367,7 +1367,10 @@ class AnalogFrontend:
             eta2 = float(eta2)
         elif eta2 is None and OSR is not None:
             # Compute the signal transfer function
-            jomega_Bw = 1j * np.pi / (OSR * self.dt)
+            if self.is_discrete_time:
+                jomega_Bw = 1j * np.pi / (OSR)
+            else:
+                jomega_Bw = 1j * np.pi / (OSR * self.dt)
             _, tf = self.transfer_function(
                 np.array([jomega_Bw]), input_index=0, output_index=-1
             )
@@ -1476,10 +1479,10 @@ class AnalogFrontend:
         # OSR = 1 / (2 * dt * BW)
         wf = self.wiener_filter(OSR=OSR)
         # shape = (fft_bins+warm_up, J)
-        u_hat = wf.evaluate(sim["s"])[:, 0, :]
+        u_hat = wf.evaluate(sim["s"])[:, :, :]
         # shape = (fft_bins, J)
         hwfft = np.fft.fftshift(
-            np.fft.fft(u_hat[warm_up:] * window[:, np.newaxis], axis=0), axes=0
+            np.fft.fft(u_hat[warm_up:, 0, :] * window[:, np.newaxis], axis=0), axes=0
         )
         # shape = (J,)
         snr = self.calculateSNR_from_fft(hwfft[in_band_bins - 1])
