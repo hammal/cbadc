@@ -1480,6 +1480,7 @@ class AnalogFrontend:
         wf = self.wiener_filter(OSR=OSR)
         # shape = (fft_bins+warm_up, J)
         u_hat = wf.evaluate(sim["s"])[:, :, :]
+        print(u_hat.shape)
         # shape = (fft_bins, J)
         hwfft = np.fft.fftshift(
             np.fft.fft(u_hat[warm_up:, 0, :] * window[:, np.newaxis], axis=0), axes=0
