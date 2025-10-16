@@ -116,12 +116,12 @@ def test_discretize():
 
     # Test A matrix
     np.testing.assert_allclose(afd2.A, afd.A)
-    np.testing.assert_allclose(afd3.A[:N, :N], afd.A)
+    np.testing.assert_allclose(afd3.A[:, :N, :N], afd.A)
 
     # Test B matrix
-    B1 = afd3.B[:N, 1:]
-    B2 = afd3.A[:N, N : N + M]
-    B3 = afd3.A[:N, N + M :]
+    B1 = afd3.B[:, :N, 1:]
+    B2 = afd3.A[:, :N, N : N + M]
+    B3 = afd3.A[:, :N, N + M :]
     print(B1)
     print(B2)
     print(B3)
@@ -193,16 +193,16 @@ def test_quadrature():
     assert quad.N == 2 * N
     assert quad.M == 2 * N
     assert quad.dt == af.dt
-    np.testing.assert_allclose(quad.A[:N, :N], af.A)
-    np.testing.assert_allclose(quad.A[N:, N:], af.A)
-    np.testing.assert_allclose(quad.A[N:, :N], wp * np.eye(N))
-    np.testing.assert_allclose(quad.A[:N, N:], -wp * np.eye(N))
-    np.testing.assert_allclose(quad.B[:N, : N + L], af.B)
-    np.testing.assert_allclose(quad.B[N:, N + L :], af.B)
-    np.testing.assert_allclose(quad.C[:N, :N], af.C)
-    np.testing.assert_allclose(quad.C[N:, N:], af.C)
-    np.testing.assert_allclose(quad.D[:N, : N + L], af.D)
-    np.testing.assert_allclose(quad.D[N:, N + L :], af.D)
+    np.testing.assert_allclose(quad.A[:, :N, :N], af.A)
+    np.testing.assert_allclose(quad.A[:, N:, N:], af.A)
+    np.testing.assert_allclose(quad.A[0, N:, :N], wp * np.eye(N))
+    np.testing.assert_allclose(quad.A[0, :N, N:], -wp * np.eye(N))
+    np.testing.assert_allclose(quad.B[:, :N, : N + L], af.B)
+    np.testing.assert_allclose(quad.B[:, N:, N + L :], af.B)
+    np.testing.assert_allclose(quad.C[:, :N, :N], af.C)
+    np.testing.assert_allclose(quad.C[:, N:, N:], af.C)
+    np.testing.assert_allclose(quad.D[:, :N, : N + L], af.D)
+    np.testing.assert_allclose(quad.D[:, N:, N + L :], af.D)
 
 
 def test_global_control():
@@ -262,15 +262,15 @@ def test_simulate():
     for m in range(af.M):
         plt.figure()
         plt.title(f"s {m} freq")
-        s_fft = np.fft.rfft(full_sim["s"][:, m, 0])
+        s_fft = np.fft.rfft(full_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=af.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label="Full")
 
-        s_fft = np.fft.rfft(dt_sim["s"][:, m, 0])
+        s_fft = np.fft.rfft(dt_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=af.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label="Discrete")
 
-        s_fft = np.fft.rfft(sin_sim["s"][:, m, 0])
+        s_fft = np.fft.rfft(sin_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=af.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label="Sinusoidal")
         plt.legend()
@@ -278,12 +278,12 @@ def test_simulate():
         plt.ylabel("Magnitude [dB]")
 
         plt.figure()
-        plt.title(f"s {m}")
+        plt.title(f"v {m}")
         # length = 200
         length = size
-        plt.plot(full_sim["t"][:length], full_sim["s"][:length, m, 0], label="Full")
-        plt.plot(dt_sim["t"][:length], dt_sim["s"][:length, m, 0], label="Discrete")
-        plt.plot(sin_sim["t"][:length], sin_sim["s"][:length, m, 0], label="Sinusoidal")
+        plt.plot(full_sim["t"][:length], full_sim["v"][:length, m, 0], label="Full")
+        plt.plot(dt_sim["t"][:length], dt_sim["v"][:length, m, 0], label="Discrete")
+        plt.plot(sin_sim["t"][:length], sin_sim["v"][:length, m, 0], label="Sinusoidal")
         plt.legend()
         plt.xlabel("Time [s]")
         plt.ylabel("amplitude")
@@ -321,13 +321,13 @@ def test_simulate():
     # print(af)
     # print(afd)
     # assert False
-    np.testing.assert_almost_equal(sin_sim["s"], dt_sim["s"])
+    np.testing.assert_almost_equal(sin_sim["v"], dt_sim["v"])
     np.testing.assert_almost_equal(sin_sim["u"], dt_sim["u"])
     np.testing.assert_almost_equal(sin_sim["t"], dt_sim["t"])
     np.testing.assert_almost_equal(sin_sim["y"], dt_sim["y"])
     np.testing.assert_almost_equal(sin_sim["x"], dt_sim["x"])
 
-    np.testing.assert_almost_equal(full_sim["s"], sin_sim["s"])
+    np.testing.assert_almost_equal(full_sim["v"], sin_sim["v"])
     np.testing.assert_almost_equal(full_sim["u"], sin_sim["u"])
     np.testing.assert_almost_equal(full_sim["t"], sin_sim["t"])
     np.testing.assert_almost_equal(full_sim["y"], sin_sim["y"])
@@ -372,13 +372,13 @@ def test_simulateDSM():
     plt.ylabel("Output")
 
     for m in range(afd.M):
-        plt.figure("s")
+        plt.figure("v")
 
-        s_fft = np.fft.rfft(dt_sim["s"][:, m, 0])
+        s_fft = np.fft.rfft(dt_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=afd.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label=f"AFsim {m}")
 
-        s_fft = np.fft.rfft(dt_simSDM["s"][:, m, 0])
+        s_fft = np.fft.rfft(dt_simSDM["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=afd.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label=f"DSSim {m}")
         plt.legend()
@@ -387,9 +387,9 @@ def test_simulateDSM():
 
         plt.figure("s_time")
         length = 200
-        plt.plot(dt_sim["t"][:length], dt_sim["s"][:length, m, 0], label=f"AFsim {m}")
+        plt.plot(dt_sim["t"][:length], dt_sim["v"][:length, m, 0], label=f"AFsim {m}")
         plt.plot(
-            dt_simSDM["t"][:length], dt_simSDM["s"][:length, m, 0], label=f"DSSim {m}"
+            dt_simSDM["t"][:length], dt_simSDM["v"][:length, m, 0], label=f"DSSim {m}"
         )
         plt.legend()
         plt.xlabel("Time [s]")
@@ -405,7 +405,7 @@ def test_simulateDSM():
 
     # plt.show()
     print(afd)
-    np.testing.assert_almost_equal(dt_sim["s"], dt_simSDM["s"])
+    np.testing.assert_almost_equal(dt_sim["v"], dt_simSDM["v"])
     np.testing.assert_almost_equal(dt_sim["u"], dt_simSDM["u"])
     np.testing.assert_almost_equal(dt_sim["t"], dt_simSDM["t"])
     np.testing.assert_almost_equal(dt_sim["y"], dt_simSDM["y"])
@@ -431,7 +431,7 @@ def test_calculateSNR_from_fft():
     eta2 = np.abs(tf[0, 0, 0]) ** 2
     print(f"eta2 = {eta2}")
     wf = lf.wiener_filter(eta2)
-    u_hat = wf.evaluate(sim["s"])[:, 0, :]
+    u_hat = wf.evaluate(sim["v"])[:, 0, :]
     hwfft = np.fft.fftshift(np.fft.fft(u_hat[warm_up:], axis=0), axes=0)
     in_band_bins = size // 2 + np.arange(3, np.round(size / (2 * OSR)) + 1, dtype=int)
 
@@ -562,8 +562,8 @@ def test_GmC():
     wf = af.wiener_filter(OSR=int(np.ceil(OSR)))
     wf_gmc = gmc.wiener_filter(OSR=int(np.ceil(OSR)))
 
-    u_hat = wf.evaluate(af_sim["s"])[:, 0, :]
-    u_hat_gmc = wf_gmc.evaluate(gmc_sim["s"])[:, 0, :]
+    u_hat = wf.evaluate(af_sim["v"])[:, 0, :]
+    u_hat_gmc = wf_gmc.evaluate(gmc_sim["v"])[:, 0, :]
 
     plt.figure()
     plt.plot(af_sim["t"], af_sim["x"][:, -1, 0], label="AnalogFrontend")
@@ -574,16 +574,16 @@ def test_GmC():
 
     print(af_sim["x"].shape)
     print(gmc_sim["x"].shape)
-    print(af_sim["s"].shape)
-    print(gmc_sim["s"].shape)
+    print(af_sim["v"].shape)
+    print(gmc_sim["v"].shape)
 
     for m in range(af.M):
         plt.figure()
-        af_fft = np.fft.rfft(af_sim["s"][:, m, 0])
+        af_fft = np.fft.rfft(af_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=af.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(af_fft)), label=f"AnalogFrontend {m}")
 
-        gmc_fft = np.fft.rfft(gmc_sim["s"][:, m, 0])
+        gmc_fft = np.fft.rfft(gmc_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=gmc.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(gmc_fft)), label=f"GmC {m}")
         plt.legend()
@@ -594,10 +594,10 @@ def test_GmC():
         length = 200
         plt.plot(
             af_sim["t"][:length],
-            af_sim["s"][:length, m, 0],
+            af_sim["v"][:length, m, 0],
             label=f"AnalogFrontend {m}",
         )
-        plt.plot(gmc_sim["t"][:length], gmc_sim["s"][:length, m, 0], label=f"GmC {m}")
+        plt.plot(gmc_sim["t"][:length], gmc_sim["v"][:length, m, 0], label=f"GmC {m}")
         plt.legend()
         plt.xlabel("Time [s]")
         plt.ylabel("s amplitude")
@@ -652,8 +652,8 @@ def test_active_RC():
     wf = af.wiener_filter(OSR=int(np.ceil(OSR)))
     wf_RC = active_RC.wiener_filter(OSR=int(np.ceil(OSR)))
 
-    u_hat = wf.evaluate(af_sim["s"])[:, 0, :]
-    u_hat_RC = wf_RC.evaluate(active_RC_sim["s"])[:, 0, :]
+    u_hat = wf.evaluate(af_sim["v"])[:, 0, :]
+    u_hat_RC = wf_RC.evaluate(active_RC_sim["v"])[:, 0, :]
 
     plt.figure()
     plt.plot(af_sim["t"], af_sim["x"][:, -1, 0], label="AnalogFrontend")
@@ -664,11 +664,11 @@ def test_active_RC():
 
     for m in range(af.M):
         plt.figure()
-        af_fft = np.fft.rfft(af_sim["s"][:, m, 0])
+        af_fft = np.fft.rfft(af_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=af.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(af_fft)), label=f"AnalogFrontend {m}")
 
-        gmc_fft = np.fft.rfft(active_RC_sim["s"][:, m, 0])
+        gmc_fft = np.fft.rfft(active_RC_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=active_RC.dt)
         plt.semilogx(f, 20 * np.log10(np.abs(gmc_fft)), label=f"ActiveRC {m}")
         plt.legend()
@@ -679,12 +679,12 @@ def test_active_RC():
         length = 200
         plt.plot(
             af_sim["t"][:length],
-            af_sim["s"][:length, m, 0],
+            af_sim["v"][:length, m, 0],
             label=f"AnalogFrontend {m}",
         )
         plt.plot(
             active_RC_sim["t"][:length],
-            active_RC_sim["s"][:length, m, 0],
+            active_RC_sim["v"][:length, m, 0],
             label=f"ActiveRC {m}",
         )
         plt.legend()

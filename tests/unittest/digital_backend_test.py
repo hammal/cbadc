@@ -75,8 +75,8 @@ def test_wiener_filter():
     )
     eta2 = np.abs(tf[0, 0, 0]) ** 2
     wf = af.wiener_filter(eta2)
-    u_hat_dt = wf(dt_sim["s"])
-    u_hat_ct = wf(ct_sim["s"])
+    u_hat_dt = wf(dt_sim["v"])
+    u_hat_ct = wf(ct_sim["v"])
     u = dt_sim["u"][:, 0]
 
     plt.figure()
@@ -147,7 +147,7 @@ def test_adaptive_fir_filter_calibration():
     afir_lms = AdaptiveFIRFilter(M, K, L, dtype=float, dt=af.dt, analog_frontend=af)
     afir_rls = AdaptiveFIRFilter(M, K, L, dtype=float, dt=af.dt, analog_frontend=af)
 
-    s, u = decimate(sim["s"], dsr), decimate(sim["u"], dsr)
+    s, u = decimate(sim["v"], dsr), decimate(sim["u"], dsr)
     h0 = firwin2(K, [0.0, 1 / dsr, 1.0], [1.0, 1.0, 0.0])
     r = fftconvolve(u, h0[:, np.newaxis, np.newaxis], mode="valid")
     print(s.shape, r.shape)
@@ -203,7 +203,7 @@ def test_adaptive_fir_impulse_response():
 
     afir_lstsq = AdaptiveFIRFilter(M, K, L, dtype=float, dt=af.dt, analog_frontend=af)
 
-    s, u = decimate(sim["s"], dsr), decimate(sim["u"], dsr)
+    s, u = decimate(sim["v"], dsr), decimate(sim["u"], dsr)
     h0 = firwin2(K, [0.0, 1 / dsr, 1.0], [1.0, 1.0, 0.0])
     r = fftconvolve(u, h0[:, np.newaxis, np.newaxis], mode="valid")
     print(s.shape, r.shape)

@@ -91,32 +91,36 @@ class WienerFilter:
 
         if self._analog_frontend.is_discrete_time:
             # Compute modified Bryson-Frazier smoother
-            A_dare: np.ndarray = self._analog_frontend.A.T.conjugate()
+            A_dare: np.ndarray = self._analog_frontend.A[0].T.conjugate()
             B_dare = np.eye(N, dtype=float)
-            Q_dare = self._analog_frontend.B[:, :L] @ self._analog_frontend.B[:, :L].T
+            Q_dare = (
+                self._analog_frontend.B[0, :, :L] @ self._analog_frontend.B[0, :, :L].T
+            )
             R_dare = self._eta2 * np.eye(N, dtype=float)
             V_X_f = _dare(A_dare, B_dare, Q_dare, R_dare)
             G = np.linalg.inv(R_dare + V_X_f)
             F = np.eye(N, dtype=float) - V_X_f @ G
-            self._Af = self._analog_frontend.A @ F
-            self._Bf = self._analog_frontend.B[:, L:]
-            self._Ab = F.transpose() @ self._analog_frontend.A.transpose()
+            self._Af = self._analog_frontend.A[0] @ F
+            self._Bf = self._analog_frontend.B[0, :, L:]
+            self._Ab = F.transpose() @ self._analog_frontend.A[0].transpose()
             self._Bb = -G
-            self._W = -self._analog_frontend.B[:, :L].transpose()
+            self._W = -self._analog_frontend.B[0, :, :L].transpose()
         else:
             # Compute the Wiener filter
             # Algebraic Riccati equation Notation
-            A_care: np.ndarray = self._analog_frontend.A.T
+            A_care: np.ndarray = self._analog_frontend.A[0].T
             B_care = np.eye(N, dtype=float)
             # Q = B B^T
-            Q_care = self._analog_frontend.B[:, :L] @ self._analog_frontend.B[:, :L].T
+            Q_care = (
+                self._analog_frontend.B[0, :, :L] @ self._analog_frontend.B[0, :, :L].T
+            )
             R_care = self._eta2 * np.eye(N, dtype=float)
 
             # Compute stationary covariance matrices
             V_f = _care(A_care, B_care, Q_care, R_care)
             V_b = _care(-A_care, B_care, Q_care, R_care)
 
-            self._W = np.linalg.solve(V_f + V_b, self._analog_frontend.B[:, :L]).T
+            self._W = np.linalg.solve(V_f + V_b, self._analog_frontend.B[0, :, :L]).T
 
             dt = self._analog_frontend.dt
 
@@ -125,8 +129,8 @@ class WienerFilter:
                     (
                         np.hstack(
                             (
-                                self._analog_frontend.A - V_f / self._eta2,
-                                self._analog_frontend.B[:, L:],
+                                self._analog_frontend.A[0] - V_f / self._eta2,
+                                self._analog_frontend.B[0, :, L:],
                             )
                         ),
                         np.zeros((M, N + M), dtype=float),
@@ -140,8 +144,8 @@ class WienerFilter:
                     (
                         np.hstack(
                             (
-                                -self._analog_frontend.A - V_b / self._eta2,
-                                -self._analog_frontend.B[:, L:],
+                                -self._analog_frontend.A[0] - V_b / self._eta2,
+                                -self._analog_frontend.B[0, :, L:],
                             )
                         ),
                         np.zeros((M, N + M), dtype=float),
@@ -151,14 +155,14 @@ class WienerFilter:
                 self._Ab = tmp[:N, :N]
                 self._Bb = tmp[:N, N:]
             else:
-                tmp_Af = self._analog_frontend.A - V_f / self._eta2
-                tmp_Ab = -self._analog_frontend.A - V_b / self._eta2
+                tmp_Af = self._analog_frontend.A[0] - V_f / self._eta2
+                tmp_Ab = -self._analog_frontend.A[0] - V_b / self._eta2
                 self._A_f = _expm(tmp_Af * dt)
                 self._A_b = _expm(tmp_Ab * dt)
 
                 def der_f(t: float, x: np.ndarray):
                     return tmp_Af @ x + self._analog_frontend.B[
-                        :, L:
+                        0, :, L:
                     ] * self._analog_frontend.digital_control.impulse_response(
                         np.array([t])
                     ).reshape(
@@ -170,7 +174,7 @@ class WienerFilter:
 
                 def der_b(t: float, x: np.ndarray):
                     return tmp_Ab @ x - self._analog_frontend.B[
-                        :, L:
+                        0, :, L:
                     ] * self._analog_frontend.digital_control.impulse_response(
                         np.array([t])
                     ).reshape(

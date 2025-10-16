@@ -60,6 +60,97 @@ def _g_i_leapfrog(N: int):
     return np.float64(g_i.subs(omega_p, 1e0).evalf())
 
 
+class CyclicStateSpace(StateSpace):
+    """A cyclic state space system
+
+    A cyclic state space system is a state space system where
+    the state matrix is cyclic, i.e. A[k] = A[k % K] for some K.
+
+    Parameters
+    ----------
+    A: `np.ndarray`, shape=(K, N, N)
+        the state matrix
+    B: `np.ndarray`, shape=(K, N, L + M)
+        the input matrix
+    C: `np.ndarray`, shape=(H, M, N)
+        the output matrix
+    D: `np.ndarray`, shape=(H, M, L + M)
+        the feedthrough matrix
+    dt: `float`, optional
+        the sampling period, defaults to None (continuous-time system)
+
+    Attributes
+    ----------
+    A: `np.ndarray`, shape=(K, N, N)
+        the state matrix
+    B: `np.ndarray`, shape=(K, N, L + M)
+        the input matrix
+    C: `np.ndarray`, shape=(H, M, N)
+        the output matrix
+    D: `np.ndarray`, shape=(H, M, L + M)
+        the feedthrough matrix
+    dt: `float`
+        the sampling period
+
+    """
+
+    def __init__(
+        self,
+        A: np.ndarray,
+        B: np.ndarray,
+        C: np.ndarray,
+        D: np.ndarray,
+        dt: Optional[float] = None,
+    ):
+        if not isinstance(A, np.ndarray):
+            raise ValueError("A must be a numpy array")
+        if not isinstance(B, np.ndarray):
+            raise ValueError("B must be a numpy array")
+        if not isinstance(C, np.ndarray):
+            raise ValueError("C must be a numpy array")
+        if not isinstance(D, np.ndarray):
+            raise ValueError("D must be a numpy array")
+
+        if A.ndim != 3:
+            raise ValueError("A must be a 3D numpy array")
+        if B.ndim != 3:
+            raise ValueError("B must be a 3D numpy array")
+        if C.ndim != 3:
+            raise ValueError("C must be a 3D numpy array")
+        if D.ndim != 3:
+            raise ValueError("D must be a 3D numpy array")
+
+        if A.shape[1] != A.shape[2]:
+            raise ValueError("A must be square")
+        if A.shape[0] != B.shape[0]:
+            raise ValueError("A and B must have the same number of slices")
+        if C.shape[0] != D.shape[0]:
+            raise ValueError("C and D must have the same number of slices")
+        if A.shape[1] != B.shape[1]:
+            raise ValueError("A and B must have the same number of rows")
+        if B.shape[2] != D.shape[2]:
+            raise ValueError("B and D must have the same number of columns")
+        if C.shape[1] != D.shape[1]:
+            raise ValueError("C and D must have the same number of rows")
+        if A.shape[1] != C.shape[2]:
+            raise ValueError("A and C must have the same number of columns")
+        if dt is not None and (not isinstance(dt, (float, int)) or dt <= 0):
+            raise ValueError("dt must be a positive float or None")
+        self._A = A
+        self._B = B
+        self._C = C
+        self._D = D
+        self._dt = dt
+        super().__init__(A[0, :, :], B[0, :, :], C[0, :, :], D[0, :, :], dt)
+
+        self._K = A.shape[0]
+        self._H = C.shape[0]
+        self._N = A.shape[1]
+        self._M = D.shape[1]
+        self._L = B.shape[2] - self._M
+        self._is_discrete_time = dt is not None
+
+
 class AnalogFrontend:
     """An analog frontend
 
@@ -70,16 +161,17 @@ class AnalogFrontend:
 
     In particular, an analog filter is specified by a
     [[A B], [C D]] state-space representation, where
-    - A is the state matrix of shape ((N, N))
-    - B is the input matrix of shape ((N, L + M)), where L is the number of analog signals and M is the number of control signals.
+    - A is the state matrix of shape ((K, N, N)), where K is the sequence length of the system, and N is the number of analog state variables.
+    - B is the input matrix of shape ((K, N, L + M)), where L is the number of analog signals and M is the number of control signals.
     Furthermore, B is partitioned into B = [B_L B_M],
     where B_0 is the corresponding analog signal input matrix of shape ((N, L))
     and B_1 is the digital control matrix of shape ((N, M)).
-    - C is the output matrix (control input matrix) of shape ((M, N)), and
-    - D is the feedthrough matrix of shape ((M, L + M)) where
+    - C is the output matrix (control input matrix) of shape ((H, M, N)), and
+    - D is the feedthrough matrix of shape ((H, M, L + M)) where
     D is partitioned into D = [D_L D_M], where
     D_L is the feedthrough matrix for the analog signals and
     D_M is the feedthrough matrix for the control signals.
+    H is the number of control sequences where a [C D][k, i, :] = [0, ..., 0] would result in a no operation for the i-th control signal at the k-th sequence.
 
 
     Parameters
@@ -146,57 +238,48 @@ class AnalogFrontend:
         self.digital_control = digital_control
         self.analog_signal = analog_signal
 
-        # Check dimensions
-        L = self.analog_signal.L
-        M = self.digital_control.M
-        N = self.analog_filter.A.shape[0]
         self.A = self.analog_filter.A
         self.B = self.analog_filter.B
         self.C = self.analog_filter.C
         self.D = self.analog_filter.D
-        if self.B.shape != (N, L + M):
-            raise ValueError(
-                f"analog_filter.B must have shape {(N, L + M)}, got {self.B.shape}"
-            )
-        if self.C.shape != (M, N):
-            raise ValueError(
-                f"analog_filter.C must have shape {(M, N)}, got {self.C.shape}"
-            )
-        if self.D.shape != (M, L + M):
-            raise ValueError(
-                f"analog_filter.D must have shape {(M, L + M)}, got {self.D.shape}"
-            )
+
         self.state_covariance = state_covariance
         self.output_covariance = output_covariance
         self.rng = np.random.default_rng(seed)
 
         if slew_rate is None:
             # V/s
-            self.slew_rate = np.inf * np.ones((N))
+            self.slew_rate = np.inf * np.ones((self.N))
         elif isinstance(slew_rate, np.ndarray):
-            if slew_rate.size != N:
-                raise ValueError(f"slew_rate must have size {N}, got {slew_rate.size}")
+            if slew_rate.size != self.N:
+                raise ValueError(
+                    f"slew_rate must have size {self.N}, got {slew_rate.size}"
+                )
             self.slew_rate = slew_rate.flatten()
         else:
-            raise ValueError(f"slew_rate must be None or a {N}-sized numpy array")
+            raise ValueError(f"slew_rate must be None or a {self.N}-sized numpy array")
 
         if state_max is None:
-            self.state_max = np.inf * np.ones((N))
+            self.state_max = np.inf * np.ones((self.N))
         elif isinstance(state_max, np.ndarray):
-            if state_max.size != N:
-                raise ValueError(f"state_max must have size {N}, got {state_max.size}")
+            if state_max.size != self.N:
+                raise ValueError(
+                    f"state_max must have size {self.N}, got {state_max.size}"
+                )
             self.state_max = state_max.flatten()
         else:
-            raise ValueError(f"state_max must be None or a {N}-sized numpy array")
+            raise ValueError(f"state_max must be None or a {self.N}-sized numpy array")
 
         if state_min is None:
-            self.state_min = -np.inf * np.ones((N))
+            self.state_min = -np.inf * np.ones((self.N))
         elif isinstance(state_min, np.ndarray):
-            if state_min.size != N:
-                raise ValueError(f"state_min must have size {N}, got {state_min.size}")
+            if state_min.size != self.N:
+                raise ValueError(
+                    f"state_min must have size {self.N}, got {state_min.size}"
+                )
             self.state_min = state_min.flatten()
         else:
-            raise ValueError(f"state_min must be None or a {N}-sized numpy array")
+            raise ValueError(f"state_min must be None or a {self.N}-sized numpy array")
 
     def __str__(self) -> str:
         return (
@@ -233,10 +316,12 @@ class AnalogFrontend:
     def A(self, A: Optional[np.ndarray] = None):
         if not isinstance(A, np.ndarray):
             raise ValueError("A must be a numpy array")
-        if A.shape != (self.N, self.N):
-            raise ValueError(f"A must have shape {(self.N, self.N)}, got {A.shape}")
-        self._A: np.ndarray = np.asarray(A)
-        self.analog_filter.A = np.asarray(A)
+        if A.shape[-2:] != (self.N, self.N):
+            raise ValueError(
+                f"A.shape[-2:] must have shape {(self.N, self.N)}, got {A.shape}"
+            )
+        self._A: np.ndarray = np.asarray(A).reshape((-1, self.N, self.N))
+        self.analog_filter.A = self._A[0, :, :]
 
     @property
     def B(self) -> np.ndarray:
@@ -253,12 +338,12 @@ class AnalogFrontend:
     def B(self, B: Optional[np.ndarray] = None):
         if not isinstance(B, np.ndarray):
             raise ValueError("B must be a numpy array")
-        if B.shape != (self.N, self.L + self.M):
+        if B.shape[-2:] != (self.N, self.L + self.M):
             raise ValueError(
-                f"B must have shape {(self.N, self.L + self.M)}, got {B.shape}"
+                f"B.shape[-2:] must have shape {(self.N, self.L + self.M)}, got {B.shape}"
             )
-        self._B: np.ndarray = np.asarray(B)
-        self.analog_filter.B = np.asarray(B)
+        self._B: np.ndarray = np.asarray(B).reshape((-1, self.N, self.L + self.M))
+        self.analog_filter.B = self._B[0, :, :]
 
     @property
     def C(self) -> np.ndarray:
@@ -275,10 +360,12 @@ class AnalogFrontend:
     def C(self, C: Optional[np.ndarray] = None):
         if not isinstance(C, np.ndarray):
             raise ValueError("C must be a numpy array")
-        if C.shape != (self.M, self.N):
-            raise ValueError(f"C must have shape {(self.M, self.N)}, got {C.shape}")
-        self._C = np.asarray(C)
-        self.analog_filter.C = np.asarray(C)
+        if C.shape[-2:] != (self.M, self.N):
+            raise ValueError(
+                f"C.shape[-2:] must have shape {(self.M, self.N)}, got {C.shape}"
+            )
+        self._C = np.asarray(C).reshape((-1, self.M, self.N))
+        self.analog_filter.C = self._C[0, :, :]
 
     @property
     def D(self) -> np.ndarray:
@@ -295,12 +382,12 @@ class AnalogFrontend:
     def D(self, D: Optional[np.ndarray] = None):
         if not isinstance(D, np.ndarray):
             raise ValueError("D must be a numpy array")
-        if D.shape != (self.M, self.L + self.M):
+        if D.shape[-2:] != (self.M, self.L + self.M):
             raise ValueError(
                 f"D must have shape {(self.M, self.L + self.M)}, got {D.shape}"
             )
-        self._D = np.asarray(D)
-        self.analog_filter.D = np.asarray(D)
+        self._D = np.asarray(D).reshape((-1, self.M, self.L + self.M))
+        self.analog_filter.D = self._D[0, :, :]
 
     @property
     def ABCD(self):
@@ -311,7 +398,12 @@ class AnalogFrontend:
         : numpy.ndarray, shape=(M + N, L + M + N)
             the analog filter's ABCD matrix
         """
-        return np.vstack((np.hstack((self.A, self.B)), np.hstack((self.C, self.D))))
+        return np.vstack(
+            (
+                np.hstack((self.A[0, :, :], self.B[0, :, :])),
+                np.hstack((self.C[0, :, :], self.D[0, :, :])),
+            )
+        )
 
     @property
     def analog_filter(self) -> StateSpace:
@@ -412,7 +504,7 @@ class AnalogFrontend:
         -------
         : int
             the number of analog state variables"""
-        return self.analog_filter.A.shape[0]
+        return self.analog_filter.A.shape[-1]
 
     @property
     def loop_order(self) -> int:
@@ -577,8 +669,10 @@ class AnalogFrontend:
             else:
                 tmp = np.vstack(
                     (
-                        np.hstack((-self.A, state_covariance)),
-                        np.hstack((np.zeros((self.N, self.N), dtype=float), self.A.T)),
+                        np.hstack((-self.A[0, :, :], state_covariance)),
+                        np.hstack(
+                            (np.zeros((self.N, self.N), dtype=float), self.A[0, :, :].T)
+                        ),
                     )
                 )
                 tmp = _linalg.expm(tmp * self.dt)
@@ -618,7 +712,7 @@ class AnalogFrontend:
             )
         if not np.allclose(input_covariance, input_covariance.T):
             raise ValueError("input_covariance must be symmetric")
-        B = analog_frontend.B[:, : analog_frontend.L]
+        B = analog_frontend.B[0, :, : analog_frontend.L]
         return B @ input_covariance @ B.transpose()
 
     @property
@@ -716,7 +810,7 @@ class AnalogFrontend:
         return {
             "t": t,
             "u": inputs[:, : self.L, :],
-            "s": inputs[:, self.L :, :],
+            "v": inputs[:, self.L :, :],
             "x": states,
             "y": outputs,
         }
@@ -729,7 +823,6 @@ class AnalogFrontend:
         t0: float = 0.0,
         atol=1e-12,
         rtol=1e-7,
-        sub_samples: int = 1,
         method: Optional[str] = None,
     ) -> dict[str, np.ndarray]:
         """Simulate the analog frontend
@@ -746,12 +839,6 @@ class AnalogFrontend:
             absolute tolerance for the integrator, defaults to 1e-12.
         rtol: `float`, optional
             relative tolerance for the integrator, defaults to 1e-7.
-        sub_samples: `int`, optional
-            the number of sub-samples per digital control period, defaults to 1.
-            Note that in case a discrete-time filter with different dt compared
-            to the dt of the digital control is used, the sub_samples parameter
-            is automatically adjusted to match the largest of sub_samples and
-            the ratio of the two sampling periods
         state_covariance: `np.ndarray`, optional
             the state covariance matrix, defaults to None.
         output_covariance: `np.ndarray`, optional
@@ -774,7 +861,7 @@ class AnalogFrontend:
             a dictionary containing the simulation results where
             - 't': the time vector, shape (size,)
             - 'u': the analog signal evaluated at t, shape (size, L, J)
-            - 's': the digital control signals, shape (size, M, J)
+            - 'v': the digital control signals, shape (size, M, J)
             - 'x': the state vector, shape (size, N, J)
             - 'y': the quantization input vector, shape (size, M, J)
 
@@ -804,9 +891,7 @@ class AnalogFrontend:
             x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis]
         )
 
-        if sub_samples < 1:
-            raise ValueError("sub_samples must be greater than 0")
-        t = np.arange(size) * self.digital_control.dt / sub_samples + t0
+        t = np.arange(size) * self.digital_control.dt + t0
 
         if method is None:
             if self.is_discrete_time:
@@ -824,45 +909,47 @@ class AnalogFrontend:
                     "Digital control sampling period must be a multiple of the analog filter sampling period"
                 )
 
-            sub_samples = np.maximum(
-                sub_samples, int(self.digital_control.dt / self.analog_filter.dt)
-            )
-            t = np.arange(size) * self.digital_control.dt / sub_samples + t0
+            t = np.arange(size) * self.digital_control.dt + t0
 
             # pre compute input signal contributions
 
             inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
 
             # populate first output and control
-            outputs[0] += self.C @ states[0] + self.D @ inputs[0]
+            outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
             inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
 
             slew_rate_dt = self.slew_rate * self.digital_control.dt
 
             # Compute simulation recursions
-            for i in range(size - 1):
+            for i in range(1, size):
                 # state evolution
-                states[i + 1] += np.clip(
-                    self.A @ states[i] + self.B @ inputs[i],
+                states[i] += np.clip(
+                    self.A[i % self.A.shape[0]] @ states[i - 1]
+                    + self.B[i % self.B.shape[0]] @ inputs[i - 1],
                     -slew_rate_dt[:, np.newaxis],
                     slew_rate_dt[:, np.newaxis],
                 )
-                states[i + 1] = np.clip(
-                    states[i + 1],
+                states[i] = np.clip(
+                    states[i],
                     self.state_min[:, np.newaxis],
                     self.state_max[:, np.newaxis],
                 )
                 # output computation
-                outputs[i + 1] += self.C @ states[i + 1] + self.D @ inputs[i + 1]
+                outputs[i] += (
+                    self.C[i % self.C.shape[0]] @ states[i]
+                    + self.D[i % self.D.shape[0]] @ inputs[i]
+                )
                 # control update
-                if i % sub_samples == 0:
-                    inputs[i + 1, self.L :, :] = self.digital_control.quantize(
-                        outputs[i + 1]
-                    ).reshape(self.M, self.J)
-                else:
-                    inputs[i + 1, self.L :, :] = inputs[i, self.L :, :].reshape(
-                        self.M, self.J
-                    )
+                inputs[i, self.L :, :] = self.digital_control.quantize(
+                    outputs[i]
+                ).reshape(self.M, self.J)
+                # hold control from previous decision if no update
+                no_updates = outputs[i] == 0.0
+                inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][
+                    no_updates
+                ]
+
         # Sinusoidal special case
         elif method == "sin":
             logging.info(
@@ -874,14 +961,18 @@ class AnalogFrontend:
                 ds = self.discretize(self.dt, atol=atol, rtol=rtol)
                 # simulate the discretized system
                 return ds.simulate(size, x, t0, atol, rtol)
-
+            if self.A.shape[0] != 1 or self.B.shape[0] != 1:
+                raise NotImplementedError(
+                    "Only time invariant systems are supported for pre-computed input contribbutions, i.e. A.shape[0] == B.shape[0] == 1"
+                )
             # exp(A * dt) computation
-            A_d = _linalg.expm(self.A * self.dt)
+            A_d = _linalg.expm(self.A[0] * self.dt)
             C_d = self.C[:]
             D_d = self.D[:]
-            D_d[:, self.L :] *= self.digital_control.evaluate(
-                self.dt, np.ones((self.M, 1))
-            ).reshape((1, self.M))
+            # for i in range(D_d.shape[0]):
+            #     D_d[i, self.L :] *= self.digital_control.evaluate(
+            #     self.dt, np.ones((self.M, 1))
+            # ).reshape((1, self.M))
             B_d = np.zeros((self.N, self.L + self.M, self.J), dtype=float)
 
             tmp_sig_vec = np.zeros((1, self.L + self.M, self.J), dtype=float)
@@ -893,11 +984,11 @@ class AnalogFrontend:
                 ).reshape((self.M, 1))
                 return (
                     np.tensordot(
-                        self.A,
+                        self.A[0],
                         x.reshape((self.N, self.L + self.M, self.J)),
                         axes=[[1], [0]],
                     )
-                    + self.B[:, :, np.newaxis] * tmp_sig_vec
+                    + self.B[0, :, :, np.newaxis] * tmp_sig_vec
                 ).flatten()
 
             # Compute the control contributions
@@ -949,37 +1040,41 @@ class AnalogFrontend:
 
             # populate first output and control
             inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-            outputs[0] += self.C @ states[0] + self.D @ inputs[0]
+            outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
             inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
 
             slew_rate_dt = self.slew_rate * self.digital_control.dt
 
             # Compute simulation recursions
-            for i in range(size - 1):
+            for i in range(1, size):
                 # state evolution
-                states[i + 1] += np.clip(
-                    A_d @ states[i]
+                states[i] += np.clip(
+                    A_d @ states[i - 1]
                     # control feedback
-                    + B_d[:, self.L :, 0] @ inputs[i, self.L :, :]
+                    + B_d[:, self.L :, 0] @ inputs[i - 1, self.L :, :]
                     # pre-computed input signal contributions
-                    + pre_computed_input_offset + pre_computed_inputs[i],
+                    + pre_computed_input_offset + pre_computed_inputs[i - 1],
                     -slew_rate_dt[:, np.newaxis],
                     slew_rate_dt[:, np.newaxis],
                 )
-                states[i + 1] = np.clip(
-                    states[i + 1],
+                states[i] = np.clip(
+                    states[i],
                     self.state_min[:, np.newaxis],
                     self.state_max[:, np.newaxis],
                 )
                 # output computation
-                outputs[i + 1] += C_d @ states[i + 1] + D_d @ inputs[i + 1]
+                outputs[i] += (
+                    C_d[i % C_d.shape[0]] @ states[i]
+                    + D_d[i % D_d.shape[0]] @ inputs[i]
+                )
                 # control update
-                if i % sub_samples == 0:
-                    inputs[i + 1, self.L :, :] = self.digital_control.quantize(
-                        outputs[i + 1]
-                    )
-                else:
-                    inputs[i + 1, self.L :, :] = inputs[i, self.L :, :]
+                inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i])
+
+                no_updates = outputs[i] == 0.0
+                inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][
+                    no_updates
+                ]
+
         # Full ode solver
         elif method == "ode":
             logging.info("Simulating continuous-time analog frontend")
@@ -995,60 +1090,70 @@ class AnalogFrontend:
 
             inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
             # populate first output and control
-            outputs[0] += self.C @ states[0] + self.D @ inputs[0]
+            outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
             inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
 
-            def derivative(t: float, x: np.ndarray, *args) -> np.ndarray:
+            K = max(self.A.shape[0], self.B.shape[0])
+            derivatives = []
+            for k in range(K):
 
-                return np.clip(
-                    # state evolution
-                    self.A @ x.reshape(self.N, self.J)
-                    # input signal contributions
-                    + self.B[:, : self.L]
-                    @ self.analog_signal.evaluate(np.array([t]))[0, :, :]
-                    # control feedback
-                    + self.B[:, self.L :]
-                    # args[0] is the current time and args[1] the quantizer input
-                    @ self.digital_control.evaluate(
-                        t - args[0], args[1][:, np.newaxis, :]
-                    ),
-                    -self._slew_rate[:, np.newaxis],
-                    self._slew_rate[:, np.newaxis],
-                ).flatten()
+                def derivative(t: float, x: np.ndarray, *args) -> np.ndarray:
+                    return np.clip(
+                        # state evolution
+                        self.A[k % self.A.shape[0]] @ x.reshape(self.N, self.J)
+                        # input signal contributions
+                        + self.B[k % self.B.shape[0], :, : self.L]
+                        @ self.analog_signal.evaluate(np.array([t]))[0, :, :]
+                        # control feedback
+                        + self.B[k % self.B.shape[0], :, self.L :]
+                        # args[0] is the current time and args[1] the quantizer input
+                        @ self.digital_control.evaluate(
+                            t - args[0], args[1][:, np.newaxis, :]
+                        ),
+                        -self._slew_rate[:, np.newaxis],
+                        self._slew_rate[:, np.newaxis],
+                    ).flatten()
 
-            for i in range(size - 1):
+                derivatives.append(derivative)
+
+            for i in range(1, size):
 
                 res = _integrate.solve_ivp(
-                    derivative,
-                    (t[i], t[i + 1]),
-                    states[i].flatten(),
-                    args=(t[i], outputs[i]),
+                    derivatives[i % K],
+                    (t[i - 1], t[i]),
+                    states[i - 1].flatten(),
+                    args=(t[i - 1], outputs[i - 1]),
                     atol=atol,
                     rtol=rtol,
                     # method="DOP853",
                 )
-                states[i + 1] += res.y[:, -1].reshape((self.N, self.J))
-                states[i + 1] = np.clip(
-                    states[i + 1],
+                states[i] += res.y[:, -1].reshape((self.N, self.J))
+                states[i] = np.clip(
+                    states[i],
                     self.state_min[:, np.newaxis],
                     self.state_max[:, np.newaxis],
                 )
                 # output computation
-                outputs[i + 1] += self.C @ states[i + 1] + self.D @ inputs[i + 1]
+                outputs[i] += (
+                    self.C[i % self.C.shape[0]] @ states[i]
+                    + self.D[i % self.D.shape[0]] @ inputs[i]
+                )
                 # control update
-                if i % sub_samples == 0:
-                    inputs[i + 1, self.L :, :] = self.digital_control.quantize(
-                        outputs[i + 1]
-                    ).reshape((self.M, self.J))
-                else:
-                    inputs[i + 1, self.L :, :] = inputs[i, self.L :, :]
+                inputs[i, self.L :, :] = self.digital_control.quantize(
+                    outputs[i]
+                ).reshape((self.M, self.J))
+                no_updates = outputs[i] == 0.0
+                inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][
+                    no_updates
+                ]
+
         else:
             raise ValueError(f"Unknown simulation method {method}")
 
         return {
             "t": t,
             "u": inputs[:, : self.L, :],
-            "s": inputs[:, self.L :, :],
+            "v": inputs[:, self.L :, :],
             "x": states,
             "y": outputs,
         }
@@ -1086,101 +1191,133 @@ class AnalogFrontend:
                 "Non piecewise constant input signal. The discretization may not be accurate."
             )
 
+        K = max(self.A.shape[0], self.B.shape[0])
         if (
             self.analog_signal.piecewise_constant
             and self.digital_control.dac_waveform == "nrz"
         ):
-            tmp_arg = np.vstack(
-                (
-                    np.hstack((self.A, self.B)),
-                    np.zeros((self.L + self.M, self.N + self.L + self.M), dtype=float),
+            # largest repetition of A and B matrices
+            A_d = np.zeros((K, self.N, self.N), dtype=float)
+            B_d = np.zeros((K, self.N, self.L + self.M), dtype=float)
+            for i in range(K):
+                tmp_arg = np.vstack(
+                    (
+                        np.hstack(
+                            (self.A[i % self.A.shape[0]], self.B[i % self.B.shape[0]])
+                        ),
+                        np.zeros(
+                            (self.L + self.M, self.N + self.L + self.M), dtype=float
+                        ),
+                    )
                 )
-            )
-            tmp = _linalg.expm(tmp_arg * dt)
-            A_d = tmp[: self.N, : self.N]
-            B_d = tmp[: self.N, self.N :]
+                tmp = _linalg.expm(tmp_arg * dt)
+                A_d[i, :, :] = tmp[: self.N, : self.N]
+                B_d[i, :, :] = tmp[: self.N, self.N :]
         else:
-            A_d = _linalg.expm(self.A * dt)
-
             delay_steps = np.max(self.digital_control.delay_steps())
             additional_states: int = delay_steps * self.M
 
-            tmp_sig_vec = np.zeros(
-                (1, self.L + self.M + additional_states), dtype=float
+            A_d = np.zeros(
+                (K, self.N + additional_states, self.N + additional_states), dtype=float
             )
-            B_temp = np.zeros(
-                (self.N, self.L + self.M + additional_states), dtype=float
+            B_d = np.zeros(
+                (K, self.N + additional_states, self.L + self.M), dtype=float
             )
-            B_temp[:, : self.L + self.M] = self.B[:, : self.L + self.M]
-            for k in range(1, delay_steps):
-                B_temp[
-                    :,
-                    self.L + k * self.M : self.L + (k + 1) * self.M,
-                ] = self.B[:, self.L :]
+            C_d = np.zeros(
+                (self.C.shape[0], self.M, self.N + additional_states), dtype=float
+            )
+            C_d[:, :, : self.N] = self.C[:, :, :]
+            for i in range(K):
+                A_d[i, : self.N, : self.N] = _linalg.expm(
+                    self.A[i % self.A.shape[0], :, :] * dt
+                )
 
-            def derivative(t: float, x: np.ndarray) -> np.ndarray:
-                t_array = np.array([t])
-                tmp_sig_vec[0, : self.L] = self.analog_signal.impulse_response(t_array)[
-                    :, :, 0
+                tmp_sig_vec = np.zeros(
+                    (1, self.L + self.M + additional_states), dtype=float
+                )
+                B_temp = np.zeros(
+                    (self.N, self.L + self.M + additional_states), dtype=float
+                )
+                B_temp[:, : self.L + self.M] = self.B[
+                    i % self.B.shape[0], :, : self.L + self.M
                 ]
-                tmp_sig_vec[0, self.L :] = self.digital_control.impulse_response(
-                    t_array + self.digital_control.dt * np.arange(delay_steps + 1)
-                ).T.flatten()
-
-                return (
-                    self.A @ x.reshape((self.N, -1)) + B_temp * tmp_sig_vec
-                ).flatten()
-
-            # Compute input signal contributions
-            res = _integrate.solve_ivp(
-                derivative,
-                (0.0, dt),
-                np.zeros(self.N * (self.L + self.M + additional_states), dtype=float),
-                atol=atol,
-                rtol=rtol,
-                method="DOP853",
-            )
-            # shape(N, L + M + additional_states)
-            x_vals = res.y[:, -1].reshape((self.N, -1))
-            # Bd = [[ Bu, Bc ], [0, I]]
-            B_d = np.zeros((self.N + additional_states, self.L + self.M))
-            B_d[: self.N, : self.L + self.M] = x_vals[:, : self.L + self.M]
-            if additional_states > 0:
-                # A_d matrix structure:
-                # [[A, B2, B3, ...],
-                #  [0, 0, ...],
-                #  [0, I, 0, ...],
-                #  [0, 0, I, ...]]
-                A_d = np.vstack(
-                    (
-                        np.hstack(
-                            (
-                                A_d,
-                                x_vals[:, self.L + self.M :].reshape(
-                                    (self.N, additional_states)
-                                ),
-                                # np.zeros((self.N, additional_states), dtype=float),
-                            )
-                        ),
-                        np.zeros((additional_states, self.N + additional_states)),
-                    )
-                )
-                # create delay elements
                 for k in range(1, delay_steps):
-                    A_d[
-                        self.N + k * self.M : self.N + (k + 1) * self.M,
-                        self.N + (k - 1) * self.M : self.N + k * self.M,
-                    ] = np.eye(self.M, dtype=float)
-                B_d[self.N : self.N + self.M, self.L :] = np.eye(self.M, dtype=float)
-                A_d[: self.N, self.N :] = res.y[
-                    self.N * (self.L + self.M) :, -1
-                ].reshape((self.N, additional_states))
-                # C_d = [C, 0, 0, ...]
-                C_d = np.hstack(
-                    (C_d, np.zeros((self.M, additional_states), dtype=float))
-                )
+                    B_temp[
+                        :,
+                        self.L + k * self.M : self.L + (k + 1) * self.M,
+                    ] = self.B[i % self.B.shape[0], :, self.L :]
 
-        analog_filter = StateSpace(A_d, B_d, C_d, D_d, dt=1.0)
+                def derivative(t: float, x: np.ndarray) -> np.ndarray:
+                    t_array = np.array([t])
+                    tmp_sig_vec[0, : self.L] = self.analog_signal.impulse_response(
+                        t_array
+                    )[:, :, 0]
+                    tmp_sig_vec[0, self.L :] = self.digital_control.impulse_response(
+                        t_array + self.digital_control.dt * np.arange(delay_steps + 1)
+                    ).T.flatten()
+
+                    return (
+                        self.A[i % self.A.shape[0]] @ x.reshape((self.N, -1))
+                        + B_temp * tmp_sig_vec
+                    ).flatten()
+
+                # Compute input signal contributions
+                res = _integrate.solve_ivp(
+                    derivative,
+                    (0.0, dt),
+                    np.zeros(
+                        self.N * (self.L + self.M + additional_states), dtype=float
+                    ),
+                    atol=atol,
+                    rtol=rtol,
+                    method="DOP853",
+                )
+                # shape(N, L + M + additional_states)
+                x_vals = res.y[:, -1].reshape((self.N, -1))
+                # Bd = [[ Bu, Bc ], [0, I]]
+                B_d[i, : self.N, : self.L + self.M] = x_vals[:, : self.L + self.M]
+                if additional_states > 0:
+                    # A_d matrix structure:
+                    # [[A, B2, B3, ...],
+                    #  [0, 0, ...],
+                    #  [0, I, 0, ...],
+                    #  [0, 0, I, ...]]
+                    A_d[i] = np.vstack(
+                        (
+                            np.hstack(
+                                (
+                                    A_d[i, : self.N, : self.N],
+                                    x_vals[:, self.L + self.M :].reshape(
+                                        (self.N, additional_states)
+                                    ),
+                                    # np.zeros((self.N, additional_states), dtype=float),
+                                )
+                            ),
+                            np.zeros((additional_states, self.N + additional_states)),
+                        )
+                    )
+                    # create delay elements
+                    for k in range(1, delay_steps):
+                        A_d[
+                            i,
+                            self.N + k * self.M : self.N + (k + 1) * self.M,
+                            self.N + (k - 1) * self.M : self.N + k * self.M,
+                        ] = np.eye(self.M, dtype=float)
+                    B_d[i, self.N : self.N + self.M, self.L :] = np.eye(
+                        self.M, dtype=float
+                    )
+                    # possible remove below should this be duplicates?
+                    # A_d[: self.N, self.N :] = res.y[
+                    #     self.N * (self.L + self.M) :, -1
+                    # ].reshape((self.N, additional_states))
+                    # C_d = [C, 0, 0, ...]
+                    # C_d[i] = np.hstack(
+                    #     (C_d[i], np.zeros((self.M, additional_states), dtype=float))
+                    # )
+        if K == 1 and C_d.shape[0] == 1 and D_d.shape[0] == 1:
+            analog_filter = StateSpace(A_d[0], B_d[0], C_d[0], D_d[0], dt=1.0)
+        else:
+            analog_filter = CyclicStateSpace(A_d, B_d, C_d, D_d, dt=1.0)
         digital_control = _deepcopy(self.digital_control)
         digital_control.dt = 1.0
         analog_signal = _deepcopy(self.analog_signal)
@@ -1219,21 +1356,21 @@ class AnalogFrontend:
         """
         if open_loop:
             temp_filter = StateSpace(
-                self.A,
-                self.B,
-                self.C,
-                self.D,
+                self.A[0],
+                self.B[0],
+                self.C[0],
+                self.D[0],
             )
         else:
             # Feedback transfer function, i.e.,
-            Bl = self.B[:, : self.L]
-            Bm = self.B[:, self.L :]
-            Dl = self.D[:, : self.L]
-            Dm = self.D[:, self.L :]
+            Bl = self.B[0, :, : self.L]
+            Bm = self.B[0, :, self.L :]
+            Dl = self.D[0, :, : self.L]
+            Dm = self.D[0, :, self.L :]
             I_DM = np.linalg.inv(np.eye(self.M) - Dm)
-            A_new = self.A + Bm @ I_DM @ self.C
+            A_new = self.A[0] + Bm @ I_DM @ self.C[0]
             B_new = Bl + I_DM @ Dl
-            C_new = I_DM @ self.C
+            C_new = I_DM @ self.C[0]
             D_new = I_DM @ Dl
 
             temp_filter = StateSpace(A_new, B_new, C_new, D_new)
@@ -1284,17 +1421,28 @@ class AnalogFrontend:
             returns a quadrature analog frontend instance
         """
         # Aq = [[A, -wp I], [wp I, A]]
-        Aq = _linalg.block_diag(self.A, self.A)
-        Aq[: self.N, self.N :] = -wp * np.eye(self.N)
-        Aq[self.N :, : self.N] = wp * np.eye(self.N)
-        # Bq = [[B, 0], [0, B]]
-        Bq = _linalg.block_diag(self.B, self.B)
-        # Cq = [[C, 0], [0, C]]
-        Cq = _linalg.block_diag(self.C, self.C)
-        # Dq = [[D, 0], [0, D]]
-        Dq = _linalg.block_diag(self.D, self.D)
+        K = max(self.A.shape[0], self.B.shape[0])
+        H = max(self.C.shape[0], self.D.shape[0])
+        Aq = np.zeros((K, 2 * self.N, 2 * self.N), dtype=float)
+        Bq = np.zeros((K, 2 * self.N, 2 * (self.L + self.M)), dtype=float)
+        Cq = np.zeros((H, 2 * self.M, 2 * self.N), dtype=float)
+        Dq = np.zeros((H, 2 * self.M, 2 * (self.L + self.M)), dtype=float)
+        for k in range(K):
+            Aq[k] = _linalg.block_diag(self.A, self.A)
+            Aq[k, : self.N, self.N :] = -wp * np.eye(self.N)
+            Aq[k, self.N :, : self.N] = wp * np.eye(self.N)
+            # Bq = [[B, 0], [0, B]]
+            Bq[k] = _linalg.block_diag(self.B, self.B)
+        for h in range(H):
+            # Cq = [[C, 0], [0, C]]
+            Cq[h] = _linalg.block_diag(self.C, self.C)
+            # Dq = [[D, 0], [0, D]]
+            Dq[h] = _linalg.block_diag(self.D, self.D)
 
-        analog_filter = StateSpace(Aq, Bq, Cq, Dq)
+        if K == 1 and H == 1:
+            analog_filter = StateSpace(Aq[0], Bq[0], Cq[0], Dq[0])
+        else:
+            analog_filter = CyclicStateSpace(Aq, Bq, Cq, Dq)
         alpha = np.tile(self.digital_control.alpha, 2)
         beta = np.tile(self.digital_control.beta, 2)
 
@@ -1479,7 +1627,7 @@ class AnalogFrontend:
         # OSR = 1 / (2 * dt * BW)
         wf = self.wiener_filter(OSR=OSR)
         # shape = (fft_bins+warm_up, J)
-        u_hat = wf.evaluate(sim["s"])[:, :, :]
+        u_hat = wf.evaluate(sim["v"])[:, :, :]
         print(u_hat.shape)
         # shape = (fft_bins, J)
         hwfft = np.fft.fftshift(
@@ -1944,9 +2092,9 @@ class GmC(AnalogFrontend):
         """
         gm = np.zeros((self.N, self.L + self.M + self.N), dtype=float)
         gm[: self.N, : self.N] = self._C_int[:, np.newaxis] * (
-            self.A - np.diag(np.diag(self.A))
+            self.A[0] - np.diag(np.diag(self.A[0]))
         )
-        gm[: self.N, self.N :] = self._C_int[:, np.newaxis] * self.B
+        gm[: self.N, self.N :] = self._C_int[:, np.newaxis] * self.B[0, 0]
         return gm
 
     @property
@@ -2045,7 +2193,7 @@ class ActiveRC(AnalogFrontend):
         A = np.zeros((N, N))
         B = np.zeros((N, analog_frontend.L + analog_frontend.M))
         C = np.zeros((analog_frontend.M, N))
-        D = analog_frontend.D
+        D = analog_frontend.D[0]
 
         if not isinstance(Ro, np.ndarray):
             raise ValueError("Ro must be a numpy array")
@@ -2075,14 +2223,14 @@ class ActiveRC(AnalogFrontend):
         A[N_2:, N_2:] = -np.diag(1.0 / (self._Ro * self._Co))
         A[N_2:, :N_2] = -np.diag(self._gm / self._Co)
 
-        A[:N_2, N_2:] = -analog_frontend.A
-        A[:N_2, :N_2] -= np.diag(np.sum(np.abs(analog_frontend.A), axis=1))
+        A[:N_2, N_2:] = -analog_frontend.A[0]
+        A[:N_2, :N_2] -= np.diag(np.sum(np.abs(analog_frontend.A[0]), axis=1))
         # + dV_int /dt
         A[:N_2, :] += A[N_2:, :]
 
-        B[:N_2, :] = analog_frontend.B
-        C[:, N_2:] = -analog_frontend.C
-
+        B[:N_2, :] = analog_frontend.B[0]
+        C[:, N_2:] = -analog_frontend.C[0]
+        print(A, B, C, D)
         analog_filter = StateSpace(A, B, C, D)
 
         super().__init__(
