@@ -136,12 +136,12 @@ class CyclicStateSpace(StateSpace):
             raise ValueError("A and C must have the same number of columns")
         if dt is not None and (not isinstance(dt, (float, int)) or dt <= 0):
             raise ValueError("dt must be a positive float or None")
-        self._A = A
-        self._B = B
-        self._C = C
-        self._D = D
+        self.A = A
+        self.B = B
+        self.C = C
+        self.D = D
         self._dt = dt
-        super().__init__(A[0, :, :], B[0, :, :], C[0, :, :], D[0, :, :], dt)
+        # super().__init__(A[0], B[0], C[0], D[0])
 
         self._K = A.shape[0]
         self._H = C.shape[0]
@@ -149,6 +149,39 @@ class CyclicStateSpace(StateSpace):
         self._M = D.shape[1]
         self._L = B.shape[2] - self._M
         self._is_discrete_time = dt is not None
+
+    def get_state_space(self, k: int = 0, h: int = 0) -> StateSpace:
+        """Get the state space representation at time index k
+
+        Parameters
+        ----------
+        k: `int`, optional
+            the time index, defaults to 0
+
+        Returns
+        -------
+        :py:class:`scipy.signal.StateSpace`
+            the state space representation at time index k
+        """
+        if not isinstance(k, int):
+            raise ValueError("k must be an integer")
+
+        if not isinstance(h, int):
+            raise ValueError("h must be an integer")
+
+        print(
+            self.A.shape,
+            self.B[k % self._K].shape,
+            self.C[h % self._H].shape,
+            self.D[h % self._H].shape,
+        )
+
+        return StateSpace(
+            self.A[k % self._K],
+            self.B[k % self._K],
+            self.C[h % self._H],
+            self.D[h % self._H],
+        )
 
 
 class AnalogFrontend:
@@ -321,7 +354,7 @@ class AnalogFrontend:
                 f"A.shape[-2:] must have shape {(self.N, self.N)}, got {A.shape}"
             )
         self._A: np.ndarray = np.asarray(A).reshape((-1, self.N, self.N))
-        self.analog_filter.A = self._A[0, :, :]
+        # self.analog_filter.A = self._A[0, :, :]
 
     @property
     def B(self) -> np.ndarray:
@@ -343,7 +376,7 @@ class AnalogFrontend:
                 f"B.shape[-2:] must have shape {(self.N, self.L + self.M)}, got {B.shape}"
             )
         self._B: np.ndarray = np.asarray(B).reshape((-1, self.N, self.L + self.M))
-        self.analog_filter.B = self._B[0, :, :]
+        # self.analog_filter.B = self._B[0, :, :]
 
     @property
     def C(self) -> np.ndarray:
@@ -365,7 +398,7 @@ class AnalogFrontend:
                 f"C.shape[-2:] must have shape {(self.M, self.N)}, got {C.shape}"
             )
         self._C = np.asarray(C).reshape((-1, self.M, self.N))
-        self.analog_filter.C = self._C[0, :, :]
+        # self.analog_filter.C = self._C[0, :, :]
 
     @property
     def D(self) -> np.ndarray:
@@ -387,7 +420,7 @@ class AnalogFrontend:
                 f"D must have shape {(self.M, self.L + self.M)}, got {D.shape}"
             )
         self._D = np.asarray(D).reshape((-1, self.M, self.L + self.M))
-        self.analog_filter.D = self._D[0, :, :]
+        # self.analog_filter.D = self._D[0, :, :]
 
     @property
     def ABCD(self):
@@ -458,7 +491,9 @@ class AnalogFrontend:
         if signal is None:
             signal = AnalogSignal()
         if not isinstance(signal, AnalogSignal):
-            raise ValueError("analog_signal must be a list of AnalogSignal")
+            raise ValueError(
+                f"analog_signal {signal} must be an AnalogSignal or derived instance"
+            )
         self._analog_signal = signal
 
     @property
@@ -766,7 +801,7 @@ class AnalogFrontend:
             a dictionary containing the simulation results where
             - 't': the time vector, shape (size,)
             - 'u': the analog signal evaluated at t, shape (size, L, J)
-            - 's': the digital control signals, shape (size, M, J)
+            - 'v': the digital control signals, shape (size, M, J)
             - 'x': the state vector, shape (size, N, J)
             - 'y': the quantization input vector, shape (size, M, J)
         """
@@ -821,9 +856,10 @@ class AnalogFrontend:
         size: int,
         x: Optional[np.ndarray] = None,
         t0: float = 0.0,
-        atol=1e-12,
-        rtol=1e-7,
-        method: Optional[str] = None,
+        atol=1e-7,
+        rtol=1e-6,
+        method: str = "dsim",
+        dtype=np.double,
     ) -> dict[str, np.ndarray]:
         """Simulate the analog frontend
 
@@ -844,15 +880,557 @@ class AnalogFrontend:
         output_covariance: `np.ndarray`, optional
             the output covariance matrix, defaults to None.
         method: `str`, optional
-            the simulation method, defaults to None. If None, the method is
-            automatically selected based on the analog frontend's properties.
-            Valid options are:
+            the simulation method, defaults to "dsim". Valid options are:
 
             * 'dsim': simulate the discrete-time analog frontend
 
             * 'sin': simulate the continuous-time analog frontend for sinusoidal input
 
-            * 'ode': simulate the continuous-time analog frontend using an ODE solver
+            * 'ode': simulate the continuous-time analog frontend using an ODE solver with discrete time steps.
+
+            * 'ode_full': simulate the continuous-time analog frontend using an ODE solver with full time steps.
+
+        dtype: `data-type`, optional
+            the data type for the simulation, defaults to np.double.
+
+
+        Returns
+        -------
+        : dict[str, np.ndarray]
+            a dictionary containing the simulation results where
+            - 't': the time vector, shape (size,)
+            - 'u': the analog signal evaluated at t, shape (size, L, J)
+            - 'v': the digital control signals, shape (size, M, J)
+            - 'x': the state vector, shape (size, N, J)
+            - 'y': the quantization input vector, shape (size, M, J)
+
+        """
+
+        # Discrete-time analog filter
+        if method == "dsim":
+            return self.simulate_dt(size, x, t0, atol, rtol, dtype)
+        # Sinusoidal special case
+        elif method == "sin":
+            return self.simulate_sin(size, x, t0, atol, rtol, dtype)
+        # Full ode solver
+        elif method == "ode":
+            return self.simulate_ode(size, x, t0, atol, rtol, dtype)
+        elif method == "ode_full":
+            return self.simulate_ode_full(size, x, t0, atol, rtol, dtype)
+        else:
+            raise ValueError(f"Unknown simulation method {method}")
+
+    def simulate_dt(
+        self,
+        size: int,
+        x: Optional[np.ndarray] = None,
+        t0: float = 0.0,
+        atol=None,
+        rtol=None,
+        dtype=np.double,
+    ) -> dict[str, np.ndarray]:
+        """Simulate the analog frontend
+
+        Parameters
+        ----------
+        size: `int`
+            the number of samples to simulate
+        x: `np.ndarray`, optional, shape=(N, J)
+            the initial state, defaults to zero.
+        t0: `float`, optional
+            the initial time, defaults to 0.0.
+        atol: `float`, optional
+            absolute tolerance for the integrator, defaults to 1e-12.
+        rtol: `float`, optional
+            relative tolerance for the integrator, defaults to 1e-7.
+        state_covariance: `np.ndarray`, optional
+            the state covariance matrix, defaults to None.
+        output_covariance: `np.ndarray`, optional
+            the output covariance matrix, defaults to None.
+        dtype: `data-type`, optional
+            the data type for the simulation, defaults to np.double.
+
+
+        Returns
+        -------
+        : dict[str, np.ndarray]
+            a dictionary containing the simulation results where
+            - 't': the time vector, shape (size,)
+            - 'u': the analog signal evaluated at t, shape (size, L, J)
+            - 'v': the digital control signals, shape (size, M, J)
+            - 'x': the state vector, shape (size, N, J)
+            - 'y': the quantization input vector, shape (size, M, J)
+
+        """
+
+        if atol is None or rtol is None:
+            logger.warning("atol and rtol are ignored in discrete-time simulation")
+        if not self.is_discrete_time:
+            logger.info(
+                "Analog frontend is not discrete-time, discretizing before simulating..."
+            )
+            return self.discretize(dt=self.digital_control.dt).simulate_dt(
+                size, x, t0, atol, rtol, dtype
+            )
+
+        # Allocate memory
+        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
+        # add state noise
+        if self.state_covariance is not None:
+            states = self._state_cov_cholesky @ self.rng.normal(
+                size=(size, self.N, self.J)
+            )
+        else:
+            states = np.zeros((size, self.N, self.J), dtype=dtype)
+        # add output noise
+        if self.output_covariance is not None:
+            outputs = self._output_cov_cholesky @ self.rng.normal(
+                size=(size, self.M, self.J)
+            )
+        else:
+            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
+
+        # initialize the states
+        if x is None:
+            x = np.zeros((self.N, self.J), dtype=dtype)
+        states[0, :, :] = np.clip(
+            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis], dtype=dtype
+        )
+
+        # Discrete-time analog filter
+        logging.info("Simulating discrete-time analog frontend")
+        if not np.isclose(self.digital_control.dt % self.analog_filter.dt, 0):
+            raise ValueError(
+                f"Digital control sampling period {self.digital_control.dt:0.2e} must be a multiple of the analog filter sampling period {self.analog_filter.dt:0.2e}"
+            )
+
+        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
+
+        # pre compute input signal contributions
+
+        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
+
+        # populate first output and control
+        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
+        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
+
+        slew_rate_dt = self.slew_rate * self.digital_control.dt
+
+        # Compute simulation recursions
+        for i in range(1, size):
+            # state evolution
+            states[i] += np.clip(
+                self.A[i % self.A.shape[0]] @ states[i - 1]
+                + self.B[i % self.B.shape[0]] @ inputs[i - 1],
+                -slew_rate_dt[:, np.newaxis],
+                slew_rate_dt[:, np.newaxis],
+            )
+            states[i] = np.clip(
+                states[i],
+                self.state_min[:, np.newaxis],
+                self.state_max[:, np.newaxis],
+            )
+            # output computation
+            outputs[i] += (
+                self.C[i % self.C.shape[0]] @ states[i]
+                + self.D[i % self.D.shape[0]] @ inputs[i]
+            )
+            # control update
+            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
+                self.M, self.J
+            )
+            # hold control from previous decision if no update
+            # no_updates = outputs[i] == 0.0
+            no_updates = np.isclose(outputs[i], 0, atol=1e-100)
+            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
+
+        return {
+            "t": t,
+            "u": inputs[:, : self.L, :],
+            "v": inputs[:, self.L :, :],
+            "x": states,
+            "y": outputs,
+        }
+
+    def simulate_sin(
+        self,
+        size: int,
+        x: Optional[np.ndarray] = None,
+        t0: float = 0.0,
+        atol=1e-12,
+        rtol=1e-7,
+        dtype=np.double,
+    ) -> dict[str, np.ndarray]:
+        """Simulate the analog frontend
+
+        Parameters
+        ----------
+        size: `int`
+            the number of samples to simulate
+        x: `np.ndarray`, optional, shape=(N, J)
+            the initial state, defaults to zero.
+        t0: `float`, optional
+            the initial time, defaults to 0.0.
+        atol: `float`, optional
+            absolute tolerance for the integrator, defaults to 1e-12.
+        rtol: `float`, optional
+            relative tolerance for the integrator, defaults to 1e-7.
+        state_covariance: `np.ndarray`, optional
+            the state covariance matrix, defaults to None.
+        output_covariance: `np.ndarray`, optional
+            the output covariance matrix, defaults to None.
+        dtype: `np.dtype`, optional
+            the floating point data type to use, defaults to np.double.
+
+        Returns
+        -------
+        : dict[str, np.ndarray]
+            a dictionary containing the simulation results where
+            - 't': the time vector, shape (size,)
+            - 'u': the analog signal evaluated at t, shape (size, L, J)
+            - 'v': the digital control signals, shape (size, M, J)
+            - 'x': the state vector, shape (size, N, J)
+            - 'y': the quantization input vector, shape (size, M, J)
+
+        """
+
+        # Allocate memory
+        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
+        # add state noise
+        if self.state_covariance is not None:
+            states = self._state_cov_cholesky @ self.rng.normal(
+                size=(size, self.N, self.J)
+            )
+        else:
+            states = np.zeros((size, self.N, self.J), dtype=dtype)
+        # add output noise
+        if self.output_covariance is not None:
+            outputs = self._output_cov_cholesky @ self.rng.normal(
+                size=(size, self.M, self.J)
+            )
+        else:
+            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
+
+        # initialize the states
+        if x is None:
+            x = np.zeros((self.N, self.J), dtype=dtype)
+        states[0, :, :] = np.clip(
+            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis], dtype=dtype
+        )
+
+        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
+
+        # Sinusoidal special case
+        if self.A.shape[0] != 1 or self.B.shape[0] != 1:
+            raise NotImplementedError(
+                "Only time invariant systems are supported for pre-computed input contribbutions, i.e. A.shape[0] == B.shape[0] == 1"
+            )
+        # exp(A * dt) computation
+        A_d = _linalg.expm(self.A[0] * self.dt)
+        C_d = self.C[:]
+        D_d = self.D[:]
+        # for i in range(D_d.shape[0]):
+        #     D_d[i, self.L :] *= self.digital_control.evaluate(
+        #     self.dt, np.ones((self.M, 1))
+        # ).reshape((1, self.M))
+        B_d = np.zeros((self.N, self.L + self.M, self.J), dtype=dtype)
+
+        tmp_sig_vec = np.zeros((1, self.L + self.M, self.J), dtype=dtype)
+        tmp_sig_vec[0, : self.L, :] = self.analog_signal.offset
+
+        def derivative(t: float, x: np.ndarray) -> np.ndarray:
+            tmp_sig_vec[0, self.L :, :] = self.digital_control.impulse_response(
+                np.array([t])
+            ).reshape((self.M, 1))
+            return (
+                np.tensordot(
+                    self.A[0],
+                    x.reshape((self.N, self.L + self.M, self.J)),
+                    axes=[[1], [0]],
+                )
+                + self.B[0, :, :, np.newaxis] * tmp_sig_vec
+            ).flatten()
+
+        # Compute the control contributions
+        res = _integrate.solve_ivp(
+            derivative,
+            (0.0, self.dt),
+            np.zeros((self.N, self.L + self.M, self.J), dtype=dtype).flatten(),
+            atol=atol,
+            rtol=rtol,
+            # method="Radau",
+            # jac=block_diag(*[self.A[0] for _ in range(self.J)]),
+        )
+        B_d = res.y[:, -1].reshape((self.N, self.L + self.M, self.J))
+
+        _, tf = self.transfer_function(
+            np.array([2j * np.pi * self.analog_signal.frequency]), state_output=True
+        )
+        # shape (N, L)
+        tf = tf[0, :, : self.L]
+
+        # shape = (N, L)
+        tf_mag = np.abs(tf)
+        tf_phase = np.angle(tf)
+        # shape = (size, N, L, J)
+        tmp = (
+            self.analog_signal.amplitude[np.newaxis, np.newaxis, :, :]
+            * tf_mag[np.newaxis, :, :, np.newaxis]
+        ) * np.sin(
+            (
+                self.analog_signal._angular_frequency[np.newaxis, np.newaxis, :, :]
+                * t[:, np.newaxis, np.newaxis, np.newaxis]
+            )
+            + (
+                tf_phase[np.newaxis, :, :, np.newaxis]
+                + self.analog_signal.phase[np.newaxis, np.newaxis, :, :]
+            )
+        )
+
+        # collapse inputs
+        # shape(size, N, J)
+        tmp = np.sum(tmp, axis=2)
+        # shifted to index 1
+        # shape = (size-1, N, J)
+        pre_computed_inputs = tmp[1:, :, :] - np.tensordot(
+            tmp[:-1, :, :], A_d, axes=[[1], [1]]
+        ).transpose(0, 2, 1)
+        # pre_computed_inputs = tmp[1:] - A_d @ tmp[:-1]
+        # shape = (N, J)
+        pre_computed_input_offset = np.sum(B_d[:, : self.L, :], axis=1)
+
+        # populate first output and control
+        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
+        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
+        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
+
+        slew_rate_dt = self.slew_rate * self.digital_control.dt
+
+        # Compute simulation recursions
+        for i in range(1, size):
+            # state evolution
+            states[i] += np.clip(
+                A_d @ states[i - 1]
+                # control feedback
+                + B_d[:, self.L :, 0] @ inputs[i - 1, self.L :, :]
+                # pre-computed input signal contributions
+                + pre_computed_input_offset + pre_computed_inputs[i - 1],
+                -slew_rate_dt[:, np.newaxis],
+                slew_rate_dt[:, np.newaxis],
+            )
+            states[i] = np.clip(
+                states[i],
+                self.state_min[:, np.newaxis],
+                self.state_max[:, np.newaxis],
+            )
+            # output computation
+            outputs[i] += (
+                C_d[i % C_d.shape[0]] @ states[i] + D_d[i % D_d.shape[0]] @ inputs[i]
+            )
+
+            # control update
+            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i])
+
+            no_updates = outputs[i] == 0.0
+            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
+
+        return {
+            "t": t,
+            "u": inputs[:, : self.L, :],
+            "v": inputs[:, self.L :, :],
+            "x": states,
+            "y": outputs,
+        }
+
+    # Simulation methods
+    def simulate_ode(
+        self,
+        size: int,
+        x: Optional[np.ndarray] = None,
+        t0: float = 0.0,
+        atol=1e-12,
+        rtol=1e-7,
+        dtype=np.double,
+    ) -> dict[str, np.ndarray]:
+        """Simulate the analog frontend
+
+        Parameters
+        ----------
+        size: `int`
+            the number of samples to simulate
+        x: `np.ndarray`, optional, shape=(N, J)
+            the initial state, defaults to zero.
+        t0: `float`, optional
+            the initial time, defaults to 0.0.
+        atol: `float`, optional
+            absolute tolerance for the integrator, defaults to 1e-12.
+        rtol: `float`, optional
+            relative tolerance for the integrator, defaults to 1e-7.
+        state_covariance: `np.ndarray`, optional
+            the state covariance matrix, defaults to None.
+        output_covariance: `np.ndarray`, optional
+            the output covariance matrix, defaults to None.
+        dtype: `data-type`, optional
+            the data type to use for the simulation, defaults to np.double.
+
+        Returns
+        -------
+        : dict[str, np.ndarray]
+            a dictionary containing the simulation results where
+            - 't': the time vector, shape (size,)
+            - 'u': the analog signal evaluated at t, shape (size, L, J)
+            - 'v': the digital control signals, shape (size, M, J)
+            - 'x': the state vector, shape (size, N, J)
+            - 'y': the quantization input vector, shape (size, M, J)
+
+        """
+
+        # Allocate memory
+        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
+        # add state noise
+        if self.state_covariance is not None:
+            states = self._state_cov_cholesky @ self.rng.normal(
+                size=(size, self.N, self.J)
+            )
+        else:
+            states = np.zeros((size, self.N, self.J), dtype=dtype)
+        # add output noise
+        if self.output_covariance is not None:
+            outputs = self._output_cov_cholesky @ self.rng.normal(
+                size=(size, self.M, self.J)
+            )
+        else:
+            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
+
+        # initialize the states
+        if x is None:
+            x = np.zeros((self.N, self.J), dtype=dtype)
+        states[0, :, :] = np.clip(
+            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis], dtype=dtype
+        )
+
+        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
+
+        # Full ode solver
+
+        logging.info("Simulating continuous-time analog frontend")
+        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
+        # Make sure the input signal is not piecewise constant,
+        # otherwise the simulation can be better performed
+        # by discretizing the analog frontend before simulation.
+        if self.analog_signal.piecewise_constant:
+            logging.warning(
+                """"Piecewise constant input signal, discretizing
+                            analog frontend before simulation may be beneficial."""
+            )
+
+        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
+        # populate first output and control
+        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
+        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
+
+        K = max(self.A.shape[0], self.B.shape[0])
+        Ad = np.zeros_like(self.A, dtype=dtype)
+        Bd = np.zeros_like(self.B, dtype=dtype)
+        x0 = np.zeros((self.N, self.J), dtype=dtype).flatten()
+        derivatives = []
+        for k in range(K):
+            tmp_arg = np.vstack(
+                (
+                    np.hstack(
+                        (self.A[k % self.A.shape[0]], self.B[k % self.B.shape[0]])
+                    ),
+                    np.zeros((self.L + self.M, self.N + self.L + self.M), dtype=dtype),
+                )
+            )
+            tmp = _linalg.expm(tmp_arg * self.dt)
+            Ad[k, :, :] = tmp[: self.N, : self.N]
+            Bd[k, :, :] = tmp[: self.N, self.N :]
+
+            def derivative(t: float, x: np.ndarray) -> np.ndarray:
+                return (
+                    # state evolution
+                    self.A[k % self.A.shape[0]] @ x.reshape(self.N, self.J)
+                    # input signal contributions
+                    + self.B[k % self.B.shape[0], :, : self.L]
+                    @ self.analog_signal.evaluate(np.array([t]))[0, :, :]
+                ).flatten()
+
+            derivatives.append(derivative)
+
+        for i in range(1, size):
+
+            res = _integrate.solve_ivp(
+                derivatives[i % K],
+                (t[i - 1], t[i]),
+                x0,
+                atol=atol,
+                rtol=rtol,
+                method="Radau",
+                jac=block_diag(*[self.A[i % K] for _ in range(self.J)]),
+                # method="DOP853",
+            )
+            states[i] += np.clip(
+                Ad[i % Ad.shape[0]] @ states[i - 1]
+                + Bd[i % Bd.shape[0], :, self.L :] @ inputs[i - 1, self.L :, :]
+                + res.y[:, -1].reshape((self.N, self.J)),
+                -self._slew_rate[:, np.newaxis],
+                self._slew_rate[:, np.newaxis],
+            )
+            states[i] = np.clip(
+                states[i],
+                self.state_min[:, np.newaxis],
+                self.state_max[:, np.newaxis],
+            )
+            # output computation
+            outputs[i] += (
+                self.C[i % self.C.shape[0]] @ states[i]
+                + self.D[i % self.D.shape[0]] @ inputs[i]
+            )
+            # control update
+            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
+                (self.M, self.J)
+            )
+            no_updates = outputs[i] == 0.0
+            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
+
+        return {
+            "t": t,
+            "u": inputs[:, : self.L, :],
+            "v": inputs[:, self.L :, :],
+            "x": states,
+            "y": outputs,
+        }
+
+    def simulate_ode_full(
+        self,
+        size: int,
+        x: Optional[np.ndarray] = None,
+        t0: float = 0.0,
+        atol=1e-12,
+        rtol=1e-7,
+        dtype=np.longdouble,
+    ) -> dict[str, np.ndarray]:
+        """Simulate the analog frontend
+
+        Parameters
+        ----------
+        size: `int`
+            the number of samples to simulate
+        x: `np.ndarray`, optional, shape=(N, J)
+            the initial state, defaults to zero.
+        t0: `float`, optional
+            the initial time, defaults to 0.0.
+        atol: `float`, optional
+            absolute tolerance for the integrator, defaults to 1e-12.
+        rtol: `float`, optional
+            relative tolerance for the integrator, defaults to 1e-7.
+        state_covariance: `np.ndarray`, optional
+            the state covariance matrix, defaults to None.
+        output_covariance: `np.ndarray`, optional
+            the output covariance matrix, defaults to None.
+        dtype: `data-type`, optional
+            the data type to use for the simulation, defaults to np.longdouble.
 
 
         Returns
@@ -868,287 +1446,117 @@ class AnalogFrontend:
         """
 
         # Allocate memory
-        inputs = np.zeros((size, self.L + self.M, self.J), dtype=float)
+        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
         # add state noise
         if self.state_covariance is not None:
             states = self._state_cov_cholesky @ self.rng.normal(
                 size=(size, self.N, self.J)
             )
         else:
-            states = np.zeros((size, self.N, self.J), dtype=float)
+            states = np.zeros((size, self.N, self.J), dtype=dtype)
         # add output noise
         if self.output_covariance is not None:
             outputs = self._output_cov_cholesky @ self.rng.normal(
                 size=(size, self.M, self.J)
             )
         else:
-            outputs = np.zeros((size, self.M, self.J), dtype=float)
+            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
 
         # initialize the states
         if x is None:
-            x = np.zeros((self.N, self.J))
+            x = np.zeros((self.N, self.J), dtype=dtype)
         states[0, :, :] = np.clip(
             x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis]
         )
 
-        t = np.arange(size) * self.digital_control.dt + t0
-
-        if method is None:
-            if self.is_discrete_time:
-                method = "dsim"
-            elif isinstance(self.analog_signal, Sinusoidal):
-                method = "sin"
-            else:
-                method = "ode"
-
-        # Discrete-time analog filter
-        if method == "dsim":
-            logging.info("Simulating discrete-time analog frontend")
-            if not np.isclose(self.digital_control.dt % self.analog_filter.dt, 0):
-                raise ValueError(
-                    "Digital control sampling period must be a multiple of the analog filter sampling period"
-                )
-
-            t = np.arange(size) * self.digital_control.dt + t0
-
-            # pre compute input signal contributions
-
-            inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-
-            # populate first output and control
-            outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
-            inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
-
-            slew_rate_dt = self.slew_rate * self.digital_control.dt
-
-            # Compute simulation recursions
-            for i in range(1, size):
-                # state evolution
-                states[i] += np.clip(
-                    self.A[i % self.A.shape[0]] @ states[i - 1]
-                    + self.B[i % self.B.shape[0]] @ inputs[i - 1],
-                    -slew_rate_dt[:, np.newaxis],
-                    slew_rate_dt[:, np.newaxis],
-                )
-                states[i] = np.clip(
-                    states[i],
-                    self.state_min[:, np.newaxis],
-                    self.state_max[:, np.newaxis],
-                )
-                # output computation
-                outputs[i] += (
-                    self.C[i % self.C.shape[0]] @ states[i]
-                    + self.D[i % self.D.shape[0]] @ inputs[i]
-                )
-                # control update
-                inputs[i, self.L :, :] = self.digital_control.quantize(
-                    outputs[i]
-                ).reshape(self.M, self.J)
-                # hold control from previous decision if no update
-                no_updates = outputs[i] == 0.0
-                inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][
-                    no_updates
-                ]
-
-        # Sinusoidal special case
-        elif method == "sin":
-            logging.info(
-                "Simulating continuous-time analog frontend for sinusoidal input"
+        logging.info("Simulating continuous-time analog frontend")
+        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
+        # Make sure the input signal is not piecewise constant,
+        # otherwise the simulation can be better performed
+        # by discretizing the analog frontend before simulation.
+        if self.analog_signal.piecewise_constant:
+            logging.warning(
+                """"Piecewise constant input signal, discretizing
+                            analog frontend before simulation may be beneficial."""
             )
-            if self.analog_signal.piecewise_constant:
-                logging.info("Piecewise constant input signal")
-                logging.info("Discretizing analog frontend before simulation.")
-                ds = self.discretize(self.dt, atol=atol, rtol=rtol)
-                # simulate the discretized system
-                return ds.simulate(size, x, t0, atol, rtol)
-            if self.A.shape[0] != 1 or self.B.shape[0] != 1:
-                raise NotImplementedError(
-                    "Only time invariant systems are supported for pre-computed input contribbutions, i.e. A.shape[0] == B.shape[0] == 1"
-                )
-            # exp(A * dt) computation
-            A_d = _linalg.expm(self.A[0] * self.dt)
-            C_d = self.C[:]
-            D_d = self.D[:]
-            # for i in range(D_d.shape[0]):
-            #     D_d[i, self.L :] *= self.digital_control.evaluate(
-            #     self.dt, np.ones((self.M, 1))
-            # ).reshape((1, self.M))
-            B_d = np.zeros((self.N, self.L + self.M, self.J), dtype=float)
 
-            tmp_sig_vec = np.zeros((1, self.L + self.M, self.J), dtype=float)
-            tmp_sig_vec[0, : self.L, :] = self.analog_signal.offset
+        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
+        # populate first output and control
+        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
+        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
 
-            def derivative(t: float, x: np.ndarray) -> np.ndarray:
-                tmp_sig_vec[0, self.L :, :] = self.digital_control.impulse_response(
-                    np.array([t])
-                ).reshape((self.M, 1))
-                return (
-                    np.tensordot(
-                        self.A[0],
-                        x.reshape((self.N, self.L + self.M, self.J)),
-                        axes=[[1], [0]],
-                    )
-                    + self.B[0, :, :, np.newaxis] * tmp_sig_vec
+        K = max(self.A.shape[0], self.B.shape[0])
+        derivatives = []
+        for k in range(K):
+
+            def derivative(t: float, x: np.ndarray, *args) -> np.ndarray:
+                # return (
+                #     # state evolution
+                #     self.A[k % self.A.shape[0]] @ x.reshape(self.N, self.J)
+                #     # input signal contributions
+                #     + self.B[k % self.B.shape[0], :, : self.L]
+                #     @ self.analog_signal.evaluate(np.array([t]))[0, :, :]
+                #     # control feedback
+                #     + self.B[k % self.B.shape[0], :, self.L :]
+                #     # args[0] is the current time and args[1] the quantizer input
+                #     @ self.digital_control.evaluate(
+                #         t - args[0], args[1][:, np.newaxis, :]
+                #     )
+                # ).flatten()
+                return np.clip(
+                    # state evolution
+                    self.A[k % self.A.shape[0]] @ x.reshape(self.N, self.J)
+                    # input signal contributions
+                    + self.B[k % self.B.shape[0], :, : self.L]
+                    @ self.analog_signal.evaluate(np.array([t]))[0, :, :]
+                    # control feedback
+                    + self.B[k % self.B.shape[0], :, self.L :]
+                    # args[0] is the current time and args[1] the quantizer input
+                    @ self.digital_control.evaluate(
+                        t - args[0], args[1][:, np.newaxis, :]
+                    ).reshape((self.M, self.J)),
+                    -self.slew_rate[:, np.newaxis],
+                    self.slew_rate[:, np.newaxis],
                 ).flatten()
 
-            # Compute the control contributions
+            derivatives.append(derivative)
+
+        for i in range(1, size):
+
             res = _integrate.solve_ivp(
-                derivative,
-                (0.0, self.dt),
-                np.zeros((self.N, self.L + self.M, self.J), dtype=float).flatten(),
+                derivatives[i % K],
+                (t[i - 1], t[i]),
+                states[i - 1].flatten(),
+                args=(t[i - 1], outputs[i - 1]),
                 atol=atol,
                 rtol=rtol,
-                method="DOP853",
+                jac=block_diag(*[self.A[i % K] for _ in range(self.J)]),
+                method="Radau",
+                # method="DOP853",
             )
-            B_d = res.y[:, -1].reshape((self.N, self.L + self.M, self.J))
-
-            _, tf = self.transfer_function(
-                np.array([2j * np.pi * self.analog_signal.frequency]), state_output=True
+            # slew_rate_dt = self.slew_rate * self.digital_control.dt
+            # states[i] += np.clip(
+            #     res.y[:, -1].reshape((self.N, self.J)),
+            #     -slew_rate_dt[:, np.newaxis],
+            #     slew_rate_dt[:, np.newaxis],
+            # )
+            states[i] += res.y[:, -1].reshape((self.N, self.J))
+            states[i] = np.clip(
+                states[i],
+                self.state_min[:, np.newaxis],
+                self.state_max[:, np.newaxis],
             )
-            # shape (N, L)
-            tf = tf[0, :, : self.L]
-
-            # shape = (N, L)
-            tf_mag = np.abs(tf)
-            tf_phase = np.angle(tf)
-            # shape = (size, N, L, J)
-            tmp = (
-                self.analog_signal.amplitude[np.newaxis, np.newaxis, :, :]
-                * tf_mag[np.newaxis, :, :, np.newaxis]
-            ) * np.sin(
-                (
-                    self.analog_signal._angular_frequency[np.newaxis, np.newaxis, :, :]
-                    * t[:, np.newaxis, np.newaxis, np.newaxis]
-                )
-                + (
-                    tf_phase[np.newaxis, :, :, np.newaxis]
-                    + self.analog_signal.phase[np.newaxis, np.newaxis, :, :]
-                )
+            # output computation
+            outputs[i] += (
+                self.C[i % self.C.shape[0]] @ states[i]
+                + self.D[i % self.D.shape[0]] @ inputs[i]
             )
-
-            # collapse inputs
-            # shape(size, N, J)
-            tmp = np.sum(tmp, axis=2)
-            # shifted to index 1
-            # shape = (size-1, N, J)
-            pre_computed_inputs = tmp[1:, :, :] - np.tensordot(
-                tmp[:-1, :, :], A_d, axes=[[1], [1]]
-            ).transpose(0, 2, 1)
-            # pre_computed_inputs = tmp[1:] - A_d @ tmp[:-1]
-            # shape = (N, J)
-            pre_computed_input_offset = np.sum(B_d[:, : self.L, :], axis=1)
-
-            # populate first output and control
-            inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-            outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
-            inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
-
-            slew_rate_dt = self.slew_rate * self.digital_control.dt
-
-            # Compute simulation recursions
-            for i in range(1, size):
-                # state evolution
-                states[i] += np.clip(
-                    A_d @ states[i - 1]
-                    # control feedback
-                    + B_d[:, self.L :, 0] @ inputs[i - 1, self.L :, :]
-                    # pre-computed input signal contributions
-                    + pre_computed_input_offset + pre_computed_inputs[i - 1],
-                    -slew_rate_dt[:, np.newaxis],
-                    slew_rate_dt[:, np.newaxis],
-                )
-                states[i] = np.clip(
-                    states[i],
-                    self.state_min[:, np.newaxis],
-                    self.state_max[:, np.newaxis],
-                )
-                # output computation
-                outputs[i] += (
-                    C_d[i % C_d.shape[0]] @ states[i]
-                    + D_d[i % D_d.shape[0]] @ inputs[i]
-                )
-                # control update
-                inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i])
-
-                no_updates = outputs[i] == 0.0
-                inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][
-                    no_updates
-                ]
-
-        # Full ode solver
-        elif method == "ode":
-            logging.info("Simulating continuous-time analog frontend")
-            t = np.arange(size) * self.digital_control.dt + t0
-            # Make sure the input signal is not piecewise constant,
-            # otherwise the simulation can be better performed
-            # by discretizing the analog frontend before simulation.
-            if self.analog_signal.piecewise_constant:
-                logging.warning(
-                    """"Piecewise constant input signal, discretizing
-                                analog frontend before simulation may be beneficial."""
-                )
-
-            inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-            # populate first output and control
-            outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
-            inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
-
-            K = max(self.A.shape[0], self.B.shape[0])
-            derivatives = []
-            for k in range(K):
-
-                def derivative(t: float, x: np.ndarray, *args) -> np.ndarray:
-                    return np.clip(
-                        # state evolution
-                        self.A[k % self.A.shape[0]] @ x.reshape(self.N, self.J)
-                        # input signal contributions
-                        + self.B[k % self.B.shape[0], :, : self.L]
-                        @ self.analog_signal.evaluate(np.array([t]))[0, :, :]
-                        # control feedback
-                        + self.B[k % self.B.shape[0], :, self.L :]
-                        # args[0] is the current time and args[1] the quantizer input
-                        @ self.digital_control.evaluate(
-                            t - args[0], args[1][:, np.newaxis, :]
-                        ),
-                        -self._slew_rate[:, np.newaxis],
-                        self._slew_rate[:, np.newaxis],
-                    ).flatten()
-
-                derivatives.append(derivative)
-
-            for i in range(1, size):
-
-                res = _integrate.solve_ivp(
-                    derivatives[i % K],
-                    (t[i - 1], t[i]),
-                    states[i - 1].flatten(),
-                    args=(t[i - 1], outputs[i - 1]),
-                    atol=atol,
-                    rtol=rtol,
-                    # method="DOP853",
-                )
-                states[i] += res.y[:, -1].reshape((self.N, self.J))
-                states[i] = np.clip(
-                    states[i],
-                    self.state_min[:, np.newaxis],
-                    self.state_max[:, np.newaxis],
-                )
-                # output computation
-                outputs[i] += (
-                    self.C[i % self.C.shape[0]] @ states[i]
-                    + self.D[i % self.D.shape[0]] @ inputs[i]
-                )
-                # control update
-                inputs[i, self.L :, :] = self.digital_control.quantize(
-                    outputs[i]
-                ).reshape((self.M, self.J))
-                no_updates = outputs[i] == 0.0
-                inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][
-                    no_updates
-                ]
-
-        else:
-            raise ValueError(f"Unknown simulation method {method}")
+            # control update
+            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
+                (self.M, self.J)
+            )
+            no_updates = outputs[i] == 0.0
+            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
 
         return {
             "t": t,
@@ -1180,6 +1588,9 @@ class AnalogFrontend:
         : :py:class:`cbadc.analog_frontend.AnalogFrontend`
             returns a discretized analog frontend instance
         """
+        if self.is_discrete_time:
+            logger.warning("Analog frontend is already discrete-time.")
+            return self
 
         C_d = self.C[:]
         D_d = self.D[:]
@@ -1193,12 +1604,13 @@ class AnalogFrontend:
 
         K = max(self.A.shape[0], self.B.shape[0])
         if (
-            self.analog_signal.piecewise_constant
-            and self.digital_control.dac_waveform == "nrz"
+            # self.analog_signal.piecewise_constant and
+            self.digital_control.dac_waveform
+            == "nrz"
         ):
             # largest repetition of A and B matrices
-            A_d = np.zeros((K, self.N, self.N), dtype=float)
-            B_d = np.zeros((K, self.N, self.L + self.M), dtype=float)
+            A_d = np.zeros((K, self.N, self.N), dtype=self.A.dtype)
+            B_d = np.zeros((K, self.N, self.L + self.M), dtype=self.B.dtype)
             for i in range(K):
                 tmp_arg = np.vstack(
                     (
@@ -1206,7 +1618,8 @@ class AnalogFrontend:
                             (self.A[i % self.A.shape[0]], self.B[i % self.B.shape[0]])
                         ),
                         np.zeros(
-                            (self.L + self.M, self.N + self.L + self.M), dtype=float
+                            (self.L + self.M, self.N + self.L + self.M),
+                            dtype=self.A.dtype,
                         ),
                     )
                 )
@@ -1218,13 +1631,15 @@ class AnalogFrontend:
             additional_states: int = delay_steps * self.M
 
             A_d = np.zeros(
-                (K, self.N + additional_states, self.N + additional_states), dtype=float
+                (K, self.N + additional_states, self.N + additional_states),
+                dtype=self.A.dtype,
             )
             B_d = np.zeros(
-                (K, self.N + additional_states, self.L + self.M), dtype=float
+                (K, self.N + additional_states, self.L + self.M), dtype=self.B.dtype
             )
             C_d = np.zeros(
-                (self.C.shape[0], self.M, self.N + additional_states), dtype=float
+                (self.C.shape[0], self.M, self.N + additional_states),
+                dtype=self.C.dtype,
             )
             C_d[:, :, : self.N] = self.C[:, :, :]
             for i in range(K):
@@ -1233,10 +1648,10 @@ class AnalogFrontend:
                 )
 
                 tmp_sig_vec = np.zeros(
-                    (1, self.L + self.M + additional_states), dtype=float
+                    (1, self.L + self.M + additional_states), dtype=self.A.dtype
                 )
                 B_temp = np.zeros(
-                    (self.N, self.L + self.M + additional_states), dtype=float
+                    (self.N, self.L + self.M + additional_states), dtype=self.B.dtype
                 )
                 B_temp[:, : self.L + self.M] = self.B[
                     i % self.B.shape[0], :, : self.L + self.M
@@ -1266,7 +1681,8 @@ class AnalogFrontend:
                     derivative,
                     (0.0, dt),
                     np.zeros(
-                        self.N * (self.L + self.M + additional_states), dtype=float
+                        self.N * (self.L + self.M + additional_states),
+                        dtype=self.A.dtype,
                     ),
                     atol=atol,
                     rtol=rtol,
@@ -1315,11 +1731,11 @@ class AnalogFrontend:
                     #     (C_d[i], np.zeros((self.M, additional_states), dtype=float))
                     # )
         if K == 1 and C_d.shape[0] == 1 and D_d.shape[0] == 1:
-            analog_filter = StateSpace(A_d[0], B_d[0], C_d[0], D_d[0], dt=1.0)
+            analog_filter = StateSpace(A_d[0], B_d[0], C_d[0], D_d[0], dt=dt)
         else:
-            analog_filter = CyclicStateSpace(A_d, B_d, C_d, D_d, dt=1.0)
+            analog_filter = CyclicStateSpace(A_d, B_d, C_d, D_d, dt=dt)
         digital_control = _deepcopy(self.digital_control)
-        digital_control.dt = 1.0
+        # digital_control.dt = self.dt
         analog_signal = _deepcopy(self.analog_signal)
         return AnalogFrontend(analog_filter, digital_control, analog_signal)
 
@@ -1387,6 +1803,11 @@ class AnalogFrontend:
         if output_index is not None:
             C: np.ndarray = C[output_index].reshape((-1, self.N))
             D: np.ndarray = D[output_index]
+
+        if self.is_discrete_time:
+            # convert jw to z
+            z = np.exp(jw * self.digital_control.dt)
+            jw = z
 
         # Solve the transfer function
         # H(s) = C (sI - A)^-1 B + D
@@ -1515,10 +1936,7 @@ class AnalogFrontend:
             eta2 = float(eta2)
         elif eta2 is None and OSR is not None:
             # Compute the signal transfer function
-            if self.is_discrete_time:
-                jomega_Bw = 1j * np.pi / (OSR)
-            else:
-                jomega_Bw = 1j * np.pi / (OSR * self.dt)
+            jomega_Bw = 1j * np.pi / (OSR * self.dt)
             _, tf = self.transfer_function(
                 np.array([jomega_Bw]), input_index=0, output_index=-1
             )
@@ -1527,6 +1945,19 @@ class AnalogFrontend:
             raise ValueError("eta2 or OSR must be provided")
         return WienerFilter(self, eta2)
 
+    def black_box_estimator(
+        self,
+        DSR: int,
+        K: int = 1 << 6,
+        max_amplitude: float = 1.0,
+        sim_size: int = 1 << 16,
+        J: int = 4,
+        seed: int = 90128310230123,
+    ):
+        from .digital_backend import BlackBoxEstimator
+
+        return BlackBoxEstimator(self, DSR, K, max_amplitude, sim_size, J, seed)
+
     def simulateSNR(
         self,
         OSR: int,
@@ -1534,6 +1965,9 @@ class AnalogFrontend:
         f0: float = 0.0,
         f: Optional[float] = None,
         k: int = 13,
+        K: int = 1 << 8,
+        method: str = "dsim",
+        debug: bool = False,
     ):
         """Simulate the SNR of the analog frontend
 
@@ -1550,7 +1984,20 @@ class AnalogFrontend:
             the input tone frequency, defaults to None.
         k: `int`, optional
             the FFT size, defaults to 13.
+        K: `int`, optional
+            number of taps of reconstruction filter, defaults to 64.
+        method: `str`, optional
+            the simulation method, defaults to "dsim". Valid options are:
 
+            * 'dsim': simulate the discrete-time analog frontend
+
+            * 'sin': simulate the continuous-time analog frontend for sinusoidal input
+
+            * 'ode': simulate the continuous-time analog frontend using an ODE solver with discrete time steps.
+
+            * 'ode_full': simulate the continuous-time analog frontend using an ODE solver with full time steps.
+        debug: `bool`, optional
+            whether to plot the resulting spectrums for debugging, defaults to False.
         Returns
         -------
         : :py:class:`numpy.ndarray`, shape=(J,)
@@ -1585,58 +2032,82 @@ class AnalogFrontend:
         # dB to linear scale
         amp_lin = 10 ** (amp_dB / 20)
 
-        if f is None:
-            f = f0 + 0.5 / (OSR * 2)  # Halfway across the band
-        if np.abs(f - f0) > 0.5 / OSR:
-            logger.warning("The input tone is out-of-band.")
         fft_bins = 1 << k
-        if fft_bins < (OSR << 4):
-            logger.warning(
-                "The FFT size is too small.",
-                "Increasing k to accommodate a large oversampling ratio.",
-            )
-            k = int(np.ceil(np.log2(OSR << 4)))
-            fft_bins = 1 << k
-        f_int = int(np.round(f * fft_bins))
-        if np.abs(f_int) < 2:
-            logger.warning(
-                "The input tone is too close to DC.",
-                "Increasing k to accommodate a low input frequency.",
-            )
-            k = np.ceil(np.log2(1.0 / np.abs(f)))
-            fft_bins = 1 << k
-            f_int = 2
+        f = np.round(f0 + 0.5 * fft_bins / (2 * OSR))
+
+        # if f is None:
+        #     f = f0 + 0.5 / (OSR * 2)  # Halfway across the band
+        # if np.abs(f - f0) > 0.5 / OSR:
+        #     logger.warning("The input tone is out-of-band.")
+        # fft_bins = 1 << k
+        # if fft_bins < (OSR << 4):
+        #     logger.warning(
+        #         "The FFT size is too small.",
+        #         "Increasing k to accommodate a large oversampling ratio.",
+        #     )
+        #     k = int(np.ceil(np.log2(OSR << 4)))
+        #     fft_bins = 1 << k
+        # f_int = int(np.round(f * fft_bins))
+        # if np.abs(f_int) < 2:
+        #     logger.warning(
+        #         "The input tone is too close to DC.",
+        #         "Increasing k to accommodate a low input frequency.",
+        #     )
+        #     k = np.ceil(np.log2(1.0 / np.abs(f)))
+        #     fft_bins = 1 << k
+        #     f_int = 2
         warm_up = 1 << 7
         window = np.hanning(fft_bins)
-        if f0 == 0.0:
-            in_band_bins = fft_bins // 2 + np.arange(
-                3, np.round(fft_bins / (2 * OSR)) + 1, dtype=int
-            )
-            f_int -= 2
+        # if f0 == 0.0:
+        #     in_band_bins = fft_bins // 2 + np.arange(
+        #         3, np.round(fft_bins / (2 * OSR)) + 1, dtype=int
+        #     )
+        #     f_int -= 2
 
         # before overwriting the analog signal, store the old one
-        _old_analog_signal = self.analog_signal
+        _old_analog_signal = _deepcopy(self.analog_signal)
 
         self.analog_signal = Sinusoidal(
-            amp_lin, f_int / fft_bins * self.fs * np.ones_like(amp_dB)
+            amp_lin, f / fft_bins * self.fs * np.ones_like(amp_dB)
         )
-        sim = self.simulate(fft_bins + warm_up)
+        # print(f"Simulating SNR at frequency: {f / fft_bins * self.fs} Hz")
+        sim = self.simulate(warm_up + fft_bins * OSR, method=method)
 
         avg_pow = np.sum(np.mean(self.avg_power(sim["x"]), axis=1))
 
         # OSR = 1 / (2 * dt * BW)
-        wf = self.wiener_filter(OSR=OSR)
-        # shape = (fft_bins+warm_up, J)
-        u_hat = wf.evaluate(sim["v"])[:, :, :]
-        print(u_hat.shape)
-        # shape = (fft_bins, J)
-        hwfft = np.fft.fftshift(
-            np.fft.fft(u_hat[warm_up:, 0, :] * window[:, np.newaxis], axis=0), axes=0
-        )
-        # shape = (J,)
-        snr = self.calculateSNR_from_fft(hwfft[in_band_bins - 1])
+        # df = self.wiener_filter(OSR=OSR)
+        # # shape = (fft_bins+warm_up, J)
+        # u_hat = df.evaluate(sim["v"])[:, :, :]
 
+        df = self.black_box_estimator(
+            OSR, K=K, max_amplitude=1.0, sim_size=1 << 16, J=1
+        )
+
+        u_hat = df.convolve(sim["v"], DSR=OSR)
+        
+        hwfft = np.fft.rfft(u_hat[-fft_bins:, 0, :] * window[:, np.newaxis], axis=0)
+        # print(f"FFT bins: {hwfft.shape[0]}")
+        # shape = (J,)
+        # snr = self.calculateSNR_from_fft(hwfft[in_band_bins - 1])
+        snr = self.calculateSNR_from_fft(hwfft[3:-3], extra_bins=10)
         # reset the analog signal
+
+        if debug:
+            import matplotlib.pyplot as plt
+            for j in range(amp_dB.shape[1] - 3):
+                plt.figure("spectrum")
+                plt.semilogx(
+                    20 * np.log10(np.abs(hwfft[:, j]) / np.sqrt(np.sum(window**2) / 2)),
+                    label=f"Amplitude: {amp_dB[0,j]} dB",
+                )
+            # plt.title(f"FFT of Reconstructed Signal (Amplitude: {amp_dB[0,j]} dB)")
+            plt.xlabel("FFT Bins")
+            plt.ylabel("Magnitude (dB)")
+            plt.legend()
+            plt.grid()
+            plt.show()
+
         self.analog_signal = _old_analog_signal
 
         return snr, amp_dB.flatten(), avg_pow
@@ -1648,8 +2119,6 @@ class AnalogFrontend:
         ----------
         fft: `np.ndarray`, shape=(size, ...)
             the FFT
-        f: `float`
-            the frequency of the input tone
         extra_bins: `int`, optional
             the number of extra bins surronding the input frequency bin
             to include in the signal power computation,
@@ -1752,14 +2221,15 @@ class AnalogFrontend:
             N = kwargs["N"]
             BW = kwargs["BW"]
             OSR = kwargs["OSR"]
+            delta = kwargs.get("delta", 1.0)
             dt = 1.0 / (2 * BW * OSR)
-            beta = 1 / (2 * dt)
-            kappa = beta
+            beta = delta / (2 * dt)
+            kappa_vec = np.array([beta * delta**n for n in range(N)])
             rho = kwargs.get("rho", 0.0)
             analog_filter = ChainOfIntegrators(
                 beta * np.ones(N),
                 rho * np.ones(N),
-                kappa * np.eye(N),
+                np.diag(kappa_vec),
             )
             t0 = dt * kwargs.get("excess_delay", 0.0)
             alpha = np.zeros(N)
@@ -2230,7 +2700,7 @@ class ActiveRC(AnalogFrontend):
 
         B[:N_2, :] = analog_frontend.B[0]
         C[:, N_2:] = -analog_frontend.C[0]
-        print(A, B, C, D)
+        # print(A, B, C, D)
         analog_filter = StateSpace(A, B, C, D)
 
         super().__init__(

@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 import time
 import pytest
 
+np.seterr(all="warn")
+
 
 def test_initialization(chain_of_integrators):
     # N = chain_of_integrators["N"]
@@ -126,20 +128,20 @@ def test_discretize():
     print(B2)
     print(B3)
     np.testing.assert_allclose(afd2.B, afd.B)
-    np.testing.assert_allclose(afd3.B[:N, :], afd.B)
-
-    # TODO Fix these something with ordering of the B matrix is wrong
-    # possibly around 742 in analog frontend
-    np.testing.assert_allclose(B2, B1)
-    np.testing.assert_allclose(B3, B1)
+    np.testing.assert_allclose(afd3.B[:, :N, :], afd.B)
 
     # Test C matrix
-    np.testing.assert_allclose(afd2.Co, afd.Co)
-    np.testing.assert_allclose(afd3.Co[:, :N], afd.Co)
+    np.testing.assert_allclose(afd2.C, afd.C)
+    np.testing.assert_allclose(afd3.C[:, :, :N], afd.C)
 
     # Test D matrix
     np.testing.assert_allclose(afd2.D, afd.D)
     np.testing.assert_allclose(afd3.D, afd.D)
+
+    np.testing.assert_allclose(B2, B1)
+    # TODO Fix these something with ordering of the B matrix is wrong
+    # possibly around 742 in analog frontend
+    np.testing.assert_allclose(B3, B1)
 
 
 def test_tranfer_function():
@@ -233,38 +235,55 @@ def test_simulate():
     # analog_signal = AnalogSignal(np.array([offset]))
     af, OSR = AnalogFrontend.leapfrog(ENOB=14, N=6, BW=1e7)
     # af = AnalogFrontend.chain_of_integrators(ENOB=14.0, N=6, BW=1e7)
-    amplitude = np.array([[0.25, 0]], dtype=float)
-    freq = np.array([[af.fs / 128, af.fs / 64]], dtype=float)
+    # amplitude = np.array([[0.25, 0.25]], dtype=float)
+    # freq = np.array([[af.fs / 128, af.fs / 64]], dtype=float)
+    amplitude = np.array([[1.0]], dtype=float)
+    freq = np.array([[af.fs / 64]], dtype=float)
     sinusoidal = Sinusoidal(amplitude, freq)
     af.analog_signal = sinusoidal
 
+    atol = 1e-12
+    rtol = 1e-7
+    dtype = np.double
+
     size = 1 << 12
-    start_time_full = time.time()
-    full_sim = af.simulate(size, method="ode")
+    # size = 1 << 12
+    start_time_ode = time.time()
+    ode = af.simulate(size, method="ode", atol=atol, rtol=rtol, dtype=dtype)
     end_time_full = time.time()
-    full_sim_time = end_time_full - start_time_full
+    ode_sim_time = end_time_full - start_time_ode
+
+    start_time_ode_full = time.time()
+    ode_full = af.simulate(size, method="ode_full", atol=atol, rtol=rtol, dtype=dtype)
+    end_time_ode_full = time.time()
+    ode_full_sim_time = end_time_ode_full - start_time_ode_full
 
     start_time_dt = time.time()
     afd = af.discretize(af.dt)
-    dt_sim = afd.simulate(size)
+    dt_sim = afd.simulate(size, method="dsim", dtype=dtype)
     end_time_dt = time.time()
     dt_sim_time = end_time_dt - start_time_dt
 
     start_time_sin = time.time()
-    sin_sim = af.simulate(size, method="sin")
+    sin_sim = af.simulate(size, method="sin", atol=atol, rtol=rtol, dtype=dtype)
     end_time_sin = time.time()
     sin_sim_time = end_time_sin - start_time_sin
 
-    print(f"Full simulation time: {full_sim_time} seconds")
+    print(f"Full simulation time: {ode_sim_time} seconds")
+    print(f"Full (ode_full) simulation time: {ode_full_sim_time} seconds")
     print(f"Discrete-time simulation time: {dt_sim_time} seconds")
     print(f"Sinusoidal simulation time: {sin_sim_time} seconds")
 
     for m in range(af.M):
         plt.figure()
         plt.title(f"s {m} freq")
-        s_fft = np.fft.rfft(full_sim["v"][:, m, 0])
+        s_fft = np.fft.rfft(ode["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=af.dt)
-        plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label="Full")
+        plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label="ODE")
+
+        s_fft = np.fft.rfft(ode_full["v"][:, m, 0])
+        f = np.fft.rfftfreq(size, d=af.dt)
+        plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label="ODE Full")
 
         s_fft = np.fft.rfft(dt_sim["v"][:, m, 0])
         f = np.fft.rfftfreq(size, d=af.dt)
@@ -281,7 +300,8 @@ def test_simulate():
         plt.title(f"v {m}")
         # length = 200
         length = size
-        plt.plot(full_sim["t"][:length], full_sim["v"][:length, m, 0], label="Full")
+        plt.plot(ode["t"][:length], ode["v"][:length, m, 0], label="Full")
+        plt.plot(ode_full["t"][:length], ode_full["v"][:length, m, 0], label="Full ODE")
         plt.plot(dt_sim["t"][:length], dt_sim["v"][:length, m, 0], label="Discrete")
         plt.plot(sin_sim["t"][:length], sin_sim["v"][:length, m, 0], label="Sinusoidal")
         plt.legend()
@@ -301,7 +321,8 @@ def test_simulate():
 
         plt.figure()
         plt.title(f"x {m}")
-        plt.plot(full_sim["t"][:length], full_sim["x"][:length, m, 0], label="Full")
+        plt.plot(ode["t"][:length], ode["x"][:length, m, 0], label="Full")
+        plt.plot(ode_full["t"][:length], ode_full["x"][:length, m, 0], label="Full ODE")
         plt.plot(dt_sim["t"][:length], dt_sim["x"][:length, m, 0], label="Discrete")
         plt.plot(sin_sim["t"][:length], sin_sim["x"][:length, m, 0], label="Sinusoidal")
         plt.legend()
@@ -310,28 +331,36 @@ def test_simulate():
 
     # inputs
     plt.figure()
-    plt.plot(full_sim["t"], full_sim["u"][:, 0], label="Full")
+    plt.plot(ode["t"], ode["u"][:, 0], label="Full")
+    plt.plot(ode_full["t"], ode_full["u"][:, 0], label="Full ODE")
     plt.plot(dt_sim["t"], dt_sim["u"][:, 0], label="Discrete")
     plt.plot(sin_sim["t"], sin_sim["u"][:, 0], label="Sinusoidal")
     plt.legend()
     plt.xlabel("Time [s]")
     plt.ylabel("Input")
 
-    # plt.show()
+    plt.show()
     # print(af)
     # print(afd)
     # assert False
-    np.testing.assert_almost_equal(sin_sim["v"], dt_sim["v"])
-    np.testing.assert_almost_equal(sin_sim["u"], dt_sim["u"])
-    np.testing.assert_almost_equal(sin_sim["t"], dt_sim["t"])
-    np.testing.assert_almost_equal(sin_sim["y"], dt_sim["y"])
-    np.testing.assert_almost_equal(sin_sim["x"], dt_sim["x"])
 
-    np.testing.assert_almost_equal(full_sim["v"], sin_sim["v"])
-    np.testing.assert_almost_equal(full_sim["u"], sin_sim["u"])
-    np.testing.assert_almost_equal(full_sim["t"], sin_sim["t"])
-    np.testing.assert_almost_equal(full_sim["y"], sin_sim["y"])
-    np.testing.assert_almost_equal(full_sim["x"], sin_sim["x"])
+    np.testing.assert_almost_equal(dt_sim["v"], ode["v"])
+    np.testing.assert_almost_equal(dt_sim["u"], ode["u"])
+    np.testing.assert_almost_equal(dt_sim["t"], ode["t"])
+    np.testing.assert_almost_equal(dt_sim["y"], ode["y"])
+    np.testing.assert_almost_equal(dt_sim["x"], ode["x"])
+
+    np.testing.assert_almost_equal(dt_sim["v"], ode_full["v"])
+    np.testing.assert_almost_equal(dt_sim["u"], ode_full["u"])
+    np.testing.assert_almost_equal(dt_sim["t"], ode_full["t"])
+    np.testing.assert_almost_equal(dt_sim["y"], ode_full["y"])
+    np.testing.assert_almost_equal(dt_sim["x"], ode_full["x"])
+
+    np.testing.assert_almost_equal(dt_sim["v"], sin_sim["v"])
+    np.testing.assert_almost_equal(dt_sim["u"], sin_sim["u"])
+    np.testing.assert_almost_equal(dt_sim["t"], sin_sim["t"])
+    np.testing.assert_almost_equal(dt_sim["y"], sin_sim["y"])
+    np.testing.assert_almost_equal(dt_sim["x"], sin_sim["x"])
 
 
 def test_ABDC():
@@ -484,23 +513,102 @@ def test_calculateSNR_from_fft():
     assert (snr_2 == snr[0, :]).all()
 
 
+def test_discretize_weird_behavior():
+    OSR = 32
+    N = 4
+    bw = 1e7
+    delta = 1e-0
+    lf, _ = AnalogFrontend.leapfrog(OSR=OSR, N=N, BW=bw, delta=delta)
+    print(lf)
+    lfdt = lf.discretize(lf.dt)
+
+    amplitude = np.array([[1.0]], dtype=float)
+    freq = np.array([[lfdt.fs / 64]], dtype=float)
+    sinusoidal = Sinusoidal(amplitude, freq)
+    lf.analog_signal = sinusoidal
+    lfdt.analog_signal = sinusoidal
+
+    atol = 1e-12
+    rtol = 1e-7
+    dtype = np.double
+
+    size = 1 << 12
+    res = lf.simulate(size, method="dsim", atol=atol, rtol=rtol, dtype=dtype)
+    res_sin = lf.simulate(size, method="sin", atol=atol, rtol=rtol, dtype=dtype)
+    res_dt = lfdt.simulate(size, method="dsim", atol=atol, rtol=rtol, dtype=dtype)
+
+    plt.figure()
+    plt.title("Output comparison")
+    length = size
+    plt.plot(res["t"][:length], res["y"][:length, 0, 0], label="Leapfrog dsim")
+    plt.plot(res_sin["t"][:length], res_sin["y"][:length, 0, 0], label="Leapfrog sin")
+    plt.plot(res_dt["t"][:length], res_dt["y"][:length, 0, 0], label="Leapfrog DT dsim")
+    plt.legend()
+    plt.xlabel("Time [s]")
+    plt.ylabel("Output amplitude")
+    # plt.show()
+
+    wf = lf.wiener_filter(OSR=int(np.ceil(OSR)))
+    u_hat = wf.evaluate(res["v"])[:, 0, :]
+    u_hat_sin = wf.evaluate(res_sin["v"])[:, 0, :]
+    u_hat_dt = wf.evaluate(res_dt["v"])[:, 0, :]
+    with pytest.raises(NotImplementedError):
+        wfd = lfdt.wiener_filter(OSR=int(np.ceil(OSR)))
+    # u_hat_dt2 = wfd.evaluate(res_dt["v"])[:, 0, :]
+    plt.figure()
+    plt.title("Input comparison")
+    length = size
+    plt.plot(res["t"][:length], u_hat[:length, 0], label="Leapfrog dsim")
+    plt.plot(res_sin["t"][:length], u_hat_sin[:length, 0], label="Leapfrog sin")
+    plt.plot(res_dt["t"][:length], u_hat_dt[:length, 0], label="Leapfrog DT dsim")
+    # plt.plot(
+    #     res_dt["t"][:length], u_hat_dt2[:length, 0], label="Leapfrog DT dsim wiener"
+    # )
+    plt.legend()
+    plt.xlabel("Time [s]")
+    plt.ylabel("Input amplitude")
+    # plt.show()
+
+    plt.figure()
+    # spectrum comparison
+    s_fft = np.fft.rfft(u_hat.flatten())
+    f = np.fft.rfftfreq(u_hat.size, d=lf.dt)
+    plt.semilogx(f, 20 * np.log10(np.abs(s_fft)), label="Leapfrog dsim")
+    s_fft_sin = np.fft.rfft(u_hat_sin.flatten())
+    plt.semilogx(f, 20 * np.log10(np.abs(s_fft_sin)), label="Leapfrog sin")
+    s_fft_dt = np.fft.rfft(u_hat_dt.flatten())
+    plt.semilogx(f, 20 * np.log10(np.abs(s_fft_dt)), label="Leapfrog DT dsim")
+    # s_fft_dt2 = np.fft.rfft(u_hat_dt2.flatten())
+    # plt.semilogx(f, 20 * np.log10(np.abs(s_fft_dt2)), label="Leapfrog DT dsim wiener")
+    plt.legend()
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("Magnitude [dB]")
+    plt.show()
+
+
 def test_simulateSNR():
     OSR = 32
     N = 4
     k = 16
-    lf, _ = AnalogFrontend.leapfrog(OSR=OSR, N=N, BW=1e7)
+    bw = 1e7
+    delta = 1e-0
+    lf, _ = AnalogFrontend.leapfrog(OSR=OSR, N=N, BW=bw, delta=delta)
     print(lf)
     start_time = time.time()
     snr_lf, amp_lf, _ = lf.simulateSNR(OSR, k=k)
     end_time = time.time()
 
+    lfdt = lf.discretize(lf.dt)
+    snr_lf_dt, amp_lf_dt, _ = lfdt.simulateSNR(OSR, k=k)
+    # snr_lf_dt, amp_lf_dt, _ = lf.simulateSNR(OSR, k=k, method="dsim")
+
     gmc = GmC(lf, np.ones(N) * 1e5, np.ones(N) * 1e-12)
     print(gmc)
     snr_gmc, amp_gmc, _ = gmc.simulateSNR(OSR, k=k)
 
-    ci, _ = AnalogFrontend.chain_of_integrators(OSR=OSR, N=N, BW=1e7)
+    ci, _ = AnalogFrontend.chain_of_integrators(OSR=OSR, N=N, BW=bw, delta=delta)
     print(ci)
-    snr_ci, amp_ci, _ = ci.simulateSNR(OSR, k=k)
+    snr_ci, amp_ci, _ = ci.simulateSNR(OSR, k=k, method="dsim")
 
     nlev = 1 << 2
 
@@ -525,6 +633,7 @@ def test_simulateSNR():
         f"OSR = {OSR}, N = {N}, time = {end_time - start_time:0.1e} s, size = {1 << k} samples, for {amp_crfb.size} amplitudes"
     )
     plt.plot(amp_lf, snr_lf, "go", label="Leapfrog")
+    plt.plot(amp_lf_dt, snr_lf_dt, "co", label="Leapfrog DT")
     plt.plot(amp_gmc, snr_gmc, "bo", label="GmC")
     plt.plot(amp_ci, snr_ci, "yo", label="Chain of Integrators")
     plt.plot(amp_crfb, snr_dsm_CRFB, "ro", label=f"DT-CRFB, H_inf = {H_inf_CRFB}")
@@ -537,7 +646,25 @@ def test_simulateSNR():
     plt.yticks(yaxis, labels=[f"({y:.0f}, {fom.snr_to_enob(y):.0f})" for y in yaxis])
     plt.tight_layout()
 
-    # plt.show()
+    freqs = np.geomspace(bw * 1e-3, bw * 1e1)
+    jw = 1j * 2 * np.pi * freqs
+
+    wf = lf.wiener_filter(OSR=int(np.ceil(OSR)))
+
+    stf = wf.stf(jw)[1]
+    ntf = wf.ntf(jw)[1]
+
+    print(stf.shape, ntf.shape)
+
+    plt.figure()
+    plt.semilogx(freqs, 20 * np.log10(np.abs(stf[:, 0, 0])), label="STF")
+    for n in range(N):
+        plt.semilogx(freqs, 20 * np.log10(np.abs(ntf[:, -1, n])), label=f"NTF {n}->N")
+    plt.xlabel("Frequencies")
+    plt.ylabel("Amplitude Response dB")
+    plt.grid()
+    plt.legend()
+    plt.show()
     # assert False
 
 

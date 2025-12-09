@@ -373,8 +373,8 @@ class DigitalControl:
                 + self._mid_thread.reshape(broadcasting_shape)
             )
             + self._mid_rise.reshape(broadcasting_shape),
-            self._min,
-            self._max,
+            self._min.reshape(broadcasting_shape),
+            self._max.reshape(broadcasting_shape),
         )
 
     def impulse_response(self, t_delay: np.ndarray) -> np.ndarray:
@@ -422,6 +422,7 @@ class DigitalControl:
         broadcast_shape[:2] = value.shape[:2]
         # shape(M, delays, ...)
         quantized = self.quantize(value)
+        # return quantized.reshape(value.shape)
         return np.sum(quantized * dac_waveform.reshape(broadcast_shape), axis=1)
 
     def __call__(self, t: float, value: np.ndarray) -> np.ndarray:

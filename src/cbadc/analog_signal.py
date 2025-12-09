@@ -1,8 +1,8 @@
-"""Generic analog signals.
-"""
+"""Generic analog signals."""
 
 from typing import Optional
 import numpy as np
+from scipy.signal import resample as _resample
 
 
 class AnalogSignal:
@@ -140,8 +140,8 @@ class AnalogSignal:
     def __add__(self, other):
         return SuperpositionSignal(self, other)
 
-    # def __sub__(self, other):
-    #     raise NotImplementedError
+    def __sub__(self, other):
+        return SuperpositionSignal(self, other, sub=[False, True])
 
     def __mul__(self, other):
         return ModulatedSignal(self, other)
@@ -385,7 +385,7 @@ class ZeroOrderHold(AnalogSignal):
         self._values = value
 
     def evaluate(self, t: np.ndarray) -> np.ndarray:
-        """Evaluate the signal at time t.
+        """Evaluate the signal at time t.)
 
         Parameters
         ----------
@@ -419,12 +419,39 @@ class ZeroOrderHold(AnalogSignal):
         """
         return np.ones((t.size, self.L, self.J), dtype=float)
 
+    def resample(self, new_dt: float) -> "ZeroOrderHold":
+        """Resample the zero-order hold signal to a new sampling period.
+
+        Parameters
+        ----------
+        new_dt : `float`
+            The new sampling period.
+
+        Returns
+        -------
+        ZeroOrderHold
+            The resampled zero-order hold signal.
+        """
+        if not isinstance(new_dt, float):
+            raise TypeError("new_dt must be a float")
+        if new_dt <= 0:
+            raise ValueError("new_dt must be a positive number")
+
+        ratio = int(np.round(self.dt / new_dt))
+        if not np.isclose(ratio * new_dt, self.dt):
+            raise ValueError("new_dt must be an integer multiple of the current dt")
+        new_values: np.ndarray = _resample(
+            self._values, num=int(ratio * self.size), axis=0
+        )
+        # new_values = self._values[::ratio, :, :]
+        return ZeroOrderHold(new_dt, new_values, self.t0)
+
     @staticmethod
     def binary_reference_signal(
         dt: float,
         amplitude: Optional[np.ndarray] = None,
         t0: float = 0.0,
-        size: int = 1 << 20,
+        size: int = 1 << 16,
         offset: Optional[np.ndarray] = None,
         seed: int = 23423402967101203431687465321,
     ) -> "ZeroOrderHold":
@@ -437,7 +464,7 @@ class ZeroOrderHold(AnalogSignal):
         amplitude : `numpy.ndarray`, shape=(L, J), optional
             The amplitude of the signal, defaults to numpy.ones((1, 1), dtype=float).
         t0 : `float`, optional
-            The initial time, defaults to 0.0.
+            The initial time, defaults to 0.0.)
         size : `int`, optional
             The size of the signal, defaults to 1 << 20.
         offset : `numpy.ndarray`, shape=(L,), optional
@@ -477,7 +504,7 @@ class ZeroOrderHold(AnalogSignal):
         dt: float,
         amplitude: Optional[np.ndarray] = None,
         t0: float = 0.0,
-        size: int = 1 << 20,
+        size: int = 1 << 16,
         offset: Optional[np.ndarray] = None,
         seed: int = 890012391238219123057,
     ) -> "ZeroOrderHold":
@@ -522,7 +549,7 @@ class ZeroOrderHold(AnalogSignal):
         mean: Optional[np.ndarray] = None,
         std: Optional[np.ndarray] = None,
         t0: float = 0.0,
-        size: int = 1 << 20,
+        size: int = 1 << 16,
         seed: int = 98132712381291025,
     ) -> "ZeroOrderHold":
         """Create a Gaussian reference signal.
@@ -570,7 +597,7 @@ class ZeroOrderHold(AnalogSignal):
         low: Optional[np.ndarray] = None,
         high: Optional[np.ndarray] = None,
         t0: float = 0.0,
-        size: int = 1 << 20,
+        size: int = 1 << 16,
         seed: int = 503147101294755601,
     ) -> "ZeroOrderHold":
         """Create a uniform reference signal.
@@ -730,8 +757,14 @@ class SuperpositionSignal(ModulatedSignal):
         The list of signals.
     """
 
-    def __init__(self, *signals: AnalogSignal):
+    def __init__(self, *signals: AnalogSignal, sub: list[bool] = None):
         self.signals = signals
+        if sub == None:
+            sub = [False for _ in self.signals]
+        if not all(isinstance(x, bool) for x in sub) or len(signals) != len(sub):
+            raise ValueError(f"subtraction must be a list of booleans of same length as signals not signals: {signals}, sub: {sub}")
+        else:
+            self.sub = sub
 
     @property
     def signals(self) -> tuple[AnalogSignal]:
@@ -773,8 +806,8 @@ class SuperpositionSignal(ModulatedSignal):
             The analog signal values
         """
         res = np.zeros((t.size, self.L, self.J), dtype=float)
-        for signal in self._signals:
-            res += signal.evaluate(t)
+        for i, signal in enumerate(self._signals):
+            res += (-1 if self.sub[i] else 1) * signal.evaluate(t)
         return res
 
     def impulse_response(self, t: np.ndarray) -> np.ndarray:
