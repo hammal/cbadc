@@ -28,17 +28,25 @@ For a in-depth description of the control-bounded conversion concept consider th
 Install [cbadc](https://pypi.org/project/cbadc/) by typing
 
 ```bash
-pip install cbadc
+uv add cbadc
 ```
 
-into your console. Note that, currently cbadc is only supported for Python3.9 and later.
+into your console. Note that cbadc requires Python 3.10 or later.
 
 ## Develop Version
 
-Alternatively, the latest develop branch can be installed by
+Alternatively, clone the repository and install the latest develop branch with
 
 ```bash
-pip install git+https://github.com/hammal/cbadc.git@develop
+git clone https://github.com/hammal/cbadc.git
+cd cbadc
+uv sync
+```
+
+To include development dependencies (pytest, ruff, pre-commit):
+
+```bash
+uv sync --extra dev
 ```
 
 # Source Code
