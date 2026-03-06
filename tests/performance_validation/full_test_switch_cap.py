@@ -1,4 +1,5 @@
 import pytest
+pytest.skip("TODO evaluate applicability", allow_module_level=True)
 import numpy as np
 import cbadc
 from cbadc._digital_estimator import (

@@ -242,6 +242,9 @@ def simulateDSM(
     v, xn, xmax, y : tuple of ndarrays
         The quantizer output, the modulator states, the maximum value that each state reached during simulation, and the output.
     """
+    if isinstance(ABCD, ZerosPolesGain):
+        a, g, b, c = realizeNTF(ABCD)
+        ABCD = stuffABCD(a, g, b, c)
     return ds.simulateDSM(u, ABCD, nlev, x0)
 
 

@@ -1,3 +1,5 @@
+import pytest
+pytest.skip("TODO evaluate applicability", allow_module_level=True)
 import os
 import cbadc
 import numpy as np

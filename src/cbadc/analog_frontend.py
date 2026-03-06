@@ -278,6 +278,7 @@ class AnalogFrontend:
 
         self.state_covariance = state_covariance
         self.output_covariance = output_covariance
+        self._seed = seed
         self.rng = np.random.default_rng(seed)
 
         if slew_rate is None:
@@ -373,7 +374,7 @@ class AnalogFrontend:
             raise ValueError("B must be a numpy array")
         if B.shape[-2:] != (self.N, self.L + self.M):
             raise ValueError(
-                f"B.shape[-2:] must have shape {(self.N, self.L + self.M)}, got {B.shape}"
+                f"B.shape[-2:] must have shape {(self.N, self.L + self.M)}, got {B.shape[-2:]}"
             )
         self._B: np.ndarray = np.asarray(B).reshape((-1, self.N, self.L + self.M))
         # self.analog_filter.B = self._B[0, :, :]
@@ -489,7 +490,10 @@ class AnalogFrontend:
     @analog_signal.setter
     def analog_signal(self, signal: Optional[AnalogSignal]):
         if signal is None:
-            signal = AnalogSignal()
+            L = self.analog_filter.B.shape[-1] - self.M
+            M = 1
+            offset = np.zeros((L, M))
+            signal = AnalogSignal(offset)
         if not isinstance(signal, AnalogSignal):
             raise ValueError(
                 f"analog_signal {signal} must be an AnalogSignal or derived instance"
@@ -1656,7 +1660,7 @@ class AnalogFrontend:
                 B_temp[:, : self.L + self.M] = self.B[
                     i % self.B.shape[0], :, : self.L + self.M
                 ]
-                for k in range(1, delay_steps):
+                for k in range(1, delay_steps + 1):
                     B_temp[
                         :,
                         self.L + k * self.M : self.L + (k + 1) * self.M,
@@ -2085,7 +2089,7 @@ class AnalogFrontend:
         )
 
         u_hat = df.convolve(sim["v"], DSR=OSR)
-        
+
         hwfft = np.fft.rfft(u_hat[-fft_bins:, 0, :] * window[:, np.newaxis], axis=0)
         # print(f"FFT bins: {hwfft.shape[0]}")
         # shape = (J,)
@@ -2095,6 +2099,7 @@ class AnalogFrontend:
 
         if debug:
             import matplotlib.pyplot as plt
+
             for j in range(amp_dB.shape[1] - 3):
                 plt.figure("spectrum")
                 plt.semilogx(

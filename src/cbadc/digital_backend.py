@@ -482,7 +482,7 @@ class AdaptiveFIRFilter:
         else:
             h0 = np.zeros((K, L), dtype=dtype)
             # simple delta function with effective delay of K//2
-            h0[K // 2, :] = 1.0
+            h0[K // 2 - 1, :] = 1.0
             self._h0 = h0
         self.dt = dt
         self._offset = np.zeros((L), dtype=dtype)
@@ -730,27 +730,29 @@ class AdaptiveFIRFilter:
         """
         return self.evaluate(v)
 
-    # def _sliding_window_tensor_dot_convolution(self, x: np.ndarray):
-    #     """
-    #     Parameters
-    #     ----------
+    def _sliding_window_tensor_dot_convolution(self, x: np.ndarray):
+        """
+        Parameters
+        ----------
 
-    #     x : np.ndarray (size, M, K)
-    #         The input data.
+        x : np.ndarray (size, M, K)
+            The input data.
 
-    #     Returns
-    #     -------
-    #     y : np.ndarray (size, L)
-    #         The output data.
-    #     """
-    #     return (
-    #         np.tensordot(
-    #             x,
-    #             self._h,
-    #             axes=([1, 2], [1, 2]),
-    #         )
-    #         + self._offset[np.newaxis, :]
-    #     )
+        Returns
+        -------
+        y : np.ndarray (size, L)
+            The output data.
+        """
+        # x: (size, M, K), _h: (K, M, L)
+        # contract over M (x axis 1 with h axis 1) and K (x axis 2 with h axis 0)
+        return (
+            np.tensordot(
+                x,
+                self._h,
+                axes=([1, 2], [1, 0]),
+            )
+            + self._offset[np.newaxis, :]
+        )
 
     def loss(self, x: np.ndarray, y: np.ndarray, method="direct") -> np.ndarray:
         """Computes the loss, i.e., the squared L2 norm, for the given FIR filter.
@@ -799,15 +801,15 @@ class AdaptiveFIRFilter:
 
         Returns
         -------
-        gradient : [np.ndarray (L, M, K), np.ndarray (L,)]
+        gradient : [np.ndarray (K, M, L), np.ndarray (L,)]
             The gradient of the loss function with respect to the filter
             coefficients.
         """
         batch_size = x.shape[0]
         error = y - self._sliding_window_tensor_dot_convolution(x)
-        return -np.tensordot(error, x, axes=([0], [0])) / batch_size, -error.mean(
-            axis=0
-        )
+        # tensordot(error, x, ([0],[0])): (L, M, K) -> transpose to (K, M, L)
+        grad_h = -np.tensordot(error, x, axes=([0], [0])) / batch_size
+        return grad_h.transpose(2, 1, 0), -error.mean(axis=0)
 
     def lms(
         self,
@@ -895,10 +897,14 @@ class AdaptiveFIRFilter:
                 self._offset -= self._offset_m
 
             if verbose:
+                x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
+                y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
                 logger.info(
-                    "epoch %d: loss = %s, offset = %s", e, self.loss(x, y), self._offset
+                    "epoch %d: loss = %s, offset = %s", e, self.loss(x3, y3), self._offset
                 )
-        return self.loss(x, y)
+        x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
+        y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
+        return self.loss(x3, y3)
 
     def rls(
         self,
@@ -983,16 +989,21 @@ class AdaptiveFIRFilter:
                 self._V = (self._V - np.outer(g, alpha.conj())) / lambda_
 
                 self._offset += g[-1] * error.flatten()
+                # g[:-1]: (K*M,), error[0]: (L,) -> outer product (K, M, L)
                 self._h += (
-                    g[:-1].reshape((1, self.M, self.K))
-                    * error[0, :, np.newaxis, np.newaxis]
+                    g[:-1].reshape((self.K, self.M, 1))
+                    * error[0, np.newaxis, np.newaxis, :]
                 )
 
             if verbose:
+                x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
+                y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
                 logger.info(
-                    "epoch %d: loss = %s, offset = %s", e, self.loss(x, y), self._offset
+                    "epoch %d: loss = %s, offset = %s", e, self.loss(x3, y3), self._offset
                 )
-        return self.loss(x, y)
+        x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
+        y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
+        return self.loss(x3, y3)
 
     def convolve_ref(self, y: np.ndarray, method: str = "direct"):
         # y.shape = (size, L, J)
@@ -1250,6 +1261,7 @@ class BlackBoxEstimator(AdaptiveFIRFilter):
         sim_size: int = 1 << 16,
         J: int = 1 << 1,
         seed: int = 213236546233421,
+        rel_bw: float = 0.5,
     ):
         M = analog_frontend.M
         L = analog_frontend.L
@@ -1258,7 +1270,7 @@ class BlackBoxEstimator(AdaptiveFIRFilter):
             M=M, K=K, L=L, dt=dt, analog_frontend=analog_frontend, seed=seed
         )
         _ = self.learn_from_analog_frontend(
-            DSR=DSR, max_amplitude=max_amplitude, sim_size=sim_size, J=J
+            DSR=DSR, max_amplitude=max_amplitude, sim_size=sim_size, J=J, rel_bw=rel_bw
         )
 
     def learn_from_analog_frontend(
@@ -1267,6 +1279,7 @@ class BlackBoxEstimator(AdaptiveFIRFilter):
         max_amplitude: float = 1.0,
         sim_size: int = 1 << 18,
         J: int = 1 << 0,
+        rel_bw: float = 0.5,
     ):
         uniform_references = ZeroOrderHold.uniform_reference_signal(
             self._analog_frontend.dt * DSR,
