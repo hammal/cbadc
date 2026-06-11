@@ -4,31 +4,42 @@ This module contains classes for digital signal processing and general
 post-processing of the analog frontend output.
 """
 
+import logging as _logging
+from copy import deepcopy as _deepcopy
 from typing import Optional, Union
+
+import matplotlib.pyplot as plt
 import numpy as np
-from .analog_signal import ZeroOrderHold
-from .analog_frontend import AnalogFrontend
+from numpy.lib.stride_tricks import sliding_window_view as _sliding_window_view
+from scipy.integrate import solve_ivp as _solve_ivp
+from scipy.linalg import (
+    expm as _expm,
+)
 from scipy.linalg import (
     solve_continuous_are as _care,
-    expm as _expm,
+)
+from scipy.linalg import (
     solve_discrete_are as _dare,
 )
-from scipy.integrate import solve_ivp as _solve_ivp
 from scipy.signal import (
     TransferFunction,
-    resample as _resample,
-    decimate as _decimate,
 )
-from numpy.lib.stride_tricks import sliding_window_view as _sliding_window_view
-from .utilities import show_status as _show_status
-from copy import deepcopy as _deepcopy
-import logging as _logging
-import matplotlib.pyplot as plt
 from scipy.signal import (
-    firwin2 as _firwin2,
     convolve as _convolve,
 )
+from scipy.signal import (
+    decimate as _decimate,
+)
+from scipy.signal import (
+    firwin2 as _firwin2,
+)
+from scipy.signal import (
+    resample as _resample,
+)
 
+from .analog_frontend import AnalogFrontend
+from .analog_signal import ZeroOrderHold
+from .utilities import show_status as _show_status
 
 logger = _logging.getLogger(__name__)
 
@@ -227,9 +238,7 @@ class WienerFilter:
                         0, :, L:
                     ] * self._analog_frontend.digital_control.impulse_response(
                         np.array([t])
-                    ).reshape(
-                        (1, -1)
-                    )
+                    ).reshape((1, -1))
 
                 res = _solve_ivp(der_f, (0, dt), np.zeros(N * M, dtype=np.double))
                 self._Bf = res.y[:, -1].reshape((N, M))
@@ -239,9 +248,7 @@ class WienerFilter:
                         0, :, L:
                     ] * self._analog_frontend.digital_control.impulse_response(
                         np.array([t])
-                    ).reshape(
-                        (1, -1)
-                    )
+                    ).reshape((1, -1))
 
                 res = _solve_ivp(der_b, (0, dt), np.zeros(N * M, dtype=np.double))
                 self._Bb = res.y[:, -1].reshape((N, M))
@@ -900,7 +907,10 @@ class AdaptiveFIRFilter:
                 x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
                 y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
                 logger.info(
-                    "epoch %d: loss = %s, offset = %s", e, self.loss(x3, y3), self._offset
+                    "epoch %d: loss = %s, offset = %s",
+                    e,
+                    self.loss(x3, y3),
+                    self._offset,
                 )
         x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
         y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
@@ -999,7 +1009,10 @@ class AdaptiveFIRFilter:
                 x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
                 y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
                 logger.info(
-                    "epoch %d: loss = %s, offset = %s", e, self.loss(x3, y3), self._offset
+                    "epoch %d: loss = %s, offset = %s",
+                    e,
+                    self.loss(x3, y3),
+                    self._offset,
                 )
         x3 = x if x.ndim == 3 else x[:, :, np.newaxis]
         y3 = y if y.ndim == 3 else y[:, :, np.newaxis]
@@ -1086,19 +1099,29 @@ class AdaptiveFIRFilter:
 
         # Make A x = y problem by grouping the M and K dimensions
         # A_lstsq.shape = (batch_size * J, M * K + 1)
-        A_lstsq = np.hstack(
-            (
-                # (batch_size, M, J, K) -> (batch_size, J, K, M) -> (batch_size * J, K * M)
-                x_window.transpose((0, 2, 3, 1)).reshape((batch_size * J, self.K * M)),
-                np.ones((batch_size * J, 1), dtype=np.double),
-            )
+        # A_lstsq = np.hstack(
+        #     (
+        #         # (batch_size, M, J, K) -> (batch_size, J, K, M) -> (batch_size * J, K * M)
+        #         x_window.transpose((0, 2, 3, 1)).reshape((batch_size * J, self.K * M)),
+        #         np.ones((batch_size * J, 1), dtype=np.double),
+        #     )
+        # )
+        # # y_lstsq.shape = (batch_size * J, L)
+        # y_lstsq = y_window.transpose((0, 2, 1)).reshape((batch_size * J, L))
+
+        extended_batch_size = batch_size * J
+        A_lstsq = np.empty((extended_batch_size, self.K * M + 1))
+        A_lstsq[:, :-1] = x_window.transpose(0, 2, 3, 1).reshape(
+            extended_batch_size, -1
         )
-        # y_lstsq.shape = (batch_size * J, L)
-        y_lstsq = y_window.transpose((0, 2, 1)).reshape((batch_size * J, L))
+        A_lstsq[:, -1] = 1.0
+        y_lstsq = y_window.transpose(0, 2, 1).reshape(extended_batch_size, -1)
 
         sol = np.linalg.lstsq(A_lstsq, y_lstsq, rcond=rcond)
-        self._offset[:] = sol[0][-1, :]
-        self._h[:] = sol[0][:-1, :].reshape((self.K, self.M, self.L))[::-1, :, :]
+        self._h[:], self._offset[:] = (
+            sol[0][:-1].reshape((self.K, self.M, self.L))[::-1],
+            sol[0][-1],
+        )
         if verbose:
             loss = sol[1] / batch_size
             logger.info(
@@ -1251,7 +1274,6 @@ class AdaptiveFIRFilter:
 
 
 class BlackBoxEstimator(AdaptiveFIRFilter):
-
     def __init__(
         self,
         analog_frontend: AnalogFrontend,
