@@ -6,6 +6,12 @@ This is the official API documentation for the `control-bounded analog-to-digita
 <https://pypi.org/project/cbadc/>`_ python package, which is a **toolbox** intended
 to aid and inspire the **creation** of **control-bounded analog-to-digital (A/D) converters**.
 
+.. toctree::
+    :maxdepth: 1
+    :caption: Tutorials
+
+    tutorials/01_quickstart
+
 ======================
 The cbadc Root Modules
 ======================
@@ -21,6 +27,7 @@ The cbadc Root Modules
     cbadc.analog_frontend
     cbadc.digital_control
     cbadc.digital_backend
+    cbadc.noise
     cbadc.delsig
     cbadc.utilities
     cbadc.fom

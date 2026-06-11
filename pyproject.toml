@@ -51,7 +51,8 @@ docs = [
     "sphinx-gallery",
     "pygments",
     "rtds_action",
-    "myst-parser",
+    "myst-nb",
+    "ipykernel",
 ]
 
 [tool.hatch.metadata]

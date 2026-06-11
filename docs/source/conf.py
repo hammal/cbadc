@@ -47,7 +47,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.mathjax",
     "sphinx_rtd_theme",
-    "nbsphinx",
+    "myst_nb",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
@@ -61,8 +61,14 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.autosummary",
     "sphinx.ext.extlinks",
-    "myst_parser",
 ]
+
+# -- MyST-NB (executable markdown notebooks) ---------------------------------
+# Tutorials under ``tutorials/`` are executed at build time; a failing cell
+# fails the docs build, so tutorials cannot silently drift from the API.
+nb_execution_mode = "auto"
+nb_execution_raise_on_error = True
+nb_execution_timeout = 300
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
