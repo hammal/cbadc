@@ -1,6 +1,7 @@
 """Generic analog signals."""
 
 from typing import Optional
+
 import numpy as np
 from scipy.signal import resample as _resample
 
@@ -26,7 +27,8 @@ class AnalogSignal:
 
     """
 
-    def __init__(self, offset: np.ndarray = None):
+    def __init__(self, offset: np.ndarray = None, dtype=float):
+        self._dtype = dtype
         if offset is None:
             offset = np.zeros((1, 1), dtype=float)
         if not isinstance(offset, np.ndarray):
@@ -39,6 +41,17 @@ class AnalogSignal:
         self.J = offset.shape[1]
         self.offset = offset
         self.piecewise_constant = True
+
+    @property
+    def dtype(self):
+        """The floating-point data type used by the signal.
+
+        Returns
+        -------
+        dtype
+            The numpy dtype (e.g. ``float``, ``np.float32``).
+        """
+        return self._dtype
 
     @property
     def L(self) -> int:
@@ -112,9 +125,9 @@ class AnalogSignal:
         numpy.ndarray, shape=(size, L, J)
             The analog signal values
         """
-        return self.offset[np.newaxis, :, :] + np.zeros(
-            (t.size, self.L, 1), dtype=float
-        )
+        return np.broadcast_to(
+            self.offset[np.newaxis], (t.size, self.L, self.J)
+        ).astype(self.dtype)
 
     def impulse_response(self, t: np.ndarray) -> np.ndarray:
         """Impulse response of the signal.
@@ -132,7 +145,7 @@ class AnalogSignal:
         numpy.ndarray, shape=(size, L, J)
             The impulse response of the signal
         """
-        return np.ones((t.size, self.L, self.J), dtype=float)
+        return np.ones((t.size, self.L, self.J), dtype=self.dtype)
 
     def __call__(self, t: np.ndarray) -> np.ndarray:
         return self.evaluate(t)
@@ -205,14 +218,15 @@ class Sinusoidal(AnalogSignal):
         frequency: np.ndarray,
         phase: Optional[np.ndarray] = None,
         offset: Optional[np.ndarray] = None,
+        dtype=float,
     ):
         if not isinstance(amplitude, np.ndarray):
             raise TypeError("amplitude must be a numpy array")
         if amplitude.ndim == 1:
             amplitude = amplitude.reshape((-1, 1))
         if offset is None:
-            offset = np.zeros_like(amplitude, dtype=float)
-        super().__init__(offset=offset)
+            offset = np.zeros_like(amplitude, dtype=dtype)
+        super().__init__(offset=offset, dtype=dtype)
         self.amplitude = amplitude
         # angular frequency implicitly calculated in setter.
         self.frequency = frequency
@@ -307,13 +321,18 @@ class Sinusoidal(AnalogSignal):
         numpy.ndarray, shape=(size, L, J)
             The analog signal values
         """
-        return (
+        result = (
             self.amplitude[np.newaxis, :, :]
             * np.sin(
                 self._angular_frequency[np.newaxis, :, :] * t.reshape((-1, 1, 1))
                 + self.phase[np.newaxis, :, :]
             )
             + self.offset[np.newaxis, :, :]
+        )
+        return (
+            result
+            if result.dtype == np.dtype(self.dtype)
+            else result.astype(self.dtype)
         )
 
 
@@ -331,9 +350,9 @@ class ZeroOrderHold(AnalogSignal):
         The initial time, defaults to 0.0.
     """
 
-    def __init__(self, dt: float, values: np.ndarray, t0: float = 0.0):
+    def __init__(self, dt: float, values: np.ndarray, t0: float = 0.0, dtype=float):
 
-        super().__init__(np.zeros_like(values[0, :, :], dtype=float))
+        super().__init__(np.zeros_like(values[0, :, :], dtype=dtype), dtype=dtype)
         self.dt = dt
         self.t0 = float(t0)
         self.values = values
@@ -382,7 +401,7 @@ class ZeroOrderHold(AnalogSignal):
                 f"values must have shape (size, {self.L}, {self.J}) not {value.shape}"
             )
         self.size = value.shape[0]
-        self._values = value
+        self._values = value.astype(self.dtype)
 
     def evaluate(self, t: np.ndarray) -> np.ndarray:
         """Evaluate the signal at time t.)
@@ -417,7 +436,7 @@ class ZeroOrderHold(AnalogSignal):
         numpy.ndarray, shape=(size, L, J)
             The impulse response of the signal
         """
-        return np.ones((t.size, self.L, self.J), dtype=float)
+        return np.ones((t.size, self.L, self.J), dtype=self.dtype)
 
     def resample(self, new_dt: float) -> "ZeroOrderHold":
         """Resample the zero-order hold signal to a new sampling period.
@@ -662,7 +681,8 @@ class ModulatedSignal(AnalogSignal):
 
     """
 
-    def __init__(self, *signals: AnalogSignal):
+    def __init__(self, *signals: AnalogSignal, dtype=float):
+        self._dtype = dtype
         self.signals = signals
 
     @property
@@ -686,9 +706,12 @@ class ModulatedSignal(AnalogSignal):
             signal.J != value[0].J for signal in value
         ):
             raise ValueError("All signals must have the same dimension")
+        if any(np.dtype(signal.dtype) != np.dtype(value[0].dtype) for signal in value):
+            raise ValueError("All signals must have the same dtype")
         self._signals = value
         self.L = value[0].L
         self.J = value[0].J
+        self._offset = np.zeros((self.L, self.J), dtype=self._dtype)
 
         self.piecewise_constant = all(signal.piecewise_constant for signal in value)
 
@@ -705,7 +728,7 @@ class ModulatedSignal(AnalogSignal):
         numpy.ndarray, shape=(size, L, J)
             The analog signal values
         """
-        res = np.ones((t.size, self.L, self.J))
+        res = np.ones((t.size, self.L, self.J), dtype=self.dtype)
         for signal in self._signals:
             res *= signal.evaluate(t)
         return res
@@ -726,7 +749,7 @@ class ModulatedSignal(AnalogSignal):
         numpy.ndarray, shape=(size, L)
             The impulse response of the signal
         """
-        res = np.ones((t.size, self.L))
+        res = np.ones((t.size, self.L, self.J), dtype=self.dtype)
         for signal in self._signals:
             res *= signal.impulse_response(t)
         return res
@@ -757,12 +780,15 @@ class SuperpositionSignal(ModulatedSignal):
         The list of signals.
     """
 
-    def __init__(self, *signals: AnalogSignal, sub: list[bool] = None):
+    def __init__(self, *signals: AnalogSignal, sub: list[bool] = None, dtype=float):
+        self._dtype = dtype
         self.signals = signals
-        if sub == None:
+        if sub is None:
             sub = [False for _ in self.signals]
         if not all(isinstance(x, bool) for x in sub) or len(signals) != len(sub):
-            raise ValueError(f"subtraction must be a list of booleans of same length as signals not signals: {signals}, sub: {sub}")
+            raise ValueError(
+                f"subtraction must be a list of booleans of same length as signals not signals: {signals}, sub: {sub}"
+            )
         else:
             self.sub = sub
 
@@ -787,9 +813,12 @@ class SuperpositionSignal(ModulatedSignal):
             signal.J != value[0].J for signal in value
         ):
             raise ValueError("All signals must have the same dimension")
+        if any(np.dtype(signal.dtype) != np.dtype(value[0].dtype) for signal in value):
+            raise ValueError("All signals must have the same dtype")
         self._signals = value
         self.L = value[0].L
         self.J = value[0].J
+        self._offset = np.zeros((self.L, self.J), dtype=self._dtype)
         self.piecewise_constant = all(signal.piecewise_constant for signal in value)
 
     def evaluate(self, t: np.ndarray) -> np.ndarray:
@@ -805,7 +834,7 @@ class SuperpositionSignal(ModulatedSignal):
         numpy.ndarray, shape=(size, L, J)
             The analog signal values
         """
-        res = np.zeros((t.size, self.L, self.J), dtype=float)
+        res = np.zeros((t.size, self.L, self.J), dtype=self.dtype)
         for i, signal in enumerate(self._signals):
             res += (-1 if self.sub[i] else 1) * signal.evaluate(t)
         return res
@@ -826,7 +855,7 @@ class SuperpositionSignal(ModulatedSignal):
         numpy.ndarray, shape=(size, L, J)
             The impulse response of the signal
         """
-        res = np.zeros((t.size, self.L, self.J), dtype=float)
+        res = np.zeros((t.size, self.L, self.J), dtype=self.dtype)
         for signal in self._signals:
             res += signal.impulse_response(t)
         return res
@@ -857,7 +886,8 @@ class ConcatenatedSignals(AnalogSignal):
         The list of signals.
     """
 
-    def __init__(self, *signals: AnalogSignal):
+    def __init__(self, *signals: AnalogSignal, dtype=float):
+        self._dtype = dtype
         self.signals = signals
 
     @property
@@ -879,10 +909,18 @@ class ConcatenatedSignals(AnalogSignal):
             raise TypeError("All elements must be instances of AnalogSignal")
         if any(signal.J != value[0].J for signal in value):
             raise ValueError("All signals must have the same number of inputs")
+        if any(np.dtype(signal.dtype) != np.dtype(value[0].dtype) for signal in value):
+            raise ValueError("All signals must have the same dtype")
         self.J = value[0].J
         self.L = sum(signal.L for signal in value)
         self._signals = value
+        self._offset = np.concatenate([signal.offset for signal in value], axis=0)
         self.piecewise_constant = all(signal.piecewise_constant for signal in value)
+        i = 0
+        self._l_slices = []
+        for signal in value:
+            self._l_slices.append(slice(i, i + signal.L))
+            i += signal.L
 
     def evaluate(self, t: np.ndarray) -> np.ndarray:
         """Evaluate the signal at time t.
@@ -897,11 +935,9 @@ class ConcatenatedSignals(AnalogSignal):
         numpy.ndarray, shape=(size, L, J)
             The analog signal values
         """
-        res = np.zeros((t.size, self.L, self.J), dtype=float)
-        i = 0
-        for signal in self._signals:
-            res[:, i : i + signal.L, :] = signal.evaluate(t)
-            i += signal.L
+        res = np.zeros((t.size, self.L, self.J), dtype=self.dtype)
+        for slc, signal in zip(self._l_slices, self._signals):
+            res[:, slc, :] = signal.evaluate(t)
         return res
 
     def impulse_response(self, t: np.ndarray) -> np.ndarray:
@@ -920,14 +956,109 @@ class ConcatenatedSignals(AnalogSignal):
         numpy.ndarray, shape=(size, L, J)
             The impulse response of the signal
         """
-        res = np.zeros((t.size, self.L, self.J), dtype=float)
-        i = 0
-        for signal in self._signals:
-            res[:, i : i + signal.L, :] = signal.impulse_response(t)
-            i += signal.L
+        res = np.zeros((t.size, self.L, self.J), dtype=self.dtype)
+        for slc, signal in zip(self._l_slices, self._signals):
+            res[:, slc, :] = signal.impulse_response(t)
         return res
 
     def __str__(self):
         return "Compound signal of:\n" + "\n".join(
             [str(signal) for signal in self._signals]
         )
+
+
+class PartitionedSignal(AnalogSignal):
+    """A signal formed by stacking AnalogSignal instances along the J (parallel) axis.
+
+    Parameters
+    ----------
+    *signals : AnalogSignal
+        Two or more signals. All must share the same L.
+
+    Attributes
+    ----------
+    L : int
+        Signal dimension, shared across all partitions.
+    J : int
+        Total parallel signals; sum of all constituent J values.
+    signals : tuple[AnalogSignal, ...]
+        The constituent signals.
+    piecewise_constant : bool
+        True if all constituents are piecewise constant.
+    """
+
+    def __init__(self, *signals: AnalogSignal, dtype=float):
+        if len(signals) < 2:
+            raise ValueError("At least two signals must be provided")
+        if not all(isinstance(s, AnalogSignal) for s in signals):
+            raise TypeError("All elements must be instances of AnalogSignal")
+        if any(s.L != signals[0].L for s in signals):
+            raise ValueError("All signals must have the same L")
+        if any(np.dtype(s.dtype) != np.dtype(signals[0].dtype) for s in signals):
+            raise ValueError("All signals must have the same dtype")
+        self._signals = signals
+        super().__init__(
+            offset=np.concatenate([s.offset for s in signals], axis=1),
+            dtype=dtype,
+        )
+        self.piecewise_constant = all(s.piecewise_constant for s in signals)
+        j = 0
+        self._j_slices = []
+        for s in self._signals:
+            self._j_slices.append(slice(j, j + s.J))
+            j += s.J
+
+    @property
+    def signals(self) -> tuple["AnalogSignal", ...]:
+        """The constituent signals.
+
+        Returns
+        -------
+        tuple[AnalogSignal, ...]
+            The signals stacked along the J axis.
+        """
+        return self._signals
+
+    def partition_indices(self) -> list[slice]:
+        """Return slices along the J axis for each partition.
+
+        Returns
+        -------
+        list[slice]
+            One slice per constituent signal, in order.
+            Use as ``result[:, :, slc]`` to recover the partition.
+        """
+        return self._j_slices
+
+    def evaluate(self, t: np.ndarray) -> np.ndarray:
+        """Evaluate the signal at time t.
+
+        Parameters
+        ----------
+        t : numpy.ndarray, shape=(size,)
+            The time instances for evaluation.
+
+        Returns
+        -------
+        numpy.ndarray, shape=(size, L, J)
+            Constituent signals concatenated along the J axis.
+        """
+        return np.concatenate([s.evaluate(t) for s in self._signals], axis=2)
+
+    def impulse_response(self, t: np.ndarray) -> np.ndarray:
+        """Impulse response stacked along the J axis.
+
+        Parameters
+        ----------
+        t : numpy.ndarray, shape=(size,)
+            The time instances for evaluation.
+
+        Returns
+        -------
+        numpy.ndarray, shape=(size, L, J)
+            Constituent impulse responses concatenated along the J axis.
+        """
+        return np.concatenate([s.impulse_response(t) for s in self._signals], axis=2)
+
+    def __str__(self):
+        return "PartitionedSignal of:\n" + "\n".join([str(s) for s in self._signals])
