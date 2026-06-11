@@ -11,6 +11,7 @@ to aid and inspire the **creation** of **control-bounded analog-to-digital (A/D)
     :caption: Tutorials
 
     tutorials/01_quickstart
+    tutorials/02_noise
 
 ======================
 The cbadc Root Modules
