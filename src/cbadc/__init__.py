@@ -28,6 +28,7 @@ from . import (
     digital_backend,
     digital_control,
     fom,
+    noise,
     utilities,
 )
 from .__version__ import __version__

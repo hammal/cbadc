@@ -1,21 +1,29 @@
 """The analog fronted module."""
 
+import logging
+from copy import deepcopy as _deepcopy
 from typing import Optional, Union
-from .digital_control import DigitalControl
-from .fom import snr_from_dB, enob_to_snr, snr_to_enob
-from .analog_signal import AnalogSignal, Sinusoidal, ConcatenatedSignals
-from .analog_filter import ChainOfIntegrators, LeapFrog
-from .analog_filter.analog_system import AnalogSystem, as2af
-from .delsig import simulateDSM, partitionABCD
-from scipy.signal import StateSpace, freqresp
-from scipy.linalg import block_diag
 
 import numpy as np
-import sympy as sp
-import logging
-import scipy.linalg as _linalg
 import scipy.integrate as _integrate
-from copy import deepcopy as _deepcopy
+import scipy.linalg as _linalg
+import sympy as sp
+from scipy.linalg import block_diag
+from scipy.signal import StateSpace, freqresp
+
+from .analog_filter import ChainOfIntegrators, LeapFrog
+from .analog_filter.analog_system import AnalogSystem, as2af
+from .analog_signal import (
+    AnalogSignal,
+    ConcatenatedSignals,
+    PartitionedSignal,
+    Sinusoidal,
+)
+from .delsig import partitionABCD, simulateDSM
+from .digital_control import DigitalControl
+from .fom import enob_to_snr, snr_from_dB, snr_to_enob
+from .noise import discrete_process_noise_cov as _discrete_process_noise_cov
+from .noise import psd_factor as _psd_factor
 
 logger = logging.getLogger(__name__)
 
@@ -702,22 +710,19 @@ class AnalogFrontend:
                 )
             if not np.allclose(state_covariance, state_covariance.T):
                 raise ValueError("state_covariance must be symmetric")
-            # discretize the state covariance matrix
+            # Map to the discrete per-step covariance the simulator samples.
+            # For a continuous-time frontend ``state_covariance`` is a noise
+            # *intensity* and must be propagated through the van-Loan integral;
+            # for an already-discrete frontend it is the per-step covariance
+            # directly (``discretize`` does the conversion when it builds one).
             if self.is_discrete_time:
                 state_cov_d = state_covariance
             else:
-                tmp = np.vstack(
-                    (
-                        np.hstack((-self.A[0, :, :], state_covariance)),
-                        np.hstack(
-                            (np.zeros((self.N, self.N), dtype=float), self.A[0, :, :].T)
-                        ),
-                    )
+                state_cov_d = _discrete_process_noise_cov(
+                    self.A[0, :, :], state_covariance, self.dt
                 )
-                tmp = _linalg.expm(tmp * self.dt)
-                state_cov_d = tmp[self.N :, self.N :].T @ tmp[: self.N, self.N :]
             self._state_covariance = state_covariance
-            self._state_cov_cholesky = np.linalg.cholesky(state_cov_d)
+            self._state_cov_cholesky = _psd_factor(state_cov_d)
 
     @staticmethod
     def input_referred_covariance_matrix(
@@ -779,7 +784,7 @@ class AnalogFrontend:
             if not np.allclose(output_covariance, output_covariance.T):
                 raise ValueError("output_covariance must be symmetric")
             self._output_covariance = output_covariance
-            self._output_cov_cholesky = np.linalg.cholesky(output_covariance)
+            self._output_cov_cholesky = _psd_factor(output_covariance)
 
     def simulateDSM(
         self,
@@ -864,6 +869,7 @@ class AnalogFrontend:
         rtol=1e-6,
         method: str = "dsim",
         dtype=np.double,
+        device: Optional[str] = None,
     ) -> dict[str, np.ndarray]:
         """Simulate the analog frontend
 
@@ -896,7 +902,8 @@ class AnalogFrontend:
 
         dtype: `data-type`, optional
             the data type for the simulation, defaults to np.double.
-
+        device: `str`, optional
+            the torch device to use, e.g. 'cpu' or 'cuda'. Defaults to 'cpu'.
 
         Returns
         -------
@@ -1020,6 +1027,18 @@ class AnalogFrontend:
 
         slew_rate_dt = self.slew_rate * self.digital_control.dt
 
+        # Copy quantization parameters
+        quantization_output_scale = self.digital_control._o_scale.reshape((self.M, 1))
+        quantization_pre_gain = self.digital_control._pre_gain.reshape((self.M, 1))
+        quantization_mid_thread = self.digital_control._mid_thread.reshape((self.M, 1))
+        quantization_mid_rise = self.digital_control._mid_rise.reshape((self.M, 1))
+        quantization_min = self.digital_control._min.reshape((self.M, 1))
+        quantization_max = self.digital_control._max.reshape((self.M, 1))
+
+        cyclic_quant_update = (
+            np.abs(self.C).sum(axis=-1) + np.abs(self.D).sum(axis=-1)
+        ) > 0.0
+
         # Compute simulation recursions
         for i in range(1, size):
             # state evolution
@@ -1039,22 +1058,102 @@ class AnalogFrontend:
                 self.C[i % self.C.shape[0]] @ states[i]
                 + self.D[i % self.D.shape[0]] @ inputs[i]
             )
-            # control update
-            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
-                self.M, self.J
-            )
-            # hold control from previous decision if no update
-            # no_updates = outputs[i] == 0.0
-            no_updates = np.isclose(outputs[i], 0, atol=1e-100)
-            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
 
-        return {
+            # hold control from previous decision if no update
+            ctrl = inputs[i, self.L :, :]
+            update = cyclic_quant_update[i % cyclic_quant_update.shape[0]]
+            no_update = ~update
+            ctrl[no_update] = inputs[i - 1, self.L :, :][no_update]
+            if update.any():
+                ctrl[update] = quantization_output_scale[update] * np.clip(
+                    2.0
+                    * np.floor(
+                        quantization_pre_gain[update] * outputs[i][update]
+                        + quantization_mid_thread[update]
+                    )
+                    + quantization_mid_rise[update],
+                    quantization_min[update],
+                    quantization_max[update],
+                )
+
+            # inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
+            #     self.M, self.J
+            # )
+        result = {
             "t": t,
             "u": inputs[:, : self.L, :],
             "v": inputs[:, self.L :, :],
             "x": states,
             "y": outputs,
         }
+
+        # Perform System identification and estimaton where
+        # the first partitions of the signal are used for training
+        # and the last partition is used for testing.
+        if isinstance(self.analog_signal, PartitionedSignal):
+            from numpy.lib.stride_tricks import sliding_window_view
+
+            from .digital_backend import decimate
+
+            slices = self.analog_signal.partition_indices()
+            train_slices = slices[1:]
+
+            K = 1 << 7
+            DSR = 1
+
+            # Stack all training partitions along J; strip K transient samples; decimate
+            v_train = np.concatenate(
+                [result["v"][:, :, slc] for slc in train_slices], axis=2
+            )
+            u_train = np.concatenate(
+                [result["u"][:, :, slc] for slc in train_slices], axis=2
+            )
+            dec_v_train = decimate(v_train[K:], DSR, method="direct")
+            dec_u_train = decimate(u_train[K:], DSR, method="direct")
+
+            # Build least-squares system A w = b on decimated training data
+            J_train = dec_v_train.shape[2]
+            dec_size = dec_v_train.shape[0]
+            batch_size = dec_size - K + 1
+            x_window = sliding_window_view(
+                dec_v_train, K, axis=0
+            )  # (batch_size, M, J_train, K)
+            N_train = batch_size * J_train
+            A = np.empty((N_train, K * self.M + 1))
+            A[:, :-1] = x_window.transpose(0, 2, 3, 1).reshape(N_train, -1)
+            A[:, -1] = 1.0
+            # h0 delta at K//2-1 → valid convolution shift = K - K//2
+            shift = K - K // 2
+            b = (
+                dec_u_train[shift : shift + batch_size]
+                .transpose(0, 2, 1)
+                .reshape(N_train, -1)
+            )
+
+            sol = np.linalg.lstsq(A, b, rcond=None)
+            h = sol[0][:-1].reshape(K, self.M, self.L)  # (K, M, L)
+            h_offset = sol[0][-1]  # (L,)
+
+            # Apply fitted filter to all J partitions (strip transient; decimate)
+            J_all = result["v"].shape[2]
+            dec_v_all = decimate(
+                result["v"][K:], DSR, method="direct"
+            )  # (dec_size, M, J_all)
+            x_all = sliding_window_view(
+                dec_v_all, K, axis=0
+            )  # (batch_size, M, J_all, K)
+            N_all = batch_size * J_all
+            x_flat = x_all.transpose(0, 2, 3, 1).reshape(N_all, -1)
+            u_hat = (
+                (x_flat @ h.reshape(K * self.M, self.L) + h_offset)
+                .reshape(batch_size, J_all, self.L)
+                .transpose(0, 2, 1)
+            )  # (batch_size, L, J_all)
+
+            result["h"] = h  # (K, M, L)
+            result["u_hat"] = u_hat  # (batch_size, L, J_all)
+
+        return result
 
     def simulate_sin(
         self,
@@ -1218,7 +1317,8 @@ class AnalogFrontend:
                 # control feedback
                 + B_d[:, self.L :, 0] @ inputs[i - 1, self.L :, :]
                 # pre-computed input signal contributions
-                + pre_computed_input_offset + pre_computed_inputs[i - 1],
+                + pre_computed_input_offset
+                + pre_computed_inputs[i - 1],
                 -slew_rate_dt[:, np.newaxis],
                 slew_rate_dt[:, np.newaxis],
             )
@@ -1363,7 +1463,6 @@ class AnalogFrontend:
             derivatives.append(derivative)
 
         for i in range(1, size):
-
             res = _integrate.solve_ivp(
                 derivatives[i % K],
                 (t[i - 1], t[i]),
@@ -1526,7 +1625,6 @@ class AnalogFrontend:
             derivatives.append(derivative)
 
         for i in range(1, size):
-
             res = _integrate.solve_ivp(
                 derivatives[i % K],
                 (t[i - 1], t[i]),
@@ -1609,8 +1707,7 @@ class AnalogFrontend:
         K = max(self.A.shape[0], self.B.shape[0])
         if (
             # self.analog_signal.piecewise_constant and
-            self.digital_control.dac_waveform
-            == "nrz"
+            self.digital_control.dac_waveform == "nrz"
         ):
             # largest repetition of A and B matrices
             A_d = np.zeros((K, self.N, self.N), dtype=self.A.dtype)
@@ -1739,9 +1836,54 @@ class AnalogFrontend:
         else:
             analog_filter = CyclicStateSpace(A_d, B_d, C_d, D_d, dt=dt)
         digital_control = _deepcopy(self.digital_control)
-        # digital_control.dt = self.dt
         analog_signal = _deepcopy(self.analog_signal)
-        return AnalogFrontend(analog_filter, digital_control, analog_signal)
+
+        # Propagate state constraints, extending for any additional delay states
+        new_N = analog_filter.A.shape[-1]
+        extra = new_N - self.N
+        state_max = (
+            np.concatenate([self.state_max, np.full(extra, np.inf)])
+            if extra > 0
+            else self.state_max.copy()
+        )
+        state_min = (
+            np.concatenate([self.state_min, np.full(extra, -np.inf)])
+            if extra > 0
+            else self.state_min.copy()
+        )
+        slew_rate = (
+            np.concatenate([self.slew_rate, np.full(extra, np.inf)])
+            if extra > 0
+            else self.slew_rate.copy()
+        )
+        # Propagate the state-noise intensity as the *discrete* per-step
+        # covariance, so the injected noise magnitude is identical whether the
+        # user sets it before or after discretising.  The van-Loan integral uses
+        # the original continuous-time A; any added delay states carry no process
+        # noise, so the covariance is zero-padded into the enlarged state space.
+        if self.state_covariance is None:
+            state_cov = None
+        else:
+            state_cov_d = _discrete_process_noise_cov(
+                self.A[0, :, :], self.state_covariance, dt
+            )
+            if extra > 0:
+                padded = np.zeros((new_N, new_N), dtype=float)
+                padded[: self.N, : self.N] = state_cov_d
+                state_cov = padded
+            else:
+                state_cov = state_cov_d
+
+        return AnalogFrontend(
+            analog_filter,
+            digital_control,
+            analog_signal,
+            state_covariance=state_cov,
+            output_covariance=_deepcopy(self.output_covariance),
+            slew_rate=slew_rate,
+            state_max=state_max,
+            state_min=state_min,
+        )
 
     # Transfer function methods
     def transfer_function(
@@ -2104,7 +2246,7 @@ class AnalogFrontend:
                 plt.figure("spectrum")
                 plt.semilogx(
                     20 * np.log10(np.abs(hwfft[:, j]) / np.sqrt(np.sum(window**2) / 2)),
-                    label=f"Amplitude: {amp_dB[0,j]} dB",
+                    label=f"Amplitude: {amp_dB[0, j]} dB",
                 )
             # plt.title(f"FFT of Reconstructed Signal (Amplitude: {amp_dB[0,j]} dB)")
             plt.xlabel("FFT Bins")
@@ -2446,7 +2588,13 @@ class GmC(AnalogFrontend):
     Cp: : :py:class:`numpy.ndarray`, shape=(N,)
         the parasitic capacitance, defaults to np.zeros(N)
     v_n: : :py:class:`numpy.ndarray`, shape=(N,)
-        the input referred noise density in V rms, defaults to np.zeros(N)
+        per-state (integrator-output-referred) noise density in V/sqrt(Hz),
+        one entry per integrator node; sets
+        ``state_covariance = diag(v_n**2)``. Defaults to np.zeros(N). For noise
+        referred to the converter *input* instead, use
+        :func:`cbadc.noise.per_state_intensity` /
+        :meth:`AnalogFrontend.input_referred_covariance_matrix` and assign
+        ``state_covariance`` directly.
     v_out_min: : :py:class:`numpy.ndarray`, shape=(N,)
         the minimum output voltage, defalts to -np.inf * np.ones(N)
     v_out_max: : :py:class:`numpy.ndarray`, shape=(N,)
@@ -2594,12 +2742,15 @@ class GmC(AnalogFrontend):
 
     @property
     def v_n(self):
-        """The input referred noise density in V
+        """Per-state (integrator-output-referred) noise density in V/sqrt(Hz).
+
+        Setting ``v_n`` assigns ``state_covariance = diag(v_n**2)``; it is the
+        noise referred to each integrator's own node, *not* the converter input.
 
         Returns
         -------
         : :py:class:`numpy.ndarray`, shape=(N,)
-            the noise voltage matrix.
+            the per-state noise voltage density.
         """
         return self._v_n
 
