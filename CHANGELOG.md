@@ -1,5 +1,32 @@
 ## 0.4.0
-TODO
+
+Major revision of the library around a single state-space signal chain.
+
+### Added
+- `cbadc.noise` module: device-noise densities (`resistor_density`, `ota_density`,
+  `kTC_rms`, `combine_densities`), `per_state_intensity`, the van-Loan
+  `discrete_process_noise_cov`, and a robust `psd_factor` (Cholesky with an
+  eigen-floor fallback for rank-deficient / input-referred noise).
+- `AnalogFrontend` with `GmC` and `ActiveRC` frontends; `state_covariance` /
+  `output_covariance` noise injection in the simulators.
+- Cyclic state-space models (`CyclicStateSpace`) and related improvements.
+- `digital_backend` reconstruction: `WienerFilter`, `AdaptiveFIRFilter`,
+  `BlackBoxEstimator`, and `decimate`.
+- `uv`-based build / dependency management.
+
+### Changed
+- Analog system module renamed `analog_system` → `analog_filter`; the
+  `AnalogFrontend` now works in ABCD / `StateSpace` form.
+- Reworked discrete-time Wiener filter.
+
+### Fixed
+- State-noise covariance is now propagated correctly through `discretize`: the
+  continuous-time intensity is converted to the discrete per-step covariance via
+  the van-Loan integral (and zero-padded across added delay states), so the
+  injected noise magnitude no longer depends on whether noise is set before or
+  after discretising.
+- `GmC.v_n` documentation corrected — it is per-state (integrator-output-referred)
+  noise density, not input-referred.
 
 ## 0.3.3
 Last stable release of 0.3 
