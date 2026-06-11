@@ -7,10 +7,11 @@ attributes. Additionally, several derived convenience classes are defined
 to quickly initialize analog systems of particular structures.
 """
 
-import numpy as np
-import scipy.signal
 import logging
 from typing import Union
+
+import numpy as np
+import scipy.signal
 import sympy as sp
 from scipy.signal import StateSpace
 

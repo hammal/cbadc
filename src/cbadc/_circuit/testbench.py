@@ -1,27 +1,28 @@
+import logging
+
+# from .state_space import StateSpaceFrontend
+from datetime import datetime
 from typing import Dict, List, Tuple
+
+from ..__version__ import __version__
+from ..analog_frontend import AnalogFrontend
+from ..analog_signal import Clock, Sinusoidal
 from . import (
-    _template_env,
     Ground,
-    Terminal,
     SubCircuitElement,
+    Terminal,
+    _template_env,
 )
+from .analog_frontend import CircuitAnalogFrontend
+from .components.observer import Observer
 from .components.sources import (
     DCVoltageSource,
     PulseVoltageSource,
     SinusoidalVoltageSource,
 )
-from .components.observer import Observer
-from ..analog_signal import Clock, Sinusoidal
-from ..__version__ import __version__
-
-# from .state_space import StateSpaceFrontend
-from datetime import datetime
-from ..analog_frontend import AnalogFrontend
+from .lc_tank import LCFrontend
 from .opamp import OpAmpFrontend
 from .ota import GmCFrontend
-from .lc_tank import LCFrontend
-from .analog_frontend import CircuitAnalogFrontend
-import logging
 
 logger = logging.getLogger(__name__)
 

@@ -1,13 +1,17 @@
-from ..analog_frontend import AnalogFrontend
-from ..analog_filter import AnalogSystem
-from ..digital_control import DigitalControl
-from ..analog_signal import Clock
-from .analog_frontend import CircuitAnalogFrontend
-from ..analog_frontend import get_global_control, _analog_filter_matrix_exponential
-from .components.passives import Resistor, Capacitor, Inductor
-from .components.opamp import OTA
 import numpy as np
 import scipy.integrate
+
+from ..analog_filter import AnalogSystem
+from ..analog_frontend import (
+    AnalogFrontend,
+    _analog_filter_matrix_exponential,
+    get_global_control,
+)
+from ..analog_signal import Clock
+from ..digital_control import DigitalControl
+from .analog_frontend import CircuitAnalogFrontend
+from .components.opamp import OTA
+from .components.passives import Capacitor, Inductor, Resistor
 
 
 def _non_homogenious_weights(

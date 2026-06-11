@@ -1,14 +1,16 @@
-from . import Terminal, SubCircuitElement, SPICE_VALUE
-from .components.comparator import (
-    DifferentialOutputClockedComparator,
-)
+from ..analog_filter import AnalogSystem
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control.dither_control import DitherControl as NominalDitherControl
-from ..analog_filter import AnalogSystem
-from .components.summer import DifferentialSummer
-from .components.reference_source import ReferenceSource
-from .components.comparator import DAC_Bridge, D_FLIP_FLOP, ADCBridgeAbsolute
+from . import SPICE_VALUE, SubCircuitElement, Terminal
 from .components.analog_delay import AnalogDelay
+from .components.comparator import (
+    D_FLIP_FLOP,
+    ADCBridgeAbsolute,
+    DAC_Bridge,
+    DifferentialOutputClockedComparator,
+)
+from .components.reference_source import ReferenceSource
+from .components.summer import DifferentialSummer
 
 
 class DigitalControl(SubCircuitElement):

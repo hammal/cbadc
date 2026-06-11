@@ -1,10 +1,13 @@
 """The digital parallel estimator."""
 
-import cbadc
-import numpy as np
 import logging
-from .batch_estimator import BatchEstimator
+
+import numpy as np
+
+import cbadc
+
 from ._filter_coefficients import FilterComputationBackend
+from .batch_estimator import BatchEstimator
 
 logger = logging.getLogger(__name__)
 

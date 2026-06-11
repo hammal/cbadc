@@ -1,16 +1,18 @@
 from typing import Tuple
-from . import Terminal, SubCircuitElement, Ground
-from ..analog_frontend import AnalogFrontend
+
+import numpy as np
+
 from ..analog_filter import AnalogSystem
+from ..analog_frontend import AnalogFrontend
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control.dither_control import DitherControl as NominalDitherControl
-from .components.passives import Resistor, Capacitor
-import numpy as np
-from .components.summer import DifferentialSummer
+from . import Ground, SubCircuitElement, Terminal
+from .analog_frontend import CircuitAnalogFrontend
 from .components.comparator import DifferentialOutputClockedComparator
 from .components.opamp import OTA
+from .components.passives import Capacitor, Resistor
+from .components.summer import DifferentialSummer
 from .digital_control import DigitalControl, DitherControl
-from .analog_frontend import CircuitAnalogFrontend
 
 
 class MultiInputOTA(SubCircuitElement):

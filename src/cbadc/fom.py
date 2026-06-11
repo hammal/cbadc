@@ -7,12 +7,13 @@ provides an interface to Prof. Boris Murmann's famous `ADC Survey <https://githu
 import logging
 import os
 from typing import List, Tuple
-import requests
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+
 import matplotlib.cm
 import matplotlib.colors
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import requests
 
 logger = logging.getLogger(__name__)
 

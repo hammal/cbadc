@@ -1,11 +1,12 @@
-""" The adaptive FIR filter model.
-"""
+"""The adaptive FIR filter model."""
 
-from typing import Any, Dict, List, Union
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import signal
 import logging
+from typing import Any, Dict, List, Union
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy import signal
+
 import cbadc
 
 logger = logging.getLogger(__name__)
@@ -538,7 +539,7 @@ Training using LMS for:
 
                 ax_h[0].legend()
                 ax_h[0].set_title(f"impulse responses, L={self.L}")
-                ax_h[1].set_xlabel(f"filter taps")
+                ax_h[1].set_xlabel("filter taps")
                 ax_h[0].set_ylabel("$h[.]$")
                 ax_h[1].set_ylabel("$|h[.]|$")
                 ax_h[0].grid(True)

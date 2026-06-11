@@ -1,9 +1,10 @@
 from typing import List
-from .. import DeviceModel, _template_env, SPICE_VALUE
+
+from .. import SPICE_VALUE, DeviceModel, _template_env
 
 
 class ADC_Bridge_Model(DeviceModel):
-    ng_spice_model_name = 'adc_bridge'
+    ng_spice_model_name = "adc_bridge"
 
     def __init__(
         self,
@@ -24,17 +25,17 @@ class ADC_Bridge_Model(DeviceModel):
         )
 
     def get_ngspice(self) -> str:
-        return _template_env.get_template('ngspice/model.cir.j2').render(
+        return _template_env.get_template("ngspice/model.cir.j2").render(
             {
-                'model_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
+                "model_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
             }
         )
 
 
 class DAC_Bridge_Model(DeviceModel):
-    ng_spice_model_name = 'dac_bridge'
+    ng_spice_model_name = "dac_bridge"
 
     def __init__(
         self,
@@ -59,17 +60,17 @@ class DAC_Bridge_Model(DeviceModel):
         )
 
     def get_ngspice(self) -> str:
-        return _template_env.get_template('ngspice/model.cir.j2').render(
+        return _template_env.get_template("ngspice/model.cir.j2").render(
             {
-                'model_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
+                "model_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
             }
         )
 
 
 class D_Flip_Flop_Model(DeviceModel):
-    ng_spice_model_name = 'd_dff'
+    ng_spice_model_name = "d_dff"
 
     def __init__(
         self,
@@ -94,17 +95,17 @@ class D_Flip_Flop_Model(DeviceModel):
         )
 
     def get_ngspice(self) -> str:
-        return _template_env.get_template('ngspice/model.cir.j2').render(
+        return _template_env.get_template("ngspice/model.cir.j2").render(
             {
-                'model_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
+                "model_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
             }
         )
 
 
 class ClockedComparatorModel(DeviceModel):
-    ng_spice_model_name = 'clocked_comparator'
+    ng_spice_model_name = "clocked_comparator"
 
     def __init__(
         self,
@@ -141,35 +142,35 @@ class ClockedComparatorModel(DeviceModel):
         self.verilog_ams = True
 
         self.adc_bridge = ADC_Bridge_Model(
-            'in_adc_bridge',
-            self.parameters['in_low'],
-            self.parameters['in_high'],
+            "in_adc_bridge",
+            self.parameters["in_low"],
+            self.parameters["in_high"],
             rise_delay=t_rise,
             fall_delay=t_fall,
         )
         self.clk_adc_bridge = ADC_Bridge_Model(
-            'clk_adc_bridge',
-            self.parameters['clk_offset'],
-            self.parameters['clk_offset'],
+            "clk_adc_bridge",
+            self.parameters["clk_offset"],
+            self.parameters["clk_offset"],
             rise_delay=t_rise,
             fall_delay=t_fall,
         )
         self.dac_bridge = DAC_Bridge_Model(
-            'dac_bridge',
-            self.parameters['out_low'],
-            self.parameters['out_high'],
-            self.parameters['out_undef'],
-            input_load=self.parameters['input_load'],
-            t_rise=self.parameters['t_rise'],
-            t_fall=self.parameters['t_fall'],
+            "dac_bridge",
+            self.parameters["out_low"],
+            self.parameters["out_high"],
+            self.parameters["out_undef"],
+            input_load=self.parameters["input_load"],
+            t_rise=self.parameters["t_rise"],
+            t_fall=self.parameters["t_fall"],
         )
         self.flip_flop = D_Flip_Flop_Model(
-            'd_flip_flop',
-            clk_delay=self.parameters['clk_delay'],
+            "d_flip_flop",
+            clk_delay=self.parameters["clk_delay"],
         )
 
     def get_ngspice(self):
-        return '\n'.join(
+        return "\n".join(
             [
                 self.adc_bridge.get_ngspice(),
                 self.clk_adc_bridge.get_ngspice(),
@@ -180,20 +181,20 @@ class ClockedComparatorModel(DeviceModel):
 
     def get_verilog_ams(self) -> str:
         return _template_env.get_template(
-            'verilog_ams/clocked_comparator.vams.j2'
+            "verilog_ams/clocked_comparator.vams.j2"
         ).render(
             {
-                'module_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
-                'description': 'A ternary clocked comparator',
-                'terminals': ['clk', 'in', 'out'],
+                "module_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
+                "description": "A ternary clocked comparator",
+                "terminals": ["clk", "in", "out"],
             }
         )
 
 
 class DifferentialClockedComparatorModel(DeviceModel):
-    ng_spice_model_name = 'clocked_comparator'
+    ng_spice_model_name = "clocked_comparator"
 
     def __init__(
         self,
@@ -230,27 +231,27 @@ class DifferentialClockedComparatorModel(DeviceModel):
         self.verilog_ams = True
 
         self.adc_bridge = ADC_Bridge_Model(
-            'in_adc_bridge',
-            self.parameters['in_low'],
-            self.parameters['in_high'],
+            "in_adc_bridge",
+            self.parameters["in_low"],
+            self.parameters["in_high"],
             rise_delay=t_rise,
             fall_delay=t_fall,
         )
         self.clk_adc_bridge = ADC_Bridge_Model(
-            'clk_adc_bridge',
-            self.parameters['clk_offset'],
-            self.parameters['clk_offset'],
+            "clk_adc_bridge",
+            self.parameters["clk_offset"],
+            self.parameters["clk_offset"],
             rise_delay=t_rise,
             fall_delay=t_fall,
         )
         self.dac_bridge_p = DAC_Bridge_Model(
-            'dac_bridge',
-            self.parameters['out_low'],
-            self.parameters['out_high'],
-            self.parameters['out_undef'],
-            input_load=self.parameters['input_load'],
-            t_rise=self.parameters['t_rise'],
-            t_fall=self.parameters['t_fall'],
+            "dac_bridge",
+            self.parameters["out_low"],
+            self.parameters["out_high"],
+            self.parameters["out_undef"],
+            input_load=self.parameters["input_load"],
+            t_rise=self.parameters["t_rise"],
+            t_fall=self.parameters["t_fall"],
         )
 
         # self.dac_bridge_n = DAC_Bridge_Model(
@@ -263,12 +264,12 @@ class DifferentialClockedComparatorModel(DeviceModel):
         #     t_fall=self.parameters['t_fall'],
         # )
         self.flip_flop = D_Flip_Flop_Model(
-            'd_flip_flop',
-            clk_delay=self.parameters['clk_delay'],
+            "d_flip_flop",
+            clk_delay=self.parameters["clk_delay"],
         )
 
     def get_ngspice(self):
-        return '\n'.join(
+        return "\n".join(
             [
                 self.adc_bridge.get_ngspice(),
                 self.clk_adc_bridge.get_ngspice(),
@@ -281,13 +282,13 @@ class DifferentialClockedComparatorModel(DeviceModel):
     def get_verilog_ams(self) -> str:
         raise NotImplementedError
         return _template_env.get_template(
-            'verilog_ams/clocked_comparator.vams.j2'
+            "verilog_ams/clocked_comparator.vams.j2"
         ).render(
             {
-                'module_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
-                'description': 'A ternary clocked comparator',
-                'terminals': ['clk', 'in', 'out'],
+                "module_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
+                "description": "A ternary clocked comparator",
+                "terminals": ["clk", "in", "out"],
             }
         )

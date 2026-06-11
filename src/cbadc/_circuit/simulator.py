@@ -1,14 +1,15 @@
+import logging
+import os
+import subprocess
+import time
 from typing import Iterator, Union
-from .testbench import TestBench
+
+import numpy as np
 from jinja2 import Environment, PackageLoader, select_autoescape
 from ltspice import Ltspice
 from pandas import read_csv
 
-import numpy as np
-import logging
-import subprocess
-import os
-import time
+from .testbench import TestBench
 
 logger = logging.getLogger(__name__)
 

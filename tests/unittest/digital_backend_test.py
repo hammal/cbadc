@@ -164,7 +164,7 @@ def test_adaptive_fir_filter_calibration():
             s[:,:,0],
             r[:,:,0],
             batch_size=1 << 7,
-            epochs=1 << 10,
+            epochs=1 << 12,
             learning_rate=1e-2,
             momentum=0.97,
             verbose=True,
@@ -189,7 +189,6 @@ def test_adaptive_fir_filter_calibration():
     afir_rls.plot_amplitude_response(jw)
 
     # plt.show()
-
     # assert False
 
 

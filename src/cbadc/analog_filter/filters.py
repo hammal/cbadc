@@ -1,7 +1,9 @@
 """A selection of standard filters expressed as analog systems."""
 
-import scipy.signal
 import logging
+
+import scipy.signal
+
 from .analog_system import AnalogSystem
 from .topology import zpk2abcd
 

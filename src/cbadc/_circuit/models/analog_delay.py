@@ -1,9 +1,10 @@
 from typing import List
-from .. import DeviceModel, _template_env, SPICE_VALUE
+
+from .. import SPICE_VALUE, DeviceModel, _template_env
 
 
 class AnalogDelayModel(DeviceModel):
-    ng_spice_model_name = 'delay'
+    ng_spice_model_name = "delay"
 
     def __init__(
         self,
@@ -22,10 +23,10 @@ class AnalogDelayModel(DeviceModel):
         )
 
     def get_ngspice(self) -> str:
-        return _template_env.get_template('ngspice/model.cir.j2').render(
+        return _template_env.get_template("ngspice/model.cir.j2").render(
             {
-                'model_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
+                "model_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
             }
         )

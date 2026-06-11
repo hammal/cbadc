@@ -1,9 +1,9 @@
-"""Analog clock signals.
-"""
+"""Analog clock signals."""
+
+import numpy as np
+from sympy import Piecewise
 
 from cbadc.analog_signal.analog_signal import AnalogSignal
-from sympy import Piecewise
-import numpy as np
 
 
 class Clock(AnalogSignal):

@@ -1,9 +1,9 @@
 """The default digital control."""
 
-from typing import Optional
-import numpy as np
-
 import logging as _logging
+from typing import Optional
+
+import numpy as np
 
 logger = _logging.getLogger(__name__)
 

@@ -1,16 +1,18 @@
 from typing import Dict, List, Set
+
+import numpy as np
+
 from .. import (
     SPICE_VALUE,
     DeviceModel,
     Port,
-    Terminal,
     SubCircuitElement,
+    Terminal,
     _template_env,
 )
-from ..components.voltage_buffer import VoltageBuffer
 from ..components.ota import OTA
-from ..components.passives import Resistor, Capacitor
-import numpy as np
+from ..components.passives import Capacitor, Resistor
+from ..components.voltage_buffer import VoltageBuffer
 
 
 class OpAmp(SubCircuitElement):
@@ -29,52 +31,52 @@ class OpAmp(SubCircuitElement):
         self.gm = 2 * np.pi * GBWP * C
         self.R = DC_gain / (self.gm)
 
-        X = Terminal('X', hidden=True)
+        X = Terminal("X", hidden=True)
 
         super().__init__(
             instance_name,
             sub_ckt_name,
             [
-                Terminal('VDD'),
-                Terminal('VSS'),
-                Terminal('VCM'),
-                Terminal('IN_P'),
-                Terminal('IN_N'),
-                Terminal('OUT_P'),
-                Terminal('OUT_N'),
+                Terminal("VDD"),
+                Terminal("VSS"),
+                Terminal("VCM"),
+                Terminal("IN_P"),
+                Terminal("IN_N"),
+                Terminal("OUT_P"),
+                Terminal("OUT_N"),
             ],
             comments=comments,
         )
 
-        self.Gota = OTA('Gota', 'ota', gm=self.gm)
-        self.Ebuf_p = VoltageBuffer('Ebuf_p', 'voltage_buffer')
-        self.Ebuf_n = VoltageBuffer('Ebuf_n', 'voltage_buffer')
-        self.Rx = Resistor('Rx', self.R)
-        self.Cx = Capacitor('Cx', self.C)
+        self.Gota = OTA("Gota", "ota", gm=self.gm)
+        self.Ebuf_p = VoltageBuffer("Ebuf_p", "voltage_buffer")
+        self.Ebuf_n = VoltageBuffer("Ebuf_n", "voltage_buffer")
+        self.Rx = Resistor("Rx", self.R)
+        self.Cx = Capacitor("Cx", self.C)
 
         self.connects(
-            (self['VDD'], self.Gota['VDD']),
-            (self['VSS'], self.Gota['VSS']),
-            (self['VDD'], self.Ebuf_p['VDD']),
-            (self['VSS'], self.Ebuf_p['VSS']),
-            (self['VDD'], self.Ebuf_n['VDD']),
-            (self['VSS'], self.Ebuf_n['VSS']),
-            (self['IN_P'], self.Gota['IN_P']),
-            (self['IN_N'], self.Gota['IN_N']),
-            (self['OUT_P'], self.Ebuf_p['OUT_P']),
-            (self['VCM'], self.Ebuf_p['OUT_N']),
-            (self['OUT_N'], self.Ebuf_n['OUT_P']),
-            (self['VCM'], self.Ebuf_n['OUT_N']),
-            (X, self.Ebuf_p['IN_P']),
-            (X, self.Ebuf_n['IN_N']),
-            (X, self.Gota['OUT_P']),
-            (self['VCM'], self.Ebuf_p['IN_N']),
-            (self['VCM'], self.Ebuf_n['IN_P']),
-            (self['VCM'], self.Gota['OUT_N']),
+            (self["VDD"], self.Gota["VDD"]),
+            (self["VSS"], self.Gota["VSS"]),
+            (self["VDD"], self.Ebuf_p["VDD"]),
+            (self["VSS"], self.Ebuf_p["VSS"]),
+            (self["VDD"], self.Ebuf_n["VDD"]),
+            (self["VSS"], self.Ebuf_n["VSS"]),
+            (self["IN_P"], self.Gota["IN_P"]),
+            (self["IN_N"], self.Gota["IN_N"]),
+            (self["OUT_P"], self.Ebuf_p["OUT_P"]),
+            (self["VCM"], self.Ebuf_p["OUT_N"]),
+            (self["OUT_N"], self.Ebuf_n["OUT_P"]),
+            (self["VCM"], self.Ebuf_n["OUT_N"]),
+            (X, self.Ebuf_p["IN_P"]),
+            (X, self.Ebuf_n["IN_N"]),
+            (X, self.Gota["OUT_P"]),
+            (self["VCM"], self.Ebuf_p["IN_N"]),
+            (self["VCM"], self.Ebuf_n["IN_P"]),
+            (self["VCM"], self.Gota["OUT_N"]),
             (X, self.Rx[0]),
             (X, self.Cx[0]),
-            (self['VCM'], self.Rx[1]),
-            (self['VCM'], self.Cx[1]),
+            (self["VCM"], self.Rx[1]),
+            (self["VCM"], self.Cx[1]),
         )
 
         # # Connect VDD and VSS

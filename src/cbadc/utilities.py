@@ -4,19 +4,19 @@ This module contains various helpful functions to accommodate
 the cbadc toolbox.
 """
 
-import struct
-from typing import Generator, Iterator, Union
-import numpy as np
-from scipy.signal import welch
-from typing import Tuple
-from tqdm import tqdm
-import requests
+import logging
 import os
 import pickle
-import scipy.io.wavfile
+import struct
+from typing import Generator, Iterator, Tuple, Union
+
+import numpy as np
 import numpy.typing as npt
+import requests
+import scipy.io.wavfile
 import scipy.signal
-import logging
+from scipy.signal import welch
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 

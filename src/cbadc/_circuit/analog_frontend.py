@@ -1,13 +1,14 @@
 from typing import List, Union
-from . import (
-    Terminal,
-    SubCircuitElement,
-)
+
+from ..analog_filter import AnalogSystem
 from ..analog_frontend import AnalogFrontend
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control.dither_control import DitherControl as NominalDitherControl
+from . import (
+    SubCircuitElement,
+    Terminal,
+)
 from .digital_control import DigitalControl, DitherControl, MultiPhaseDigitalControl
-from ..analog_filter import AnalogSystem
 
 
 class CircuitAnalogFrontend(SubCircuitElement):

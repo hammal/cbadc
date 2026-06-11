@@ -1,13 +1,16 @@
 """The digital FIR estimator"""
 
-from dataclasses import dataclass
-from typing import Iterator, Union, List
-import cbadc
 import logging
 import os
+from dataclasses import dataclass
+from typing import Iterator, List, Union
+
 import numpy as np
-from .batch_estimator import BatchEstimator
+
+import cbadc
+
 from ._filter_coefficients import FilterComputationBackend
+from .batch_estimator import BatchEstimator
 
 logger = logging.getLogger(__name__)
 
@@ -359,12 +362,12 @@ class FIRFilter(BatchEstimator):
                     f.write("{")
                     if self.fixed_point:
                         for k in range(self.K3 - 1):
-                            f.write(f"{self.h[l,k,m]},")
-                        f.write(f"{self.h[l,-1,m]}" + "}")
+                            f.write(f"{self.h[l, k, m]},")
+                        f.write(f"{self.h[l, -1, m]}" + "}")
                     else:
                         for k in range(self.K3 - 1):
-                            f.write(f"{self.h[l,k,m]:.17E},")
-                        f.write(f"{self.h[l,-1,m]:.17E}" + "}")
+                            f.write(f"{self.h[l, k, m]:.17E},")
+                        f.write(f"{self.h[l, -1, m]:.17E}" + "}")
                     if m < (self.analog_filter.M - 1):
                         f.write(",")
                 f.write("}")
@@ -405,12 +408,12 @@ class FIRFilter(BatchEstimator):
                     f.write("[")
                     if self.fixed_point:
                         for k in range(self.K3 - 1):
-                            f.write(f"{self.h[l,k,m]},")
-                        f.write(f"{self.h[l,-1,m]}" + "]")
+                            f.write(f"{self.h[l, k, m]},")
+                        f.write(f"{self.h[l, -1, m]}" + "]")
                     else:
                         for k in range(self.K3 - 1):
-                            f.write(f"{self.h[l,k,m]:.17e},")
-                        f.write(f"{self.h[l,-1,m]:.17e}" + "]")
+                            f.write(f"{self.h[l, k, m]:.17e},")
+                        f.write(f"{self.h[l, -1, m]:.17e}" + "]")
                     if m < (self.analog_filter.M - 1):
                         f.write(",")
                 f.write("]")

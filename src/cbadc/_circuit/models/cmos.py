@@ -1,4 +1,5 @@
 from typing import List
+
 from .. import DeviceModel, _template_env
 
 

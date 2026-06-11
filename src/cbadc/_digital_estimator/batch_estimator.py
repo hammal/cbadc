@@ -1,17 +1,18 @@
-"""The digital batch estimator
-"""
+"""The digital batch estimator"""
 
-from typing import Iterator
-import cbadc
-from cbadc._digital_estimator._filter_coefficients import (
-    compute_filter_coefficients,
-    FilterComputationBackend,
-)
-import cbadc.utilities
-import scipy.integrate
-import numpy as np
-import sympy as sp
 import logging
+from typing import Iterator
+
+import numpy as np
+import scipy.integrate
+import sympy as sp
+
+import cbadc
+import cbadc.utilities
+from cbadc._digital_estimator._filter_coefficients import (
+    FilterComputationBackend,
+    compute_filter_coefficients,
+)
 
 logger = logging.getLogger(__name__)
 

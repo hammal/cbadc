@@ -1,10 +1,11 @@
 from typing import Dict, List
+
 from .. import (
+    SPICE_VALUE,
+    CircuitElement,
     Port,
     Terminal,
     _template_env,
-    CircuitElement,
-    SPICE_VALUE,
 )
 from ..models.observer import ObserverModel
 
@@ -18,12 +19,12 @@ class Observer(CircuitElement):
         trigger_offset: SPICE_VALUE = 0.5,
         save_on_falling_edge: bool = True,
         comments: List[str] = [],
-        filename: str = 'observations.csv',
+        filename: str = "observations.csv",
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'A':
-            instance_name = 'A' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "A":
+            instance_name = "A" + instance_name
 
         super().__init__(
             instance_name,
@@ -39,22 +40,22 @@ class Observer(CircuitElement):
         )
 
     def get_ngspice(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('ngspice/xspice.cir.j2').render(
+        return _template_env.get_template("ngspice/xspice.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'parameters': self._parameters_dict,
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "parameters": self._parameters_dict,
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('spectre/verilog_ams.cir.j2').render(
+        return _template_env.get_template("spectre/verilog_ams.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )

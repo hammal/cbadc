@@ -1,9 +1,11 @@
-import numpy as np
-import scipy.signal
-import scipy.linalg
 import logging
 from typing import Union
+
+import numpy as np
+import scipy.linalg
+import scipy.signal
 import sympy as sp
+
 from .analog_system import AnalogSystem
 
 logger = logging.getLogger(__name__)

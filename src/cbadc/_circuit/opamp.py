@@ -1,14 +1,16 @@
 from typing import Tuple
-from . import Terminal, SubCircuitElement, Ground
-from ..analog_frontend import AnalogFrontend
+
+import numpy as np
+
 from ..analog_filter import AnalogSystem
+from ..analog_frontend import AnalogFrontend
 from ..digital_control import DigitalControl as NominalDigitalControl
 from ..digital_control.dither_control import DitherControl as NominalDitherControl
-from .components.passives import Resistor, Capacitor
-import numpy as np
-from .components.opamp import OpAmp
-from .digital_control import DigitalControl, DitherControl
+from . import Ground, SubCircuitElement, Terminal
 from .analog_frontend import CircuitAnalogFrontend
+from .components.opamp import OpAmp
+from .components.passives import Capacitor, Resistor
+from .digital_control import DigitalControl, DitherControl
 
 
 class OpAmpFrontend(CircuitAnalogFrontend):

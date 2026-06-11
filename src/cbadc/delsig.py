@@ -4,10 +4,11 @@ This module provides a wrapper for the Delta Sigma toolbox, a Python package for
 which inturn is a port of the MATLAB Delta Sigma toolbox by Richard Schreier.
 """
 
-import numpy as np
-from scipy.signal import dlti, ZerosPolesGain, StateSpace
-import deltasigma as ds
 from typing import Optional, Union
+
+import deltasigma as ds
+import numpy as np
+from scipy.signal import StateSpace, ZerosPolesGain, dlti
 
 
 def synthesizeNTF(

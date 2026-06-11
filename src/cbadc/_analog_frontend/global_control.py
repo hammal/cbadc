@@ -1,12 +1,12 @@
 """Global control for the analog frontend."""
 
-from .analog_frontend import AnalogFrontend
-from ..analog_filter import AnalogSystem
-from ..digital_control import DigitalControl
-
 import numpy as np
 import scipy.integrate
 import scipy.linalg
+
+from ..analog_filter import AnalogSystem
+from ..digital_control import DigitalControl
+from .analog_frontend import AnalogFrontend
 
 
 def _analog_filter_matrix_exponential(A: np.ndarray, t: float) -> np.ndarray:
@@ -67,8 +67,7 @@ def get_global_control(
             psi_s_m = np.dot(
                 analog_filter.CT,
                 x[
-                    m_tilde_index
-                    * analog_filter.N : (1 + m_tilde_index)
+                    m_tilde_index * analog_filter.N : (1 + m_tilde_index)
                     * analog_filter.N
                 ],
             )
@@ -89,19 +88,17 @@ def get_global_control(
                     corrected_impulse_response = digital_control._impulse_response(m, t)
 
                 res[
-                    (m + analog_filter.L)
-                    * analog_filter.N : (m + 1 + analog_filter.L)
+                    (m + analog_filter.L) * analog_filter.N : (m + 1 + analog_filter.L)
                     * analog_filter.N
                 ] = np.dot(
                     analog_filter.A,
                     x[
-                        (m + analog_filter.L)
-                        * analog_filter.N : (m + 1 + analog_filter.L)
+                        (m + analog_filter.L) * analog_filter.N : (
+                            m + 1 + analog_filter.L
+                        )
                         * analog_filter.N
                     ],
-                ) + np.dot(
-                    analog_filter.Gamma, corrected_impulse_response
-                )
+                ) + np.dot(analog_filter.Gamma, corrected_impulse_response)
 
             # compute inner product between homogeneous state vector and control signal
             res[index_offset : index_offset + analog_filter.N] = np.dot(
@@ -131,8 +128,9 @@ def get_global_control(
                     np.dot(
                         analog_filter.CT,
                         x[
-                            (m + analog_filter.L)
-                            * analog_filter.N : (m + 1 + analog_filter.L)
+                            (m + analog_filter.L) * analog_filter.N : (
+                                m + 1 + analog_filter.L
+                            )
                             * analog_filter.N
                         ],
                     ),

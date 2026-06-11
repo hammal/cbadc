@@ -1,9 +1,10 @@
 from typing import Dict
+
 from .. import (
     SPICE_VALUE,
+    CircuitElement,
     Port,
     Terminal,
-    CircuitElement,
     _template_env,
 )
 from ..models.vcvs import VoltageControlledVoltageSourceModel

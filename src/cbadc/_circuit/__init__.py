@@ -1,10 +1,11 @@
 """Generate circuit models through netlists"""
-from enum import Enum
-from typing import Any, List, Dict, Set, Tuple, Union
-from jinja2 import Environment, PackageLoader, select_autoescape
+
 import itertools
 import logging
+from enum import Enum
+from typing import Any, Dict, List, Set, Tuple, Union
 
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 logger = logging.getLogger(__name__)
 
@@ -672,9 +673,7 @@ class SubCircuitElement(CircuitElement):
 This Circuit Element is a SubCircuitElement with the following subcircuit components:
 --------------------
 
-""" + "\n\n\n".join(
-            [str(x) for x in self.subckt_components]
-        )
+""" + "\n\n\n".join([str(x) for x in self.subckt_components])
 
 
 class NetlistElement(SubCircuitElement):
@@ -746,12 +745,12 @@ SPICE_VALUE = float
 
 from . import (
     analog_frontend,
+    components,
     digital_control,
+    models,
     opamp,
     ota,
     simulator,
-    testbench,
     state_space,
-    components,
-    models,
+    testbench,
 )

@@ -19,3 +19,5 @@ tests/profiling/profiling_stats.txt
 .vscode
 *__pycache__*
 docs/source/autosummary
+CLAUDE.md
+pytest-unittests.xml

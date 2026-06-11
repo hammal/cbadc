@@ -1,11 +1,12 @@
 from typing import Dict, List, Set
+
 from .. import (
-    CircuitElement,
     SPICE_VALUE,
+    CircuitElement,
     DeviceModel,
     Port,
-    Terminal,
     SubCircuitElement,
+    Terminal,
     _template_env,
 )
 from ..models.comparator import (
@@ -28,16 +29,16 @@ class ADCBridgeRelative(CircuitElement):
         comments: List[str] = [],
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'A':
-            instance_name = 'A' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "A":
+            instance_name = "A" + instance_name
 
         super().__init__(
             instance_name,
             [
-                Terminal('IN'),
-                Terminal('OUT'),
-                Terminal('VCM'),
+                Terminal("IN"),
+                Terminal("OUT"),
+                Terminal("VCM"),
             ],
             comments=comments,
         )
@@ -51,13 +52,13 @@ class ADCBridgeRelative(CircuitElement):
         )
 
     def get_ngspice(self, connections: Dict[Terminal, Port]) -> str:
-        return _template_env.get_template('ngspice/xspice.cir.j2').render(
+        return _template_env.get_template("ngspice/xspice.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._adc_bridge_get_terminal_names(connections),
-                'parameters': self._parameters_dict,
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._adc_bridge_get_terminal_names(connections),
+                "parameters": self._parameters_dict,
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
@@ -65,7 +66,7 @@ class ADCBridgeRelative(CircuitElement):
         self, connections: Dict[Terminal, Port]
     ) -> List[str]:
         named_nodes = self._get_terminal_names(connections)
-        return [f'[%vd({named_nodes[0]},{named_nodes[2]})]', f'[{named_nodes[1]}]']
+        return [f"[%vd({named_nodes[0]},{named_nodes[2]})]", f"[{named_nodes[1]}]"]
 
 
 class ADCBridgeAbsolute(ADCBridgeRelative):
@@ -73,7 +74,7 @@ class ADCBridgeAbsolute(ADCBridgeRelative):
         self, connections: Dict[Terminal, Port]
     ) -> List[str]:
         named_nodes = self._get_terminal_names(connections)
-        return [f'[{named_nodes[0]}]', f'[{named_nodes[1]}]']
+        return [f"[{named_nodes[0]}]", f"[{named_nodes[1]}]"]
 
 
 class DAC_Bridge(CircuitElement):
@@ -90,13 +91,13 @@ class DAC_Bridge(CircuitElement):
         comments: List[str] = [],
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'A':
-            instance_name = 'A' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "A":
+            instance_name = "A" + instance_name
 
         super().__init__(
             instance_name,
-            [Terminal('IN'), Terminal('OUT')],
+            [Terminal("IN"), Terminal("OUT")],
             comments=comments,
         )
         self.model = DAC_Bridge_Model(
@@ -111,15 +112,15 @@ class DAC_Bridge(CircuitElement):
         )
 
     def get_ngspice(self, connections: Dict[Terminal, Port]) -> str:
-        return _template_env.get_template('ngspice/xspice.cir.j2').render(
+        return _template_env.get_template("ngspice/xspice.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': ngspice_vector_terminal_vector_vector(
+                "instance_name": self.instance_name,
+                "terminals": ngspice_vector_terminal_vector_vector(
                     self._get_terminal_names(connections)
                 ),
-                'parameters': self._parameters_dict,
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "parameters": self._parameters_dict,
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
@@ -138,19 +139,19 @@ class D_FLIP_FLOP(CircuitElement):
         comments: List[str] = [],
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'A':
-            instance_name = 'A' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "A":
+            instance_name = "A" + instance_name
 
         super().__init__(
             instance_name,
             [
-                Terminal('IN'),
-                Terminal('CLK'),
-                Terminal('SET'),
-                Terminal('RES'),
-                Terminal('F_OUT_P'),
-                Terminal('F_OUT_N'),
+                Terminal("IN"),
+                Terminal("CLK"),
+                Terminal("SET"),
+                Terminal("RES"),
+                Terminal("F_OUT_P"),
+                Terminal("F_OUT_N"),
             ],
             comments=comments,
         )
@@ -166,13 +167,13 @@ class D_FLIP_FLOP(CircuitElement):
         )
 
     def get_ngspice(self, connections: Dict[Terminal, Port]) -> str:
-        return _template_env.get_template('ngspice/xspice.cir.j2').render(
+        return _template_env.get_template("ngspice/xspice.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'parameters': self._parameters_dict,
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "parameters": self._parameters_dict,
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
@@ -202,29 +203,29 @@ class ClockedComparator(SubCircuitElement):
         super().__init__(
             instance_name,
             sub_ckt_name,
-            [Terminal('CLK'), Terminal('VCM'), Terminal('IN'), Terminal('OUT')],
+            [Terminal("CLK"), Terminal("VCM"), Terminal("IN"), Terminal("OUT")],
         )
 
         self.add(
             ADCBridgeRelative(
-                'Aclk_adc',
-                'adc',
+                "Aclk_adc",
+                "adc",
                 in_low,
                 in_high,
                 rise_delay=rise_delay,
                 fall_delay=fall_delay,
             ),
             ADCBridgeRelative(
-                'Ain_adc',
-                'adc',
+                "Ain_adc",
+                "adc",
                 in_low,
                 in_high,
                 rise_delay=rise_delay,
                 fall_delay=fall_delay,
             ),
             D_FLIP_FLOP(
-                'Adffp',
-                'dflip',
+                "Adffp",
+                "dflip",
                 clk_delay,
                 set_delay=set_delay,
                 reset_delay=reset_delay,
@@ -233,8 +234,8 @@ class ClockedComparator(SubCircuitElement):
                 fall_delay=fall_delay,
             ),
             DAC_Bridge(
-                'Adac',
-                'dac',
+                "Adac",
+                "dac",
                 out_low,
                 out_high,
                 out_undef,
@@ -244,18 +245,18 @@ class ClockedComparator(SubCircuitElement):
             ),
         )
 
-        CLKD = Terminal('CLKD')
+        CLKD = Terminal("CLKD")
 
         self.connects(
-            (self['CLK'], self.Aclk_adc['IN']),
-            (self['VCM'], self.Aclk_adc['VCM']),
-            (self['IN'], self.Ain_adc['IN']),
-            (self['VCM'], self.Ain_adc['VCM']),
-            (self['OUT'], self.Adac['OUT']),
-            (CLKD, self.Adffp['CLK']),
-            (CLKD, self.Aclk_adc['OUT']),
-            (self.Ain_adc['OUT'], self.Adffp['IN']),
-            (self.Adffp['F_OUT_P'], self.Adac['IN']),
+            (self["CLK"], self.Aclk_adc["IN"]),
+            (self["VCM"], self.Aclk_adc["VCM"]),
+            (self["IN"], self.Ain_adc["IN"]),
+            (self["VCM"], self.Ain_adc["VCM"]),
+            (self["OUT"], self.Adac["OUT"]),
+            (CLKD, self.Adffp["CLK"]),
+            (CLKD, self.Aclk_adc["OUT"]),
+            (self.Ain_adc["OUT"], self.Adffp["IN"]),
+            (self.Adffp["F_OUT_P"], self.Adac["IN"]),
         )
 
     # overwrite the get_model_set method to return the model set
@@ -268,24 +269,24 @@ class ClockedComparator(SubCircuitElement):
     def get_verilog_ams(self) -> DeviceModel:
         raise NotImplementedError()
         return _template_env.get_template(
-            'verilog_ams/clocked_comparator.vams.j2'
+            "verilog_ams/clocked_comparator.vams.j2"
         ).render(
             {
-                'module_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
-                'description': 'A ternary clocked comparator',
-                'terminals': ['clk', 'in', 'out'],
+                "module_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
+                "description": "A ternary clocked comparator",
+                "terminals": ["clk", "in", "out"],
             }
         )
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('spectre/verilog_ams.cir.j2').render(
+        return _template_env.get_template("spectre/verilog_ams.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
@@ -320,34 +321,34 @@ class DifferentialOutputClockedComparator(SubCircuitElement):
             instance_name,
             sub_ckt_name,
             [
-                Terminal('CLK'),
-                Terminal('IN'),
-                Terminal('OUT_P'),
-                Terminal('OUT_N'),
-                Terminal('VCM'),
+                Terminal("CLK"),
+                Terminal("IN"),
+                Terminal("OUT_P"),
+                Terminal("OUT_N"),
+                Terminal("VCM"),
             ],
         )
 
         self.add(
             ADCBridgeRelative(
-                'Aclk_adc',
-                'adc',
+                "Aclk_adc",
+                "adc",
                 in_low,
                 in_high,
                 rise_delay=rise_delay,
                 fall_delay=fall_delay,
             ),
             ADCBridgeRelative(
-                'Ain_adc',
-                'adc',
+                "Ain_adc",
+                "adc",
                 in_low,
                 in_high,
                 rise_delay=rise_delay,
                 fall_delay=fall_delay,
             ),
             D_FLIP_FLOP(
-                'Adffp',
-                'dflip',
+                "Adffp",
+                "dflip",
                 clk_delay,
                 set_delay=set_delay,
                 reset_delay=reset_delay,
@@ -356,8 +357,8 @@ class DifferentialOutputClockedComparator(SubCircuitElement):
                 fall_delay=fall_delay,
             ),
             DAC_Bridge(
-                'Adac_p',
-                'dac',
+                "Adac_p",
+                "dac",
                 out_low,
                 out_high,
                 out_undef,
@@ -366,8 +367,8 @@ class DifferentialOutputClockedComparator(SubCircuitElement):
                 t_fall,
             ),
             DAC_Bridge(
-                'Adac_n',
-                'dac',
+                "Adac_n",
+                "dac",
                 out_low,
                 out_high,
                 out_undef,
@@ -377,19 +378,19 @@ class DifferentialOutputClockedComparator(SubCircuitElement):
             ),
         )
 
-        CLKD = Terminal('CLKD')
+        CLKD = Terminal("CLKD")
         self.connects(
-            (self['CLK'], self.Aclk_adc['IN']),
-            (self['VCM'], self.Aclk_adc['VCM']),
-            (self['IN'], self.Ain_adc['IN']),
-            (self['VCM'], self.Ain_adc['VCM']),
-            (self['OUT_P'], self.Adac_p['OUT']),
-            (self['OUT_N'], self.Adac_n['OUT']),
-            (CLKD, self.Adffp['CLK']),
-            (CLKD, self.Aclk_adc['OUT']),
-            (self.Ain_adc['OUT'], self.Adffp['IN']),
-            (self.Adffp['F_OUT_P'], self.Adac_p['IN']),
-            (self.Adffp['F_OUT_N'], self.Adac_n['IN']),
+            (self["CLK"], self.Aclk_adc["IN"]),
+            (self["VCM"], self.Aclk_adc["VCM"]),
+            (self["IN"], self.Ain_adc["IN"]),
+            (self["VCM"], self.Ain_adc["VCM"]),
+            (self["OUT_P"], self.Adac_p["OUT"]),
+            (self["OUT_N"], self.Adac_n["OUT"]),
+            (CLKD, self.Adffp["CLK"]),
+            (CLKD, self.Aclk_adc["OUT"]),
+            (self.Ain_adc["OUT"], self.Adffp["IN"]),
+            (self.Adffp["F_OUT_P"], self.Adac_p["IN"]),
+            (self.Adffp["F_OUT_N"], self.Adac_n["IN"]),
         )
 
     # overwrite the get_model_set method to return the model set
@@ -401,12 +402,12 @@ class DifferentialOutputClockedComparator(SubCircuitElement):
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
         raise NotImplementedError
-        return _template_env.get_template('spectre/verilog_ams.cir.j2').render(
+        return _template_env.get_template("spectre/verilog_ams.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
@@ -417,13 +418,13 @@ class DifferentialOutputClockedComparator(SubCircuitElement):
     def get_verilog_ams(self) -> DeviceModel:
         raise NotImplementedError()
         return _template_env.get_template(
-            'verilog_ams/clocked_comparator.vams.j2'
+            "verilog_ams/clocked_comparator.vams.j2"
         ).render(
             {
-                'module_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
-                'description': 'A ternary clocked comparator',
-                'terminals': ['clk', 'in', 'out'],
+                "module_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
+                "description": "A ternary clocked comparator",
+                "terminals": ["clk", "in", "out"],
             }
         )

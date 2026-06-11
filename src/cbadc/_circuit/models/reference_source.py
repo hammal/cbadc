@@ -1,9 +1,10 @@
 from typing import List
+
 from .. import DeviceModel, _template_env
 
 
 class ReferenceSourceModel(DeviceModel):
-    ng_spice_model_name = 'd_source'
+    ng_spice_model_name = "d_source"
 
     def __init__(
         self,
@@ -19,11 +20,11 @@ class ReferenceSourceModel(DeviceModel):
 
     def get_ngspice(self) -> str:
         return _template_env.get_template(
-            'ngspice/reference_source_model.cir.j2'
+            "ngspice/reference_source_model.cir.j2"
         ).render(
             {
-                'model_instance_name': self.model_name,
-                'model_name': self.ng_spice_model_name,
-                'parameters': self.parameters,
+                "model_instance_name": self.model_name,
+                "model_name": self.ng_spice_model_name,
+                "parameters": self.parameters,
             }
         )

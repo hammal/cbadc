@@ -1,14 +1,16 @@
+import os
 from typing import Dict, List
+
+import numpy as np
+
 from .. import (
     SPICE_VALUE,
+    CircuitElement,
     Port,
     Terminal,
-    CircuitElement,
     _template_env,
 )
 from ..models.reference_source import ReferenceSourceModel
-import numpy as np
-import os
 
 
 class ReferenceSource(CircuitElement):
@@ -84,7 +86,7 @@ class ReferenceSource(CircuitElement):
         self, connections: Dict[Terminal, Port]
     ) -> List[str]:
         named_nodes = self._get_terminal_names(connections)
-        return [f'[{" ".join(named_nodes)}]']
+        return [f"[{' '.join(named_nodes)}]"]
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
         raise NotImplementedError()

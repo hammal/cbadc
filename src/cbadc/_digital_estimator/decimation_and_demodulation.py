@@ -1,6 +1,7 @@
 """Submodule containing functions for decimation and demodulation of signals"""
-import scipy.signal
+
 import numpy as np
+import scipy.signal
 
 
 def decimate(signal: np.ndarray, DSR: int, axis: int = 0) -> np.ndarray:

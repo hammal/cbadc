@@ -29,6 +29,7 @@ dependencies = [
     "deltasigma @ git+https://github.com/hammal/python-deltasigma.git@2a79cc4dee79bbab45f6ceb783eea30c94f11c45",
     "cython",
     "requests",
+    "torch",
 ]
 
 [project.urls]
@@ -78,7 +79,6 @@ ignore = [
     "E712",
     "F401",
     "F811",
-    "W503",
     "W605",
 ]
 

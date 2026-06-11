@@ -1,7 +1,8 @@
 from typing import Dict, List
-from .. import Port, Terminal, _template_env, CircuitElement
-from . import ngspice_vector_terminal_vector_scalar
+
+from .. import CircuitElement, Port, Terminal, _template_env
 from ..models.summer import SummerModel
+from . import ngspice_vector_terminal_vector_scalar
 
 
 class Summer(CircuitElement):
@@ -17,16 +18,16 @@ class Summer(CircuitElement):
         comments: List[str] = [],
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'A':
-            instance_name = 'A' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "A":
+            instance_name = "A" + instance_name
 
         super().__init__(
             instance_name,
             [Terminal() for _ in range(number_of_inputs)]
             + [
                 Terminal(hidden=True),
-                Terminal('VCM'),
+                Terminal("VCM"),
             ],
         )
         self.model = SummerModel(
@@ -45,26 +46,26 @@ class Summer(CircuitElement):
         input_vector = " ".join(
             [f"%vd({node},{named_nodes[-1]})" for node in named_nodes[:-2]]
         )
-        return [f'[{input_vector}]', f'{named_nodes[-2]}']
+        return [f"[{input_vector}]", f"{named_nodes[-2]}"]
 
     def get_ngspice(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('ngspice/xspice.cir.j2').render(
+        return _template_env.get_template("ngspice/xspice.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._ngspice_get_terminal_names(connections),
-                'parameters': self._parameters_dict,
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._ngspice_get_terminal_names(connections),
+                "parameters": self._parameters_dict,
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('spectre/verilog_ams.cir.j2').render(
+        return _template_env.get_template("spectre/verilog_ams.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
@@ -82,9 +83,9 @@ class DifferentialSummer(CircuitElement):
         comments: List[str] = [],
     ):
         if not instance_name or not isinstance(instance_name, str):
-            raise TypeError(f'Expected str, got {type(instance_name)}')
-        elif instance_name[0] != 'A':
-            instance_name = 'A' + instance_name
+            raise TypeError(f"Expected str, got {type(instance_name)}")
+        elif instance_name[0] != "A":
+            instance_name = "A" + instance_name
 
         if (
             len(input_offset) != len(input_gain)
@@ -122,25 +123,25 @@ class DifferentialSummer(CircuitElement):
                 )
             ]
         )
-        return [f'[{input_vector}]', f'{named_nodes[-1]}']
+        return [f"[{input_vector}]", f"{named_nodes[-1]}"]
 
     def get_ngspice(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('ngspice/xspice.cir.j2').render(
+        return _template_env.get_template("ngspice/xspice.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._ngspice_get_terminal_names(connections),
-                'parameters': self._parameters_dict,
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._ngspice_get_terminal_names(connections),
+                "parameters": self._parameters_dict,
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )
 
     def get_spectre(self, connections: Dict[Terminal, Port]):
-        return _template_env.get_template('spectre/verilog_ams.cir.j2').render(
+        return _template_env.get_template("spectre/verilog_ams.cir.j2").render(
             {
-                'instance_name': self.instance_name,
-                'terminals': self._get_terminal_names(connections),
-                'comments': self.comments,
-                'model_instance_name': self.model.model_name,
+                "instance_name": self.instance_name,
+                "terminals": self._get_terminal_names(connections),
+                "comments": self.comments,
+                "model_instance_name": self.model.model_name,
             }
         )

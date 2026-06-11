@@ -1,11 +1,13 @@
 """The digital NUV estimator."""
 
-from typing import Iterator
-import cbadc
 import logging
-import scipy.linalg
-import scipy.integrate
+from typing import Iterator
+
 import numpy as np
+import scipy.integrate
+import scipy.linalg
+
+import cbadc
 
 logger = logging.getLogger(__name__)
 
@@ -386,7 +388,6 @@ class NUVEstimator:
 
         # Backward pass
         for k in range(self.K3 - 1, -1, -1):
-
             if k < temp_K3:
                 xi_tilde_z = np.dot(self.Af.transpose(), self._xi_tilde[k + 1, :])
                 # W_tilde_z = np.dot(

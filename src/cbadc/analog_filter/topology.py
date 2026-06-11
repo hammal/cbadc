@@ -1,7 +1,9 @@
 """Tools to construct analog systems by means of combining other analog systems."""
 
+from typing import List, Tuple
+
 import numpy as np
-from typing import Tuple, List
+
 from .analog_system import AnalogSystem
 
 

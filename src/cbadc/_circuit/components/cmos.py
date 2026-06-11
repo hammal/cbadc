@@ -1,5 +1,6 @@
 from typing import Dict
-from .. import Port, Terminal, CircuitElement, SPICE_VALUE, _template_env
+
+from .. import SPICE_VALUE, CircuitElement, Port, Terminal, _template_env
 from ..models.cmos import NMOSModel, PMOSModel
 
 

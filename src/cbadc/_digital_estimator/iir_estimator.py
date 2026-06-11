@@ -1,10 +1,13 @@
 """The digital IIR estimator"""
 
-import cbadc
 import logging
+
 import numpy as np
-from .batch_estimator import BatchEstimator
+
+import cbadc
+
 from ._filter_coefficients import FilterComputationBackend
+from .batch_estimator import BatchEstimator
 
 logger = logging.getLogger(__name__)
 
