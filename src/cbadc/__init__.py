@@ -29,6 +29,7 @@ from . import (
     digital_control,
     fom,
     noise,
+    snr,
     utilities,
 )
 from .__version__ import __version__
