@@ -37,5 +37,5 @@ from .__version__ import __version__
 # Commonly used classes
 from .analog_frontend import ActiveRC, AnalogFrontend, GmC
 from .analog_signal import AnalogSignal, Sinusoidal, ZeroOrderHold
-from .digital_backend import AdaptiveFIRFilter, WienerFilter
+from .digital_backend import AdaptiveFIRFilter, DataAidedEstimator, WienerFilter
 from .digital_control import DigitalControl

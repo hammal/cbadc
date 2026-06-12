@@ -1273,7 +1273,16 @@ class AdaptiveFIRFilter:
         ax[1].grid()
 
 
-class BlackBoxEstimator(AdaptiveFIRFilter):
+class DataAidedEstimator(AdaptiveFIRFilter):
+    """Data-aided reconstruction filter for an :class:`AnalogFrontend`.
+
+    Unlike the analytical :class:`WienerFilter`, this estimator uses *nothing*
+    from the analog-frontend state-space specification. It is calibrated from
+    data: drive the frontend with a known reference, simulate, and fit the FIR
+    taps by least squares (``data-aided`` = the calibration uses a known
+    reference/training sequence). Construct it via :meth:`AnalogFrontend.calibrate`.
+    """
+
     def __init__(
         self,
         analog_frontend: AnalogFrontend,
@@ -1350,6 +1359,10 @@ class BlackBoxEstimator(AdaptiveFIRFilter):
             the reconstructed input estimate.
         """
         return self.convolve(v, DSR=self.DSR)
+
+
+# Deprecated alias: the estimator was previously named BlackBoxEstimator.
+BlackBoxEstimator = DataAidedEstimator
 
 
 def decimate(

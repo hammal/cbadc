@@ -6,14 +6,15 @@ import pytest
 from cbadc import snr as snr_mod
 from cbadc.analog_frontend import AnalogFrontend
 from cbadc.analog_signal import Sinusoidal
-from cbadc.digital_backend import BlackBoxEstimator
+from cbadc.digital_backend import BlackBoxEstimator, DataAidedEstimator
 
 
 def test_calibrate_returns_estimator_and_reconstructs():
     af, OSR = AnalogFrontend.chain_of_integrators(N=3, ENOB=10, BW=1e5)
     DSR = int(OSR)
     est = af.calibrate(DSR=DSR, K=1 << 6, J=2, sim_size=1 << 14)
-    assert isinstance(est, BlackBoxEstimator)
+    assert isinstance(est, DataAidedEstimator)
+    assert BlackBoxEstimator is DataAidedEstimator  # deprecated alias preserved
     assert est.DSR == DSR
 
     # reconstruct an in-band tone and check the data-aided readout works

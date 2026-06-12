@@ -2100,9 +2100,9 @@ class AnalogFrontend:
         J: int = 4,
         seed: int = 90128310230123,
     ):
-        from .digital_backend import BlackBoxEstimator
+        from .digital_backend import DataAidedEstimator
 
-        return BlackBoxEstimator(self, DSR, K, max_amplitude, sim_size, J, seed)
+        return DataAidedEstimator(self, DSR, K, max_amplitude, sim_size, J, seed)
 
     def calibrate(
         self,
@@ -2142,13 +2142,13 @@ class AnalogFrontend:
 
         Returns
         -------
-        : :py:class:`cbadc.digital_backend.BlackBoxEstimator`
+        : :py:class:`cbadc.digital_backend.DataAidedEstimator`
             the calibrated estimator; call ``estimator.reconstruct(v)`` to
             estimate the input from control signals.
         """
-        from .digital_backend import BlackBoxEstimator
+        from .digital_backend import DataAidedEstimator
 
-        return BlackBoxEstimator(
+        return DataAidedEstimator(
             self,
             DSR,
             K,
