@@ -2104,6 +2104,61 @@ class AnalogFrontend:
 
         return BlackBoxEstimator(self, DSR, K, max_amplitude, sim_size, J, seed)
 
+    def calibrate(
+        self,
+        DSR: int,
+        K: int = 1 << 8,
+        J: int = 4,
+        sim_size: int = 1 << 16,
+        max_amplitude: float = 1.0,
+        reference=None,
+        seed: int = 90128310230123,
+    ):
+        """Calibrate a data-aided reconstruction filter for this frontend.
+
+        Drives the frontend with a known, persistently-exciting ``reference``
+        (a full-scale random sequence by default, ``J`` sequences in parallel),
+        simulates, decimates by ``DSR`` and fits a ``K``-tap FIR by least
+        squares. This is the recommended (data-aided) readout; the analytical
+        :meth:`wiener_filter` remains available for the model-based path.
+
+        Parameters
+        ----------
+        DSR : int
+            decimation / down-sampling ratio (typically the OSR).
+        K : int, optional
+            number of FIR taps, defaults to 256.
+        J : int, optional
+            number of parallel reference sequences in one simulation, default 4.
+        sim_size : int, optional
+            calibration simulation length, defaults to ``1 << 16``.
+        max_amplitude : float, optional
+            amplitude of the generated reference, defaults to 1.0.
+        reference : :py:class:`cbadc.analog_signal.AnalogSignal`, optional
+            a custom calibration reference; if ``None`` a full-scale uniform
+            reference is generated.
+        seed : int, optional
+            RNG seed for the generated reference.
+
+        Returns
+        -------
+        : :py:class:`cbadc.digital_backend.BlackBoxEstimator`
+            the calibrated estimator; call ``estimator.reconstruct(v)`` to
+            estimate the input from control signals.
+        """
+        from .digital_backend import BlackBoxEstimator
+
+        return BlackBoxEstimator(
+            self,
+            DSR,
+            K,
+            max_amplitude,
+            sim_size,
+            J,
+            seed,
+            reference=reference,
+        )
+
     def simulateSNR(
         self,
         OSR: int,

@@ -1284,15 +1284,22 @@ class BlackBoxEstimator(AdaptiveFIRFilter):
         J: int = 1 << 1,
         seed: int = 213236546233421,
         rel_bw: float = 0.5,
+        reference=None,
     ):
         M = analog_frontend.M
         L = analog_frontend.L
         dt = analog_frontend.dt
+        self.DSR = DSR
         super().__init__(
             M=M, K=K, L=L, dt=dt, analog_frontend=analog_frontend, seed=seed
         )
         _ = self.learn_from_analog_frontend(
-            DSR=DSR, max_amplitude=max_amplitude, sim_size=sim_size, J=J, rel_bw=rel_bw
+            DSR=DSR,
+            max_amplitude=max_amplitude,
+            sim_size=sim_size,
+            J=J,
+            rel_bw=rel_bw,
+            reference=reference,
         )
 
     def learn_from_analog_frontend(
@@ -1302,29 +1309,47 @@ class BlackBoxEstimator(AdaptiveFIRFilter):
         sim_size: int = 1 << 18,
         J: int = 1 << 0,
         rel_bw: float = 0.5,
+        reference=None,
     ):
-        uniform_references = ZeroOrderHold.uniform_reference_signal(
-            self._analog_frontend.dt * DSR,
-            -max_amplitude * np.ones((1, J), dtype=np.double),
-            max_amplitude * np.ones((1, J), dtype=np.double),
-            size=sim_size // J + self.K,
-            seed=self._rng.integers(0, 1 << 62),
-        )
+        self.DSR = DSR
+        if reference is None:
+            # full-scale, persistently-exciting reference (J parallel sequences)
+            reference = ZeroOrderHold.uniform_reference_signal(
+                self._analog_frontend.dt * DSR,
+                -max_amplitude * np.ones((1, J), dtype=np.double),
+                max_amplitude * np.ones((1, J), dtype=np.double),
+                size=sim_size // J + self.K,
+                seed=self._rng.integers(0, 1 << 62),
+            )
 
         old_input_signal = _deepcopy(self._analog_frontend.analog_signal)
-        self._analog_frontend.analog_signal = uniform_references
+        self._analog_frontend.analog_signal = reference
         sim_res = self._analog_frontend.simulate(sim_size + self.K)
 
         dec_v = decimate(sim_res["v"][self.K :, :, :], DSR, method="direct")
         dec_u = decimate(sim_res["u"][self.K :, :, :], DSR, method="direct")
 
-        # self.h0 = _firwin2(
-        #     self.K, [0, rel_bw, 1.0], [1.0, 1.0 / np.sqrt(2.0), 0.0]
-        # ).reshape((self.K, 1))
-
         self.lstsq(dec_v, dec_u, verbose=True, method="direct")
         self._analog_frontend.analog_signal = old_input_signal
         return sim_res
+
+    def reconstruct(self, v: np.ndarray) -> np.ndarray:
+        """Estimate the input from control signals ``v`` (decimates by ``DSR``).
+
+        A thin alias over :meth:`convolve` that applies the calibrated
+        decimation factor, so the typical readout is a single call.
+
+        Parameters
+        ----------
+        v : numpy.ndarray, shape=(size, M, J)
+            the control signals.
+
+        Returns
+        -------
+        numpy.ndarray, shape=(size // DSR, L, J)
+            the reconstructed input estimate.
+        """
+        return self.convolve(v, DSR=self.DSR)
 
 
 def decimate(
