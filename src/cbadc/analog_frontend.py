@@ -68,6 +68,26 @@ def _g_i_leapfrog(N: int):
     return np.float64(g_i.subs(omega_p, 1e0).evalf())
 
 
+def _leapfrog_3dB_factor(alpha: float, beta: float, N: int, BW: float) -> float:
+    """Factor to scale ``omega_p`` (i.e. ``alpha``, ``beta``) so the leap-frog
+    open-loop signal transfer function has its 3 dB edge at ``BW``.
+
+    ``|G(w)|`` is invariant in ``w/omega_p``, so the 3 dB frequency scales
+    linearly with ``omega_p`` and the factor is the single ratio
+    ``BW / f_3dB(current)``. ``f_3dB`` is read off ``G(w) = (jw I - A)^-1 B_u``
+    (norm over the observed states, relative to the low-frequency passband)."""
+    A0 = np.diag(alpha * np.ones(N - 1), 1) + np.diag(beta * np.ones(N - 1), -1)
+    Bu = np.zeros(N)
+    Bu[0] = beta
+    fs = np.logspace(np.log10(BW / 1000), np.log10(BW * 20), 50000)
+    jw = 1j * 2 * np.pi * fs
+    G = np.linalg.solve(jw[:, None, None] * np.eye(N) - A0,
+                        np.broadcast_to(Bu[:, None], (fs.size, N, 1)))  # (size, N, 1)
+    g = np.linalg.norm(G[:, :, 0], axis=1)
+    below = np.where(g < g[0] / np.sqrt(2.0))[0]
+    return BW / fs[below[0]] if below.size else 1.0
+
+
 class CyclicStateSpace(StateSpace):
     """A cyclic state space system
 
@@ -2398,6 +2418,11 @@ class AnalogFrontend:
             include local feedback, defaults to False.
         excess_delay: `float`, `optional`
             delay control actions by an excess delay, defaults to 0.
+        bw_3dB: `bool`, `optional`
+            scale ``omega_p`` so the open-loop signal transfer function has its
+            3 dB edge exactly at ``BW`` (extends the stock design, whose edge
+            sits at ~0.75-0.9 BW). Only used in the (ENOB, N, BW) branch.
+            Defaults to False.
 
 
         Returns
@@ -2421,6 +2446,12 @@ class AnalogFrontend:
             # omega_p /= np.cos(N * np.pi / (N + 1.0))
             beta = -omega_p * (2.0 * gamma)
             alpha = omega_p / (2.0 * gamma)
+            if kwargs.get("bw_3dB", False):
+                # extend omega_p so the loop-filter 3 dB edge sits at BW
+                # (stock omega_p=omega_BW/2 places it below BW)
+                r = _leapfrog_3dB_factor(alpha, beta, N, float(kwargs["BW"]))
+                beta *= r
+                alpha *= r
             rho = 0
             dt = 1.0 / np.abs(2.0 * omega_BW * gamma / delta)
             OSR = 1.0 / (2.0 * dt * kwargs["BW"])
