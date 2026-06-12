@@ -43,6 +43,7 @@ __all__ = [
     "snr_tone",
     "snr_residual",
     "snr_vs_frequency",
+    "measure_snr",
 ]
 
 
@@ -114,6 +115,40 @@ def _as_columns(x: np.ndarray, trim: int) -> np.ndarray:
     return x.reshape(x.shape[0], -1)
 
 
+def _welch_ref_err(a: np.ndarray, b: np.ndarray, fs: float, nperseg: int):
+    """Pooled reference / error power spectra. ``a``, ``b`` are (m, C) columns.
+
+    Returns ``(f, P_ref, P_err)`` with the spectra averaged over the columns.
+    When ``fs`` is 2.0 the frequency axis runs 0..1 (fraction of Nyquist).
+    """
+    nperseg = min(nperseg, a.shape[0])
+    f, P_ref = welch(b, fs=fs, nperseg=nperseg, axis=0)
+    _, P_err = welch(a - b, fs=fs, nperseg=nperseg, axis=0)
+    return f, P_ref.mean(axis=-1), P_err.mean(axis=-1)
+
+
+def _band_mask(f: np.ndarray, band) -> np.ndarray:
+    """Bins of ``f`` inside ``band`` (same units as ``f``). The DC bin is dropped
+    when the lower edge is 0 (Welch's DC bin is biased and usually signal-free).
+
+    ``band`` is a scalar upper edge ``f_hi`` -> ``[0, f_hi]`` or a pair
+    ``(f_lo, f_hi)``.
+    """
+    lo, hi = (0.0, band) if np.isscalar(band) else (band[0], band[1])
+    mask = (f >= lo) & (f <= hi)
+    if lo <= 0.0:
+        mask &= f > 0.0
+    if mask.sum() < 8:
+        import warnings
+
+        warnings.warn(
+            f"sub-band [{lo}, {hi}] covers only {int(mask.sum())} spectral bins; "
+            "use a larger nperseg or a wider band for a stable estimate.",
+            stacklevel=2,
+        )
+    return mask
+
+
 def snr_tone(
     u_hat: np.ndarray, f_sig: float, fs: float, trim: int = 0, band: float = None
 ) -> float:
@@ -182,20 +217,58 @@ def snr_tone(
     return 10 * np.log10(sig_p / noise_p) if noise_p > 0 else np.inf
 
 
-def snr_residual(u_hat: np.ndarray, u_ref: np.ndarray, trim: int = 0) -> float:
+def snr_residual(
+    u_hat: np.ndarray,
+    u_ref: np.ndarray,
+    trim: int = 0,
+    band=None,
+    fs: float = None,
+    nperseg: int = 1 << 12,
+) -> float:
     """Broadband SNR against a known reference: var(ref) / var(u_hat - ref).
 
     Use with the calibration reference, where ``u_ref`` is the reference that was
     fitted -- no tone needed, the whole band is exercised at once. Trailing axes
     (L, J) are averaged over.
+
+    Parameters
+    ----------
+    u_hat, u_ref : numpy.ndarray
+        reconstruction and known reference; axis 0 is time, trailing axes pooled.
+    trim : int, optional
+        samples to drop from each end (the reconstruction transient only).
+    band : float or (float, float), optional
+        restrict the measurement to a sub-band (a spectral var ratio over the
+        selected bins, by Parseval). A scalar is an upper edge ``[0, f_hi]``; a
+        pair is a window ``[f_lo, f_hi]`` (use this to exclude the rolloff edge,
+        where the converter SNR is worst and the full-band number is dominated).
+        ``None`` (default) measures the full band via the exact time-domain
+        variance ratio. Units follow ``fs``.
+    fs : float, optional
+        sample rate [Hz]. If given, ``band`` is in Hz; if omitted, ``band`` is a
+        fraction of Nyquist (``f_Nyq == 1``).
+    nperseg : int, optional
+        Welch segment length for the sub-band path.
+
+    Returns
+    -------
+    float
+        SNR in dB (mean over columns if more than one).
     """
     a = _as_columns(u_hat, trim)
     b = _as_columns(u_ref, trim)
-    snrs = []
-    for ai, bi in zip(a.T, b.T):
-        noise = np.var(ai - bi)
-        snrs.append(10 * np.log10(np.var(bi) / noise) if noise > 0 else np.inf)
-    return float(np.mean(snrs))
+    if band is None:
+        # full band: exact time-domain variance ratio (per column, averaged)
+        snrs = []
+        for ai, bi in zip(a.T, b.T):
+            noise = np.var(ai - bi)
+            snrs.append(10 * np.log10(np.var(bi) / noise) if noise > 0 else np.inf)
+        return float(np.mean(snrs))
+    # sub-band: integrate the pooled reference / error power spectra
+    f, P_ref, P_err = _welch_ref_err(a, b, fs if fs is not None else 2.0, nperseg)
+    mask = _band_mask(f, band)
+    den = P_err[mask].sum()
+    return 10 * np.log10(P_ref[mask].sum() / den) if den > 0 else np.inf
 
 
 def snr_vs_frequency(
@@ -219,11 +292,41 @@ def snr_vs_frequency(
     """
     a = _as_columns(u_hat, trim)
     b = _as_columns(u_ref, trim)
-    nperseg = min(nperseg, a.shape[0])
-    # average the reference / error power spectra over all columns
-    f, P_ref = welch(b, fs=fs, nperseg=nperseg, axis=0)
-    _, P_err = welch(a - b, fs=fs, nperseg=nperseg, axis=0)
-    P_ref = P_ref.mean(axis=-1)
-    P_err = P_err.mean(axis=-1)
+    f, P_ref, P_err = _welch_ref_err(a, b, fs, nperseg)
     snr_f = 10 * np.log10(P_ref / np.maximum(P_err, 1e-300))
     return f, snr_f
+
+
+def measure_snr(
+    u_hat: np.ndarray,
+    u_ref: np.ndarray = None,
+    *,
+    method: str = "residual",
+    band=None,
+    fs: float = None,
+    f_sig: float = None,
+    trim: int = 0,
+    nperseg: int = 1 << 12,
+):
+    """Single entry point for the SNR metrics, so callers select uniformly.
+
+    Parameters
+    ----------
+    method : {"residual", "tone", "snr_f"}
+        ``"residual"`` (default) -> :func:`snr_residual` (needs ``u_ref``);
+        ``"tone"`` -> :func:`snr_tone` (needs ``f_sig`` and ``fs``);
+        ``"snr_f"`` -> :func:`snr_vs_frequency` (returns ``(f, snr_f)``).
+    band : float or (float, float), optional
+        sub-band restriction; orthogonal to ``method`` (passed to residual/tone).
+    fs, f_sig, trim, nperseg
+        forwarded to the selected metric.
+    """
+    if method == "residual":
+        return snr_residual(u_hat, u_ref, trim=trim, band=band, fs=fs, nperseg=nperseg)
+    if method == "tone":
+        if f_sig is None or fs is None:
+            raise ValueError("method='tone' requires f_sig and fs")
+        return snr_tone(u_hat, f_sig, fs, trim=trim, band=band)
+    if method == "snr_f":
+        return snr_vs_frequency(u_hat, u_ref, fs, nperseg=nperseg, trim=trim)
+    raise ValueError(f"unknown method {method!r}; use 'residual', 'tone', or 'snr_f'")

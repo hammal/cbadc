@@ -8,7 +8,6 @@ import logging
 import time
 
 import numpy as np
-from scipy.signal import welch
 
 logging.disable(logging.CRITICAL)
 from cbadc.analog_frontend import AnalogFrontend
@@ -32,16 +31,6 @@ def make(af, DSR, per, Jn, seed):
             decimate(sim["u"][warm:], DSR, method="direct"))
 
 
-def subband_snr(u_hat, u_ref, frac):
-    """SNR over the inner `frac` of the decimated band (pool over J)."""
-    e = (u_hat - u_ref)[:, 0, :]
-    s = u_ref[:, 0, :]
-    f, Pe = welch(e, axis=0, nperseg=1 << 12)
-    _, Ps = welch(s, axis=0, nperseg=1 << 12)
-    band = f <= frac * f[-1]
-    return 10 * np.log10(Ps[band].sum() / Pe[band].sum())
-
-
 print(f"{'design':>8} {'OSR':>5} {'full_dB':>8} {'inner0.7_dB':>11} {'t_s':>5}", flush=True)
 for label, kw in [("stock", {}), ("bw_3dB", {"bw_3dB": True})]:
     t0 = time.time()
@@ -51,9 +40,8 @@ for label, kw in [("stock", {}), ("bw_3dB", {"bw_3dB": True})]:
     fir = AdaptiveFIRFilter(af.M, K, 1, dt=af.dt)
     fir.fit_fft(dv, du, nperseg=NPS, floor=FLOOR)
     vv, vu = make(af, DSR, 1 << 20, 16, seed=99)
-    uh = fir.convolve(vv)[K:]
-    ur = vu[K:]
-    full = snr_mod.snr_residual(fir.convolve(vv), vu, trim=K)
-    inner = subband_snr(uh, ur, 0.7)
+    uh = fir.convolve(vv)
+    full = snr_mod.snr_residual(uh, vu, trim=K)
+    inner = snr_mod.snr_residual(uh, vu, trim=K, band=(0.0, 0.7))  # inner 0.7 of Nyquist
     print(f"{label:>8} {OSR:>5.1f} {full:>8.1f} {inner:>11.1f} {time.time()-t0:>5.0f}",
           flush=True)
