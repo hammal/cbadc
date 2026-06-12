@@ -57,6 +57,21 @@ def test_snr_vs_frequency_flat_for_white_error():
     assert np.std(snr_f) < 3.0
 
 
+def test_coherent_frequency_lands_on_fft_bin():
+    fs, n = 1e3, 1 << 12
+    f = snr.coherent_frequency(50.0, fs, n)
+    cycles = f * n / fs
+    assert cycles == pytest.approx(round(cycles))  # integer cycles
+    assert abs(f - 50.0) < fs / n  # within one bin of the target
+    # a coherent tone is a single FFT bin -> windowed and bin SNR now agree
+    t = np.arange(n) / fs
+    rng = np.random.default_rng(0)
+    y = np.cos(2 * np.pi * f * t) + 1e-3 * rng.standard_normal(n)
+    assert snr.snr_tone(y, f, fs) == pytest.approx(
+        10 * np.log10(0.5 / 1e-3**2), abs=1.5
+    )
+
+
 def test_decimate_reduces_length():
     x = np.ones((1 << 12, 1, 1))
     y = snr.decimate(x, 4)

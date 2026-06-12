@@ -16,19 +16,81 @@ projection divides the tone power by the *total* residual power, while SNR(f) is
 a *local* power-spectral-density ratio. Use ``snr_residual`` for a single headline
 number and ``snr_vs_frequency`` to see how reconstruction quality varies across
 the band. For a valid SNR(f) the reference must be flat past the band of interest.
+
+Coherent sampling
+-----------------
+``snr_tone`` is leakage-free, so it does *not* require coherent sampling. But any
+*FFT-bin* method (a windowed spectrum, or the legacy
+:meth:`AnalogFrontend.calculateSNR_from_fft`) does: an off-grid tone smears
+across bins through the window and is undercounted, which can suppress the
+reported SNR by tens of dB. When you plot a spectrum or use a bin method, place
+the tone on an exact FFT bin with :func:`coherent_frequency`::
+
+    f = coherent_frequency(f_target, fs, n)   # integer cycles in n samples
 """
+
+from math import gcd
 
 import numpy as np
 from scipy.signal import welch
 
 from .digital_backend import decimate as _decimate
 
-__all__ = ["decimate", "snr_tone", "snr_residual", "snr_vs_frequency"]
+__all__ = [
+    "decimate",
+    "coherent_frequency",
+    "snr_tone",
+    "snr_residual",
+    "snr_vs_frequency",
+]
 
 
 def decimate(x: np.ndarray, DSR: int, axis: int = 0, ftype: str = "iir", n: int = 9):
     """Anti-alias decimate by ``DSR`` (thin wrapper with testbench defaults)."""
     return _decimate(x, DSR, axis=axis, ftype=ftype, n=n)
+
+
+def coherent_frequency(f_target: float, fs: float, n: int) -> float:
+    """Nearest frequency to ``f_target`` that is coherent in an ``n``-sample record.
+
+    A coherent tone completes an integer number of cycles in the record, so it
+    lands on a single FFT bin and produces no spectral leakage. The cycle count
+    is nudged to be coprime with ``n`` where possible, so the samples visit
+    distinct phases (avoiding a tone that trivially repeats).
+
+    Parameters
+    ----------
+    f_target : float
+        the desired tone frequency [Hz].
+    fs : float
+        the sample rate [Hz].
+    n : int
+        the number of samples in the record.
+
+    Returns
+    -------
+    float
+        a coherent frequency near ``f_target`` [Hz].
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> fs, n = 1e3, 1 << 12
+    >>> f = coherent_frequency(50.0, fs, n)
+    >>> cycles = f * n / fs            # integer number of cycles in the record
+    >>> bool(np.isclose(cycles, round(cycles)))
+    True
+    """
+    k = max(1, int(round(f_target * n / fs)))
+    if gcd(k, n) != 1:
+        for dk in range(1, max(2, k)):
+            if k - dk >= 1 and gcd(k - dk, n) == 1:
+                k -= dk
+                break
+            if gcd(k + dk, n) == 1:
+                k += dk
+                break
+    return k * fs / n
 
 
 def _flatten_trim(x: np.ndarray, trim: int) -> np.ndarray:
@@ -44,6 +106,10 @@ def snr_tone(
     Projects ``u_hat`` onto cos/sin at ``f_sig``; the residual is the noise +
     distortion. With ``band`` set, only the residual power below ``band`` [Hz]
     counts as noise (in-band SNR).
+
+    Unlike an FFT-bin method this is leakage-free and needs no coherent
+    sampling, but if you also plot a spectrum pick ``f_sig`` with
+    :func:`coherent_frequency` for a clean single-bin tone.
 
     Parameters
     ----------
