@@ -268,6 +268,51 @@ class CyclicStateSpace(StateSpace):
         )
 
 
+class EvaluationResult:
+    """Result of :meth:`AnalogFrontend.evaluate`.
+
+    Attributes
+    ----------
+    snr, snr_band : float
+        held-out SNR [dB] over the full decimated band and over the signal
+        ``band`` (the headline; excludes the rolloff edge).
+    enob : float
+        ENOB from ``snr_band``.
+    h : numpy.ndarray
+        the calibrated FIR taps.
+    u_hat, u_ref : numpy.ndarray
+        held-out reconstruction and reference (decimated rate).
+    snr_of_f : (numpy.ndarray, numpy.ndarray) or None
+        SNR(f) curve when requested.
+    estimator : DataAidedEstimator
+        the calibrated estimator (call ``.reconstruct(v)`` for more data).
+    """
+
+    def __init__(self, snr, snr_band, enob, band, fs, estimator, u_hat, u_ref,
+                 snr_of_f=None):
+        self.snr = snr
+        self.snr_band = snr_band
+        self.enob = enob
+        self.band = band
+        self.fs = fs
+        self.estimator = estimator
+        self.u_hat = u_hat
+        self.u_ref = u_ref
+        self.snr_of_f = snr_of_f
+        self.h = estimator._h
+
+    def __repr__(self):
+        b = self.band
+        bstr = f"{b}" if not isinstance(b, (tuple, list)) else f"({b[0]:g}, {b[1]:g})"
+        return (
+            "AnalogFrontend.evaluate result\n"
+            f"  signal-band SNR : {self.snr_band:6.1f} dB  ->  {self.enob:5.2f} ENOB"
+            f"   (band {bstr}{' Hz' if self.fs else ' x Nyquist'})\n"
+            f"  full-band SNR   : {self.snr:6.1f} dB\n"
+            f"  filter taps     : {self.h.shape}  DSR={self.estimator.DSR}"
+        )
+
+
 class AnalogFrontend:
     """An analog frontend
 
@@ -2178,6 +2223,134 @@ class AnalogFrontend:
             reference=reference,
             fit=fit,
         )
+
+    def _evaluate_estimate(self, DSR, K, J, sim_size, val_size, J_val, fit):
+        """Print the pre-run estimate: required data, runtime, peak memory."""
+        per_cal = sim_size // J + K
+        per_val = val_size // J_val + K
+        # dominant simulation allocation: inputs (L+M, J) + states (N, J) + outputs (M, J)
+        per_state = self.L + 2 * self.M + self.N
+        peak_gb = max(per_cal * J, per_val * J_val) * per_state * 8 / 1024**3
+        steps = per_cal + per_val
+        thru = 3e6 if _HAS_NUMBA else 1e5  # sim throughput [steps/s] (numba on/off)
+        secs = steps / thru + (2.0 if fit == "fft" else 0.05 * (sim_size / DSR))
+        dec_total = sim_size // DSR
+        logger.info("evaluate: pre-run estimate")
+        print(
+            "evaluate (data-aided, fit=%s)\n"
+            "  calibration : %d samples over J=%d  (%d decimated rows)\n"
+            "  est. runtime: ~%.0f s%s    peak sim memory: ~%.2f GB%s\n"
+            "  precision   : data-aided / converter-limited; reported below"
+            % (fit, sim_size, J, dec_total, secs,
+               "" if _HAS_NUMBA else " (no numba -- ~30x slower)",
+               peak_gb, "" if fit == "fft" else "  (+lstsq design matrix)")
+        )
+
+    def evaluate(
+        self,
+        DSR: int,
+        K: int = 1 << 8,
+        J: int = 8,
+        sim_size: int = 1 << 18,
+        val_size: Optional[int] = None,
+        J_val: Optional[int] = None,
+        fit: str = "fft",
+        band=(0.0, 0.8),
+        max_amplitude: float = 1.0,
+        seed: int = 90128310230123,
+        snr_of_f: bool = False,
+        verbose: bool = True,
+    ) -> "EvaluationResult":
+        """One-call calibrate -> held-out simulate -> reconstruct -> SNR report.
+
+        Calibrates a data-aided filter, then evaluates it on a *fresh* held-out
+        reference (independent seed) and reports the SNR/ENOB over both the full
+        decimated band and the signal ``band``. Prints a pre-run estimate
+        (required data, runtime, peak memory) and a progress bar.
+
+        Parameters
+        ----------
+        DSR : int
+            decimation ratio (typically the OSR).
+        K, J, sim_size : int
+            filter taps, parallel sequences, total calibration samples.
+        val_size, J_val : int, optional
+            held-out length and parallel sequences (default: half of ``sim_size``
+            and the same ``J``).
+        fit : {"fft", "lstsq"}
+            calibration fit; ``"fft"`` is the memory-light default.
+        band : float or (float, float)
+            signal band for the headline SNR, as a **fraction of the decimated
+            Nyquist** (default inner ``(0.0, 0.8)``, excluding the rolloff edge
+            where the converter SNR is worst). Use :func:`cbadc.snr.snr_residual`
+            directly for a band in Hz.
+        max_amplitude, seed : reference amplitude / RNG seed.
+        snr_of_f : bool
+            also compute the SNR(f) curve.
+        verbose : bool
+            print the estimate, progress bar, and result.
+
+        Returns
+        -------
+        EvaluationResult
+        """
+        from tqdm import tqdm
+
+        from .analog_signal import ZeroOrderHold
+        from .digital_backend import decimate
+        from .fom import snr_to_enob
+        from .snr import measure_snr, snr_vs_frequency
+
+        val_size = val_size if val_size is not None else sim_size // 2
+        J_val = J_val if J_val is not None else J
+        trim = K  # the reconstruction transient; not a tuning knob
+        fs_dec = 1.0 / (self.dt * DSR)
+
+        if verbose:
+            self._evaluate_estimate(DSR, K, J, sim_size, val_size, J_val, fit)
+
+        bar = tqdm(total=2, disable=not verbose, desc="evaluate",
+                   bar_format="{desc}: {n_fmt}/{total_fmt} |{bar}| {postfix}")
+        bar.set_postfix_str("calibrating")
+        estimator = self.calibrate(
+            DSR=DSR, K=K, J=J, sim_size=sim_size, max_amplitude=max_amplitude,
+            seed=seed, fit=fit,
+        )
+        bar.update(1)
+        bar.set_postfix_str("validating (held-out)")
+
+        # held-out simulation with a fresh, independent reference
+        per = val_size // J_val + K
+        ref = ZeroOrderHold.uniform_reference_signal(
+            self.dt * DSR,
+            -max_amplitude * np.ones((1, J_val)),
+            max_amplitude * np.ones((1, J_val)),
+            size=per,
+            seed=seed + 1,
+        )
+        old_signal = _deepcopy(self.analog_signal)
+        self.analog_signal = ref
+        sim = self.simulate(per)
+        self.analog_signal = old_signal
+
+        u_hat = estimator.reconstruct(sim["v"][K:])
+        u_ref = decimate(sim["u"][K:], DSR, method="direct")
+        snr_full = measure_snr(u_hat, u_ref, method="residual", trim=trim)
+        # band is a fraction of Nyquist -> measure without fs (f runs 0..1)
+        snr_band = measure_snr(u_hat, u_ref, method="residual", band=band, trim=trim)
+        sof = (
+            snr_vs_frequency(u_hat, u_ref, fs=fs_dec, trim=trim) if snr_of_f else None
+        )
+        bar.update(1)
+        bar.close()
+
+        result = EvaluationResult(
+            snr_full, snr_band, snr_to_enob(snr_band), band, None,
+            estimator, u_hat, u_ref, snr_of_f=sof,
+        )
+        if verbose:
+            print(result)
+        return result
 
     def simulateSNR(
         self,
