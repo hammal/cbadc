@@ -24,11 +24,11 @@ jobs:
         run: uv sync --extra docs
 
       - name: Build docs and execute tutorial notebooks
-        run: uv run sphinx-build -b html docs/source docs/_build/html
+        run: uv run sphinx-build -b html docs/source docs/build/html
 
       - name: Upload built docs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: docs-html
-          path: docs/_build/html
+          path: docs/build/html
