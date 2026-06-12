@@ -105,6 +105,12 @@ def _as_columns(x: np.ndarray, trim: int) -> np.ndarray:
     x = np.asarray(x)
     if trim:
         x = x[trim : x.shape[0] - trim]
+    if x.shape[0] < 1:
+        raise ValueError(
+            f"no samples left after trimming {trim} from each end; the record "
+            "(or each parallel column) is too short -- use a longer record or "
+            "fewer parallel sequences (J)."
+        )
     return x.reshape(x.shape[0], -1)
 
 
