@@ -5,7 +5,7 @@ import pytest
 
 from cbadc import snr as snr_mod
 from cbadc.analog_frontend import AnalogFrontend
-from cbadc.analog_signal import Sinusoidal
+from cbadc.analog_signal import Sinusoidal, ZeroOrderHold
 from cbadc.digital_backend import BlackBoxEstimator, DataAidedEstimator
 
 
@@ -49,6 +49,22 @@ def test_calibrate_fit_fft_matches_lstsq():
     assert snrs["fft"] > 20
     # the frequency-domain fit tracks the time-domain lstsq within a few dB
     assert snrs["fft"] == pytest.approx(snrs["lstsq"], abs=5.0)
+
+
+def test_fit_fft_reconstruction_is_sample_aligned():
+    # snr_residual is delay-sensitive: a 1-sample misalignment tanks it. This
+    # guards the fft tap-centering (the (K-1)//2 offset). Also covers even K.
+    af, OSR = AnalogFrontend.chain_of_integrators(N=3, ENOB=10, BW=1e5)
+    DSR = int(OSR)
+    est = af.calibrate(DSR=DSR, K=1 << 7, J=4, sim_size=1 << 16, fit="fft")
+    ref = ZeroOrderHold.uniform_reference_signal(
+        af.dt, -np.ones((1, 4)), np.ones((1, 4)), size=(1 << 15) + (1 << 10), seed=7
+    )
+    af.analog_signal = ref
+    sim = af.simulate((1 << 15) + (1 << 10))
+    u_ref = snr_mod.decimate(sim["u"][1 << 10 :], DSR)
+    s = snr_mod.snr_residual(est.reconstruct(sim["v"][1 << 10 :]), u_ref, trim=est.K)
+    assert s > 30  # aligned -> tens of dB; a 1-sample offset would give < 0
 
 
 def test_calibrate_accepts_custom_reference():

@@ -1180,8 +1180,13 @@ class AdaptiveFIRFilter:
         floor = 1e-6 * np.trace(Svv, axis1=1, axis2=2).real.max() / M
         H = np.linalg.pinv(Svv + floor * np.eye(M)) @ Svu  # (nf, M, L)
         h = np.fft.fftshift(np.fft.irfft(H, n=nperseg, axis=0), axes=0)  # (nperseg, M, L)
+        # centre the K-tap window on the zero-lag, placing it where convolve(...,
+        # mode="same") expects the filter origin -- (K-1)//2, not K//2 -- so the
+        # reconstruction is sample-aligned with the reference (matters for the
+        # delay-sensitive snr_residual; even K was off by one otherwise).
         c = nperseg // 2
-        self._h[:] = h[c - self.K // 2 : c - self.K // 2 + self.K]
+        off = (self.K - 1) // 2
+        self._h[:] = h[c - off : c - off + self.K]
         self._offset[:] = 0.0
         return self.loss(x, y)
 
