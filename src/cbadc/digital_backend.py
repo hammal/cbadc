@@ -1321,19 +1321,28 @@ class DataAidedEstimator(AdaptiveFIRFilter):
         reference=None,
     ):
         self.DSR = DSR
+        # ``sim_size`` is the TOTAL number of calibration samples, spread over J
+        # uncorrelated parallel sequences. The simulation loop then runs only
+        # ``sim_size // J`` steps (J-times fewer, the cheap way to add data),
+        # and the J columns are independent fresh realisations -- not repeats.
+        per = sim_size // J + self.K
         if reference is None:
             # full-scale, persistently-exciting reference (J parallel sequences)
             reference = ZeroOrderHold.uniform_reference_signal(
                 self._analog_frontend.dt * DSR,
                 -max_amplitude * np.ones((1, J), dtype=np.double),
                 max_amplitude * np.ones((1, J), dtype=np.double),
-                size=sim_size // J + self.K,
+                size=per,
                 seed=self._rng.integers(0, 1 << 62),
             )
+            sim_len = per
+        else:
+            # a custom reference defines its own length; simulate sim_size steps
+            sim_len = sim_size + self.K
 
         old_input_signal = _deepcopy(self._analog_frontend.analog_signal)
         self._analog_frontend.analog_signal = reference
-        sim_res = self._analog_frontend.simulate(sim_size + self.K)
+        sim_res = self._analog_frontend.simulate(sim_len)
 
         dec_v = decimate(sim_res["v"][self.K :, :, :], DSR, method="direct")
         dec_u = decimate(sim_res["u"][self.K :, :, :], DSR, method="direct")
