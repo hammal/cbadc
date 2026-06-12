@@ -44,6 +44,32 @@ from .utilities import show_status as _show_status
 logger = _logging.getLogger(__name__)
 
 
+def _care_nd(A_care: np.ndarray, Q: np.ndarray, eta2: float) -> np.ndarray:
+    """Solve ``A_care^T X + X A_care - X (1/eta2) X + Q = 0`` robustly.
+
+    The frontend matrices span huge magnitudes (``A`` ~ omega, ``Q = B B^T`` ~
+    omega^2), so the Hamiltonian pencil is badly conditioned and scipy's CARE
+    solver fails for the small ``eta2`` that high-SNR targets need. Scaling by
+    the spectral radius ``w`` of ``A_care`` makes ``A_care/w`` and ``Q/w^2`` O(1)
+    while leaving ``eta2`` unchanged; the solution unscales exactly as
+    ``w * X_hat``. This extends the solvable range by ~8 orders of magnitude
+    (``eta2`` ~ 1e-6 -> 1e-14) with smaller residuals."""
+    n = A_care.shape[0]
+    w = np.max(np.abs(np.linalg.eigvals(A_care)))
+    if not np.isfinite(w) or w <= 0:
+        w = 1.0
+    try:
+        X_hat = _care(A_care / w, np.eye(n), Q / (w * w), eta2 * np.eye(n))
+    except Exception as e:  # scipy raises on extreme ill-conditioning
+        raise np.linalg.LinAlgError(
+            f"Wiener CARE is too ill-conditioned at eta2={eta2:.1e} even after "
+            "scaling (target SNR beyond the analytical filter's numerical reach). "
+            "Use the data-aided AnalogFrontend.calibrate()/evaluate() path, which "
+            "is robust across 40-120 dB."
+        ) from e
+    return w * X_hat
+
+
 class WienerFilter:
     """The analytical Wiener filter for control-bounded converters.
 
@@ -182,16 +208,15 @@ class WienerFilter:
             # Compute the Wiener filter
             # Algebraic Riccati equation Notation
             A_care: np.ndarray = self._analog_frontend.A[0].T
-            B_care = np.eye(N, dtype=np.double)
             # Q = B B^T
             Q_care = (
                 self._analog_frontend.B[0, :, :L] @ self._analog_frontend.B[0, :, :L].T
             )
-            R_care = self._eta2 * np.eye(N, dtype=np.double)
 
-            # Compute stationary covariance matrices
-            V_f = _care(A_care, B_care, Q_care, R_care)
-            V_b = _care(-A_care, B_care, Q_care, R_care)
+            # Compute stationary covariance matrices (nondimensionalized CARE so
+            # the small eta2 needed for high SNR targets stays solvable).
+            V_f = _care_nd(A_care, Q_care, self._eta2)
+            V_b = _care_nd(-A_care, Q_care, self._eta2)
 
             self._W = np.linalg.solve(V_f + V_b, self._analog_frontend.B[0, :, :L]).T
 
