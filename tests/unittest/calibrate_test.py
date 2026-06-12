@@ -31,6 +31,26 @@ def test_calibrate_returns_estimator_and_reconstructs():
     assert snr > 20  # the calibrated FIR reconstructs the tone
 
 
+def test_calibrate_fit_fft_matches_lstsq():
+    af, OSR = AnalogFrontend.chain_of_integrators(N=3, ENOB=10, BW=1e5)
+    DSR = int(OSR)
+    size = 1 << 15
+    fs_bb = 1.0 / (af.dt * DSR)
+    f_sig = snr_mod.coherent_frequency(fs_bb / 8, fs_bb, size // DSR)
+    af.analog_signal = Sinusoidal(np.array([[0.5]]), np.array([[f_sig]]))
+    v = af.simulate(size)["v"]
+
+    snrs = {}
+    for fit in ("lstsq", "fft"):
+        est = af.calibrate(DSR=DSR, K=1 << 7, J=4, sim_size=1 << 16, fit=fit)
+        snrs[fit] = snr_mod.snr_tone(
+            est.reconstruct(v)[:, 0, 0], f_sig, fs_bb, trim=est.K, band=1e5
+        )
+    assert snrs["fft"] > 20
+    # the frequency-domain fit tracks the time-domain lstsq within a few dB
+    assert snrs["fft"] == pytest.approx(snrs["lstsq"], abs=5.0)
+
+
 def test_calibrate_accepts_custom_reference():
     af, OSR = AnalogFrontend.chain_of_integrators(N=2, ENOB=8, BW=1e5)
     DSR = int(OSR)

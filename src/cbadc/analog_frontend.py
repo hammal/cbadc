@@ -2037,6 +2037,7 @@ class AnalogFrontend:
         max_amplitude: float = 1.0,
         reference=None,
         seed: int = 90128310230123,
+        fit: str = "lstsq",
     ):
         """Calibrate a data-aided reconstruction filter for this frontend.
 
@@ -2081,6 +2082,7 @@ class AnalogFrontend:
             J,
             seed,
             reference=reference,
+            fit=fit,
         )
 
     def simulateSNR(

@@ -1132,6 +1132,59 @@ class AdaptiveFIRFilter:
             )
         return self.loss(x, y)
 
+    def fit_fft(self, x: np.ndarray, y: np.ndarray, nperseg: int = None):
+        """Fit the filter in the frequency domain (multichannel Wiener).
+
+        A memory-light alternative to :meth:`lstsq`. Instead of forming the
+        ``(size*J, K*M)`` design matrix (which is the calibration memory
+        bottleneck), it streams Welch cross-spectra ``S_vv`` (M, M) and ``S_vu``
+        (M, L) over the data, solves ``H(f) = S_vv(f)^-1 S_vu(f)`` per frequency,
+        and inverse-FFTs to the K-tap impulse response. Memory is
+        O(nperseg * M^2), independent of the data length and J.
+
+        Parameters
+        ----------
+        x : np.ndarray, shape=(size, M, J)
+            the control signals.
+        y : np.ndarray, shape=(size, L, J)
+            the reference data.
+        nperseg : int, optional
+            the Welch segment length; defaults to the next power of two above
+            ``4*K`` (capped at ``size``). ~4*K trades frequency resolution
+            against the K-tap truncation.
+
+        Returns
+        -------
+        loss : np.ndarray, shape=(L,)
+            the loss evaluated on the given data.
+        """
+        size, M, J = x.shape
+        L = y.shape[1]
+        if nperseg is None:
+            nperseg = 1 << int(np.ceil(np.log2(max(4 * self.K, 8))))
+        nperseg = int(min(nperseg, size))
+        nf = nperseg // 2 + 1
+        win = np.hanning(nperseg)
+        step = max(1, nperseg // 2)
+
+        Svv = np.zeros((nf, M, M), dtype=complex)
+        Svu = np.zeros((nf, M, L), dtype=complex)
+        for j in range(J):
+            for s in range(0, size - nperseg + 1, step):
+                V = np.fft.rfft(x[s : s + nperseg, :, j] * win[:, None], axis=0)
+                U = np.fft.rfft(y[s : s + nperseg, :, j] * win[:, None], axis=0)
+                Svv += np.einsum("fm,fn->fmn", V.conj(), V)
+                Svu += np.einsum("fm,fl->fml", V.conj(), U)
+
+        # global diagonal floor so empty bands (e.g. DC) stay invertible
+        floor = 1e-6 * np.trace(Svv, axis1=1, axis2=2).real.max() / M
+        H = np.linalg.pinv(Svv + floor * np.eye(M)) @ Svu  # (nf, M, L)
+        h = np.fft.fftshift(np.fft.irfft(H, n=nperseg, axis=0), axes=0)  # (nperseg, M, L)
+        c = nperseg // 2
+        self._h[:] = h[c - self.K // 2 : c - self.K // 2 + self.K]
+        self._offset[:] = 0.0
+        return self.loss(x, y)
+
     def transfer_function(self, jw: np.ndarray):
         """
         Returns the transfer function of the filter.
@@ -1294,6 +1347,7 @@ class DataAidedEstimator(AdaptiveFIRFilter):
         seed: int = 213236546233421,
         rel_bw: float = 0.5,
         reference=None,
+        fit: str = "lstsq",
     ):
         M = analog_frontend.M
         L = analog_frontend.L
@@ -1309,6 +1363,7 @@ class DataAidedEstimator(AdaptiveFIRFilter):
             J=J,
             rel_bw=rel_bw,
             reference=reference,
+            fit=fit,
         )
 
     def learn_from_analog_frontend(
@@ -1319,6 +1374,7 @@ class DataAidedEstimator(AdaptiveFIRFilter):
         J: int = 1 << 0,
         rel_bw: float = 0.5,
         reference=None,
+        fit: str = "lstsq",
     ):
         self.DSR = DSR
         # ``sim_size`` is the TOTAL number of calibration samples, spread over J
@@ -1347,7 +1403,12 @@ class DataAidedEstimator(AdaptiveFIRFilter):
         dec_v = decimate(sim_res["v"][self.K :, :, :], DSR, method="direct")
         dec_u = decimate(sim_res["u"][self.K :, :, :], DSR, method="direct")
 
-        self.lstsq(dec_v, dec_u, verbose=True, method="direct")
+        if fit == "fft":
+            self.fit_fft(dec_v, dec_u)
+        elif fit == "lstsq":
+            self.lstsq(dec_v, dec_u, verbose=True, method="direct")
+        else:
+            raise ValueError(f"Unknown fit {fit!r}; use 'lstsq' or 'fft'")
         self._analog_frontend.analog_signal = old_input_signal
         return sim_res
 
