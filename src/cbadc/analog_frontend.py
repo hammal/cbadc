@@ -867,69 +867,165 @@ class AnalogFrontend:
         t0: float = 0.0,
         atol=1e-7,
         rtol=1e-6,
-        method: str = "dsim",
+        domain: str = "discrete",
+        precision: str = "high",
+        method: Optional[str] = None,
         dtype=np.double,
         device: Optional[str] = None,
     ) -> dict[str, np.ndarray]:
-        """Simulate the analog frontend
+        """Simulate the analog frontend.
+
+        The scheme is chosen along two self-explanatory axes:
+
+        ``domain``
+            * ``"discrete"`` -- simulate the discrete-time difference equation
+              (the frontend is discretised first if needed). Fast; exact for a
+              piecewise-constant (ZOH) input. This is the default and the most
+              trusted path.
+            * ``"continuous"`` -- integrate the true continuous-time dynamics.
+
+        ``precision`` (only for ``domain="continuous"``)
+            * ``"fast"`` -- analytic pre-computation; exact for a sinusoidal
+              input, comparable in speed to the discrete scheme.
+            * ``"high"`` -- numerical ODE solver (``atol``/``rtol``); general
+              input, ~100x slower.
 
         Parameters
         ----------
         size: `int`
-            the number of samples to simulate
+            the number of samples to simulate.
         x: `np.ndarray`, optional, shape=(N, J)
             the initial state, defaults to zero.
         t0: `float`, optional
             the initial time, defaults to 0.0.
-        atol: `float`, optional
-            absolute tolerance for the integrator, defaults to 1e-12.
-        rtol: `float`, optional
-            relative tolerance for the integrator, defaults to 1e-7.
-        state_covariance: `np.ndarray`, optional
-            the state covariance matrix, defaults to None.
-        output_covariance: `np.ndarray`, optional
-            the output covariance matrix, defaults to None.
+        atol, rtol: `float`, optional
+            ODE solver tolerances (``domain="continuous", precision="high"``).
+        domain: `str`, optional
+            ``"discrete"`` (default) or ``"continuous"``.
+        precision: `str`, optional
+            ``"fast"`` or ``"high"`` (default); continuous domain only.
         method: `str`, optional
-            the simulation method, defaults to "dsim". Valid options are:
-
-            * 'dsim': simulate the discrete-time analog frontend
-
-            * 'sin': simulate the continuous-time analog frontend for sinusoidal input
-
-            * 'ode': simulate the continuous-time analog frontend using an ODE solver with discrete time steps.
-
-            * 'ode_full': simulate the continuous-time analog frontend using an ODE solver with full time steps.
-
+            *Deprecated.* Explicit scheme name (``"dsim"``, ``"sin"``, ``"ode"``,
+            ``"ode_full"``); overrides ``domain``/``precision`` when given.
         dtype: `data-type`, optional
-            the data type for the simulation, defaults to np.double.
+            the floating-point data type, defaults to np.double.
         device: `str`, optional
-            the torch device to use, e.g. 'cpu' or 'cuda'. Defaults to 'cpu'.
+            reserved for a future torch backend.
 
         Returns
         -------
         : dict[str, np.ndarray]
-            a dictionary containing the simulation results where
-            - 't': the time vector, shape (size,)
-            - 'u': the analog signal evaluated at t, shape (size, L, J)
-            - 'v': the digital control signals, shape (size, M, J)
-            - 'x': the state vector, shape (size, N, J)
-            - 'y': the quantization input vector, shape (size, M, J)
-
+            a dictionary with keys ``t`` (size,), ``u`` (size, L, J),
+            ``v`` (size, M, J), ``x`` (size, N, J), ``y`` (size, M, J).
         """
+        if method is None:
+            if domain == "discrete":
+                method = "dsim"
+            elif domain == "continuous":
+                if precision == "fast":
+                    method = "sin"
+                elif precision == "high":
+                    method = "ode"
+                elif precision == "exact":
+                    method = "ode_full"
+                else:
+                    raise ValueError(
+                        f"Unknown precision {precision!r}; use 'fast' or 'high'"
+                    )
+            else:
+                raise ValueError(
+                    f"Unknown domain {domain!r}; use 'discrete' or 'continuous'"
+                )
 
-        # Discrete-time analog filter
         if method == "dsim":
             return self.simulate_dt(size, x, t0, atol, rtol, dtype)
-        # Sinusoidal special case
         elif method == "sin":
             return self.simulate_sin(size, x, t0, atol, rtol, dtype)
-        # Full ode solver
         elif method == "ode":
             return self.simulate_ode(size, x, t0, atol, rtol, dtype)
         elif method == "ode_full":
             return self.simulate_ode_full(size, x, t0, atol, rtol, dtype)
         else:
             raise ValueError(f"Unknown simulation method {method}")
+
+    # ------------------------------------------------------------------
+    # Shared simulation building blocks (one definition for every scheme)
+    # ------------------------------------------------------------------
+    def _simulate_alloc(self, size, x, t0, dtype):
+        """Allocate buffers, inject noise, set the initial state and the t/u
+        signals, and seed the first output/control. Shared by every scheme."""
+        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
+        if self.state_covariance is not None:
+            states = self._state_cov_cholesky @ self.rng.normal(
+                size=(size, self.N, self.J)
+            )
+        else:
+            states = np.zeros((size, self.N, self.J), dtype=dtype)
+        if self.output_covariance is not None:
+            outputs = self._output_cov_cholesky @ self.rng.normal(
+                size=(size, self.M, self.J)
+            )
+        else:
+            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
+
+        if x is None:
+            x = np.zeros((self.N, self.J), dtype=dtype)
+        states[0, :, :] = np.clip(
+            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis]
+        )
+        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
+        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
+        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
+        inputs[0, self.L :, :] = self._quantize(outputs[0], 0)
+        return inputs, states, outputs, t
+
+    def _quantizer_params(self):
+        """Pre-reshape the quantizer parameter arrays once (shape (M, 1)) and the
+        per-(cyclic-)step update mask. The mask marks which control channels are
+        observed (non-zero C/D row) and therefore update at a given step; the
+        rest hold their previous value -- this is the discrete-time (``dsim``)
+        convention, which is the canonical one."""
+        dc = self.digital_control
+        self._q_o_scale = dc._o_scale.reshape((self.M, 1))
+        self._q_pre_gain = dc._pre_gain.reshape((self.M, 1))
+        self._q_mid_thread = dc._mid_thread.reshape((self.M, 1))
+        self._q_mid_rise = dc._mid_rise.reshape((self.M, 1))
+        self._q_min = dc._min.reshape((self.M, 1))
+        self._q_max = dc._max.reshape((self.M, 1))
+        self._q_update = (
+            np.abs(self.C).sum(axis=-1) + np.abs(self.D).sum(axis=-1)
+        ) > 0.0
+
+    def _quantize(self, output_i, i, prev_ctrl=None):
+        """Inlined single-bit/multi-level quantizer + cyclic hold (canonical).
+
+        ``output_i`` is the quantizer input at step ``i`` (shape (M, J)). Channels
+        whose update mask is False hold ``prev_ctrl``. This is the one definition
+        of the quantizer math, shared by every simulation scheme; it mirrors what
+        ``simulate`` previously inlined in the discrete-time loop.
+        """
+        if not hasattr(self, "_q_update"):
+            self._quantizer_params()
+        quantized = self._q_o_scale * np.clip(
+            2.0 * np.floor(self._q_pre_gain * output_i + self._q_mid_thread)
+            + self._q_mid_rise,
+            self._q_min,
+            self._q_max,
+        )
+        if prev_ctrl is None:
+            return quantized
+        update = self._q_update[i % self._q_update.shape[0]][:, np.newaxis]
+        return np.where(update, quantized, prev_ctrl)
+
+    @staticmethod
+    def _simulate_result(t, inputs, states, outputs, L):
+        return {
+            "t": t,
+            "u": inputs[:, :L, :],
+            "v": inputs[:, L:, :],
+            "x": states,
+            "y": outputs,
+        }
 
     def simulate_dt(
         self,
@@ -984,30 +1080,6 @@ class AnalogFrontend:
                 size, x, t0, atol, rtol, dtype
             )
 
-        # Allocate memory
-        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
-        # add state noise
-        if self.state_covariance is not None:
-            states = self._state_cov_cholesky @ self.rng.normal(
-                size=(size, self.N, self.J)
-            )
-        else:
-            states = np.zeros((size, self.N, self.J), dtype=dtype)
-        # add output noise
-        if self.output_covariance is not None:
-            outputs = self._output_cov_cholesky @ self.rng.normal(
-                size=(size, self.M, self.J)
-            )
-        else:
-            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
-
-        # initialize the states
-        if x is None:
-            x = np.zeros((self.N, self.J), dtype=dtype)
-        states[0, :, :] = np.clip(
-            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis], dtype=dtype
-        )
-
         # Discrete-time analog filter
         logging.info("Simulating discrete-time analog frontend")
         if not np.isclose(self.digital_control.dt % self.analog_filter.dt, 0):
@@ -1015,29 +1087,8 @@ class AnalogFrontend:
                 f"Digital control sampling period {self.digital_control.dt:0.2e} must be a multiple of the analog filter sampling period {self.analog_filter.dt:0.2e}"
             )
 
-        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
-
-        # pre compute input signal contributions
-
-        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-
-        # populate first output and control
-        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
-        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
-
+        inputs, states, outputs, t = self._simulate_alloc(size, x, t0, dtype)
         slew_rate_dt = self.slew_rate * self.digital_control.dt
-
-        # Copy quantization parameters
-        quantization_output_scale = self.digital_control._o_scale.reshape((self.M, 1))
-        quantization_pre_gain = self.digital_control._pre_gain.reshape((self.M, 1))
-        quantization_mid_thread = self.digital_control._mid_thread.reshape((self.M, 1))
-        quantization_mid_rise = self.digital_control._mid_rise.reshape((self.M, 1))
-        quantization_min = self.digital_control._min.reshape((self.M, 1))
-        quantization_max = self.digital_control._max.reshape((self.M, 1))
-
-        cyclic_quant_update = (
-            np.abs(self.C).sum(axis=-1) + np.abs(self.D).sum(axis=-1)
-        ) > 0.0
 
         # Compute simulation recursions
         for i in range(1, size):
@@ -1059,26 +1110,10 @@ class AnalogFrontend:
                 + self.D[i % self.D.shape[0]] @ inputs[i]
             )
 
-            # hold control from previous decision if no update
-            ctrl = inputs[i, self.L :, :]
-            update = cyclic_quant_update[i % cyclic_quant_update.shape[0]]
-            no_update = ~update
-            ctrl[no_update] = inputs[i - 1, self.L :, :][no_update]
-            if update.any():
-                ctrl[update] = quantization_output_scale[update] * np.clip(
-                    2.0
-                    * np.floor(
-                        quantization_pre_gain[update] * outputs[i][update]
-                        + quantization_mid_thread[update]
-                    )
-                    + quantization_mid_rise[update],
-                    quantization_min[update],
-                    quantization_max[update],
-                )
-
-            # inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
-            #     self.M, self.J
-            # )
+            # quantize + cyclic hold (shared canonical path)
+            inputs[i, self.L :, :] = self._quantize(
+                outputs[i], i, prev_ctrl=inputs[i - 1, self.L :, :]
+            )
         result = {
             "t": t,
             "u": inputs[:, : self.L, :],
@@ -1197,31 +1232,7 @@ class AnalogFrontend:
 
         """
 
-        # Allocate memory
-        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
-        # add state noise
-        if self.state_covariance is not None:
-            states = self._state_cov_cholesky @ self.rng.normal(
-                size=(size, self.N, self.J)
-            )
-        else:
-            states = np.zeros((size, self.N, self.J), dtype=dtype)
-        # add output noise
-        if self.output_covariance is not None:
-            outputs = self._output_cov_cholesky @ self.rng.normal(
-                size=(size, self.M, self.J)
-            )
-        else:
-            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
-
-        # initialize the states
-        if x is None:
-            x = np.zeros((self.N, self.J), dtype=dtype)
-        states[0, :, :] = np.clip(
-            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis], dtype=dtype
-        )
-
-        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
+        inputs, states, outputs, t = self._simulate_alloc(size, x, t0, dtype)
 
         # Sinusoidal special case
         if self.A.shape[0] != 1 or self.B.shape[0] != 1:
@@ -1302,11 +1313,6 @@ class AnalogFrontend:
         # shape = (N, J)
         pre_computed_input_offset = np.sum(B_d[:, : self.L, :], axis=1)
 
-        # populate first output and control
-        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
-        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
-
         slew_rate_dt = self.slew_rate * self.digital_control.dt
 
         # Compute simulation recursions
@@ -1332,19 +1338,12 @@ class AnalogFrontend:
                 C_d[i % C_d.shape[0]] @ states[i] + D_d[i % D_d.shape[0]] @ inputs[i]
             )
 
-            # control update
-            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i])
+            # quantize + cyclic hold (shared canonical path)
+            inputs[i, self.L :, :] = self._quantize(
+                outputs[i], i, prev_ctrl=inputs[i - 1, self.L :, :]
+            )
 
-            no_updates = outputs[i] == 0.0
-            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
-
-        return {
-            "t": t,
-            "u": inputs[:, : self.L, :],
-            "v": inputs[:, self.L :, :],
-            "x": states,
-            "y": outputs,
-        }
+        return self._simulate_result(t, inputs, states, outputs, self.L)
 
     # Simulation methods
     def simulate_ode(
@@ -1389,36 +1388,8 @@ class AnalogFrontend:
 
         """
 
-        # Allocate memory
-        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
-        # add state noise
-        if self.state_covariance is not None:
-            states = self._state_cov_cholesky @ self.rng.normal(
-                size=(size, self.N, self.J)
-            )
-        else:
-            states = np.zeros((size, self.N, self.J), dtype=dtype)
-        # add output noise
-        if self.output_covariance is not None:
-            outputs = self._output_cov_cholesky @ self.rng.normal(
-                size=(size, self.M, self.J)
-            )
-        else:
-            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
-
-        # initialize the states
-        if x is None:
-            x = np.zeros((self.N, self.J), dtype=dtype)
-        states[0, :, :] = np.clip(
-            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis], dtype=dtype
-        )
-
-        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
-
         # Full ode solver
-
         logging.info("Simulating continuous-time analog frontend")
-        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
         # Make sure the input signal is not piecewise constant,
         # otherwise the simulation can be better performed
         # by discretizing the analog frontend before simulation.
@@ -1428,10 +1399,7 @@ class AnalogFrontend:
                             analog frontend before simulation may be beneficial."""
             )
 
-        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-        # populate first output and control
-        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
-        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
+        inputs, states, outputs, t = self._simulate_alloc(size, x, t0, dtype)
 
         K = max(self.A.shape[0], self.B.shape[0])
         Ad = np.zeros_like(self.A, dtype=dtype)
@@ -1490,20 +1458,12 @@ class AnalogFrontend:
                 self.C[i % self.C.shape[0]] @ states[i]
                 + self.D[i % self.D.shape[0]] @ inputs[i]
             )
-            # control update
-            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
-                (self.M, self.J)
+            # quantize + cyclic hold (shared canonical path)
+            inputs[i, self.L :, :] = self._quantize(
+                outputs[i], i, prev_ctrl=inputs[i - 1, self.L :, :]
             )
-            no_updates = outputs[i] == 0.0
-            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
 
-        return {
-            "t": t,
-            "u": inputs[:, : self.L, :],
-            "v": inputs[:, self.L :, :],
-            "x": states,
-            "y": outputs,
-        }
+        return self._simulate_result(t, inputs, states, outputs, self.L)
 
     def simulate_ode_full(
         self,
@@ -1548,32 +1508,7 @@ class AnalogFrontend:
 
         """
 
-        # Allocate memory
-        inputs = np.zeros((size, self.L + self.M, self.J), dtype=dtype)
-        # add state noise
-        if self.state_covariance is not None:
-            states = self._state_cov_cholesky @ self.rng.normal(
-                size=(size, self.N, self.J)
-            )
-        else:
-            states = np.zeros((size, self.N, self.J), dtype=dtype)
-        # add output noise
-        if self.output_covariance is not None:
-            outputs = self._output_cov_cholesky @ self.rng.normal(
-                size=(size, self.M, self.J)
-            )
-        else:
-            outputs = np.zeros((size, self.M, self.J), dtype=dtype)
-
-        # initialize the states
-        if x is None:
-            x = np.zeros((self.N, self.J), dtype=dtype)
-        states[0, :, :] = np.clip(
-            x, self.state_min[:, np.newaxis], self.state_max[:, np.newaxis]
-        )
-
         logging.info("Simulating continuous-time analog frontend")
-        t = np.arange(size, dtype=dtype) * self.digital_control.dt + t0
         # Make sure the input signal is not piecewise constant,
         # otherwise the simulation can be better performed
         # by discretizing the analog frontend before simulation.
@@ -1583,10 +1518,7 @@ class AnalogFrontend:
                             analog frontend before simulation may be beneficial."""
             )
 
-        inputs[:, : self.L, :] = self.analog_signal.evaluate(t)
-        # populate first output and control
-        outputs[0] += self.C[0] @ states[0] + self.D[0] @ inputs[0]
-        inputs[0, self.L :, :] = self.digital_control.quantize(outputs[0])
+        inputs, states, outputs, t = self._simulate_alloc(size, x, t0, dtype)
 
         K = max(self.A.shape[0], self.B.shape[0])
         derivatives = []
@@ -1653,20 +1585,12 @@ class AnalogFrontend:
                 self.C[i % self.C.shape[0]] @ states[i]
                 + self.D[i % self.D.shape[0]] @ inputs[i]
             )
-            # control update
-            inputs[i, self.L :, :] = self.digital_control.quantize(outputs[i]).reshape(
-                (self.M, self.J)
+            # quantize + cyclic hold (shared canonical path)
+            inputs[i, self.L :, :] = self._quantize(
+                outputs[i], i, prev_ctrl=inputs[i - 1, self.L :, :]
             )
-            no_updates = outputs[i] == 0.0
-            inputs[i, self.L :, :][no_updates] = inputs[i - 1, self.L :, :][no_updates]
 
-        return {
-            "t": t,
-            "u": inputs[:, : self.L, :],
-            "v": inputs[:, self.L :, :],
-            "x": states,
-            "y": outputs,
-        }
+        return self._simulate_result(t, inputs, states, outputs, self.L)
 
     def discretize(
         self, dt: float, atol: float = 1e-15, rtol: float = 1e-10
