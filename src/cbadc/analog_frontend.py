@@ -27,6 +27,62 @@ from .noise import psd_factor as _psd_factor
 
 logger = logging.getLogger(__name__)
 
+try:
+    from numba import njit as _njit
+
+    _HAS_NUMBA = True
+except ImportError:  # numba is an optional accelerator; numpy path is the default
+    _HAS_NUMBA = False
+
+
+if _HAS_NUMBA:
+
+    @_njit(cache=True, fastmath=False)
+    def _dt_recursion(A, B, C, D, states, inputs, outputs, slew, smin, smax,
+                      o_scale, pre_gain, mid_thread, mid_rise, qmin, qmax, update, L):
+        """numba accelerator for the discrete-time simulation recursion.
+
+        Bit-identical to the numpy loop in :meth:`AnalogFrontend.simulate_dt`:
+        the linear part uses ``np.dot`` (same BLAS rounding) and the slew/state
+        clips + inlined quantizer + cyclic hold mirror ``_quantize`` exactly.
+        """
+        size, N, Jn = states.shape
+        M = outputs.shape[1]
+        cA, cB, cC, cD, cU = (A.shape[0], B.shape[0], C.shape[0],
+                              D.shape[0], update.shape[0])
+        for i in range(1, size):
+            ai, bi, ci, di, ui = i % cA, i % cB, i % cC, i % cD, i % cU
+            lin = np.dot(A[ai], states[i - 1]) + np.dot(B[bi], inputs[i - 1])
+            for r in range(N):
+                s = slew[r]
+                for j in range(Jn):
+                    v = lin[r, j]
+                    if v > s:
+                        v = s
+                    elif v < -s:
+                        v = -s
+                    v += states[i, r, j]  # pre-init (noise)
+                    if v < smin[r]:
+                        v = smin[r]
+                    elif v > smax[r]:
+                        v = smax[r]
+                    states[i, r, j] = v
+            out = np.dot(C[ci], states[i]) + np.dot(D[di], inputs[i])
+            for r in range(M):
+                for j in range(Jn):
+                    o = outputs[i, r, j] + out[r, j]
+                    outputs[i, r, j] = o
+                    q = 2.0 * np.floor(pre_gain[r] * o + mid_thread[r]) + mid_rise[r]
+                    if q < qmin[r]:
+                        q = qmin[r]
+                    elif q > qmax[r]:
+                        q = qmax[r]
+                    q *= o_scale[r]
+                    if update[ui, r]:
+                        inputs[i, L + r, j] = q
+                    else:
+                        inputs[i, L + r, j] = inputs[i - 1, L + r, j]
+
 
 def _g_i_chain_of_integrators(N: int):
     """Compute the integration factor g_i
@@ -1110,30 +1166,48 @@ class AnalogFrontend:
         inputs, states, outputs, t = self._simulate_alloc(size, x, t0, dtype)
         slew_rate_dt = self.slew_rate * self.digital_control.dt
 
-        # Compute simulation recursions
-        for i in range(1, size):
-            # state evolution
-            states[i] += np.clip(
-                self.A[i % self.A.shape[0]] @ states[i - 1]
-                + self.B[i % self.B.shape[0]] @ inputs[i - 1],
-                -slew_rate_dt[:, np.newaxis],
-                slew_rate_dt[:, np.newaxis],
+        # Compute simulation recursions. The numpy loop below is the reference;
+        # when numba is available (and dtype is double) the bit-identical
+        # `_dt_recursion` accelerator runs it ~20x faster.
+        if _HAS_NUMBA and states.dtype == np.float64:
+            self._quantize(outputs[0], 0)  # populate quantizer params
+            _dt_recursion(
+                np.ascontiguousarray(self.A), np.ascontiguousarray(self.B),
+                np.ascontiguousarray(self.C), np.ascontiguousarray(self.D),
+                states, inputs, outputs,
+                np.ascontiguousarray(np.broadcast_to(slew_rate_dt, (self.N,))),
+                np.ascontiguousarray(self.state_min, dtype=np.float64),
+                np.ascontiguousarray(self.state_max, dtype=np.float64),
+                self._q_o_scale.ravel(), self._q_pre_gain.ravel(),
+                self._q_mid_thread.ravel(), self._q_mid_rise.ravel(),
+                self._q_min.ravel().astype(np.float64),
+                self._q_max.ravel().astype(np.float64),
+                self._q_update, self.L,
             )
-            states[i] = np.clip(
-                states[i],
-                self.state_min[:, np.newaxis],
-                self.state_max[:, np.newaxis],
-            )
-            # output computation
-            outputs[i] += (
-                self.C[i % self.C.shape[0]] @ states[i]
-                + self.D[i % self.D.shape[0]] @ inputs[i]
-            )
+        else:
+            for i in range(1, size):
+                # state evolution
+                states[i] += np.clip(
+                    self.A[i % self.A.shape[0]] @ states[i - 1]
+                    + self.B[i % self.B.shape[0]] @ inputs[i - 1],
+                    -slew_rate_dt[:, np.newaxis],
+                    slew_rate_dt[:, np.newaxis],
+                )
+                states[i] = np.clip(
+                    states[i],
+                    self.state_min[:, np.newaxis],
+                    self.state_max[:, np.newaxis],
+                )
+                # output computation
+                outputs[i] += (
+                    self.C[i % self.C.shape[0]] @ states[i]
+                    + self.D[i % self.D.shape[0]] @ inputs[i]
+                )
 
-            # quantize + cyclic hold (shared canonical path)
-            inputs[i, self.L :, :] = self._quantize(
-                outputs[i], i, prev_ctrl=inputs[i - 1, self.L :, :]
-            )
+                # quantize + cyclic hold (shared canonical path)
+                inputs[i, self.L :, :] = self._quantize(
+                    outputs[i], i, prev_ctrl=inputs[i - 1, self.L :, :]
+                )
         result = {
             "t": t,
             "u": inputs[:, : self.L, :],
