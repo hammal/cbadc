@@ -124,8 +124,11 @@ def snr_tone(
     Parameters
     ----------
     u_hat : numpy.ndarray
-        the reconstructed signal; axis 0 is time, trailing axes (L, J) are
-        measured independently and the result is averaged over them.
+        the reconstructed signal; axis 0 is time. Trailing axes (L, J) are
+        treated as independent realisations of the *same* tone and **pooled**:
+        the noise estimate uses every sample across all columns, so J short
+        sequences give the same SNR as one long record of the same total length
+        (each column must still be long enough to resolve the in-band spectrum).
     f_sig : float
         the tone frequency [Hz].
     fs : float
@@ -153,25 +156,24 @@ def snr_tone(
     >>> bool(50.0 < snr_tone(y, f, fs) < 70.0)  # ~57 dB for a 1e-3 noise floor
     True
     """
-    cols = _as_columns(u_hat, trim)
+    cols = _as_columns(u_hat, trim)  # (m, C)
     m = cols.shape[0]
     t = np.arange(m) / fs
     c = np.cos(2 * np.pi * f_sig * t)
     s = np.sin(2 * np.pi * f_sig * t)
-    snrs = []
-    for y in cols.T:
-        a = 2.0 * np.mean(y * c)
-        b = 2.0 * np.mean(y * s)
-        resid = y - (a * c + b * s)
-        sig_p = (a * a + b * b) / 2.0
-        if band is not None:
-            fr, P = welch(resid, fs=fs, nperseg=min(1 << 12, m))
-            in_frac = P[fr <= band].sum() / P.sum()
-            noise_p = np.mean(resid**2) * in_frac
-        else:
-            noise_p = np.mean(resid**2)
-        snrs.append(10 * np.log10(sig_p / noise_p) if noise_p > 0 else np.inf)
-    return float(np.mean(snrs))
+    # per-column tone projection (leakage-free), then pool the residual
+    a = 2.0 * np.mean(cols * c[:, None], axis=0)  # (C,)
+    b = 2.0 * np.mean(cols * s[:, None], axis=0)
+    resid = cols - (a[None, :] * c[:, None] + b[None, :] * s[:, None])  # (m, C)
+    sig_p = np.mean((a**2 + b**2) / 2.0)  # mean tone power over columns
+    if band is not None:
+        fr, P = welch(resid, fs=fs, nperseg=min(1 << 12, m), axis=0)
+        P = P.mean(axis=-1)  # pool the residual spectra across columns
+        in_frac = P[fr <= band].sum() / P.sum()
+        noise_p = np.mean(resid**2) * in_frac  # pooled in-band noise power
+    else:
+        noise_p = np.mean(resid**2)
+    return 10 * np.log10(sig_p / noise_p) if noise_p > 0 else np.inf
 
 
 def snr_residual(u_hat: np.ndarray, u_ref: np.ndarray, trim: int = 0) -> float:
