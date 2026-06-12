@@ -1132,7 +1132,9 @@ class AdaptiveFIRFilter:
             )
         return self.loss(x, y)
 
-    def fit_fft(self, x: np.ndarray, y: np.ndarray, nperseg: int = None):
+    def fit_fft(
+        self, x: np.ndarray, y: np.ndarray, nperseg: int = None, floor: float = 1e-6
+    ):
         """Fit the filter in the frequency domain (multichannel Wiener).
 
         A memory-light alternative to :meth:`lstsq`. Instead of forming the
@@ -1152,6 +1154,11 @@ class AdaptiveFIRFilter:
             the Welch segment length; defaults to the next power of two above
             ``4*K`` (capped at ``size``). ~4*K trades frequency resolution
             against the K-tap truncation.
+        floor : float, optional
+            Tikhonov floor on ``S_vv`` (relative to its peak diagonal) keeping
+            empty bands invertible. Defaults to ``1e-6``; lower it (e.g.
+            ``1e-12``) when chasing very high SNR, where the regularization bias
+            near band edges otherwise caps the dynamic range.
 
         Returns
         -------
@@ -1177,8 +1184,8 @@ class AdaptiveFIRFilter:
                 Svu += np.einsum("fm,fl->fml", V.conj(), U)
 
         # global diagonal floor so empty bands (e.g. DC) stay invertible
-        floor = 1e-6 * np.trace(Svv, axis1=1, axis2=2).real.max() / M
-        H = np.linalg.pinv(Svv + floor * np.eye(M)) @ Svu  # (nf, M, L)
+        reg = floor * np.trace(Svv, axis1=1, axis2=2).real.max() / M
+        H = np.linalg.pinv(Svv + reg * np.eye(M)) @ Svu  # (nf, M, L)
         h = np.fft.fftshift(np.fft.irfft(H, n=nperseg, axis=0), axes=0)  # (nperseg, M, L)
         # centre the K-tap window on the zero-lag, placing it where convolve(...,
         # mode="same") expects the filter origin -- (K-1)//2, not K//2 -- so the
