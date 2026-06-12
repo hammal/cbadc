@@ -1,11 +1,12 @@
 """SNR measurement helpers for the data-aided readout.
 
-The control-bounded readout is data-aided: a FIR is calibrated on a *known*
-reference (white dither) and then estimates the input from the control signals.
-Three complementary measurements cover the testbench needs:
+The control-bounded readout is data-aided: a FIR is calibrated on a *known*,
+persistently-exciting reference (a full-scale random sequence) and then estimates
+the input from the control signals. Three complementary measurements cover the
+testbench needs:
 
 * :func:`snr_tone`     -- leakage-free single-tone SNR by time-domain projection.
-* :func:`snr_residual` -- band-averaged SNR against a known reference (the dither).
+* :func:`snr_residual` -- band-averaged SNR against the known reference.
 * :func:`snr_vs_frequency` -- SNR(f) shape from the reference / error spectra.
 
 ``snr_tone`` (projection) replaces a windowed FFT + peak pick, whose sidelobes
@@ -161,7 +162,7 @@ def snr_tone(
 def snr_residual(u_hat: np.ndarray, u_ref: np.ndarray, trim: int = 0) -> float:
     """Broadband SNR against a known reference: var(ref) / var(u_hat - ref).
 
-    Use with the calibration dither, where ``u_ref`` is the reference that was
+    Use with the calibration reference, where ``u_ref`` is the reference that was
     fitted -- no tone needed, the whole band is exercised at once.
     """
     a = _flatten_trim(u_hat, trim)
@@ -180,8 +181,8 @@ def snr_vs_frequency(
 ):
     """SNR as a function of frequency from reference / error power spectra.
 
-    With a white reference (dither) this directly shows how reconstruction
-    quality varies across the band.
+    With a white reference this directly shows how reconstruction quality
+    varies across the band.
 
     Returns
     -------
