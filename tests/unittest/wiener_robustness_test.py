@@ -44,3 +44,20 @@ def test_wiener_reaches_high_snr():
     u_hat = wf.evaluate(sim["v"])[:, 0, 0]
     snr = snr_mod.snr_tone(u_hat, f, fs, trim=trim, band=1e6)
     assert snr > 100.0
+
+
+def test_wiener_reaches_120db():
+    # the 120 dB recipe: Wiener + dsim + coherent snr_tone on a leapfrog whose
+    # OSR supports it (N=6, OSR=32 -> ~130 dB).
+    af, OSR = AnalogFrontend.leapfrog(OSR=32, N=6, BW=1e6)
+    fs = 1.0 / af.dt
+    size, trim = 1 << 19, 1 << 13
+    f = snr_mod.coherent_frequency(1e6 / 4, fs, size - 2 * trim)
+    afd = af.discretize(dt=af.dt)
+    afd.analog_signal = Sinusoidal(np.array([[0.2]]), np.array([[f]]))
+    sim = afd.simulate_dt(size)
+    assert np.abs(sim["x"]).max() < 1.0
+    wf = af.wiener_filter(OSR=32)
+    u_hat = wf.evaluate(sim["v"])[:, 0, 0]
+    snr = snr_mod.snr_tone(u_hat, f, fs, trim=trim, band=1e6)
+    assert snr > 120.0
