@@ -94,9 +94,18 @@ def coherent_frequency(f_target: float, fs: float, n: int) -> float:
     return k * fs / n
 
 
-def _flatten_trim(x: np.ndarray, trim: int) -> np.ndarray:
-    x = np.asarray(x).reshape(-1)
-    return x[trim : x.size - trim] if trim else x
+def _as_columns(x: np.ndarray, trim: int) -> np.ndarray:
+    """Drop ``trim`` samples from each end of axis 0 and return shape (m, C).
+
+    Axis 0 is time; any trailing axes (L, J) become independent columns, so the
+    measurement is per-channel / per-parallel-sequence rather than flattened.
+    ``trim`` should be just the reconstruction transient (≈ the filter length),
+    not a tuning knob -- the SNR is otherwise insensitive to it.
+    """
+    x = np.asarray(x)
+    if trim:
+        x = x[trim : x.shape[0] - trim]
+    return x.reshape(x.shape[0], -1)
 
 
 def snr_tone(
@@ -115,20 +124,24 @@ def snr_tone(
     Parameters
     ----------
     u_hat : numpy.ndarray
-        the reconstructed signal (1-D, or squeezable to 1-D).
+        the reconstructed signal; axis 0 is time, trailing axes (L, J) are
+        measured independently and the result is averaged over them.
     f_sig : float
         the tone frequency [Hz].
     fs : float
         the sample rate of ``u_hat`` [Hz].
     trim : int, optional
-        samples to drop from each end (filter edge transient), default 0.
+        samples to drop from each end -- only the reconstruction transient
+        (≈ the filter length); the result is otherwise insensitive to it.
     band : float, optional
-        if given, integrate residual noise only below this frequency [Hz].
+        if given, count only residual noise below this frequency [Hz] (in-band
+        SNR). The in-band fraction is estimated with Welch averaging, so it is
+        robust to whether the tone is coherent with the record.
 
     Returns
     -------
     float
-        SNR in dB.
+        SNR in dB (mean over columns if more than one).
 
     Examples
     --------
@@ -140,36 +153,41 @@ def snr_tone(
     >>> bool(50.0 < snr_tone(y, f, fs) < 70.0)  # ~57 dB for a 1e-3 noise floor
     True
     """
-    y = _flatten_trim(u_hat, trim)
-    m = y.size
+    cols = _as_columns(u_hat, trim)
+    m = cols.shape[0]
     t = np.arange(m) / fs
     c = np.cos(2 * np.pi * f_sig * t)
     s = np.sin(2 * np.pi * f_sig * t)
-    a = 2.0 * np.mean(y * c)
-    b = 2.0 * np.mean(y * s)
-    resid = y - (a * c + b * s)
-    sig_p = (a * a + b * b) / 2.0
-    if band is not None:
-        R = np.fft.rfft(resid)
-        f = np.fft.rfftfreq(m, d=1.0 / fs)
-        in_frac = np.sum(np.abs(R[f <= band]) ** 2) / np.sum(np.abs(R) ** 2)
-        noise_p = np.mean(resid**2) * in_frac
-    else:
-        noise_p = np.mean(resid**2)
-    return 10 * np.log10(sig_p / noise_p) if noise_p > 0 else np.inf
+    snrs = []
+    for y in cols.T:
+        a = 2.0 * np.mean(y * c)
+        b = 2.0 * np.mean(y * s)
+        resid = y - (a * c + b * s)
+        sig_p = (a * a + b * b) / 2.0
+        if band is not None:
+            fr, P = welch(resid, fs=fs, nperseg=min(1 << 12, m))
+            in_frac = P[fr <= band].sum() / P.sum()
+            noise_p = np.mean(resid**2) * in_frac
+        else:
+            noise_p = np.mean(resid**2)
+        snrs.append(10 * np.log10(sig_p / noise_p) if noise_p > 0 else np.inf)
+    return float(np.mean(snrs))
 
 
 def snr_residual(u_hat: np.ndarray, u_ref: np.ndarray, trim: int = 0) -> float:
     """Broadband SNR against a known reference: var(ref) / var(u_hat - ref).
 
     Use with the calibration reference, where ``u_ref`` is the reference that was
-    fitted -- no tone needed, the whole band is exercised at once.
+    fitted -- no tone needed, the whole band is exercised at once. Trailing axes
+    (L, J) are averaged over.
     """
-    a = _flatten_trim(u_hat, trim)
-    b = _flatten_trim(u_ref, trim)
-    err = a - b
-    noise = np.var(err)
-    return 10 * np.log10(np.var(b) / noise) if noise > 0 else np.inf
+    a = _as_columns(u_hat, trim)
+    b = _as_columns(u_ref, trim)
+    snrs = []
+    for ai, bi in zip(a.T, b.T):
+        noise = np.var(ai - bi)
+        snrs.append(10 * np.log10(np.var(bi) / noise) if noise > 0 else np.inf)
+    return float(np.mean(snrs))
 
 
 def snr_vs_frequency(
@@ -184,16 +202,20 @@ def snr_vs_frequency(
     With a white reference this directly shows how reconstruction quality
     varies across the band.
 
+    Trailing axes (L, J) are pooled into the spectral averaging.
+
     Returns
     -------
     (f, snr_f) : (numpy.ndarray, numpy.ndarray)
         frequencies [Hz] and SNR(f) [dB].
     """
-    a = _flatten_trim(u_hat, trim)
-    b = _flatten_trim(u_ref, trim)
-    err = a - b
-    nperseg = min(nperseg, a.size)
-    f, P_ref = welch(b, fs=fs, nperseg=nperseg)
-    _, P_err = welch(err, fs=fs, nperseg=nperseg)
+    a = _as_columns(u_hat, trim)
+    b = _as_columns(u_ref, trim)
+    nperseg = min(nperseg, a.shape[0])
+    # average the reference / error power spectra over all columns
+    f, P_ref = welch(b, fs=fs, nperseg=nperseg, axis=0)
+    _, P_err = welch(a - b, fs=fs, nperseg=nperseg, axis=0)
+    P_ref = P_ref.mean(axis=-1)
+    P_err = P_err.mean(axis=-1)
     snr_f = 10 * np.log10(P_ref / np.maximum(P_err, 1e-300))
     return f, snr_f
