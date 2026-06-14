@@ -6,8 +6,13 @@ the input from the control signals. Three complementary measurements cover the
 testbench needs:
 
 * :func:`snr_tone`     -- leakage-free single-tone SNR by time-domain projection.
-* :func:`snr_residual` -- band-averaged SNR against the known reference.
+* :func:`snr_residual` -- broadband SNR against the known reference realisation.
 * :func:`snr_vs_frequency` -- SNR(f) shape from the reference / error spectra.
+
+``snr_residual`` is the broadband analog of the tone projection: where
+``snr_tone`` correlates the reconstruction against a *known tone*, ``snr_residual``
+correlates it against a *known full-band reference realisation* and reports
+``var(ref) / var(û - ref)``. It is a **known-reference correlation** measurement.
 
 ``snr_tone`` (projection) replaces a windowed FFT + peak pick, whose sidelobes
 cap the readable SNR near ~30 dB; the projection is exact and reads past 120 dB.
@@ -18,8 +23,32 @@ a *local* power-spectral-density ratio. Use ``snr_residual`` for a single headli
 number and ``snr_vs_frequency`` to see how reconstruction quality varies across
 the band. For a valid SNR(f) the reference must be flat past the band of interest.
 
-Coherent sampling
------------------
+Coherent vs. non-coherent
+-------------------------
+``snr_residual`` is *coherent in the estimation sense*: the reference
+**realisation** (the actual sample sequence) is known and subtracted pointwise,
+so it correlates û against that specific waveform. A genuinely *non-coherent*
+measurement would know only the input **statistics / PSD** -- not the realisation --
+and could not form ``û - ref``. So "leakage-free, no coherent *sampling* needed"
+(true of ``snr_tone``) is **not** the same as "non-coherent": all three metrics
+here rely on knowing either the tone or the reference realisation.
+
+Practical limits
+----------------
+* **Float64 ceiling.** ``snr_residual`` is a variance ratio; with float64 the
+  error variance cannot fall meaningfully below ~``1e-15`` of the signal
+  variance, so the metric saturates near **~150 dB** regardless of the true SNR.
+* **Finite-record uncertainty.** An SNR estimate from ``N_eff`` independent
+  samples has a 1-sigma spread of roughly ``6.1 / sqrt(N_eff)`` dB; budget the
+  record length accordingly before trusting the last few dB.
+* **Held-out reference.** For a *trustworthy* number, evaluate on a **held-out**
+  reference realisation (a fresh seed), not the calibration-training sequence:
+  measuring on the training data is in-sample biased by ≈ ``K / N`` (filter taps
+  over samples). This is a measurement recommendation only -- it does not change
+  how calibration is performed.
+
+Coherent sampling (FFT-bin methods)
+----------------------------------
 ``snr_tone`` is leakage-free, so it does *not* require coherent sampling. But any
 *FFT-bin* method (a windowed spectrum, or the legacy
 :meth:`AnalogFrontend.calculateSNR_from_fft`) does: an off-grid tone smears
@@ -31,6 +60,7 @@ the tone on an exact FFT bin with :func:`coherent_frequency`::
 """
 
 from math import gcd
+from typing import NamedTuple
 
 import numpy as np
 from scipy.signal import welch
@@ -42,9 +72,33 @@ __all__ = [
     "coherent_frequency",
     "snr_tone",
     "snr_residual",
+    "ResidualDiagnostics",
     "snr_vs_frequency",
     "measure_snr",
 ]
+
+
+class ResidualDiagnostics(NamedTuple):
+    """Correlation diagnostics for :func:`snr_residual` (all linear, not dB).
+
+    The decomposition lets a user tell *why* ``snr_residual`` is low: a small
+    ``rho`` means genuine noise (û and the reference are decorrelated), whereas
+    ``rho ≈ 1`` with ``g != 1`` means the reconstruction is merely mis-scaled.
+    The two effects combine through the exact identity (noise-to-signal form)::
+
+        1 / SNR_res = (g - 1) ** 2 + g ** 2 / SNR_rho
+
+    with ``SNR_res`` and ``SNR_rho`` taken as *linear* power ratios. ``snr_rho``
+    (the dB form of ``SNR_rho = rho**2 / (1 - rho**2)``) is gain-invariant: it is
+    the SNR you would read after the optimal scalar gain correction.
+    """
+
+    rho: float
+    """normalised cross-correlation between û and the reference (pooled)."""
+    g: float
+    """best-fit scalar gain ``g = <û, ref> / ||ref||**2`` (pooled)."""
+    snr_rho: float
+    """gain-invariant correlation SNR ``rho**2 / (1 - rho**2)`` in dB."""
 
 
 def decimate(x: np.ndarray, DSR: int, axis: int = 0, ftype: str = "iir", n: int = 9):
@@ -224,12 +278,26 @@ def snr_residual(
     band=None,
     fs: float = None,
     nperseg: int = 1 << 12,
-) -> float:
+    return_diagnostics: bool = False,
+):
     """Broadband SNR against a known reference: var(ref) / var(u_hat - ref).
 
-    Use with the calibration reference, where ``u_ref`` is the reference that was
-    fitted -- no tone needed, the whole band is exercised at once. Trailing axes
-    (L, J) are averaged over.
+    The broadband analog of the tone projection :func:`snr_tone`: a
+    *known-reference correlation* measurement. It correlates ``u_hat`` against the
+    known reference **realisation** ``u_ref`` (the actual sample sequence), so it
+    is coherent in the estimation sense -- the reference is subtracted pointwise,
+    not merely matched in statistics. Use it with the calibration reference, where
+    ``u_ref`` is the reference that was fitted -- no tone needed, the whole band is
+    exercised at once. Trailing axes (L, J) are averaged over.
+
+    .. note::
+
+        Being a float64 variance ratio, the metric saturates near **~150 dB**.
+        A finite record of ``N_eff`` samples gives an estimate with a 1-sigma
+        spread of ≈ ``6.1 / sqrt(N_eff)`` dB. For a trustworthy number, evaluate
+        on a **held-out** reference realisation (fresh seed), not the
+        calibration-training one (in-sample bias ≈ ``K / N``). See the module
+        docstring for the full discussion.
 
     Parameters
     ----------
@@ -249,11 +317,18 @@ def snr_residual(
         fraction of Nyquist (``f_Nyq == 1``).
     nperseg : int, optional
         Welch segment length for the sub-band path.
+    return_diagnostics : bool, optional
+        if ``True`` also return a :class:`ResidualDiagnostics` (``rho``, ``g``,
+        ``snr_rho``) so a low SNR can be attributed to decorrelation (noise) vs.
+        a mere scalar mis-gain. Computed on the full band (the diagnostics are a
+        time-domain decomposition); ``band`` still selects the returned ``float``.
 
     Returns
     -------
     float
         SNR in dB (mean over columns if more than one).
+    ResidualDiagnostics
+        only if ``return_diagnostics`` -- the correlation decomposition.
     """
     a = _as_columns(u_hat, trim)
     b = _as_columns(u_ref, trim)
@@ -263,12 +338,39 @@ def snr_residual(
         for ai, bi in zip(a.T, b.T):
             noise = np.var(ai - bi)
             snrs.append(10 * np.log10(np.var(bi) / noise) if noise > 0 else np.inf)
-        return float(np.mean(snrs))
-    # sub-band: integrate the pooled reference / error power spectra
-    f, P_ref, P_err = _welch_ref_err(a, b, fs if fs is not None else 2.0, nperseg)
-    mask = _band_mask(f, band)
-    den = P_err[mask].sum()
-    return 10 * np.log10(P_ref[mask].sum() / den) if den > 0 else np.inf
+        snr_db = float(np.mean(snrs))
+    else:
+        # sub-band: integrate the pooled reference / error power spectra
+        f, P_ref, P_err = _welch_ref_err(a, b, fs if fs is not None else 2.0, nperseg)
+        mask = _band_mask(f, band)
+        den = P_err[mask].sum()
+        snr_db = 10 * np.log10(P_ref[mask].sum() / den) if den > 0 else np.inf
+    if not return_diagnostics:
+        return snr_db
+    return snr_db, _residual_diagnostics(a, b)
+
+
+def _residual_diagnostics(a: np.ndarray, b: np.ndarray) -> ResidualDiagnostics:
+    """Correlation decomposition of ``snr_residual`` (a, b are (m, C) columns).
+
+    Pooled over columns consistently with the full-band variance ratio: the
+    cross-correlation, the reference energy and the reconstruction energy are
+    summed over columns (mean-removed per column) before forming ``rho`` and the
+    best-fit gain ``g = <û, ref> / ||ref||**2``. ``snr_rho`` is the gain-invariant
+    SNR ``rho**2 / (1 - rho**2)`` in dB.
+    """
+    a = a - a.mean(axis=0, keepdims=True)
+    b = b - b.mean(axis=0, keepdims=True)
+    cross = float(np.sum(a * b))  # <û, ref>, pooled
+    e_ref = float(np.sum(b * b))  # ||ref||**2, pooled
+    e_hat = float(np.sum(a * a))  # ||û||**2, pooled
+    g = cross / e_ref if e_ref > 0 else np.inf
+    denom = e_hat * e_ref
+    rho = cross / np.sqrt(denom) if denom > 0 else 0.0
+    rho = float(np.clip(rho, -1.0, 1.0))
+    one_minus = 1.0 - rho * rho
+    snr_rho = 10 * np.log10(rho * rho / one_minus) if one_minus > 0 else np.inf
+    return ResidualDiagnostics(rho=rho, g=g, snr_rho=snr_rho)
 
 
 def snr_vs_frequency(

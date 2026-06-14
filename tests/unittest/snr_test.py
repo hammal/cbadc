@@ -46,6 +46,48 @@ def test_snr_residual_recovers_known_ratio():
     assert snr.snr_residual(u_hat, ref) == pytest.approx(expected, abs=0.5)
 
 
+def test_snr_residual_default_returns_bare_float():
+    # backward-compat: without the kwarg the return is a plain float, not a tuple
+    rng = np.random.default_rng(3)
+    ref = rng.standard_normal(1 << 14)
+    u_hat = ref + 1e-2 * rng.standard_normal(ref.size)
+    out = snr.snr_residual(u_hat, ref)
+    assert isinstance(out, float)
+    assert not isinstance(out, tuple)
+
+
+def test_snr_residual_diagnostics_decompose_gain_and_noise():
+    # construct û = g * ref + noise with KNOWN gain and noise level, then check
+    # the diagnostics recover g and rho and satisfy the exact identity
+    #   1 / SNR_res = (g - 1) ** 2 + g ** 2 / SNR_rho   (linear power ratios).
+    rng = np.random.default_rng(4)
+    n = 1 << 17
+    ref = rng.standard_normal(n)
+    g_true = 1.2
+    noise_rms = 5e-2
+    noise = noise_rms * rng.standard_normal(n)
+    u_hat = g_true * ref + noise
+
+    snr_db, diag = snr.snr_residual(u_hat, ref, return_diagnostics=True)
+    assert isinstance(diag, snr.ResidualDiagnostics)
+
+    # best-fit gain g = <û, ref> / ||ref||**2 recovers the injected gain
+    assert diag.g == pytest.approx(g_true, abs=2e-2)
+
+    # rho is the correlation of g*ref + noise with ref; expected from the model:
+    #   rho**2 = g**2 var(ref) / (g**2 var(ref) + var(noise))
+    var_ref = np.var(ref)
+    rho_expected = np.sqrt(g_true**2 * var_ref / (g_true**2 * var_ref + noise_rms**2))
+    assert diag.rho == pytest.approx(rho_expected, abs=2e-3)
+
+    # the headline identity, in LINEAR ratios
+    snr_res_lin = 10 ** (snr_db / 10)
+    snr_rho_lin = 10 ** (diag.snr_rho / 10)
+    lhs = 1.0 / snr_res_lin
+    rhs = (diag.g - 1.0) ** 2 + diag.g**2 / snr_rho_lin
+    assert lhs == pytest.approx(rhs, rel=1e-6)
+
+
 def test_snr_vs_frequency_flat_for_white_error():
     rng = np.random.default_rng(2)
     fs = 1e3

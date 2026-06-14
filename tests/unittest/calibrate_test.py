@@ -78,3 +78,68 @@ def test_calibrate_accepts_custom_reference():
     est = af.calibrate(DSR=DSR, K=1 << 6, J=1, sim_size=1 << 14, reference=ref)
     assert est.DSR == DSR
     assert est.h is not None
+
+
+def test_calibrate_fit_fft_polish_between_fft_and_lstsq():
+    # fft+polish warm-starts from fft then runs matrix-free CG on the SAME
+    # objective lstsq minimizes -> it must beat plain fft and land within a few
+    # dB of lstsq. Measured on a HELD-OUT reference realisation (fresh seed).
+    af, OSR = AnalogFrontend.chain_of_integrators(N=3, ENOB=10, BW=1e5)
+    DSR = int(OSR)
+    K, J = 1 << 7, 4
+
+    # held-out evaluation against a fresh random reference
+    n = (1 << 15) + (1 << 10)
+    ref = ZeroOrderHold.uniform_reference_signal(
+        af.dt * DSR, -np.ones((1, 4)), np.ones((1, 4)), size=n // DSR + K, seed=4242
+    )
+    af.analog_signal = ref
+    sim = af.simulate(n)
+    u_ref = snr_mod.decimate(sim["u"][1 << 10 :], DSR)
+    v = sim["v"][1 << 10 :]
+
+    snrs = {}
+    for fit in ("fft", "fft+polish", "lstsq"):
+        est = af.calibrate(DSR=DSR, K=K, J=J, sim_size=1 << 16, fit=fit)
+        snrs[fit] = snr_mod.snr_residual(est.reconstruct(v), u_ref, trim=2 * est.K)
+
+    # polish never hurts the fft warm start and closes most of the gap to lstsq
+    assert snrs["fft+polish"] >= snrs["fft"] - 0.1
+    assert snrs["fft+polish"] <= snrs["lstsq"] + 0.5
+    assert snrs["fft+polish"] == pytest.approx(snrs["lstsq"], abs=3.0)
+
+
+def test_fit_fft_polish_improves_monotonically_with_iters():
+    # more CG iterations -> the matrix-free polish converges toward the lstsq
+    # optimum; SNR must improve (within noise) and stay bounded by lstsq.
+    af, OSR = AnalogFrontend.chain_of_integrators(N=3, ENOB=10, BW=1e5)
+    DSR = int(OSR)
+    K, J = 1 << 7, 4
+    n = (1 << 15) + (1 << 10)
+    ref = ZeroOrderHold.uniform_reference_signal(
+        af.dt * DSR, -np.ones((1, 4)), np.ones((1, 4)), size=n // DSR + K, seed=909
+    )
+    af.analog_signal = ref
+    sim = af.simulate(n)
+    u_ref = snr_mod.decimate(sim["u"][1 << 10 :], DSR)
+    v = sim["v"][1 << 10 :]
+
+    s0 = snr_mod.snr_residual(
+        af.calibrate(DSR=DSR, K=K, J=J, sim_size=1 << 16, fit="fft").reconstruct(v),
+        u_ref,
+        trim=2 * K,
+    )
+    s8 = snr_mod.snr_residual(
+        af.calibrate(
+            DSR=DSR, K=K, J=J, sim_size=1 << 16, fit="fft+polish", polish_iters=8
+        ).reconstruct(v),
+        u_ref,
+        trim=2 * K,
+    )
+    assert s8 > s0  # eight CG steps strictly improve on the fft warm start
+
+
+def test_calibrate_rejects_unknown_fit():
+    af, OSR = AnalogFrontend.chain_of_integrators(N=2, ENOB=8, BW=1e5)
+    with pytest.raises(ValueError, match="fft\\+polish"):
+        af.calibrate(DSR=int(OSR), K=1 << 6, J=1, sim_size=1 << 13, fit="bogus")

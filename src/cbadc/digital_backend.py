@@ -36,6 +36,9 @@ from scipy.signal import (
 from scipy.signal import (
     resample as _resample,
 )
+from scipy.signal.windows import (
+    tukey as _tukey,
+)
 
 from .analog_frontend import AnalogFrontend
 from .analog_signal import ZeroOrderHold
@@ -1177,13 +1180,15 @@ class AdaptiveFIRFilter:
             the reference data.
         nperseg : int, optional
             the Welch segment length; defaults to the next power of two above
-            ``4*K`` (capped at ``size``). ~4*K trades frequency resolution
-            against the K-tap truncation.
+            ``16*K`` (capped at ``size``). A longer segment decouples the
+            frequency resolution from the K-tap crop and reduces time-domain
+            aliasing of the impulse response; memory stays O(nperseg * M^2).
         floor : float, optional
-            Tikhonov floor on ``S_vv`` (relative to its peak diagonal) keeping
-            empty bands invertible. Defaults to ``1e-6``; lower it (e.g.
-            ``1e-12``) when chasing very high SNR, where the regularization bias
-            near band edges otherwise caps the dynamic range.
+            Tikhonov floor on ``S_vv``, applied *per bin* relative to that bin's
+            own power (``trace(S_vv)/M``). Defaults to ``1e-6``; lower it (e.g.
+            ``1e-12``) when chasing very high SNR. The per-bin scaling keeps the
+            bias proportional to local signal power, so empty/band-edge bins no
+            longer impose a global dynamic-range cap.
 
         Returns
         -------
@@ -1193,7 +1198,7 @@ class AdaptiveFIRFilter:
         size, M, J = x.shape
         L = y.shape[1]
         if nperseg is None:
-            nperseg = 1 << int(np.ceil(np.log2(max(4 * self.K, 8))))
+            nperseg = 1 << int(np.ceil(np.log2(max(16 * self.K, 8))))
         nperseg = int(min(nperseg, size))
         nf = nperseg // 2 + 1
         win = np.hanning(nperseg)
@@ -1208,18 +1213,141 @@ class AdaptiveFIRFilter:
                 Svv += np.einsum("fm,fn->fmn", V.conj(), V)
                 Svu += np.einsum("fm,fl->fml", V.conj(), U)
 
-        # global diagonal floor so empty bands (e.g. DC) stay invertible
-        reg = floor * np.trace(Svv, axis1=1, axis2=2).real.max() / M
-        H = np.linalg.pinv(Svv + reg * np.eye(M)) @ Svu  # (nf, M, L)
-        h = np.fft.fftshift(np.fft.irfft(H, n=nperseg, axis=0), axes=0)  # (nperseg, M, L)
+        # Svv(f) is Hermitian PSD by construction; enforce exact symmetry so the
+        # Cholesky solve sees a clean SPD matrix (kills accumulated round-off in
+        # the imaginary part of the diagonal / the off-diagonal asymmetry).
+        Svv = 0.5 * (Svv + Svv.conj().transpose(0, 2, 1))
+        # Per-bin diagonal floor proportional to each bin's own power, so the
+        # regularization bias tracks the local signal level rather than the
+        # global peak -- empty/band-edge bins stay invertible without capping
+        # the dynamic range of the loud bins.
+        local = np.trace(Svv, axis1=1, axis2=2).real / M  # (nf,)
+        reg = floor * np.maximum(local, np.finfo(float).eps * local.max())
+        A = Svv + reg[:, None, None] * np.eye(M)  # SPD per bin
+        # H(f) = A(f)^-1 Svu(f) via batched Cholesky (SPD solve, no pinv): A = R^H R,
+        # forward/back substitution -- O(M^3) per bin, far better conditioned and
+        # cheaper than a pseudo-inverse, and exact for the SPD system we built.
+        R = np.linalg.cholesky(A)  # lower, (nf, M, M)
+        z = np.linalg.solve(R, Svu)  # R z = Svu
+        H = np.linalg.solve(R.conj().transpose(0, 2, 1), z)  # R^H H = z  -> (nf, M, L)
+        h = np.fft.fftshift(
+            np.fft.irfft(H, n=nperseg, axis=0), axes=0
+        )  # (nperseg, M, L)
         # centre the K-tap window on the zero-lag, placing it where convolve(...,
         # mode="same") expects the filter origin -- (K-1)//2, not K//2 -- so the
         # reconstruction is sample-aligned with the reference (matters for the
         # delay-sensitive snr_residual; even K was off by one otherwise).
         c = nperseg // 2
         off = (self.K - 1) // 2
-        self._h[:] = h[c - off : c - off + self.K]
+        cropped = h[c - off : c - off + self.K]  # (K, M, L)
+        # Taper the rectangular crop with a Tukey (flat-top) window: a hard crop
+        # of the impulse response leaks (Gibbs ringing in H(f)); a small cosine
+        # roll-off on the shoulders suppresses it while leaving the dominant
+        # central taps untouched (a full Hann would attenuate them).
+        taper = _tukey(self.K, alpha=0.25)
+        self._h[:] = cropped * taper[:, None, None]
         self._offset[:] = 0.0
+        return self.loss(x, y)
+
+    def fit_fft_polish(
+        self,
+        x: np.ndarray,
+        y: np.ndarray,
+        polish_iters: int = 5,
+        nperseg: int = None,
+        floor: float = 1e-6,
+    ):
+        """Warm-start from :meth:`fit_fft`, then polish on the lstsq objective.
+
+        A memory-light path to ``lstsq``-class accuracy. It first runs
+        :meth:`fit_fft` (O(nperseg * M^2) memory) for a good warm start, then
+        takes ``polish_iters`` conjugate-gradient steps on the *exact same*
+        time-domain least-squares objective that :meth:`lstsq` minimizes --
+        jointly over the taps ``_h`` and the affine ``_offset`` -- but
+        matrix-free: the ``(size*J, K*M+1)`` design matrix is never formed.
+        ``X h`` is a windowed contraction (a ``sliding_window_view`` -- an O(1)
+        view -- contracted with the taps) and ``X^T r`` its exact adjoint, so
+        peak memory stays O(size*M) for the signals you already hold plus
+        O(K*M*L) taps, independent of K in the data term. Pick this when you are
+        memory-bound (``lstsq``'s design matrix won't fit) yet want within a few
+        dB of its SNR; plain ``fft`` is cheaper still but leaves a few dB on the
+        table, while ``lstsq`` is exact but O(size*M*K).
+
+        Parameters
+        ----------
+        x : np.ndarray, shape=(size, M, J)
+            the control signals.
+        y : np.ndarray, shape=(size, L, J)
+            the reference data.
+        polish_iters : int, optional
+            number of conjugate-gradient iterations, defaults to 5. CG on the
+            (SPD) normal equations converges fast from the ``fft`` warm start;
+            a handful of iterations recovers most of the gap to ``lstsq``.
+        nperseg, floor :
+            forwarded to :meth:`fit_fft` for the warm start.
+
+        Returns
+        -------
+        loss : np.ndarray, shape=(L,)
+            the loss evaluated on the given data.
+        """
+        # Warm start in the frequency domain (sets self._h, self._offset).
+        self.fit_fft(x, y, nperseg=nperseg, floor=floor)
+
+        # Build the SAME (B, L, J) target lstsq fits: reference filtered by _h0,
+        # and the K-window view of the control signals (an O(1) stride view, so
+        # the design matrix is never materialized).
+        x_window = _sliding_window_view(x, self.K, axis=0)  # (B, M, J, K)
+        y_window = self.convolve_ref(y)  # (B, L, J)
+        batch_size = min(x_window.shape[0], y_window.shape[0])
+        x_window = x_window[:batch_size]
+        y_window = y_window[:batch_size]
+
+        # Matrix-free forward X p and adjoint X^T r matching the lstsq objective
+        # EXACTLY: lstsq stores _h time-reversed relative to its solve order, so
+        # the contraction uses h[::-1]; the constant column maps to _offset.
+        def _forward(h, offset):
+            return (
+                np.einsum("bmjk,kml->blj", x_window, h[::-1])
+                + offset[np.newaxis, :, np.newaxis]
+            )
+
+        def _adjoint(r):
+            grad_h = np.einsum("bmjk,blj->kml", x_window, r)[::-1]
+            grad_off = r.sum(axis=(0, 2))
+            return grad_h, grad_off
+
+        # Conjugate gradient on the normal equations (X^T X) p = X^T y, with p =
+        # (taps, offset). r = X^T (y - X p) is the negative gradient; the CG
+        # search direction is preconditioner-free (the system is SPD).
+        h = self._h.copy()
+        off = self._offset.copy()
+        res = y_window - _forward(h, off)
+        rh, ro = _adjoint(res)
+        ph, po = rh.copy(), ro.copy()
+        rs_old = np.sum(rh * rh) + np.sum(ro * ro)
+        for _ in range(max(0, int(polish_iters))):
+            if rs_old <= 0.0:
+                break
+            # A p = X^T X p (matrix-free matvec)
+            xp = _forward(ph, po)
+            aph, apo = _adjoint(xp)
+            pap = np.sum(ph * aph) + np.sum(po * apo)
+            if pap <= 0.0:
+                break
+            alpha = rs_old / pap
+            h += alpha * ph
+            off += alpha * po
+            rh -= alpha * aph
+            ro -= alpha * apo
+            rs_new = np.sum(rh * rh) + np.sum(ro * ro)
+            beta = rs_new / rs_old
+            ph = rh + beta * ph
+            po = ro + beta * po
+            rs_old = rs_new
+
+        self._h[:] = h
+        self._offset[:] = off
         return self.loss(x, y)
 
     def transfer_function(self, jw: np.ndarray):
@@ -1385,6 +1513,7 @@ class DataAidedEstimator(AdaptiveFIRFilter):
         rel_bw: float = 0.5,
         reference=None,
         fit: str = "lstsq",
+        polish_iters: int = 5,
     ):
         M = analog_frontend.M
         L = analog_frontend.L
@@ -1401,6 +1530,7 @@ class DataAidedEstimator(AdaptiveFIRFilter):
             rel_bw=rel_bw,
             reference=reference,
             fit=fit,
+            polish_iters=polish_iters,
         )
 
     def learn_from_analog_frontend(
@@ -1412,6 +1542,7 @@ class DataAidedEstimator(AdaptiveFIRFilter):
         rel_bw: float = 0.5,
         reference=None,
         fit: str = "lstsq",
+        polish_iters: int = 5,
     ):
         self.DSR = DSR
         # ``sim_size`` is the TOTAL number of calibration samples, spread over J
@@ -1442,10 +1573,14 @@ class DataAidedEstimator(AdaptiveFIRFilter):
 
         if fit == "fft":
             self.fit_fft(dec_v, dec_u)
+        elif fit == "fft+polish":
+            self.fit_fft_polish(dec_v, dec_u, polish_iters=polish_iters)
         elif fit == "lstsq":
             self.lstsq(dec_v, dec_u, verbose=True, method="direct")
         else:
-            raise ValueError(f"Unknown fit {fit!r}; use 'lstsq' or 'fft'")
+            raise ValueError(
+                f"Unknown fit {fit!r}; use 'lstsq', 'fft', or 'fft+polish'"
+            )
         self._analog_frontend.analog_signal = old_input_signal
         return sim_res
 

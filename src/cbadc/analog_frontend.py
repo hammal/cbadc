@@ -2177,6 +2177,7 @@ class AnalogFrontend:
         reference=None,
         seed: int = 90128310230123,
         fit: str = "lstsq",
+        polish_iters: int = 5,
     ):
         """Calibrate a data-aided reconstruction filter for this frontend.
 
@@ -2203,6 +2204,13 @@ class AnalogFrontend:
             reference is generated.
         seed : int, optional
             RNG seed for the generated reference.
+        fit : str, optional
+            the fit method: ``"lstsq"`` (exact, O(size*M*K) memory), ``"fft"``
+            (memory-light Welch Wiener), or ``"fft+polish"`` (an ``fft`` warm
+            start refined by matrix-free CG on the lstsq objective -- ``lstsq``-
+            class accuracy at ``fft``-class memory). Defaults to ``"lstsq"``.
+        polish_iters : int, optional
+            number of CG iterations when ``fit="fft+polish"``, defaults to 5.
 
         Returns
         -------
@@ -2222,6 +2230,7 @@ class AnalogFrontend:
             seed,
             reference=reference,
             fit=fit,
+            polish_iters=polish_iters,
         )
 
     def _evaluate_estimate(self, DSR, K, J, sim_size, val_size, J_val, fit):
