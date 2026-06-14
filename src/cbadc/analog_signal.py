@@ -515,7 +515,6 @@ class ZeroOrderHold(AnalogSignal):
         values = (rng.choice(2, size=(size, L, J), axis=0) * 2 - 1) * amplitude[
             np.newaxis, :, :
         ] + offset[np.newaxis, :, :]
-        print(values.shape)
         return ZeroOrderHold(dt, values, t0)
 
     @staticmethod
