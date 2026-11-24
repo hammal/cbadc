@@ -2,9 +2,21 @@
 The Control-Bounded A/D Conversion (cbadc) Toolbox API Documentation
 #####################################################################
 
-This is the official API documentation for the `control-bounded analog-to-digital conversion (cbadc)
-<https://pypi.org/project/cbadc/>`_ python package, which is a **toolbox** intended
-to aid and inspire the **creation** of **control-bounded analog-to-digital (A/D) converters**.
+cbadc models control-bounded A/D converters with one clocked
+:class:`~cbadc.frontend.Frontend`. Version 0.4.0 keeps the main path small:
+define a state-space model, simulate its decisions and digital twin, then
+measure the result. Physical gm-C and active-RC realizations, Wiener
+reconstruction, and the optional delta-sigma bridge extend that path.
+
+=========
+Tutorials
+=========
+
+.. toctree::
+    :maxdepth: 1
+
+    tutorials/index
+    ngspice-validation
 
 ======================
 The cbadc Root Modules
@@ -16,17 +28,13 @@ The cbadc Root Modules
     :template: custom-module-template.rst
 
 
-    cbadc.analog_signal
-    cbadc.analog_system
-    cbadc.digital_control
-    cbadc.digital_estimator
-    cbadc.analog_frontend
-    cbadc.simulator
+    cbadc.frontend
     cbadc.circuit
-    cbadc.utilities
+    cbadc.noise
+    cbadc.estimator
+    cbadc.snr
     cbadc.fom
-    cbadc.digital_calibration
-    cbadc.synthesis
+    cbadc.delsig
 
 ======
 Github

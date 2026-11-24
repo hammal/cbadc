@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Circuit and noise validation against ngspice.
+#
+# Usage:
+#   scripts/test-performance          # complete ngspice suite
+#   scripts/test-performance ngspice  # the same suite, named explicitly
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
+
+if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != ngspice ]; }; then
+    echo "usage: scripts/test-performance [ngspice]" >&2
+    exit 2
+fi
+
+if ! command -v ngspice >/dev/null 2>&1; then
+    echo "FAILED: ngspice is not on PATH; the circuit suite cannot run." >&2
+    exit 1
+fi
+
+rc=0
+uvrun pytest --junitxml=pytest-performance-ngspice.xml tests/ngspice || rc=$?
+if [ "$rc" -eq 5 ]; then
+    echo "FAILED: ngspice collected no tests (pytest exit 5)." >&2
+fi
+exit "$rc"

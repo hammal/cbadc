@@ -1,37 +1,44 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
-name: unit testing
+name: Unit tests
 
 on: workflow_call
 
 jobs:
-  lint_and_unit_tests:
+  test:
+    name: "${{ matrix.os }} / Python ${{ matrix.python-version }}"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-    runs-on: ubuntu-latest
+        os: [ubuntu-latest]
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
+        include:
+          - os: macos-latest
+            python-version: "3.15"
+          - os: windows-latest
+            python-version: "3.15"
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - name: update pip
-        run: |
-          python -m pip install --upgrade pip pytest pytest-parallel pytest-cov pytest-benchmark
-      - name: Install cbadc dependencies
-        run: |
-          pip install -r requirements.txt;
-          pip install .
-      - name: Run doctests
-        run: pytest --junitxml=pytest-unittests.xml --doctest-modules src/cbadc
-      - name: Run unittests
-        run: pytest --junitxml=pytest-unittests.xml tests/unittest
-
-      - name: Upload Unit Test Results
-        if: always()
-        uses: actions/upload-artifact@v4
+      - uses: astral-sh/setup-uv@v10.4.0
         with:
-          name: Unit Test Results (Python ${{ matrix.python-version }})
-          path: pytest-unittests.xml
+          enable-cache: true
+          cache-suffix: ${{ matrix.python-version }}
+
+      - name: Run doctests
+        run: ./scripts/test-doctest
+
+      - name: Run unit tests
+        run: ./scripts/test-unit
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: tests-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: pytest-*.xml

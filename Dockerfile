@@ -1,56 +1,25 @@
-# A dockerfile describing a container with all necessary dependencies
-# to use the full cbadc feature suit.
+# cbadc with ngspice: the image the circuit bench (tests/ngspice) runs in.
+#
+# Debian trixie ships ngspice 44 built with XSPICE, which the bench needs for
+# its digital clock, flip-flops, bridges and trnoise sources, so nothing is
+# compiled here. The same image is the dev container.
+#
+#   docker build -t cbadc-ngspice .
+#   docker run --rm cbadc-ngspice                      # the bench
+#   docker run --rm cbadc-ngspice ./scripts/test-unit  # anything else
+FROM python:3.15-slim-trixie
 
-FROM jupyter/scipy-notebook:latest
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ngspice git \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-LABEL maintainer="Hampus Malmberg <hampus.malmberg88@gmail.com>"
+WORKDIR /cbadc
+ENV MPLBACKEND=Agg UV_LINK_MODE=copy
+# Dependencies first so that editing the source does not re-resolve them.
+COPY pyproject.toml uv.lock README.md ./
+COPY src ./src
+RUN uv sync --extra dev --extra delsig
+COPY . .
 
-USER root
-
-# install ngspice dependencies
-RUN apt-get update && apt-get install -y \
-    bison \
-    flex \
-    build-essential \
-    autoconf \
-    automake \
-    libtool \
-    libxaw7-dev \
-    libreadline-dev \
-    git
-
-# clone ngspice repo
-RUN git clone git://git.code.sf.net/p/ngspice/ngspice
-# configure and install ngspice
-RUN cd ngspice && \
-    ./autogen.sh && \
-    ./configure --enable-xspice --enable-cider --disable-debug --with-readline=yes --enable-openmp && \
-    make clean && \ 
-    make && \
-    make install && \
-    cd .. && \
-    rm -rf ngspice
-
-
-# install rust
-RUN apt-get update && apt-get install -y \
-    curl
-
-# switch back to joyvan user
-USER ${NB_UID}
-# install rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
-# put cargo into path
-ENV PATH="${HOME}/.cargo/bin:${PATH}"
-# clone calib
-RUN git clone https://github.com/hammal/calib.git
-# install calib
-RUN cd calib && \
-    RUSTFLAGS="-C target-cpu=native" cargo install --path .
-
-# copy cbadc
-COPY --chown=${NB_UID} . ${HOME}/cbadc
-# install cbadc
-RUN cd cbadc && \
-    python -m pip install -e . && \
-    python -m pip install black pytest
+CMD ["./scripts/test-performance", "ngspice"]

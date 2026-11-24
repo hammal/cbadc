@@ -1,1 +1,0 @@
-"""ordinary differential equation aids."""

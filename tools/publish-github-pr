@@ -1,0 +1,360 @@
+#!/usr/bin/env bash
+#
+# publish-github-pr -- the ONLY supported way to move code from the private
+# GitLab repository to the public GitHub repository.
+#
+# Development happens on gitlab.liu.se (private). github.com/hammal/cbadc is
+# public. Nothing crosses that boundary except through this script, which
+# reconstructs the change on a clean branch based on `github/develop`, shows you
+# exactly what would become public, and pushes a single named `pr/*` branch
+# after you confirm.
+#
+# It never pushes --all, --tags or --mirror, and it never touches any GitHub ref
+# other than the one `pr/*` branch you name. See docs/development-workflow.md.
+#
+# Usage:
+#   tools/publish-github-pr --name fix-zoh-boundary --from fix/zoh-boundary
+#   tools/publish-github-pr --name fix-zoh-boundary --commits a1b2c3d,e4f5a6b
+#   tools/publish-github-pr --name fix-zoh-boundary --from fix/zoh --create-pr
+#
+# Options:
+#   --name <slug>       Publication name. Becomes the branch `pr/<slug>` on
+#                       GitHub. Required.
+#   --from <ref>        Source branch. Its commits since `github/develop` are
+#                       the publication candidates. Required unless --commits.
+#   --commits <list>    Comma- or space-separated commit SHAs to publish, in
+#                       the order given. Overrides the --from commit selection.
+#   --skip-tests        Skip the test gate entirely. Prints a prominent
+#                       warning and still requires confirmation. Use only when
+#                       the identical tree has already been validated.
+#   --create-pr         After pushing, open a GitHub pull request with `gh`.
+#   --update            Allow updating a `pr/<slug>` branch that already exists
+#                       on GitHub (uses --force-with-lease, never --force).
+#   -h, --help          Show this help.
+
+set -euo pipefail
+
+readonly GITHUB_REMOTE="github"
+readonly GITLAB_REMOTE="origin"
+readonly PUBLIC_BASE="github/develop"
+readonly EXPECTED_REPO="hammal/cbadc"
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
+# --- output helpers --------------------------------------------------------
+
+if [ -t 1 ]; then
+    C_RED=$'\033[31m'; C_GREEN=$'\033[32m'; C_YELLOW=$'\033[33m'
+    C_BOLD=$'\033[1m'; C_OFF=$'\033[0m'
+else
+    C_RED=""; C_GREEN=""; C_YELLOW=""; C_BOLD=""; C_OFF=""
+fi
+
+info()  { echo "${C_BOLD}==>${C_OFF} $*"; }
+warn()  { echo "${C_YELLOW}warning:${C_OFF} $*" >&2; }
+ok()    { echo "${C_GREEN}ok:${C_OFF} $*"; }
+die()   { echo "${C_RED}error:${C_OFF} $*" >&2; exit 1; }
+
+usage() { sed -n '2,/^set -euo/p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//; $d'; }
+
+# --- argument parsing ------------------------------------------------------
+
+NAME=""
+SOURCE_REF=""
+COMMIT_LIST=""
+SKIP_TESTS=0
+CREATE_PR=0
+ALLOW_UPDATE=0
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --name)     NAME="${2:-}"; shift 2 ;;
+        --from)     SOURCE_REF="${2:-}"; shift 2 ;;
+        --commits)  COMMIT_LIST="${2:-}"; shift 2 ;;
+        --skip-tests) SKIP_TESTS=1; shift ;;
+        --create-pr)  CREATE_PR=1; shift ;;
+        --update)     ALLOW_UPDATE=1; shift ;;
+        -h|--help)    usage; exit 0 ;;
+        *)            die "unknown argument '$1' (try --help)" ;;
+    esac
+done
+
+# Requirement: require a publication name.
+[ -n "$NAME" ] || die "--name is required. It becomes the public branch pr/<name>."
+
+# Requirement: require an explicit source branch or an explicit commit list.
+if [ -z "$SOURCE_REF" ] && [ -z "$COMMIT_LIST" ]; then
+    die "one of --from <branch> or --commits <shas> is required.
+       Nothing is published without an explicit selection."
+fi
+
+# Requirement: reject invalid branch names before doing anything.
+if ! printf '%s' "$NAME" | grep -Eq '^[a-z0-9][a-z0-9._-]*$'; then
+    die "invalid publication name '$NAME'.
+       Use lowercase letters, digits, dot, dash and underscore; must not start
+       with a separator. The name must not itself contain a '/'."
+fi
+
+# The local reconstruction branch (public/*) is built from github/develop and
+# shares no history with any private branch; PR_BRANCH is where it lands on
+# GitHub. See docs/development-workflow.md for the branch model.
+readonly PR_BRANCH="pr/${NAME}"
+readonly LOCAL_BRANCH="public/${NAME}"
+
+# --- preflight -------------------------------------------------------------
+
+info "Preflight checks"
+
+# Requirement: fail safely if the working tree is dirty. Cherry-picking onto a
+# fresh branch would otherwise mix uncommitted work into a public push.
+if [ -n "$(git status --porcelain)" ]; then
+    git status --short >&2
+    die "working tree is not clean. Commit or stash first."
+fi
+
+ORIGINAL_HEAD="$(git symbolic-ref --quiet --short HEAD || git rev-parse HEAD)"
+
+# Requirement: fail safely if the GitHub remote is missing, and verify it points
+# at the expected public repository -- never publish to an unexpected target.
+git remote get-url "$GITHUB_REMOTE" >/dev/null 2>&1 \
+    || die "remote '$GITHUB_REMOTE' does not exist.
+       Expected the public repository at $EXPECTED_REPO. See docs/development-workflow.md."
+
+GITHUB_URL="$(git remote get-url --push "$GITHUB_REMOTE")"
+case "$GITHUB_URL" in
+    *"github.com/${EXPECTED_REPO}"*|*"github.com:${EXPECTED_REPO}"*) ;;
+    *) die "remote '$GITHUB_REMOTE' push URL is '$GITHUB_URL',
+       which is not the expected public repository $EXPECTED_REPO.
+       Refusing to publish to an unverified destination." ;;
+esac
+ok "GitHub remote verified: $GITHUB_URL"
+
+git remote get-url "$GITLAB_REMOTE" >/dev/null 2>&1 \
+    || die "remote '$GITLAB_REMOTE' (private GitLab) does not exist."
+
+# Requirement: fetch both remotes so the comparison is against current state.
+info "Fetching both remotes"
+git fetch --quiet "$GITLAB_REMOTE" || die "failed to fetch $GITLAB_REMOTE"
+# --no-tags: public tags are release artefacts, published by the release
+# process, never dragged along by a branch publication.
+git fetch --quiet --no-tags "$GITHUB_REMOTE" || die "failed to fetch $GITHUB_REMOTE"
+git rev-parse --verify --quiet "$PUBLIC_BASE" >/dev/null \
+    || die "$PUBLIC_BASE does not exist after fetching. Cannot determine the public base."
+ok "Public base $PUBLIC_BASE is at $(git rev-parse --short "$PUBLIC_BASE")"
+
+# Requirement: fail safely if the destination branch already exists unexpectedly.
+if git ls-remote --exit-code --heads "$GITHUB_REMOTE" "$PR_BRANCH" >/dev/null 2>&1; then
+    if [ "$ALLOW_UPDATE" -eq 0 ]; then
+        die "branch '$PR_BRANCH' already exists on $GITHUB_REMOTE.
+       Pass --update to replace it (uses --force-with-lease), or choose another --name."
+    fi
+    warn "'$PR_BRANCH' already exists on GitHub and will be updated."
+fi
+
+if git rev-parse --verify --quiet "refs/heads/$LOCAL_BRANCH" >/dev/null; then
+    die "local branch '$LOCAL_BRANCH' already exists.
+       Delete it first: git branch -D $LOCAL_BRANCH"
+fi
+
+# --- select the commits ----------------------------------------------------
+
+info "Selecting commits"
+
+if [ -n "$COMMIT_LIST" ]; then
+    COMMITS=$(printf '%s' "$COMMIT_LIST" | tr ',' ' ')
+    RESOLVED=""
+    for c in $COMMITS; do
+        full="$(git rev-parse --verify --quiet "${c}^{commit}")" \
+            || die "'$c' is not a valid commit in this repository."
+        RESOLVED="$RESOLVED $full"
+    done
+    COMMITS="$RESOLVED"
+    SELECTION_DESC="explicit commit list"
+else
+    git rev-parse --verify --quiet "${SOURCE_REF}^{commit}" >/dev/null \
+        || die "source ref '$SOURCE_REF' does not exist."
+    # Oldest-first so cherry-pick replays them in the original order.
+    COMMITS="$(git rev-list --reverse --no-merges "${PUBLIC_BASE}..${SOURCE_REF}")"
+    SELECTION_DESC="commits on '$SOURCE_REF' not in $PUBLIC_BASE"
+fi
+
+COMMITS="$(echo $COMMITS)"   # normalise whitespace
+[ -n "$COMMITS" ] || die "no commits selected ($SELECTION_DESC). Nothing to publish."
+COMMIT_COUNT="$(echo "$COMMITS" | wc -w | tr -d ' ')"
+ok "$COMMIT_COUNT commit(s) selected: $SELECTION_DESC"
+
+# --- private-ancestry audit ------------------------------------------------
+#
+# Requirement: detect and warn about suspicious private ancestry. `next` is the
+# private integration branch and must never reach GitHub directly; a branch cut
+# from `next` carries unreleased integration work with it.
+
+info "Auditing for private ancestry"
+SUSPICIOUS=0
+
+if git rev-parse --verify --quiet "${GITLAB_REMOTE}/next" >/dev/null; then
+    if [ -n "$SOURCE_REF" ] \
+       && git merge-base --is-ancestor "${GITLAB_REMOTE}/next" "$SOURCE_REF" 2>/dev/null; then
+        warn "source '$SOURCE_REF' is a descendant of the private branch '${GITLAB_REMOTE}/next'."
+        warn "Branches based on 'next' must be reconstructed on a clean branch based on"
+        warn "$PUBLIC_BASE. This script does reconstruct them, but review the commit list"
+        warn "below with particular care -- it may contain unreleased integration work."
+        SUSPICIOUS=1
+    fi
+    for c in $COMMITS; do
+        if git merge-base --is-ancestor "$c" "${GITLAB_REMOTE}/next" 2>/dev/null; then
+            warn "commit $(git rev-parse --short "$c") is already on the private branch 'next': $(git log -1 --format=%s "$c")"
+            SUSPICIOUS=1
+        fi
+    done
+fi
+
+# A commit that is already reachable from a public GitHub branch does not need
+# republishing, and its presence usually means the selection is wrong.
+for c in $COMMITS; do
+    on_public="$(git branch -r --contains "$c" 2>/dev/null \
+                 | sed 's/^[* ]*//' | grep "^${GITHUB_REMOTE}/" || true)"
+    if [ -n "$on_public" ]; then
+        warn "commit $(git rev-parse --short "$c") is already public on: $(echo $on_public | tr '\n' ' ')"
+        SUSPICIOUS=1
+    fi
+done
+
+if [ "$SUSPICIOUS" -eq 1 ]; then
+    warn "Private ancestry detected. Read the diff below in full before confirming."
+else
+    ok "No private-branch ancestry detected."
+fi
+
+# --- reconstruct on a clean branch -----------------------------------------
+#
+# Requirement: create a clean branch based on github/develop and cherry-pick
+# only the selected commits. The published branch therefore shares no history
+# with any private branch.
+
+cleanup_on_failure() {
+    git cherry-pick --abort >/dev/null 2>&1 || true
+    git checkout --quiet "$ORIGINAL_HEAD" 2>/dev/null || true
+    git branch -D "$LOCAL_BRANCH" >/dev/null 2>&1 || true
+}
+
+info "Reconstructing on a clean branch from $PUBLIC_BASE"
+git checkout --quiet -b "$LOCAL_BRANCH" "$PUBLIC_BASE" \
+    || die "could not create '$LOCAL_BRANCH' from $PUBLIC_BASE"
+
+for c in $COMMITS; do
+    if ! git cherry-pick -x "$c" >/dev/null 2>&1; then
+        echo >&2
+        git status --short >&2
+        cleanup_on_failure
+        die "cherry-pick of $(git rev-parse --short "$c") failed (conflict).
+       The branch has been cleaned up and nothing was published.
+       Resolve by rebasing your work onto $PUBLIC_BASE first, then retry."
+    fi
+done
+ok "Reconstructed $COMMIT_COUNT commit(s) onto $PUBLIC_BASE"
+
+# --- test gate -------------------------------------------------------------
+#
+# Requirement: run lint and tests before publication. These are the same
+# scripts/ entry points both CI systems call.
+
+if [ "$SKIP_TESTS" -eq 1 ]; then
+    warn "TEST GATE SKIPPED (--skip-tests). Nothing has validated this tree."
+else
+    info "Running the test gate"
+    if ! ./scripts/test-all; then
+        cleanup_on_failure
+        die "test gate failed. Nothing was published."
+    fi
+    ok "Test gate passed"
+fi
+
+# --- show exactly what becomes public --------------------------------------
+#
+# Requirement: display the commits that differ from github/develop, and the
+# full diff, before any push.
+
+echo
+echo "==========================================================================="
+echo " THIS IS WHAT WILL BECOME PUBLIC"
+echo " ${GITHUB_REMOTE}:${PR_BRANCH}  <-  ${COMMIT_COUNT} commit(s) on top of ${PUBLIC_BASE}"
+echo "==========================================================================="
+echo
+echo "--- Commits ---------------------------------------------------------------"
+git --no-pager log --oneline --no-decorate "${PUBLIC_BASE}..HEAD"
+echo
+echo "--- Files changed ---------------------------------------------------------"
+git --no-pager diff --stat "${PUBLIC_BASE}...HEAD"
+echo
+echo "--- Full diff -------------------------------------------------------------"
+git --no-pager diff "${PUBLIC_BASE}...HEAD"
+echo
+echo "--- End of diff -----------------------------------------------------------"
+echo
+
+# --- explicit confirmation -------------------------------------------------
+#
+# Requirement: require explicit confirmation before any push. Typing the branch
+# name -- not "y" -- so the confirmation cannot be given by reflex.
+
+if [ ! -t 0 ]; then
+    cleanup_on_failure
+    die "no terminal available for confirmation. Refusing to publish non-interactively."
+fi
+
+if [ "$SUSPICIOUS" -eq 1 ]; then
+    echo "${C_YELLOW}${C_BOLD}Private ancestry was detected for this publication (see warnings above).${C_OFF}"
+fi
+echo "To publish, type the branch name exactly: ${C_BOLD}${PR_BRANCH}${C_OFF}"
+printf "Confirm (anything else aborts): "
+read -r REPLY_CONFIRM
+
+if [ "$REPLY_CONFIRM" != "$PR_BRANCH" ]; then
+    cleanup_on_failure
+    die "not confirmed. Nothing was published."
+fi
+
+# --- push ------------------------------------------------------------------
+#
+# Requirement: push ONLY the named pr/* branch. Never --all, --tags or
+# --mirror; never plain --force. The refspec below is fully explicit on both
+# sides, so no other ref can be affected.
+
+info "Pushing ${LOCAL_BRANCH} -> ${GITHUB_REMOTE}/${PR_BRANCH}"
+PUSH_ARGS=(push "$GITHUB_REMOTE" "refs/heads/${LOCAL_BRANCH}:refs/heads/${PR_BRANCH}")
+if [ "$ALLOW_UPDATE" -eq 1 ]; then
+    PUSH_ARGS+=(--force-with-lease)
+fi
+
+if ! git "${PUSH_ARGS[@]}"; then
+    cleanup_on_failure
+    die "push failed. Nothing was published."
+fi
+ok "Published ${GITHUB_REMOTE}/${PR_BRANCH}"
+
+# --- optionally open the pull request --------------------------------------
+
+if [ "$CREATE_PR" -eq 1 ]; then
+    if ! command -v gh >/dev/null 2>&1; then
+        warn "'gh' is not installed; skipping pull-request creation."
+        warn "Open it manually: https://github.com/${EXPECTED_REPO}/compare/develop...${PR_BRANCH}"
+    else
+        info "Opening a pull request against develop"
+        gh pr create \
+            --repo "$EXPECTED_REPO" \
+            --base develop \
+            --head "$PR_BRANCH" \
+            --title "$(git log -1 --format=%s "$PUBLIC_BASE..HEAD" | head -1)" \
+            --body "Published from the private development repository with \`tools/publish-github-pr\`." \
+            || warn "gh pr create failed; the branch is pushed, open the PR manually."
+    fi
+fi
+
+# --- restore ---------------------------------------------------------------
+
+git checkout --quiet "$ORIGINAL_HEAD"
+echo
+ok "Done. Local branch '$LOCAL_BRANCH' kept for reference; delete with:"
+echo "    git branch -D $LOCAL_BRANCH"

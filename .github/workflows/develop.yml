@@ -1,13 +1,17 @@
-# You can also reference a tag or branch, but the action may change without warning.
-
-name: General Tests for main and develop
+name: Tests
 
 on:
-    push:
-      branches: ["develop"]
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   linting:
@@ -15,9 +19,16 @@ jobs:
   unittest:
     needs: linting
     uses: ./.github/workflows/unittest.yml
-  performance_validation:
-    needs: unittest
-    uses: ./.github/workflows/performance_validation.yml
-  # circuit_test:
-  #   needs: unittest
-  #   uses: ./.github/workflows/circuit_test.yml
+  tutorials:
+    needs: linting
+    uses: ./.github/workflows/tutorials.yml
+  ngspice:
+    needs: linting
+    uses: ./.github/workflows/ngspice.yml
+  container:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: [unittest, tutorials, ngspice]
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/docker_develop.yml

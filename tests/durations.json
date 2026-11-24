@@ -1,0 +1,15 @@
+{
+  "tests/unittest/delsig_bridge_test.py": 0.46599999999999997,
+  "tests/unittest/delsig_test.py": 2.247,
+  "tests/unittest/estimator_test.py": 0.671,
+  "tests/unittest/fom_test.py": 0.0,
+  "tests/unittest/frontend_test.py": 0.8960000000000002,
+  "tests/unittest/leapfrog_benchmark_test.py": 0.115,
+  "tests/unittest/snr_band_test.py": 0.012,
+  "tests/unittest/snr_test.py": 0.028000000000000008,
+  "tests/unittest/test_synthesis/chain_of_integrators_test.py": 0.001,
+  "tests/unittest/test_synthesis/dsdemo_test.py": 1.158,
+  "tests/unittest/test_synthesis/integration_factor_test.py": 0.0,
+  "tests/unittest/test_synthesis/leap_frog_test.py": 0.001,
+  "tests/unittest/twin_test.py": 0.15600000000000003
+}

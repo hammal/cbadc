@@ -1,0 +1,32 @@
+name: Documentation
+
+on: workflow_call
+
+# Sphinx executes docs/tutorials/plot_*.py while building the documentation.
+jobs:
+  build_tutorials:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.4.0
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.15"
+
+      - name: Install docs dependencies
+        run: uv sync --extra docs --extra delsig
+
+      - name: Build docs and execute tutorials
+        run: uv run --extra docs --extra delsig sphinx-build -b html docs/source docs/build/html
+
+      - name: Upload built docs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs-html
+          path: docs/build/html
