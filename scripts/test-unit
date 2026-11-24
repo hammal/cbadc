@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Unit test suite.
+#
+# Usage:
+#   scripts/test-unit                 # the complete unit suite
+#   scripts/test-unit -k contract     # any other pytest arguments pass through
+#
+# Writes pytest-unittests.xml (JUnit) for CI report ingestion.
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
+
+# Worker count is overridable because `auto` means one worker per core, and a
+# cgroup memory limit counts the *sum* over every process in the container --
+# so each extra worker adds its own interpreter plus a full copy of whatever
+# heavy test it holds. The GitLab runners cap the container at ~3 GB; `auto`,
+# 4 and 2 workers all exceeded that limit (exit 137,
+# OOMKilled). Locally `auto` is right.
+#
+# `PYTEST_WORKERS=0` drops xdist altogether rather than running it with a single
+# worker: `-n 1` still starts a controller *and* a worker, i.e. two interpreters
+# each carrying the ~230 MB import baseline, and ships results between them for
+# no gain. Passing no `-n` at all runs the tests in one process.
+PYTEST_WORKERS="${PYTEST_WORKERS:-auto}"
+
+# Optional sharding across *containers*. Set PYTEST_SHARD="i/N" (1-based), or let
+# it pick up GitLab's CI_NODE_INDEX/CI_NODE_TOTAL from `parallel: N`.
+#
+# This is the parallelism that actually helps here. Every xdist worker shares one
+# container's ~3 GB cgroup budget, so adding workers multiplies memory without
+# multiplying memory *limit*; a second runner brings its own 3 GB and its own
+# CPU. Splitting is at file granularity on purpose: the heaviest module memoises
+# 64 stiff ODE solves across its 82 tests, and splitting inside it would make
+# every shard recompute them.
+SHARD="${PYTEST_SHARD:-}"
+if [ -z "$SHARD" ] && [ -n "${CI_NODE_INDEX:-}" ] && [ -n "${CI_NODE_TOTAL:-}" ]; then
+    SHARD="${CI_NODE_INDEX}/${CI_NODE_TOTAL}"
+fi
+
+TARGETS="tests/unittest"
+if [ -n "$SHARD" ]; then
+    TARGETS=$(python3 "$REPO_ROOT/scripts/_shard_tests.py" "$SHARD") || exit 1
+    echo "shard $SHARD -> $(echo "$TARGETS" | wc -w) files" >&2
+fi
+
+# One worker per core already fills the machine; numba's parallel kernels and
+# the BLAS behind numpy and scipy would otherwise each start a pool of every
+# core inside every worker (load 150 on a 48-thread box). Overridable for a
+# single-worker run that wants them all.
+if [ "$PYTEST_WORKERS" = "0" ] || [ "$PYTEST_WORKERS" = "none" ]; then
+    uvrun pytest --junitxml=pytest-unittests.xml $TARGETS "$@"
+else
+    export NUMBA_NUM_THREADS="${NUMBA_NUM_THREADS:-2}"
+    export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}" OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}" MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
+    uvrun pytest -n "$PYTEST_WORKERS" --junitxml=pytest-unittests.xml $TARGETS "$@"
+fi

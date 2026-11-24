@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Lint and formatting check. Read-only -- never rewrites files.
+#
+# Usage: scripts/lint
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
+
+uvrun ruff check src/cbadc tests
+uvrun ruff format --check src/cbadc

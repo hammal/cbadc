@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Everything a branch must pass before it is proposed for merge -- and the
+# gate that tools/publish-github-pr runs before anything becomes public.
+#
+# Usage: scripts/test-all
+#
+# ngspice runs in its own CI job because it needs a circuit simulator.
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
+
+"$REPO_ROOT/scripts/lint"
+"$REPO_ROOT/scripts/test-doctest"
+"$REPO_ROOT/scripts/test-unit"

@@ -1,53 +1,49 @@
-![cbadc](https://github.com/hammal/cbadc/actions/workflows/develop.yml/badge.svg?branch=develop)![cbadc](https://github.com/hammal/cbadc/actions/workflows/develop.yml/badge.svg?branch=master)![pypi](https://github.com/hammal/cbadc/actions/workflows/pypi-deployment.yml/badge.svg)[![Documentation Status](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/?badge=latest)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Tests](https://github.com/hammal/cbadc/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/hammal/cbadc/actions/workflows/develop.yml)
+[![Documentation](https://readthedocs.org/projects/cbadc/badge/?version=latest)](https://cbadc.readthedocs.io/en/latest/)
 
-# Control-Bounded A/D Conversion (cbadc) Toolbox
+# cbadc
 
-This package is intended as a design tool for aiding the construction of control-bounded A/D converters.
-Specifically, it is capable of:
+cbadc models control-bounded A/D converters with one clocked state-space
+frontend. Define `A, B, C, D`, attach an input and DAC pulse, then simulate
+decisions and the built-in digital twin. The 0.4.0 release narrows the core to
+modelling, simulation, reconstruction, and measurement.
 
-- **Generating** transfer functions for analog systems and/or digital estimator parametrizations.
-- **Estimating** samples from control signals.
-- **Simulating** analog system and digital control interactions.
+## Install
 
-# Documentation
-
-The project's official documentation can be found at [Read the Docs](https://cbadc.readthedocs.io/en/latest/).
-
-<!-- # Background & References
-
-For a in-depth description of the control-bounded conversion concept consider the following publications
-- [Control-bounded analog-to-digital conversion, circuits, systems, and signal processing, 2021](https://doi.org/10.1007/s00034-021-01837-z)
-- [Control-bounded converters, Ph.D. Thesis, 2020](https://doi.org/10.3929/ethz-b-000469192).
-- [Control-bounded analog-to-digital conversion: transfer functions analysis, proof of concept, and digital filter implementation, arXiv:2001.05929, 2020](https://arxiv.org/abs/2001.05929)
-- [Control-based analog-to-digital conversion without sampling and quantization, information theory & applications workshop, 2015](https://ieeexplore.ieee.org/document/7308975)
-- [Analog-to-digital conversion using unstable filters, information theory & applications workshop, 2011](https://ieeexplore.ieee.org/abstract/document/5743620) -->
-
-# Installation
-
-Install [cbadc](https://pypi.org/project/cbadc/) by typing
+cbadc requires Python 3.11 or later:
 
 ```bash
-pip install cbadc
+uv add cbadc
 ```
 
-into your console. Note that, currently cbadc is only supported for Python3.9 and later.
+The delta-sigma synthesis bridge is optional: `uv add 'cbadc[delsig]'` (or
+`pip install 'cbadc[delsig]'`). This installs
+[cbadc-deltasigma](https://pypi.org/project/cbadc-deltasigma/) from PyPI.
 
-## Develop Version
+## Example
 
-Alternatively, the latest develop branch can be installed by
+```python
+from cbadc import Frontend, Sinusoid
+from cbadc.snr import simulate_snr
 
-```bash
-pip install git+https://github.com/hammal/cbadc.git@develop
+af, osr = Frontend.leapfrog(N=4, OSR=16, BW=1e6)
+af.input = Sinusoid(0.5, af.fs / 128)
+record = af.simulate(1 << 14)  # v, u, and digital-twin y_hat
+result = simulate_snr(af, osr, amp=[-12, -6, 0], full_scale=1.0)
+sndr, amplitudes = result["snr_u_hat"], result["amp"]
 ```
 
-# Source Code
+The matrices have leading `(J, K)` axes for independent batch members and
+cyclic phases. Continuous-time linear dynamics are discretized with matrix
+exponentials. `record=` selects additional state and comparator traces.
+`GmC` and `ActiveRC` provide physical realizations and ngspice validation;
+Wiener reconstruction remains available for estimating the input from
+decisions.
 
-The source code is hosted on [https://github.com/hammal/cbadc](https://github.com/hammal/cbadc).
+## Documentation and source
 
-# Bugs and Issues
-
-Please report problems at [https://github.com/hammal/cbadc/issues](https://github.com/hammal/cbadc/issues)
-
-# Changelog
-see [CHANGELOG](./CHANGELOG.md)
+- [Documentation](https://cbadc.readthedocs.io/en/latest/) for the published
+  version. For this development tree, run `make docs` and open
+  `docs/build/html/index.html`.
+- [Source and issues](https://github.com/hammal/cbadc).
+- [Changelog](./CHANGELOG.md).

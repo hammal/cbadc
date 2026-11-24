@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Doctests embedded in the package source.
+#
+# Usage: scripts/test-doctest [extra pytest args]
+#
+# Writes pytest-doctests.xml (JUnit). Not run with -n auto: doctest collection
+# over the package is cheap, and xdist adds more overhead than it saves here.
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
+
+# --doctest-modules imports every file under src/cbadc, and _digital_estimator/
+# does not import: it needs cbadc.ode_solver, which was deleted in the January
+# 2025 "major revision of library" (8044ddd). It has therefore been broken since
+# then, and so has everything that depends on it -- the BatchEstimator/FIRFilter/
+# IIRFilter/NUVEstimator family, the tests/performance_validation suites and the
+# benchmarks, 8 files in total.
+#
+# It is NOT dead code that can simply be dropped: whether 0.4.0 still ships that
+# estimator family is an open API decision. Ignored here so the doctest gate
+# reports on the code that does work; see docs/development-workflow.md and the
+# 0.4.0 release checklist.
+uvrun pytest --junitxml=pytest-doctests.xml --doctest-modules src "$@"

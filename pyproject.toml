@@ -1,3 +1,91 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cbadc"
+version = "0.4.0"
+description = "State-space simulation of control-bounded A/D converters."
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Hampus Malmberg", email = "hampus.malmberg88@gmail.com" }]
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "numba",
+]
+
+[project.urls]
+Homepage = "https://github.com/hammal/cbadc"
+"Bug Tracker" = "https://github.com/hammal/cbadc/issues"
+Documentation = "https://cbadc.readthedocs.io"
+
+[project.optional-dependencies]
+delsig = [
+    "cbadc-deltasigma==0.2.6",
+]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-benchmark",
+    "pytest-xdist",
+    "ruff",
+    "pre-commit",
+]
+docs = [
+    "sphinx",
+    "sphinx_rtd_theme",
+    "sphinx-gallery",
+    "pygments",
+    "myst-nb",
+    "ipykernel",
+]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/cbadc"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cbadc"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+exclude = [
+    "docs/source",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = [
+    "E501",
+    "E203",
+    "E402",
+    "E741",
+    "E712",
+    "F401",
+    "F811",
+    "W605",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unittest"]
+addopts = "--junitxml=pytest-unittests.xml"
+
+[tool.coverage.run]
+source = ["src/cbadc"]

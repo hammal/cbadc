@@ -1,0 +1,32 @@
+# Circuit and noise validation in the repository image (Debian trixie,
+# ngspice with XSPICE). Called by pull-request and integration-branch workflows.
+name: ngspice bench
+
+on: workflow_call
+
+jobs:
+  ngspice:
+    name: "cbadc against ngspice"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the bench image
+        run: docker build -t cbadc-ngspice .
+
+      - name: Run the bench
+        run: docker run --name bench cbadc-ngspice ./scripts/test-performance ngspice
+
+      - name: Collect report and remove container
+        if: always()
+        run: |
+          docker cp bench:/cbadc/pytest-performance-ngspice.xml . || true
+          docker rm -f bench || true
+
+      - name: Upload bench results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ngspice bench results
+          path: pytest-performance-ngspice.xml

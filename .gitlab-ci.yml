@@ -1,0 +1,163 @@
+# GitLab CI -- PRIVATE development validation only.
+#
+# Division of responsibility (see docs/development-workflow.md):
+#
+#   GitLab (this file)   lint, format, doctests, unit tests, performance
+#                        validation, merge-request validation for student
+#                        contributions, integration testing of `next`.
+#
+#   GitHub Actions       public pull-request validation, `develop` validation,
+#                        Releases, PyPI publishing, documentation, container
+#                        publishing to ghcr.io.
+#
+# This pipeline deliberately publishes NOTHING. There is exactly one
+# authoritative public release pipeline and it lives in
+# .github/workflows/pypi-deployment.yml. Do not add a PyPI, ghcr.io or
+# documentation-publishing job here.
+#
+# Every job calls a script in scripts/, which is also what the GitHub workflows
+# call, so the two systems cannot drift.
+
+stages:
+  - lint
+  - test
+  - performance
+
+default:
+  image: python:3.15
+  interruptible: true
+  before_script:
+    - pip install --quiet --root-user-action=ignore uv
+    - uv --version
+  cache:
+    key:
+      files:
+        - uv.lock
+    paths:
+      - .uv-cache
+
+variables:
+  # Headless runners have no display; the suite creates a lot of figures.
+  MPLBACKEND: "Agg"
+  # Serial, deliberately. The runners cap the container at ~3 GB and a cgroup limit
+  # counts the *sum* over all processes in the container, not the largest one.
+  # Every xdist worker therefore adds its own full copy of whatever heavy test
+  # it is running, and two workers were enough to cross the cap even after the
+  # suite's peak came down from 5.3 GB to 1.8 GB. `-n auto` and 4 and 2 all
+  # ended in exit 137.
+  #
+  # 0 means no xdist at all, not one worker: `-n 1` still starts a controller
+  # *and* a worker, two interpreters each carrying the ~230 MB import baseline.
+  # Nothing here needs distributing, so run in a single process.
+  PYTEST_WORKERS: "0"
+  # Keep uv's cache inside the build directory so GitLab can cache it.
+  UV_CACHE_DIR: "$CI_PROJECT_DIR/.uv-cache"
+  GIT_DEPTH: "50"
+
+# The integration branches, where the expensive suites are worth running.
+.on_integration_branches: &on_integration_branches
+  - if: $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "next"
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+
+# ---------------------------------------------------------------------------
+# Stage: lint
+# ---------------------------------------------------------------------------
+
+lint:
+  stage: lint
+  script:
+    - ./scripts/lint
+
+
+# ---------------------------------------------------------------------------
+# Stage: test
+# ---------------------------------------------------------------------------
+
+# Complete unit suite on every feature branch and merge request.
+#
+# Split across four runners. This is the parallelism that helps here: every xdist
+# worker shares one container's ~3 GB cgroup budget, so adding workers multiplies
+# the memory used without multiplying the limit, whereas a second runner brings
+# its own 3 GB and its own CPUs. scripts/test-unit picks up CI_NODE_INDEX /
+# CI_NODE_TOTAL automatically and packs whole files longest-first from
+# tests/durations.json.
+#
+# Four shards keep each test file together, preserving shared fixtures and
+# cached numerical solves within the file.
+unit:
+  stage: test
+  parallel: 4
+  script:
+    - ./scripts/test-unit
+  artifacts:
+    when: always
+    reports:
+      junit: pytest-unittests.xml
+    paths:
+      - pytest-unittests.xml
+    expire_in: 1 week
+
+doctest:
+  stage: test
+  script:
+    - ./scripts/test-doctest
+  artifacts:
+    when: always
+    reports:
+      junit: pytest-doctests.xml
+    paths:
+      - pytest-doctests.xml
+    expire_in: 1 week
+
+# The same complete suite across the supported Python range on integration
+# branches, matching the GitHub Python-version matrix.
+unit:full:
+  stage: test
+  image: python:$PYTHON_VERSION
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.11", "3.12", "3.13", "3.14", "3.15"]
+  script:
+    - ./scripts/test-unit
+  artifacts:
+    when: always
+    reports:
+      junit: pytest-unittests.xml
+    paths:
+      - pytest-unittests.xml
+    expire_in: 1 week
+  timeout: 6h
+  interruptible: false
+  rules:
+    - *on_integration_branches
+    - when: manual
+      allow_failure: true
+
+# ---------------------------------------------------------------------------
+# Stage: performance
+# ---------------------------------------------------------------------------
+
+# Run every circuit and noise case on merge requests to develop or main,
+# integration branch pushes, and scheduled pipelines.
+performance:
+  stage: performance
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq --no-install-recommends ngspice > /dev/null
+    - pip install --quiet --root-user-action=ignore uv
+  script:
+    - ./scripts/test-performance ngspice
+  artifacts:
+    when: always
+    reports:
+      junit: pytest-performance-*.xml
+    paths:
+      - pytest-performance-*.xml
+    expire_in: 1 month
+  timeout: 2h
+  interruptible: false
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main")'
+    - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "next"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - when: manual
+      allow_failure: true
